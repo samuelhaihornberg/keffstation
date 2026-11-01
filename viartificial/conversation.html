@@ -407,7 +407,7 @@ document.getElementById('llmBlmBtn').onclick=function(){
   }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
   // 2) LLM actuellement sélectionné.
   var bot=botsById[selectedBots[0]]||botsById[q];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('Les BLM sont prêts, mais aucun moteur LLM n’est connecté. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');finir();return;}
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('Aucun serveur LLM configuré. Les BLM sont prêts. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');finir();return;}
   if(eng.provider==='local'){
     flushConvs();loadArmed=true;setState('checking');dire('BLM prêts. Chargement du modèle local…');
     ensureEngine().then(function(){updateIdCard();pump();dire('BLM prêts + modèle local prêt.');},function(e){dire('BLM prêts. Modèle local : '+((e&&e.message)?e.message:e));}).then(finir);
@@ -566,7 +566,7 @@ function paintIdCard(card){
 }
 function runRemote(item){
   var b0=botsById[q]||botsById[selectedBots[0]];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Les BLM sont prêts, mais aucun moteur LLM n’est connecté. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');setState('idle');working=false;return Promise.resolve();}
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Aucun serveur LLM configuré. Les BLM sont prêts. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');setState('idle');working=false;return Promise.resolve();}
   setState('responding',b0.name);
   var wait=addWait(b0);
   genCtl=new AbortController();

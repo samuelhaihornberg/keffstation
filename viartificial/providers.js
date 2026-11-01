@@ -63,10 +63,26 @@
       return await global.ViaLocalEngine.chat(bot, history, { signal: signal });
     }
     var base = (cfg.baseUrl || '').replace(/\/$/, '');
+    // Garde-fou central : jamais de POST relatif (GitHub Pages) sans adresse.
+    if ((cfg.provider === 'ollama' || cfg.provider === 'custom') && !base) throw err('NO_ENGINE', 'Aucun serveur LLM configuré : renseigne l’adresse du serveur dans Réglages, ou choisis le moteur local.');
     var messages = [{ role: 'system', content: sysPrompt(bot) }].concat(history);
     var headers = { 'Content-Type': 'application/json' };
     var url, body;
     if (cfg.provider === 'ollama') {
+      // Pré-vol obligatoire : vérifier que c'est bien Ollama AVANT tout POST.
+      var tagRes = null, tagBody = '';
+      try {
+        tagRes = await fetch(base + '/api/tags', { method: 'GET', cache: 'no-store', signal: signal });
+        try { tagBody = await tagRes.text(); } catch (e) { tagBody = ''; }
+      } catch (e) {
+        if (e && e.name === 'AbortError') throw err('ABORTED', 'Vérification annulée.');
+        throw err('UNREACHABLE', 'Aucun serveur joignable à ' + base + ' (GET /api/tags impossible).');
+      }
+      if (!tagRes.ok || !/\"models\"/.test(tagBody)) {
+        var pv = err('NOT_OLLAMA', 'Le serveur à ' + base + ' ne répond pas comme Ollama (GET /api/tags → HTTP ' + tagRes.status + '). Aucun POST envoyé : méthode et chemin inchangés.');
+        pv.detail = String(tagBody).slice(0, 160); pv.url = base + '/api/tags'; pv.method = 'GET';
+        throw pv;
+      }
       url = base + '/api/chat';
       body = { model: cfg.model, messages: messages, stream: false };
     } else {
@@ -74,16 +90,15 @@
       body = { model: cfg.model, messages: messages };
       if (sessionKey) headers.Authorization = 'Bearer ' + sessionKey; // mémoire session, jamais persistée.
     }
-    var res;
+    var res, rawSnippet = '';
     try {
       res = await fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(body), signal: signal });
+      try { rawSnippet = await res.text(); } catch (e) { rawSnippet = ''; }
     } catch (e) {
       if (e && e.name === 'AbortError') throw err('ABORTED', 'Requête annulée.');
       throw err('UNREACHABLE', 'Moteur injoignable (' + base + '). Vérifie qu’il est démarré.');
     }
     if (!res.ok) {
-      var rawSnippet = '';
-      try { rawSnippet = await res.text(); } catch (e) { rawSnippet = ''; }
       var erx = err('HTTP_' + res.status, 'Le moteur répond en erreur (HTTP ' + res.status + ' à POST ' + url + ').' + (rawSnippet ? ' Réponse du serveur : ' + String(rawSnippet).slice(0, 160) : ' (aucun corps de réponse)'));
       erx.detail = rawSnippet; erx.url = url; erx.method = 'POST';
       throw erx;
