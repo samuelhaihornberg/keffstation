@@ -1,4 +1,4 @@
-const CACHE = 'keffstation-cube-v1';
+const CACHE = 'keffstation-cube-v3';
 const ASSETS = ['/', '/index.html', '/manifest.json', '/app.js'];
 
 self.addEventListener('install', e => {
