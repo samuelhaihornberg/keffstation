@@ -423,10 +423,12 @@ document.getElementById('llmBlmBtn').onclick=function(){
       if(e&&e.code==='HTTP_405'){
         m+=' — diagnostic du serveur…';dire(m);
         diagServeur(eng.baseUrl).then(function(d){
-          var verdict;
-          if(d.status===200&&/models/i.test(d.body))verdict='Le serveur RÉPOND comme Ollama (GET /api/tags OK) mais refuse POST /api/chat : probablement un proxy/passerelle devant Ollama, ou une version incompatible. Détail : '+d.body.slice(0,120);
-          else if(d.status)verdict='Le serveur répond HTTP '+d.status+' à GET /api/tags : ce n’est PAS Ollama ('+(d.body||'sans corps')+'). Corrige l’adresse (ex http://192.168.1.20:11434), Ollama démarré (ollama serve, même Wi-Fi).';
-          else verdict='Serveur injoignable ('+(d.erreur||'réseau')+') : même Wi-Fi ? Ollama démarré avec OLLAMA_HOST=0.0.0.0 ?';
+          var r=d.racine,t=d.tags,verdict;
+          var estOllama=(r.status===200&&/ollama is running/i.test(r.body))||(t.status===200&&/models/i.test(t.body));
+          if(estOllama&&t.status===200)verdict='PC joint et Ollama identifié (tags OK) mais POST /api/chat refusé : un proxy/passerelle s’interpose, ou Ollama est trop ancien. Détail tags : '+t.body.slice(0,120);
+          else if(estOllama)verdict='Ollama identifié sur ce PC (racine OK) mais /api/chat et /api/tags anormaux : mets Ollama à jour (ollama --version) et vérifie l’absence de proxy.';
+          else if(r.status||t.status)verdict='Quelque chose répond à cette adresse mais ce n’est PAS Ollama (racine HTTP '+(r.status||r.erreur||'?')+(r.body?' « '+r.body.slice(0,60)+' »':'')+' / tags HTTP '+(t.status||t.erreur||'?')+(t.body?' « '+t.body.slice(0,60)+' »':'')+') : mauvaise IP ou autre service sur ce port. Sur le PC, vérifie l’IP (ipconfig / ip addr) et qu’Ollama écoute 11434 (ollama serve).';
+          else verdict='Rien ne répond à cette adresse ('+(r.erreur||t.erreur||'réseau')+') : PC et téléphone sur le même Wi-Fi ? Ollama démarré avec OLLAMA_HOST=0.0.0.0 (port 11434 ouvert au pare-feu) ?';
           dire(m+' '+verdict);
         });
         return;
@@ -575,13 +577,13 @@ function runRemote(item){
     }
   }).then(function(){genCtl=null;});
 }
-// Diagnostic serveur : GET /api/tags pour identifier qui répond vraiment
-// (Ollama = 200 + {"models":...} ; autre chose = pas Ollama ; rien = injoignable).
+// Diagnostic serveur depuis le téléphone : sonde la racine (Ollama répond
+// « Ollama is running ») et /api/tags ({"models":...}). Identifie qui répond
+// vraiment : Ollama, un autre service, ou rien (mauvais Wi-Fi/IP/port/pare-feu).
 function diagServeur(base){
-  var u=String(base||'').replace(/\/$/,'')+'/api/tags';
-  return fetch(u,{method:'GET',cache:'no-store'}).then(function(r){
-    return r.text().then(function(t){return {url:u,method:'GET',status:r.status,body:String(t||'').slice(0,200)};});
-  }).catch(function(e){return {url:u,method:'GET',erreur:(e&&e.name)||'injoignable'};});
+  var root=String(base||'').replace(/\/$/,'');
+  function sonde(url){return fetch(url,{method:'GET',cache:'no-store'}).then(function(r){return r.text().then(function(t){var srv='';try{srv=r.headers.get('server')||'';}catch(e){}return {url:url,status:r.status,server:srv,body:String(t||'').slice(0,200)};});}).catch(function(e){return {url:url,erreur:(e&&e.name)||'injoignable'};});}
+  return Promise.all([sonde(root+'/'),sonde(root+'/api/tags')]).then(function(rs){return {racine:rs[0],tags:rs[1]};});
 }
 // Salutation + « ça va » = ouverture conviviale : réponse directe vérifiée, sans moteur.
 // Évite que le mini-modèle local et l'historique brut détournent la réponse.
