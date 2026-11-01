@@ -74,6 +74,8 @@
     finally { busy = false; }
   }
   function sysPrompt(bot) {
+    // Constructeur unique : même consigne pour le moteur local et les fournisseurs externes.
+    if (global.ViaProviders && global.ViaProviders.sysPrompt) return global.ViaProviders.sysPrompt(bot);
     return 'Tu es ' + bot.name + ', personnage simulé sans conscience réelle. ' + bot.specialty + ' ' + bot.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
   }
   async function chat(bot, history, opt) {

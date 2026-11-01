@@ -50,7 +50,7 @@
   }
   function err(code, message) { var e = new Error(message); e.code = code; return e; }
   function sysPrompt(bot) {
-    return 'Tu incarnes ' + bot.name + ', personnage simulé sans conscience réelle. ' + bot.specialty + ' ' + bot.personality;
+    return 'Tu es ' + bot.name + ', personnage simulé sans conscience réelle. ' + bot.specialty + ' ' + bot.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
   }
   async function chat(cfg, bot, history, signal, sessionKey) {
     if (cfg.provider === 'none') throw err('NO_ENGINE', 'Aucun moteur IA configuré. Autorise le modèle local ou choisis un moteur dans Réglages.');
@@ -109,5 +109,5 @@
     if (!text) throw err('EMPTY', 'Réponse vide du moteur.');
     return text;
   }
-  global.ViaProviders = { load: load, save: save, status: status, ping: ping, chat: chat, DEFAULTS: DEFAULTS };
+  global.ViaProviders = { load: load, save: save, status: status, ping: ping, chat: chat, sysPrompt: sysPrompt, DEFAULTS: DEFAULTS };
 })(window);
