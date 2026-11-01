@@ -505,7 +505,11 @@ function runRemote(item){
     }
   }).then(function(){genCtl=null;});
 }
-form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';queue.push({text:v,cancelled:false});pump();input.focus();});
+// Salutation + « ça va » = ouverture conviviale : réponse directe vérifiée, sans moteur.
+// Évite que le mini-modèle local et l'historique brut détournent la réponse.
+function estSalutation(t){var s=String(t||'').trim();return /^(salut|bonjour|bonsoir|coucou|hello|yo|hey)[,!.\s]*/i.test(s)&&/ça va|ca va|comment tu vas|how are you/i.test(s);}
+function reponseSalutation(){var candidat='Salut ! Ça va bien, merci 😊 Et toi, comment tu vas ?';var ok=/salut/i.test(candidat)&&/\?\s*$/.test(candidat.trim())&&!/vous/i.test(candidat);if(!ok)candidat='Salut ! Je suis là 😊 Et toi, comment tu vas ?';return candidat;}
+form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){selectedBots.forEach(function(id){var b=botsById[id];if(!b)return;var h=H(b.id);h.push({role:'user',content:v});var r=reponseSalutation();h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);});input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
 var actCtl=null;
 function renderActs(){var el=document.getElementById('actList');el.innerHTML='';ViaActions.TOOLS.forEach(function(t){var d=document.createElement('div');var ok=ViaActions.available(t);d.textContent=(ok?'🟢 ':'🔴 ')+t.title+' — '+t.desc+' [accès : '+t.perms+']'+(t.sensitive?' [SENSIBLE : validation exigée]':'')+((t.needs&&!ok)?' [manquant : '+t.needs+']':'');var rb=document.createElement('button');rb.type='button';rb.textContent=ok?'Exécuter':'Indisponible';rb.style.cssText='margin-left:8px;min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f';rb.disabled=!ok;rb.onclick=function(){execAct(t);};d.appendChild(rb);el.appendChild(d);});}
