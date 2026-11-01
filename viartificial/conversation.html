@@ -78,6 +78,12 @@ body[data-min="1"] .msn{display:none}
 #gearBtn{min-width:48px;min-height:48px;border-radius:12px;border:1px solid rgba(255,210,63,.5);background:rgba(255,210,63,.08);color:#ffd23f;font-size:1.3rem}
 @media (max-width:720px){html,body{font-size:17px}.stage{flex-direction:column;padding:10px}body[data-mode="side"] .stage{flex-direction:column}body[data-mode="side"] .msn{position:static;width:100%}.msn{width:100%}#thread{max-height:none;min-height:44dvh}.msg{font-size:1rem;max-width:96%}textarea{min-height:56px}form.composer{padding-bottom:max(10px,env(safe-area-inset-bottom))}header.top{padding:10px 12px}#settings{margin:8px 10px 0}.statusline{margin:8px 10px 0}}
 .enginebar{display:flex;gap:8px;align-items:center;padding:8px 12px;font-size:.8rem;color:#b9c0e6;border-top:1px solid rgba(255,255,255,.1)}#cancel{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid #ff3d9a;background:transparent;color:#ff3d9a}#retryBtn{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f}
+#llmBlmBar{margin:10px 16px 0;max-width:720px}
+#llmBlmBtn{min-height:56px;width:100%;padding:12px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;touch-action:manipulation}
+#llmBlmBtn[disabled]{opacity:.6;cursor:default}
+#llmBlmMsg{font-size:.82rem;color:#b9c0e6;margin-top:6px;min-height:1.2em}
+@media (min-width:721px) and (max-width:1024px){#llmBlmBar{margin:10px auto 0}#llmBlmBtn{font-size:1.02rem}}
+@media (min-width:1025px){#llmBlmBar{max-width:560px}#llmBlmBtn{width:auto;min-width:340px;font-size:1rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -112,6 +118,7 @@ body[data-min="1"] .msn{display:none}
 <div id="progWrap" hidden><div class="term" id="termLog" aria-hidden="true"></div><div id="progBar"><div id="progFill"></div></div><p id="progText" class="term" role="status"></p></div>
 </section>
 <div id="chips" role="group" aria-label="SuperBots qui répondent"></div>
+<div id="llmBlmBar"><button id="llmBlmBtn" type="button">⚡ Charger le LLM + BLM</button><p id="llmBlmMsg" role="status"></p></div>
 <div id="loadBar" hidden style="margin:10px 16px 0;max-width:720px"><button id="loadBtn" type="button" style="min-height:56px;width:100%;padding:12px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#27d17f,#1e6bff);color:#fff;font-weight:700;font-size:1rem">📥 Charger le modèle local (≈390 Mo, Wi-Fi recommandé)</button><p style="font-size:.8rem;color:#8f96bd;margin-top:6px">Un seul moteur CPU/WASM partagé en Web Worker, conservé en cache. Aucun téléchargement sans ton appui.</p></div>
 <section id="settings" hidden aria-label="Réglages">
 <h2>⚙️ Réglages</h2>
@@ -374,6 +381,43 @@ function ensureEngine(){
 // Bouton unique de chargement : armé par l'utilisateur, jamais automatique.
 // Double-clic sans effet (promesse partagée + bouton désactivé pendant le chargement).
 function flushConvs(){try{for(var k in hists)saveConv(k);}catch(e){}}
+// Bouton « Charger le LLM + BLM » : toujours visible, quel que soit le fournisseur.
+// 1) initialise les BLM (indépendant du LLM) ; 2) charge ou teste le LLM sélectionné.
+// Ne touche ni aux conversations, ni aux caches, ni aux 4 boutons refresh/cache.
+document.getElementById('llmBlmBtn').onclick=function(){
+  var btn=this,msg=document.getElementById('llmBlmMsg');
+  if(!msg||btn.disabled)return;
+  btn.disabled=true;
+  function dire(t){msg.textContent=t;}
+  function finir(){btn.disabled=false;}
+  // 1) BLM d'abord, sans LLM.
+  try{
+    if(!window.BLMMemoire||!window.BLMPhilo)throw new Error('modules BLM non chargés');
+    var s=BLMMemoire.classerSouvenir({projet:'via',intention:'demande',type:'evolution',texte:'test BLM',statut:'actif'});
+    var ctx=BLMMemoire.restaurerSurLancement([s],{app:'via'});
+    var v=BLMPhilo.verifierReponse({langueOk:true,grammaireOk:true,pertinent:true,repetition:false,registreOk:true,coherent:true});
+    if(!ctx.length||!v.ok)throw new Error('auto-test BLM refusé');
+    window.__blmReady=true;
+  }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
+  // 2) LLM actuellement sélectionné.
+  var bot=botsById[selectedBots[0]]||botsById[q];
+  if(eng.provider==='local'){
+    flushConvs();loadArmed=true;setState('checking');dire('BLM prêts. Chargement du modèle local…');
+    ensureEngine().then(function(){updateIdCard();pump();dire('BLM prêts + modèle local prêt.');},function(e){dire('BLM prêts. Modèle local : '+((e&&e.message)?e.message:e));}).then(finir);
+  }else if(eng.provider==='ollama'||eng.provider==='custom'){
+    dire('BLM prêts. Test '+eng.provider+'…');
+    var c=new AbortController(),done=false;
+    var t=setTimeout(function(){if(!done){done=true;c.abort();}},15000);
+    ViaProviders.chat(eng,bot,[{role:'user',content:'Dis juste : test OK.'}],c.signal,document.getElementById('pKey').value||null).then(function(r){
+      if(done)return;done=true;clearTimeout(t);dire('BLM prêts + '+eng.provider+' OK : '+String(r).slice(0,80));
+    }).catch(function(e){
+      if(done)return;done=true;clearTimeout(t);
+      var m='BLM prêts. Échec '+eng.provider+' : '+((e&&e.message)?e.message:e);
+      if(e&&e.code==='HTTP_405')m+=' — vérifie l’IP et le port (ex http://192.168.1.20:11434), Ollama démarré (ollama serve), puis « Tester ».';
+      dire(m);
+    }).then(finir);
+  }else{dire('BLM prêts. Aucun moteur sélectionné : choisis local ou Ollama dans Réglages.');finir();}
+};
 document.getElementById('loadBtn').onclick=function(){
   var b=this;var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
   if(ph==='downloading'||ph==='loading'||ph==='generating'||ph==='ready')return;
