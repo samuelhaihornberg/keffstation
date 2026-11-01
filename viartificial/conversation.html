@@ -238,6 +238,12 @@ function setState(st,msg){
     ready:['Prêt — moteur local partagé','En ligne (moteur local, opérationnel)','#27d17f'],
     responding:['Réponse en cours ('+(msg||'')+')…','En ligne — '+(msg||'')+' écrit…','#27d17f'],
     error:['Erreur : '+(msg||'moteur indisponible'),'Hors ligne — erreur','#ff3d9a']};
+  if(eng.provider==='ollama'||eng.provider==='custom'){
+    var nomF=(eng.provider==='ollama'?'Ollama':'Endpoint')+(eng.model?' ('+eng.model+')':'');
+    map.idle=[nomF+' configuré'+(eng.baseUrl?' — '+eng.baseUrl:'')+' — appuie sur « Charger le LLM + BLM » pour tester.','Hors ligne — '+eng.provider,'#8f96bd'];
+    map.ready=['Prêt — '+nomF,'En ligne ('+eng.provider+', opérationnel)','#27d17f'];
+    map.checking=['Vérification '+nomF+'…','Vérification…','#ffd23f'];
+  }
   var m=map[st]||map.idle;
   eline.textContent=m[0];statusEl.textContent=m[1];if(dotEl)dotEl.style.background=m[2];
   banner.textContent=(st==='ready'?'🟢 ':st==='error'?'🔴 ':st==='idle'||st==='needs-consent'?'⚪ ':'🟡 ')+m[0];
@@ -412,8 +418,19 @@ document.getElementById('llmBlmBtn').onclick=function(){
       if(done)return;done=true;clearTimeout(t);dire('BLM prêts + '+eng.provider+' OK : '+String(r).slice(0,80));
     }).catch(function(e){
       if(done)return;done=true;clearTimeout(t);
-      var m='BLM prêts. Échec '+eng.provider+' : '+((e&&e.message)?e.message:e);
-      if(e&&e.code==='HTTP_405')m+=' — vérifie l’IP et le port (ex http://192.168.1.20:11434), Ollama démarré (ollama serve), puis « Tester ».';
+      var dest=String(eng.baseUrl||'').replace(/\/$/,'')+(eng.provider==='ollama'?'/api/chat':'/chat/completions');
+      var m='BLM prêts. Échec '+eng.provider+' : '+((e&&e.message)?e.message:e)+' (requête envoyée : POST '+dest+')';
+      if(e&&e.code==='HTTP_405'){
+        m+=' — diagnostic du serveur…';dire(m);
+        diagServeur(eng.baseUrl).then(function(d){
+          var verdict;
+          if(d.status===200&&/models/i.test(d.body))verdict='Le serveur RÉPOND comme Ollama (GET /api/tags OK) mais refuse POST /api/chat : probablement un proxy/passerelle devant Ollama, ou une version incompatible. Détail : '+d.body.slice(0,120);
+          else if(d.status)verdict='Le serveur répond HTTP '+d.status+' à GET /api/tags : ce n’est PAS Ollama ('+(d.body||'sans corps')+'). Corrige l’adresse (ex http://192.168.1.20:11434), Ollama démarré (ollama serve, même Wi-Fi).';
+          else verdict='Serveur injoignable ('+(d.erreur||'réseau')+') : même Wi-Fi ? Ollama démarré avec OLLAMA_HOST=0.0.0.0 ?';
+          dire(m+' '+verdict);
+        });
+        return;
+      }
       dire(m);
     }).then(finir);
   }else{dire('BLM prêts. Aucun moteur sélectionné : choisis local ou Ollama dans Réglages.');finir();}
@@ -557,6 +574,14 @@ function runRemote(item){
       var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — l’adresse ne répond pas comme Ollama (POST /api/chat refusé) : vérifie l’IP et le port (ex http://192.168.1.20:11434), Ollama démarré (ollama serve), puis « Tester ».';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));
     }
   }).then(function(){genCtl=null;});
+}
+// Diagnostic serveur : GET /api/tags pour identifier qui répond vraiment
+// (Ollama = 200 + {"models":...} ; autre chose = pas Ollama ; rien = injoignable).
+function diagServeur(base){
+  var u=String(base||'').replace(/\/$/,'')+'/api/tags';
+  return fetch(u,{method:'GET',cache:'no-store'}).then(function(r){
+    return r.text().then(function(t){return {url:u,method:'GET',status:r.status,body:String(t||'').slice(0,200)};});
+  }).catch(function(e){return {url:u,method:'GET',erreur:(e&&e.name)||'injoignable'};});
 }
 // Salutation + « ça va » = ouverture conviviale : réponse directe vérifiée, sans moteur.
 // Évite que le mini-modèle local et l'historique brut détournent la réponse.

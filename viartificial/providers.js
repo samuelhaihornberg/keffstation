@@ -43,7 +43,7 @@
       var res;
       try { res = await fetch(base + '/api/tags', { signal: signal }); }
       catch (e) { if (e && e.name === 'AbortError') throw err('ABORTED', 'Vérification annulée.'); throw err('UNREACHABLE', 'Moteur injoignable (' + base + ').'); }
-      if (!res.ok) throw err('HTTP_' + res.status, 'Moteur injoignable (HTTP ' + res.status + ').');
+      if (!res.ok) { var tg = ''; try { tg = await res.text(); } catch (e) {} var ex = err('HTTP_' + res.status, 'Moteur injoignable (HTTP ' + res.status + ').' + (tg ? ' Réponse : ' + String(tg).slice(0, 160) : '')); ex.detail = tg; throw ex; }
       return true;
     }
     throw err('UNVERIFIED', 'Endpoint personnalisé : lance « Tester » dans Réglages.');
@@ -81,8 +81,15 @@
       if (e && e.name === 'AbortError') throw err('ABORTED', 'Requête annulée.');
       throw err('UNREACHABLE', 'Moteur injoignable (' + base + '). Vérifie qu’il est démarré.');
     }
-    if (!res.ok) throw err('HTTP_' + res.status, 'Le moteur répond en erreur (HTTP ' + res.status + ').');
-    var data = await res.json();
+    if (!res.ok) {
+      var rawSnippet = '';
+      try { rawSnippet = await res.text(); } catch (e) { rawSnippet = ''; }
+      var erx = err('HTTP_' + res.status, 'Le moteur répond en erreur (HTTP ' + res.status + ' à POST ' + url + ').' + (rawSnippet ? ' Réponse du serveur : ' + String(rawSnippet).slice(0, 160) : ' (aucun corps de réponse)'));
+      erx.detail = rawSnippet; erx.url = url; erx.method = 'POST';
+      throw erx;
+    }
+    var data = {};
+    try { data = JSON.parse(rawSnippet); } catch (e) { throw err('EMPTY', 'Réponse non-JSON du moteur.'); }
     var text = (data.message && data.message.content) || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
     if (!text) throw err('EMPTY', 'Réponse vide du moteur.');
     return text;
