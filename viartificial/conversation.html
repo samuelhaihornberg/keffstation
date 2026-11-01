@@ -496,7 +496,7 @@ function runItem(item){
         genCtl=new AbortController();
         var h=H(bot.id);h.push({role:'user',content:item.text});
         var orch=orchestrerBLM(item.text,bot,h);
-        return ViaLocalEngine.chat(bot,h.slice(-4),{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+        return ViaLocalEngine.chat(bot,formulerEntree(orch,item.text),{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
           r=verifierFinaleBLM(orch,r);
           sd.body.textContent=r;h.push({role:'assistant',content:r});saveConv(bot.id);
         },function(e){
@@ -572,7 +572,7 @@ function runRemote(item){
   genCtl=new AbortController();
   var key=document.getElementById('pKey').value||null;var h=H(b0.id);h.push({role:'user',content:item.text});
   var orchR=orchestrerBLM(item.text,b0,h);
-  return ViaProviders.chat(eng,b0,h.slice(-10),genCtl.signal,key).then(function(r){
+  return ViaProviders.chat(eng,b0,formulerEntree(orchR,item.text),genCtl.signal,key).then(function(r){
     r=verifierFinaleBLM(orchR,r);
     h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;
   },function(e){
@@ -627,6 +627,28 @@ function orchestrerBLM(texte,bot,h){
   var e=etatInitial(texte,bot);
   blmComprehension(e);blmMemoire(e,h);blmLangue(e);blmTon(e,bot);blmCertitude(e);
   return e;
+}
+// Formulation de l'entrée moteur : SEUL le contexte classé est transmis, jamais
+// l'historique brut. Rôle d'origine conservé uniquement si explicitement
+// enregistré et fiable (intention demande/reponse + statut actif + texte non
+// vide et différent du message actuel) ; sinon, bloc mémoire clairement
+// étiqueté, jamais présenté comme une citation du user ou du bot.
+// Aucun souvenir pertinent → la demande actuelle seule.
+function formulerEntree(etat, texteCourant){
+  var courant = String(texteCourant||'');
+  var sv = (etat && etat.contexte) || [];
+  var roles = [], memoire = [];
+  sv.forEach(function(m){
+    var t = String((m && m.texte)||'').trim();
+    if(!t || t === courant.trim()) return;
+    var fiable = m && (m.intention==='demande'||m.intention==='reponse') && m.statut==='actif';
+    if(fiable) roles.push({role:m.intention==='demande'?'user':'assistant', content:t});
+    else memoire.push(t);
+  });
+  var msgs = roles.slice(-4);
+  if(memoire.length) msgs.push({role:'user', content:'[Contexte mémorisé — informations passées, pas des messages actuels : '+memoire.slice(-4).join(' | ').slice(0,800)+']'});
+  msgs.push({role:'user', content:courant});
+  return msgs;
 }
 function verifierFinaleBLM(etat,rep){
   var s=String(rep||'').trim(),fr=etat.langue==='fr';
