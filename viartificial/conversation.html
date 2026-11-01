@@ -137,7 +137,7 @@ body[data-min="1"] .msn{display:none}
 <label>Fournisseur <select id="pProvider"><option value="local">Modèle local automatique (partagé)</option><option value="ollama">Ollama local (gratuit, sans clé)</option><option value="custom">Endpoint compatible OpenAI (saisi par toi)</option><option value="none">Aucun (désactivé)</option></select></label>
 <label>Adresse (Ollama/endpoint) <input id="pUrl" inputmode="url" placeholder="http://localhost:11434"></label>
 <label>Modèle (Ollama/endpoint) <input id="pModel" placeholder="llama3.2"></label>
-<p style="font-size:.8rem;color:#8f96bd">Sur téléphone avec Ollama : remplace l’Adresse par l’IP du PC (même Wi-Fi). Sans moteur joignable, aucune réponse n’est simulée.</p>
+<p style="font-size:.8rem;color:#8f96bd">Si ton serveur Ollama est sur une autre machine, saisis son adresse telle qu’elle est joignable depuis cet appareil (sinon, utilise le moteur local). Sans moteur joignable, aucune réponse n’est simulée.</p>
 <label>Clé éventuelle (session seule, jamais sauvegardée) <input id="pKey" type="password" autocomplete="off" placeholder="optionnel, mémoire vive uniquement"></label>
 <span><button id="pTest" type="button">Tester</button></span>
 <span><button id="pUnload" type="button">Décharger le moteur (libère la mémoire)</button></span>
@@ -407,29 +407,34 @@ document.getElementById('llmBlmBtn').onclick=function(){
   }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
   // 2) LLM actuellement sélectionné.
   var bot=botsById[selectedBots[0]]||botsById[q];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('BLM prêts. Adresse vide : la requête partirait vers GitHub Pages (405 garanti). Ouvre Réglages et saisis l’IP du PC, ex http://192.168.1.20:11434.');finir();return;}
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('BLM : prêts (indépendants du LLM). LLM : adresse vide, rien n’a été testé. Choix : (1) saisir dans Réglages l’adresse d’un serveur réellement joignable depuis cet appareil ; (2) utiliser le moteur local (fournisseur « local »).');finir();return;}
   if(eng.provider==='local'){
     flushConvs();loadArmed=true;setState('checking');dire('BLM prêts. Chargement du modèle local…');
     ensureEngine().then(function(){updateIdCard();pump();dire('BLM prêts + modèle local prêt.');},function(e){dire('BLM prêts. Modèle local : '+((e&&e.message)?e.message:e));}).then(finir);
   }else if(eng.provider==='ollama'||eng.provider==='custom'){
-    dire('BLM prêts. Test '+eng.provider+'…');
+    var baseTest=String(eng.baseUrl||'').trim();
+    var avert=[];
+    if(/^http:\/\//i.test(baseTest)&&location.protocol==='https:')avert.push('page https + adresse http : le navigateur bloque l’appel (contenu mixte) — il faut une adresse https joignable');
+    if(/\/\/(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|localhost|127\.)/i.test(baseTest)&&location.protocol==='https:')avert.push('adresse locale depuis un site public : l’accès réseau privé est bloqué sans relais — prévoir un relais https (tunnel/proxy TLS) ou le moteur local');
+    dire('BLM : prêts (moteur de compréhension OK, indépendant). Test LLM '+eng.provider+'…'+(avert.length?' Avertissement navigateur : '+avert.join(' ; ')+'.':''));
     var c=new AbortController(),done=false;
     var t=setTimeout(function(){if(!done){done=true;c.abort();}},15000);
     ViaProviders.chat(eng,bot,[{role:'user',content:'Dis juste : test OK.'}],c.signal,document.getElementById('pKey').value||null).then(function(r){
-      if(done)return;done=true;clearTimeout(t);dire('BLM prêts + '+eng.provider+' OK : '+String(r).slice(0,80));
+      if(done)return;done=true;clearTimeout(t);dire('BLM : prêts. LLM '+eng.provider+' : OK — '+String(r).slice(0,80));
     }).catch(function(e){
       if(done)return;done=true;clearTimeout(t);
-      var dest=String(eng.baseUrl||'').replace(/\/$/,'')+(eng.provider==='ollama'?'/api/chat':'/chat/completions');
-      var m='BLM prêts. Échec '+eng.provider+' : '+((e&&e.message)?e.message:e)+' (requête envoyée : POST '+dest+')';
+      var dest=baseTest.replace(/\/$/,'')+(eng.provider==='ollama'?'/api/chat':'/chat/completions');
+      var apiNom=eng.provider==='ollama'?'Ollama':'OpenAI';
+      var m='BLM : prêts. LLM '+eng.provider+' : échec — '+((e&&e.message)?e.message:e)+'. Adresse testée : '+(baseTest?('POST '+dest):'(vide — rien envoyé)')+'. Cette adresse ne répond pas comme une API '+apiNom+'. Choix : (1) saisir dans Réglages l’adresse d’un serveur réellement joignable depuis cet appareil ; (2) utiliser le moteur local déjà proposé (fournisseur « local »).';
       if(e&&e.code==='HTTP_405'){
-        m+=' — diagnostic du serveur…';dire(m);
-        diagServeur(eng.baseUrl).then(function(d){
+        m+=' Diagnostic du serveur…';dire(m);
+        diagServeur(baseTest).then(function(d){
           var r=d.racine,t=d.tags,verdict;
           var estOllama=(r.status===200&&/ollama is running/i.test(r.body))||(t.status===200&&/models/i.test(t.body));
-          if(estOllama&&t.status===200)verdict='PC joint et Ollama identifié (tags OK) mais POST /api/chat refusé : un proxy/passerelle s’interpose, ou Ollama est trop ancien. Détail tags : '+t.body.slice(0,120);
-          else if(estOllama)verdict='Ollama identifié sur ce PC (racine OK) mais /api/chat et /api/tags anormaux : mets Ollama à jour (ollama --version) et vérifie l’absence de proxy.';
-          else if(r.status||t.status){var corps=(r.body||'')+' '+(t.body||'');var versPages=/Content-Security-Policy|default-src 'none'|github\.io|github/i.test(corps);verdict=versPages?'La requête est partie vers GitHub Pages (page 404 GitHub : Content-Security-Policy default-src), pas vers ton PC : le champ Adresse est vide ou invalide. Saisis http://TON-IP-PC:11434 dans Réglages (IP vue par ipconfig / ip addr, même Wi-Fi).':'Quelque chose répond à cette adresse mais ce n’est PAS Ollama (racine HTTP '+(r.status||r.erreur||'?')+(r.body?' « '+r.body.slice(0,60)+' »':'')+' / tags HTTP '+(t.status||t.erreur||'?')+(t.body?' « '+t.body.slice(0,60)+' »':'')+') : mauvaise IP ou autre service sur ce port. Sur le PC, vérifie l’IP (ipconfig / ip addr) et qu’Ollama écoute 11434 (ollama serve).';}
-          else verdict='Rien ne répond à cette adresse ('+(r.erreur||t.erreur||'réseau')+') : PC et téléphone sur le même Wi-Fi ? Ollama démarré avec OLLAMA_HOST=0.0.0.0 (port 11434 ouvert au pare-feu) ?';
+          if(estOllama&&t.status===200)verdict='Le serveur répond comme Ollama aux infos mais refuse POST /api/chat : un intermédiaire (proxy, passerelle) modifie les requêtes, ou les versions divergent. Détail tags : '+t.body.slice(0,120);
+          else if(estOllama)verdict='Ollama identifié à cette adresse (racine OK) mais /api/chat et /api/tags anormaux : version ou intermédiaire à vérifier côté serveur.';
+          else if(r.status||t.status){var corps=(r.body||'')+' '+(t.body||'');var versPages=/Content-Security-Policy|default-src 'none'|github\.io|github/i.test(corps);verdict=versPages?'La requête est partie vers GitHub Pages (page 404 GitHub), pas vers un serveur Ollama : le champ Adresse est vide ou invalide — le saisir dans Réglages.':'Quelque chose répond à cette adresse mais pas comme Ollama (racine HTTP '+(r.status||r.erreur||'?')+(r.body?' « '+r.body.slice(0,60)+' »':'')+' / tags HTTP '+(t.status||t.erreur||'?')+(t.body?' « '+t.body.slice(0,60)+' »':'')+') : vérifie protocole, hôte, port et chemin de l’adresse saisie.';}
+          else verdict='Rien ne répond à cette adresse ('+(r.erreur||t.erreur||'réseau')+') : adresse erronée, serveur éteint, réseau différent, pare-feu, ou blocage navigateur (page https vers http, ou réseau privé sans relais). Si Ollama tourne sur une machine du même réseau, elle doit être joignable en https ou via un relais, sinon utilise le moteur local.';
           dire(m+' '+verdict);
         });
         return;
@@ -561,7 +566,7 @@ function paintIdCard(card){
 }
 function runRemote(item){
   var b0=botsById[q]||botsById[selectedBots[0]];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Adresse du moteur vide : la requête partirait vers GitHub Pages (erreur 405). Ouvre Réglages et saisis l’IP du PC, ex http://192.168.1.20:11434 (même Wi-Fi, Ollama démarré).');setState('idle');working=false;return Promise.resolve();}
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Adresse du moteur vide : rien n’a été envoyé. Saisis dans Réglages l’adresse d’un serveur réellement joignable, ou choisis le moteur local.');setState('idle');working=false;return Promise.resolve();}
   setState('responding',b0.name);
   var wait=addWait(b0);
   genCtl=new AbortController();
@@ -575,7 +580,7 @@ function runRemote(item){
     if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
     else{
       if((e&&e.code)==='NOT_LOADED'&&ViaLocalEngine.getConsent()!=='granted')consentShown(true);
-      var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — l’adresse ne répond pas comme Ollama (POST /api/chat refusé) : vérifie l’IP et le port (ex http://192.168.1.20:11434), Ollama démarré (ollama serve), puis « Tester ».';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));
+      var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — POST refusé : cette adresse ne répond pas comme une API Ollama (URL et corps affichés ci-dessus). Choix : adresse d’un serveur réellement joignable, ou moteur local.';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));
     }
   }).then(function(){genCtl=null;});
 }
