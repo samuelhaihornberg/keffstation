@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1e6bff">
+<meta name="description" content="KiffTech Rayons — catalogues smart devices par rayon : Smartphones, Ordinateurs, Tablettes">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E📱%3C/text%3E%3C/svg%3E">
+<title>KiffTech — Rayons</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}@media (max-width:360px){html{font-size:14px}}@media (min-width:768px){html{font-size:18px}}
+body{min-height:100vh;min-height:100dvh;background:#070816;color:#f4f6ff;font:1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:1100px;margin:0 auto;padding:clamp(16px,3vw,24px);padding-left:max(clamp(16px,3vw,24px),env(safe-area-inset-left));padding-right:max(clamp(16px,3vw,24px),env(safe-area-inset-right));padding-bottom:max(clamp(16px,3vw,24px),env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(16px,3vw,24px)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.back{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#ffd23f;font-weight:700;font-size:.85rem;text-decoration:none}
+h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;background:linear-gradient(90deg,#1e6bff,#00d4ff,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{color:#b9c0e6;max-width:60ch}
+.rayons-grid{display:grid;gap:clamp(12px,2vw,20px);grid-template-columns:1fr}
+@media (min-width:600px){.rayons-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:900px){.rayons-grid{grid-template-columns:repeat(4,1fr)}}
+.rayon-card{display:flex;flex-direction:column;gap:10px;padding:clamp(18px,3vw,26px);border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#f4f6ff;text-decoration:none;transition:transform .2s,border-color .2s,box-shadow .2s;min-height:44px}
+.rayon-card:hover{transform:translateY(-4px);border-color:rgba(30,107,255,.4);box-shadow:0 16px 40px rgba(30,107,255,.2)}
+.rayon-icon{font-size:clamp(2rem,5vw,2.8rem)}
+.rayon-name{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:800}
+.rayon-count{font-size:.85rem;color:#ffd23f;font-weight:600}
+.rayon-desc{font-size:.85rem;color:#b9c0e6;flex:1}
+.rayon-cta{font-size:.85rem;font-weight:700;color:#8ab4ff}
+.rayon-card.all{border-color:rgba(255,210,63,.35);background:linear-gradient(135deg,rgba(30,107,255,.12),rgba(255,61,154,.08))}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <a class="back" href="../">← Cube KeffStation</a>
+    <a class="back" href="./catalog.html">Tous les produits</a>
+  </div>
+  <header>
+    <h1>KiffTech — Rayons</h1>
+    <p class="subtitle">Catalogues smart devices par rayon. Choisissez un rayon pour voir les produits, comparer les prix officiels et profiter des prix KiffTech.</p>
+  </header>
+  <main class="rayons-grid" id="rayons-grid" role="list"></main>
+</div>
+<script>
+// Rayons miroirs des catégories du catalogue (catalog.html).
+// Pour ajouter un rayon : ajouter une entrée ici ET la catégorie dans kifftech/app.js.
+const RAYONS = [
+  { id: 'Smartphones', icon: '📱', desc: 'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google et plus.' },
+  { id: 'Computers', icon: '💻', desc: 'Ultrabooks, pro, gaming — Apple Silicon, Intel Core Ultra, Ryzen + RTX.' },
+  { id: 'Tablets', icon: '📲', desc: 'Tablettes pro et famille — stylet, clavier, grand écran.' },
+  { id: 'Audio & Wearables', icon: '🎧', desc: 'Écouteurs ANC, montres connectées, bracelets — Samsung, Apple, Xiaomi, Garmin.' },
+  { id: 'VR AR gadgets', icon: '🥽', desc: 'Casques VR/AR, lunettes connectées, accessoires immersifs.' },
+  { id: 'Garden & furnitures smart devices', icon: '🪴', desc: 'Maison et jardin connectés — robots, éclairage, mobilier smart.' },
+  { id: 'Composant electronic & informatic', icon: '🔌', desc: 'Composants PC, chargeurs GaN, stockage, connectique.' },
+  { id: 'Company & studying Robots', icon: '🤖', desc: 'Robots compagnons et éducatifs — programmation, IA embarquée.' },
+  { id: 'Accessories', icon: '🧰', desc: 'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage — 100 références.' },
+  { id: 'Consoles & Videogames', icon: '🎮', desc: 'Consoles rétro (NES, Mega Drive, PS1…) et modernes (PS5, Switch 2, Xbox, Steam Deck Linux) — 16 références.' }
+];
+const COUNTS = { Smartphones: 20, Computers: 10, Tablets: 20, 'Audio & Wearables': 10, 'VR AR gadgets': 10, 'Garden & furnitures smart devices': 10, 'Composant electronic & informatic': 10, 'Company & studying Robots': 10, Accessories: 100, 'Consoles & Videogames': 16 }; // synchronisé avec LOCAL_DB
+const grid = document.getElementById('rayons-grid');
+grid.innerHTML = RAYONS.map(r => `
+  <a class="rayon-card" role="listitem" href="./catalog.html?rayon=${encodeURIComponent(r.id)}" aria-label="Rayon ${r.id}, ${COUNTS[r.id] || 0} produits">
+    <span class="rayon-icon" aria-hidden="true">${r.icon}</span>
+    <span class="rayon-name">${r.id}</span>
+    <span class="rayon-count">${COUNTS[r.id] || 0} produits</span>
+    <span class="rayon-desc">${r.desc}</span>
+    <span class="rayon-cta">Voir le catalogue →</span>
+  </a>`).join('') + `
+  <a class="rayon-card all" role="listitem" href="./catalog.html" aria-label="Tous les produits">
+    <span class="rayon-icon" aria-hidden="true">🛍️</span>
+    <span class="rayon-name">Tous</span>
+    <span class="rayon-count">216 produits</span>
+    <span class="rayon-desc">Tout le catalogue smart devices, tous rayons confondus.</span>
+    <span class="rayon-cta">Tout explorer →</span>
+  </a>`;
+fetch('./impact-products.json').then(r => r.ok ? r.json() : null).then(d => {
+  const n = d && Array.isArray(d.products) ? d.products.length : 0;
+  if (!n) return;
+  const a = document.createElement('a');
+  a.className = 'rayon-card all';
+  a.href = './catalog.html?rayon=' + encodeURIComponent('Partenaires');
+  a.setAttribute('aria-label', 'Rayon Partenaires, ' + n + ' produits');
+  a.innerHTML = `<span class="rayon-icon" aria-hidden="true">⭐</span><span class="rayon-name">Partenaires</span><span class="rayon-count">${n} produits</span><span class="rayon-desc">Offres des marques partenaires via impact.com.</span><span class="rayon-cta">Voir le catalogue →</span>`;
+  grid.appendChild(a);
+}).catch(() => {});
+</script>
+<script src="../refresh.js"></script>
+</body>
+</html>

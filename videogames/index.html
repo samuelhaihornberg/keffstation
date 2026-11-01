@@ -10,11 +10,11 @@
 <title>Videogames Hub — PAWAW, Rollspunch, Gaming</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif}
+:root{color-scheme:dark}html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif;overflow-x:clip}
 .app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 header{padding:clamp(16px,4vh,24px) clamp(12px,3vw,20px);background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;flex-shrink:0}
 .logo{font-size:clamp(24px,5vw,32px)} h1{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:700;background:linear-gradient(90deg,#ff6b00,#ffd23f,#ff3d9a);-webkit-background-clip:text;background-clip:text;color:transparent}
-main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+main{flex:1;width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24px);padding-left:max(clamp(12px,3vw,20px),env(safe-area-inset-left));padding-right:max(clamp(12px,3vw,20px),env(safe-area-inset-right));padding-bottom:max(clamp(16px,3vw,24px),env(safe-area-inset-bottom));display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
 .card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,20px);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:12px}
 .card:hover{transform:translateY(-4px);border-color:#ff6b00;box-shadow:0 12px 40px rgba(255,107,0,.2)}
 .card h3{font-size:clamp(1rem,2.5vw,1.2rem);color:#ffd23f}
@@ -23,13 +23,14 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(12px,2vw,16px);g
 .tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(255,107,0,.2);border:1px solid rgba(255,107,0,.4);color:#ffcc80}
 .btn{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding:12px 20px;border-radius:999px;border:1px solid #ff6b00;background:linear-gradient(135deg,#ff6b00,#ffd23f);color:#070816;font-weight:600;text-decoration:none;transition:transform .15s,box-shadow .15s}
 .btn:hover{transform:scale(1.02);box-shadow:0 8px 24px rgba(255,107,0,.4)}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media (max-width:360px){html,body{font-size:14px}.btn{width:100%;justify-content:center;padding:14px 20px}}@media (min-width:1400px){:root{font-size:19px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header><span class="logo">🎮</span><h1>Videogames Hub</h1></header>
 <main>
+<article class="card"><h3>Consoles Rétro & Modernes</h3><p>16 consoles en catalogue KiffTech : NES, Mega Drive, PS1, N64, Dreamcast, Switch 2, PS5, Xbox Series, Steam Deck Linux — photos, prix officiels et prix KiffTech.</p><div class="tags"><span class="tag">Rétro</span><span class="tag">Modernes</span><span class="tag">KiffTech</span></div><a href="../kifftech/catalog.html?rayon=Consoles%20%26%20Videogames" class="btn">Voir les consoles →</a></article>
 <article class="card"><h3>PAWAW</h3><p>Arcade web : high-scores, tournois, replays, modding, cross-platform, PWA installable.</p><div class="tags"><span class="tag">PAWAW</span><span class="tag">Arcade</span><span class="tag">Web</span></div><a href="#" class="btn">Jouer →</a></article>
 <article class="card"><h3>Rollspunch</h3><p>RPG tactique tour par tour, éditeur campagnes, multijoueur async, IA maître de jeu.</p><div class="tags"><span class="tag">Rollspunch</span><span class="tag">RPG</span><span class="tag">Tactique</span></div><a href="#" class="btn">Campagne →</a></article>
 <article class="card"><h3>Cloud Gaming</h3><p>GeForce Now, Xbox Cloud, Luna, Shadow, Boosteroid — comparatif latence/prix/bitrate.</p><div class="tags"><span class="tag">Cloud</span><span class="tag">Streaming</span><span class="tag">Latence</span></div><a href="#" class="btn">Comparer →</a></article>
@@ -39,5 +40,6 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(12px,2vw,16px);g
 </main>
 </div>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+<script src="../refresh.js"></script>
 </body>
 </html>

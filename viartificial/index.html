@@ -4,42 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b84dff">
-<meta name="description" content="ViArtificial Labs - cos, SuperBots, BLM, BLSM">
+<meta name="description" content="SuperBots Familliya — Geeko, Geekette, ViA, GuideoPlan, GoleMotor, B.T.B., Theo">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🤖%3C/text%3E%3C/svg%3E">
-<title>ViArtificial Labs — cos, SuperBots, BLM, BLSM</title>
+<link rel="stylesheet" href="./responsive.css">
+<title>SuperBots Familliya — ViArtificial Labs</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif}
+:root{color-scheme:dark}html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif;overflow-x:clip}
 .app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-header{padding:clamp(16px,4vh,24px) clamp(12px,3vw,20px);background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.logo{font-size:clamp(24px,5vw,32px)} h1{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:700;background:linear-gradient(90deg,#b84dff,#ff3d9a,#ffd23f);-webkit-background-clip:text;background-clip:text;color:transparent}
-main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,20px);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:12px}
-.card:hover{transform:translateY(-4px);border-color:#b84dff;box-shadow:0 12px 40px rgba(184,77,255,.2)}
-.card h3{font-size:clamp(1rem,2.5vw,1.2rem);color:#ffd23f}
-.card p{color:#b9c0e6;line-height:1.5;flex:1}
+header{padding:clamp(12px,3vh,20px) clamp(12px,3vw,20px);background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+.logo{font-size:clamp(24px,5vw,32px)}h1{font-size:clamp(1.1rem,3vw,1.6rem);font-weight:700;background:linear-gradient(90deg,#b84dff,#ff3d9a,#ffd23f);-webkit-background-clip:text;background-clip:text;color:transparent;flex:1}
+.hub-link{flex-shrink:0;font-size:.85rem;color:#ffd23f;text-decoration:none;border:1px solid rgba(255,210,63,.5);border-radius:999px;padding:10px 16px;min-height:44px;display:inline-flex;align-items:center}
+.hero{width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24px) clamp(12px,3vw,20px) 0}
+.hero h2{font-size:clamp(1.3rem,4vw,2rem);margin-bottom:8px}
+.hero p{color:#b9c0e6;max-width:65ch}
+.hero .kicker{color:#ffd23f;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+.disclaimer{width:100%;max-width:1200px;margin:12px auto 0;padding:0 clamp(12px,3vw,20px);color:#8f96bd;font-size:.8rem}
+main{flex:1;width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24px);padding-bottom:max(clamp(16px,3vw,24px),env(safe-area-inset-bottom))}
+.section-title{margin:8px 0 4px;font-size:1rem;color:#ffd23f}
+.grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
+.grid.duo{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,20px);display:flex;flex-direction:column;gap:10px}
+@media(hover:hover){.card:hover{transform:translateY(-4px);border-color:#b84dff;box-shadow:0 12px 40px rgba(184,77,255,.2)}.card{transition:transform .2s,box-shadow .2s,border-color .2s}}
+.card.featured{border-color:rgba(255,210,63,.6);background:rgba(255,210,63,.06)}
+.avatar{font-size:2.2rem;line-height:1}
+.card h3{font-size:clamp(1.05rem,2.5vw,1.25rem);color:#ffd23f}
+.role{font-weight:600;color:#fff}
+.persona{color:#b9c0e6;flex:1}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.4);color:#d4b3ff}
-.btn{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding:12px 20px;border-radius:999px;border:1px solid #b84dff;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;font-weight:600;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.btn:hover{transform:scale(1.02);box-shadow:0 8px 24px rgba(184,77,255,.4)}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:auto;padding:12px 20px;min-height:48px;border-radius:999px;border:1px solid #b84dff;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;font-weight:600;text-decoration:none;font-size:1rem}
+.btn:focus-visible,.hub-link:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
+footer{padding:16px;text-align:center;color:#b9c0e6;font-size:.85rem}
+footer a{color:#ffd23f}
+@media (max-width:360px){html,body{font-size:14px}.btn{width:100%}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><span class="logo">🤖</span><h1>ViArtificial Labs</h1></header>
+<header><span class="logo">🤖</span><h1>SuperBots Familliya</h1><a class="hub-link" href="../">← Hub KeffStation</a></header>
+<div class="hero"><div class="kicker">ViArtificial Labs</div><h2>Une famille de compagnons IA</h2><p>Geeko et Geekette au premier plan, entourés de ViA, GuideoPlan, GoleMotor, B.T.B. et Theo. <a href="./xsstream.html" style="color:#ffd23f">🎮 xsStream : Geeko & Geekette à côté de la partie →</a></p></div>
+<p class="disclaimer" id="disclaimer" role="status">Chargement des profils…</p>
+<div class="hero" id="errBox" hidden style="max-width:1200px;margin:0 auto;padding:0 clamp(12px,3vw,20px)"><p style="border:1px solid rgba(255,61,154,.5);border-radius:12px;padding:12px 16px;background:rgba(255,61,154,.08)">⚠️ <span id="errMsg">Profils indisponibles.</span> <button id="retryBtn" type="button" style="min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;font-weight:700">↻ Réessayer</button></p></div>
 <main>
-<article class="card"><h3>SuperBots Family</h3><p>ViA (mirror IA), BTB+Golem (sécurité/moteur), Geeko (dev companion), Guideoplan (plan perso→pro).</p><div class="tags"><span class="tag">ViA</span><span class="tag">BTB+Golem</span><span class="tag">Geeko</span><span class="tag">Guideoplan</span></div><a href="#" class="btn">Explorer →</a></article>
-<article class="card"><h3>Syntaxe cos</h3><p>Connexions A1➡️B2, adresses alphanum, sandwich miroir, CSM. Référence complète + exemples.</p><div class="tags"><span class="tag">cos</span><span class="tag">Syntax</span><span class="tag">Référence</span></div><a href="#" class="btn">Voir →</a></article>
-<article class="card"><h3>BLM & BLSM</h3><p>Blocs logiques matriciels réutilisables + blocs création médias (images/sons/3D). Marketplace, versionning, rollback 1-clic.</p><div class="tags"><span class="tag">BLM</span><span class="tag">BLSM</span><span class="tag">Logique</span><span class="tag">Création</span></div><a href="#" class="btn">Découvrir →</a></article>
-<article class="card"><h3>motor.s</h3><p>Bibliothèque noyau : EMOJI, COS, MS, FENETRE, RECYCLOR, BOOST, SUPERSTREAM. 50KB gzippé, CDN, zéro config.</p><div class="tags"><span class="tag">motor.s</span><span class="tag">Injection</span><span class="tag">CDN</span></div><a href="#" class="btn">Doc →</a></article>
-<article class="card"><h3>ViA : Config miroir IA</h3><p>Personnalité, ton, limites, mémoire. Prompts système pour assistant, coach, analyste.</p><div class="tags"><span class="tag">ViA</span><span class="tag">Config</span><span class="tag">Prompt</span></div><a href="#" class="btn">Configurer →</a></article>
-<article class="card"><h3>BTB + Golem : Sécurité</h3><p>Pipeline CI/CD zero-trust, tests auto, rollback auto. BTB valide, Golem exécute.</p><div class="tags"><span class="tag">BTB</span><span class="tag">Golem</span><span class="tag">CI/CD</span></div><a href="#" class="btn">Architecture →</a></article>
-<article class="card"><h3>Geeko : Dev Companion</h3><p>Revues code, debug, doc auto, tests unitaires. VS Code, GitHub, GitLab. Pair programming IA.</p><div class="tags"><span class="tag">Geeko</span><span class="tag">Dev</span><span class="tag">IDE</span></div><a href="#" class="btn">Intégrer →</a></article>
-<article class="card"><h3>ERN : Mémoire distribuée</h3><p>Entités-Relations-Nœuds, graphe persistant, requêtes locales. Mémoire IA souveraine.</p><div class="tags"><span class="tag">ERN</span><span class="tag">Mémoire</span><span class="tag">Graphe</span></div><a href="#" class="btn">Explorer →</a></article>
+<h2 class="section-title">⭐ Au premier plan</h2>
+<div class="grid duo" id="duo"></div>
+<h2 class="section-title">🤖 La famille</h2>
+<div class="grid" id="tribu"></div>
 </main>
+<footer style="padding-bottom:calc(16px + env(safe-area-inset-bottom))"><a href="../">← Retour au hub KeffStation</a> · Personnages simulés, sans conscience réelle.<br><details style="margin-top:8px;text-align:left;max-width:720px;margin-left:auto;margin-right:auto;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 14px"><summary style="min-height:44px;cursor:pointer;color:#ffd23f">⚙️ Réglages · diagnostic</summary><div><span id="capsLine"></span></div><div id="diagLine" style="color:#8f96bd;font-size:.78rem"></div><div style="margin-top:6px"><button id="diagRetry" type="button" style="min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f">↻ Recharger les profils</button></div></details></footer>
 </div>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+<script src="./capabilities.js"></script>
+<script>
+(function(){
+var D=document.getElementById('disclaimer'),DUO=document.getElementById('duo'),TRI=document.getElementById('tribu');
+var EB=document.getElementById('errBox'),EM=document.getElementById('errMsg'),RB=document.getElementById('retryBtn'),DR=document.getElementById('diagRetry'),DG=document.getElementById('diagLine');
+var LSKEY='via-bots-cache-v1',TIMEOUT_MS=10000;
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function loadCached(){try{var r=localStorage.getItem(LSKEY);if(!r)return null;var o=JSON.parse(r);return (o&&o.bots&&o.bots.length)?o:null;}catch(e){return null;}}
+function saveCache(c){try{localStorage.setItem(LSKEY,JSON.stringify({ts:Date.now(),bots:c.bots,disclaimer:c.disclaimer,encouragement:c.encouragement}));}catch(e){}}
+function card(b,feat){var t=(b.tags||[]).map(function(x){return '<span class="tag">'+esc(x)+'</span>';}).join('');
+return '<article class="card'+(feat?' featured':'')+'"><span class="avatar" aria-hidden="true">'+esc(b.avatar||'🤖')+'</span><h3>'+esc(b.name)+'</h3><p class="role">'+esc(b.specialty||'')+'</p><p class="persona">'+esc(b.personality||'')+'</p><div class="tags">'+t+'</div><a class="btn" href="./conversation.html?bot='+esc(b.id)+'">Ouvrir la conversation →</a></article>';}
+function paint(c,note){var duo='',tribu='';c.bots.forEach(function(b){if(b.featured)duo+=card(b,true);else tribu+=card(b,false);});
+DUO.innerHTML=duo;TRI.innerHTML=tribu;
+D.textContent=(c.disclaimer||'Personnages simulés.')+' '+(c.encouragement||'')+(note?(' ('+note+')'):'');
+EB.hidden=true;paintDiag('OK · '+c.bots.length+' profils');}
+function paintDiag(s){if(DG)DG.textContent='Diagnostic : '+s+' · URL résolue : '+new URL('./bots.json',location.href).href;}
+function fail(m,cached){if(cached){try{paint(cached,'copie locale — en attente réseau');}catch(e){}}
+EM.textContent=m+' — profils affichés depuis la copie locale si disponible.';
+EB.hidden=false;D.textContent='Chargement interrompu : '+m;paintDiag('ERREUR · '+m);}
+function load(manual){EB.hidden=true;D.textContent='Chargement des profils…';paintDiag(manual?'rechargement manuel…':'chargement…');
+var cached=loadCached();
+var ctl=new AbortController(),to=setTimeout(function(){ctl.abort();},TIMEOUT_MS);
+fetch('./bots.json',{signal:ctl.signal,cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('bots.json HTTP '+r.status);return r.json();}).then(function(c){
+clearTimeout(to);if(!c||!c.bots||!c.bots.length)throw new Error('contenu vide');
+saveCache(c);paint(c,cached?'mis à jour':'');}).catch(function(e){clearTimeout(to);
+var m=(e&&e.name==='AbortError')?('délai dépassé ('+(TIMEOUT_MS/1000)+' s)'):(e&&e.message?e.message:'réseau indisponible');
+fail(m,cached);}).finally(function(){try{if(window.ViaCaps)ViaCaps.paint('capsLine');}catch(e){}});}
+RB.onclick=function(){load(true);};if(DR)DR.onclick=function(){load(true);};
+load(false);
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
+})();
+</script>
+<script src="../refresh.js"></script>
 </body>
 </html>

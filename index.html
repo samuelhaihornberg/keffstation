@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070816">
-<meta name="description" content="KeffStation — Cube 3D des 6 PWAs : KiffTech, Tricktrocjob, ViArtificial, cos Editor, Linguistic Motors, Videogames">
+<meta name="description" content="KeffStation — Cube 3D des 4 PWAs : KiffTech, Tricktrocjob, ViArtificial (cos + NLP inclus), Videogames">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KeffStation">
@@ -23,7 +23,7 @@
   #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
   #bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(30,107,255,.1) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(255,61,154,.1) 0%,transparent 50%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,210,63,.1) 0%,transparent 70%)}
   
-  .reader{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(95vw,560px);aspect-ratio:1;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0}
+  .reader{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(95vw,560px);aspect-ratio:1;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
   @media (orientation:landscape) and (max-height:500px){.reader{width:min(85vh,560px);aspect-ratio:1}}
   @media (orientation:portrait) and (max-width:420px){.reader{width:98vw;aspect-ratio:1}}
   
@@ -34,33 +34,30 @@
   
   .cube-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:clamp(16px,4vw,28px);text-align:center;background:rgba(10,12,34,.85);border:1px solid rgba(255,255,255,.1);border-radius:0;box-shadow:0 20px 60px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);transform-origin:center center;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1), opacity .3s, z-index 0s .6s;overflow:hidden}
   
-  /* Cube faces - 6 faces, 90° rotations */
+  /* 4 faces en carré : pas de 90° */
   .cube-face[data-face="0"]{transform:rotateY(0deg) translateZ(180px);background:linear-gradient(135deg,rgba(30,107,255,.15),rgba(138,77,255,.08))}
   .cube-face[data-face="1"]{transform:rotateY(-90deg) translateZ(180px);background:linear-gradient(135deg,rgba(255,61,154,.15),rgba(255,210,63,.08))}
-  .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(180px);background:linear-gradient(135deg,rgba(39,209,127,.15),rgba(138,77,255,.08))}
-  .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(180px);background:linear-gradient(135deg,rgba(0,102,255,.15),rgba(0,212,255,.08))}
-  .cube-face[data-face="4"]{transform:rotateX(90deg) translateZ(180px);background:linear-gradient(135deg,rgba(0,255,136,.15),rgba(39,209,127,.08))}
-  .cube-face[data-face="5"]{transform:rotateX(-90deg) translateZ(180px);background:linear-gradient(135deg,rgba(255,107,0,.15),rgba(255,210,63,.08))}
+  .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(180px);background:linear-gradient(135deg,rgba(184,77,255,.15),rgba(138,77,255,.08))}
+  .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(180px);background:linear-gradient(135deg,rgba(255,107,0,.15),rgba(255,210,63,.08))}
   
   @media (max-width:420px){
     .cube-face[data-face="0"]{transform:rotateY(0deg) translateZ(140px)}
     .cube-face[data-face="1"]{transform:rotateY(-90deg) translateZ(140px)}
     .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(140px)}
     .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(140px)}
-    .cube-face[data-face="4"]{transform:rotateX(90deg) translateZ(140px)}
-    .cube-face[data-face="5"]{transform:rotateX(-90deg) translateZ(140px)}
   }
   @media (min-width:768px){
     .cube-face[data-face="0"]{transform:rotateY(0deg) translateZ(220px)}
     .cube-face[data-face="1"]{transform:rotateY(-90deg) translateZ(220px)}
     .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(220px)}
     .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(220px)}
-    .cube-face[data-face="4"]{transform:rotateX(90deg) translateZ(220px)}
-    .cube-face[data-face="5"]{transform:rotateX(-90deg) translateZ(220px)}
   }
   
-  /* Active face - front and center */
-  .cube-face.active{opacity:1;z-index:10;transform:rotateY(0deg) translateZ(200px) scale(1.05)}
+  /* Active face - front and center, chaque face contre-compense la rotation du cube */
+  .cube-face.active[data-face="0"]{opacity:1;z-index:10;transform:rotateY(0deg) translateZ(200px) scale(1.05)}
+  .cube-face.active[data-face="1"]{opacity:1;z-index:10;transform:rotateY(90deg) translateZ(200px) scale(1.05)}
+  .cube-face.active[data-face="2"]{opacity:1;z-index:10;transform:rotateY(180deg) translateZ(200px) scale(1.05)}
+  .cube-face.active[data-face="3"]{opacity:1;z-index:10;transform:rotateY(-90deg) translateZ(200px) scale(1.05)}
   .cube-face:not(.active){opacity:0.15;pointer-events:none}
   
   /* Expanded face - unfolds from top */
@@ -83,7 +80,9 @@
   .cube-face.expanded .face-close{opacity:1;transform:translateY(0)}
   .face-close:hover{background:rgba(255,61,154,.3);border-color:#ff3d9a;transform:scale(1.1)}
   
-  .face-content{flex:1;overflow-y:auto;padding-right:8px;display:flex;flex-direction:column;gap:clamp(12px,2vw,16px);width:100%}
+  .face-content{flex:1;overflow-y:auto;overflow-x:hidden;padding-right:8px;display:flex;flex-direction:column;gap:clamp(12px,2vw,16px);width:100%;overflow-wrap:anywhere}
+  .article-card p,.face-desc{overflow-wrap:anywhere;hyphens:auto}
+  .face-content img,.face-content video,.face-content iframe{max-width:100%;height:auto}
   
   .face-desc{font-size:clamp(.9rem,2vw,1rem);color:#b9c0e6;line-height:1.5;margin-bottom:clamp(12px,2vw,16px);max-width:90%}
   
@@ -103,7 +102,7 @@
   .embed-btn.preloaded .embed-preload-status{background:#27d17f;transform:scale(1.2)}
   
   /* Navigation arrows */
-  .arrows{position:absolute;inset:0;z-index:5;pointer-events:none}
+  .arrows{position:absolute;inset:0;z-index:60;pointer-events:none}
   .arrows button{pointer-events:auto;position:absolute;width:clamp(44px,6vw,56px);height:clamp(44px,6vw,56px);border-radius:50%;border:1px solid rgba(255,255,255,.15);background:rgba(10,12,34,.8);color:#ffd23f;font-size:clamp(20px,3vw,26px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,background .15s,border-color .15s,box-shadow .15s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.4);touch-action:manipulation;opacity:0.6}
   .arrows button:hover{opacity:1;background:rgba(30,107,255,.2);border-color:#1e6bff;transform:scale(1.1);box-shadow:0 0 25px rgba(30,107,255,.3)}
   .arrows button:active{transform:scale(.95)}
@@ -113,7 +112,7 @@
   .arrow-left{left:clamp(12px,2vw,20px);top:50%;transform:translateY(-50%)}
   .arrow-right{right:clamp(12px,2vw,20px);top:50%;transform:translateY(-50%)}
   @media (pointer:coarse){.arrows button{width:clamp(52px,7vw,64px);height:clamp(52px,7vw,64px)}.arrow-up{top:clamp(16px,3vh,24px)}.arrow-down{bottom:clamp(16px,3vh,24px)}.arrow-left{left:clamp(16px,3vw,24px)}.arrow-right{right:clamp(16px,3vw,24px)}}
-  .cube-face.expanded ~ .arrows button{opacity:0;pointer-events:none}
+  .cube.face-expanded ~ .arrows button{opacity:0;pointer-events:none}
   
   /* Bottom nav dots */
   .nav{display:flex;gap:clamp(8px,1.5vw,12px);margin-top:clamp(16px,3vh,24px);flex-shrink:0}
@@ -166,7 +165,7 @@
   <div class="loading-bar" aria-hidden="true"><div class="loading-bar-inner" id="loading-bar-inner"></div></div>
 </div>
 
-<div class="reader" role="region" aria-roledescription="cube des applications" aria-label="Kifftech, Tricktrocjob, ViArtificial labs, Éditeur cos, Moteurs linguistiques, Videogames">
+<div class="reader" role="region" aria-roledescription="cube des applications" aria-label="Kifftech, Tricktrocjob, ViArtificial labs, Videogames">
   <div class="vitrine">
     <div class="cube" id="cube">
       <!-- Faces will be injected by JS -->
@@ -212,5 +211,6 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <script src="./install.js"></script>
+<script src="./refresh.js"></script>
 </body>
 </html>

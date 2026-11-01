@@ -7,8 +7,8 @@ const APPS = [
     title: "Kifftech",
     desc: "Boutique PWA : Samsung, Xiaomi, prix sous officiels, livraison mondiale. Backend Node unique, zéro dépendance, données JSON.",
     tags: ["PWA", "Node", "E-commerce", "Smart tech"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/catalog.html",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/catalog.html",
+    appUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/rayons.html",
+    embedUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/rayons.html",
     embedLabel: "Ouvrir Kifftech",
     embedded: true,
     color: "#1e6bff",
@@ -77,43 +77,21 @@ const APPS = [
       { title: "BLM : blocs logiques réutilisables", desc: "Créer, versionner, composer blocs. Marketplace communautaire, tests auto, rollback 1-clic. Gouvernance code.", tags: ["BLM", "Blocs", "Réutilisable", "Gouvernance"] },
       { title: "BLSM : générer images/sons/3D", desc: "Prompts structurés, seeds reproductibles, variations contrôlées. Export assets jeu/web/app. Pipeline créatif.", tags: ["BLSM", "Génératif", "Assets", "Pipeline"] },
       { title: "motor.s injection : noyau partiel", desc: "MOTOR.noyau(['COS','FENETRE']) — 50KB gzippé. CDN global, cache éternel, versioning sémantique. Zéro config.", tags: ["motor.s", "Injection", "CDN", "Performance"] },
-      { title: "ERN : mémoire distribuée", desc: "Entités-Relations-Nœuds, graphe persistant, requêtes locales. Mémoire IA souveraine.", tags: ["ERN", "Mémoire", "Graphe", "Souveraineté"] }
-    ]
-  },
-  {
-    num: "Éditeur cos",
-    title: "Éditeur cos",
-    desc: "Éditeur interactif pour la syntaxe cos (connexions, sandwich, adresses alphanumériques, CSM). Validation temps réel, coloration, autocomplétion.",
-    tags: ["cos", "Éditeur", "Syntax", "Dev"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/cos-editor/",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/cos-editor/",
-    embedLabel: "Ouvrir Éditeur cos",
-    color: "#0066ff",
-    subArticles: [
-      { title: "Guide de démarrage", desc: "Premiers pas avec l'éditeur cos : syntaxe de base, connexions A1➡️B2, mode sandwich miroir.", tags: ["Guide", "Débutant", "cos"] },
-      { title: "Référence complète", desc: "Tous les opérateurs, adresses, motifs, CSM, exemples commentés.", tags: ["Référence", "Documentation", "cos"] },
-      { title: "Snippets prêts à l'emploi", desc: "Templates : pipelines, boucles, conditions, parallélisme, gestion d'erreurs.", tags: ["Snippets", "Templates", "cos"] },
-      { title: "Débogage visuel", desc: "Inspecteur de graphe, points d'arrêt, exécution pas à pas, logs colorés.", tags: ["Debug", "Inspecteur", "cos"] },
-      { title: "Playground live", desc: "Éditeur Monaco/CodeMirror, validation temps réel, coloration, autocomplétion, export JSON.", tags: ["Playground", "Live", "Export"] },
-      { title: "Intégration CI/CD", desc: "GitHub Actions, GitLab CI, validation PR, tests cos unitaires, déploiement auto.", tags: ["CI/CD", "GitHub", "GitLab"] }
-    ]
-  },
-  {
-    num: "Moteurs linguistiques",
-    title: "Moteurs linguistiques",
-    desc: "Expérimentations NLP/LLM locaux : tokenisation, embeddings, génération contrôlée, fine-tuning LoRA, quantization GGUF.",
-    tags: ["NLP", "LLM", "Expérimental", "Local-First"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/linguistic-motors/",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/linguistic-motors/",
-    embedLabel: "Ouvrir Moteurs linguistiques",
-    color: "#00ff88",
-    subArticles: [
+      { title: "ERN : mémoire distribuée", desc: "Entités-Relations-Nœuds, graphe persistant, requêtes locales. Mémoire IA souveraine.", tags: ["ERN", "Mémoire", "Graphe", "Souveraineté"] },
+      { title: "Moteurs linguistiques : NLP local", desc: "Tokenisation, embeddings, génération contrôlée, fine-tuning LoRA, quantization GGUF — le tout local-first.", tags: ["NLP", "LLM", "Local-First"] },
       { title: "Tokenizer Visualizer", desc: "Visualisation interactive BPE/WordPiece/Unigram, vocabulaire, merges, compression ratio.", tags: ["Tokenizer", "Visualisation", "NLP"] },
       { title: "Embedding Explorer", desc: "Projection 2D/3D (t-SNE, UMAP), similarité cosinus, analogies vectorielles, clusters.", tags: ["Embeddings", "Projection", "NLP"] },
       { title: "Generation Playground", desc: "Sampling top-k/p, temperature, repetition penalty, logits bias, seeds reproductibles, streaming.", tags: ["Génération", "Sampling", "LLM"] },
       { title: "LoRA/QLoRA Trainer", desc: "Fine-tuning low-rank adaptatif, quantization 4-bit NF4, gradient checkpointing, export GGML/GGUF/ONNX.", tags: ["LoRA", "Fine-tuning", "Quantization"] },
       { title: "Quantization Lab", desc: "GPTQ, AWQ, GGUF q2_k→q8_0, calibration, perplexity eval, benchmark vitesse/mémoire.", tags: ["Quantization", "GPTQ", "Benchmark"] },
-      { title: "Local-First Runtime", desc: "WebLLM, Transformers.js, llama.cpp WASM, ONNX Runtime Web. Zero-server inference.", tags: ["Local-First", "WASM", "Zero-Server"] }
+      { title: "Local-First Runtime", desc: "WebLLM, Transformers.js, llama.cpp WASM, ONNX Runtime Web. Zero-server inference.", tags: ["Local-First", "WASM", "Zero-Server"] },
+      { title: "Éditeur cos : écrire la syntaxe", desc: "Éditeur interactif cos (connexions, sandwich, adresses, CSM). Validation temps réel, coloration, autocomplétion.", tags: ["cos", "Éditeur", "Dev"] },
+      { title: "Guide de démarrage cos", desc: "Premiers pas avec l'éditeur cos : syntaxe de base, connexions A1➡️B2, mode sandwich miroir.", tags: ["Guide", "Débutant", "cos"] },
+      { title: "Référence cos complète", desc: "Tous les opérateurs, adresses, motifs, CSM, exemples commentés.", tags: ["Référence", "Documentation", "cos"] },
+      { title: "Snippets cos prêts à l'emploi", desc: "Templates : pipelines, boucles, conditions, parallélisme, gestion d'erreurs.", tags: ["Snippets", "Templates", "cos"] },
+      { title: "Débogage visuel cos", desc: "Inspecteur de graphe, points d'arrêt, exécution pas à pas, logs colorés.", tags: ["Debug", "Inspecteur", "cos"] },
+      { title: "Playground cos live", desc: "Éditeur Monaco/CodeMirror, validation temps réel, coloration, autocomplétion, export JSON.", tags: ["Playground", "Live", "Export"] },
+      { title: "cos en CI/CD", desc: "GitHub Actions, GitLab CI, validation PR, tests cos unitaires, déploiement auto.", tags: ["CI/CD", "GitHub", "GitLab"] }
     ]
   },
   {
@@ -191,8 +169,9 @@ class KeffStation {
       this.setProgress(5, '🔄 Initialisation...');
       
       this.setProgress(15, '🔍 Vérification endpoints...');
-      await this.validateEndpoints();
-      this.setProgress(25, '✅ Endpoints validés');
+      // Non bloquant : le cube reste utilisable même si le réseau est lent (mobile).
+      this.validateEndpoints().then(() => this.setProgress(25, '✅ Endpoints validés'))
+        .catch(() => this.setProgress(25, '⚠️ Vérification écourtée'));
 
       this.setProgress(35, '🏗️ Construction du cube...');
       this.buildCube();
@@ -223,12 +202,19 @@ class KeffStation {
   }
 
   async validateEndpoints() {
+    // Best-effort et borné : ne doit JAMAIS bloquer l'initialisation (réseau mobile lent).
     const endpoints = this.apps.map(app => app.appUrl).filter(Boolean);
-    const results = await Promise.allSettled(
-      endpoints.map(url => fetch(url, { method: 'HEAD', mode: 'no-cors' }).catch(() => true))
-    );
-    const failed = endpoints.filter((_, i) => results[i].status === 'rejected');
-    if (failed.length > 0) console.warn('Some endpoints unreachable (may be CORS):', failed);
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), 6000);
+    try {
+      const results = await Promise.allSettled(
+        endpoints.map(url => fetch(url, { method: 'HEAD', mode: 'no-cors', signal: ctl.signal }).catch(() => true))
+      );
+      const failed = endpoints.filter((_, i) => results[i].status === 'rejected');
+      if (failed.length > 0) console.warn('Some endpoints unreachable (may be CORS):', failed);
+    } finally {
+      clearTimeout(to);
+    }
   }
 
   buildCube() {
@@ -267,15 +253,17 @@ class KeffStation {
       `;
       this.cube.appendChild(face);
 
-      // Embed button event - NAVIGATE to appUrl (change URL)
+      // Embed button event - open PWA in overlay (new-tab button opens full page)
       const embedBtnEl = face.querySelector('.embed-btn');
       if (embedBtnEl) {
         embedBtnEl.addEventListener('click', (e) => {
           e.stopPropagation();
           const idx = parseInt(embedBtnEl.dataset.appIndex, 10);
           const app = this.apps[idx];
-          if (app.appUrl) {
-            window.location.href = app.appUrl;  // NAVIGATE - URL changes
+          if (app.embedUrl) {
+            this.openEmbed(app);
+          } else if (app.appUrl) {
+            window.location.href = app.appUrl;
           }
         });
       }
@@ -348,7 +336,11 @@ class KeffStation {
     // Embed overlay events
     document.getElementById('embed-back')?.addEventListener('click', () => this.closeEmbed());
     document.getElementById('embed-refresh')?.addEventListener('click', () => {
-      if (this.embedIframe) this.embedIframe.src = this.embedIframe.src;
+      if (!this.embedIframe || !this.currentEmbedApp) return;
+      // Hard-refresh de la SPA embarquée : cache-buster pour contourner le cache SW.
+      const base = this.currentEmbedApp.embedUrl;
+      const sep = base.includes('?') ? '&' : '?';
+      this.embedIframe.src = `${base}${sep}refresh=${Date.now()}`;
     });
     document.getElementById('embed-newtab')?.addEventListener('click', () => {
       if (this.currentEmbedApp) window.open(this.currentEmbedApp.embedUrl, '_blank', 'noopener,noreferrer');
@@ -373,6 +365,7 @@ class KeffStation {
   }
 
   updateCubeRotation() {
+    // 4 faces en carré : pas de 90° sur l'axe Y
     const angle = -this.current * 90;
     this.currentRotationY = angle;
     this.cube.style.transform = `rotateY(${angle}deg)`;
@@ -560,14 +553,34 @@ if (document.readyState === 'loading') {
   initApp();
 }
 
+function setLoadingText(loading, text, color) {
+  if (!loading) return;
+  const t = loading.querySelector('.loading-text');
+  if (t) t.textContent = text;
+  else loading.textContent = text;
+  if (color) loading.style.color = color;
+}
+
 function initApp() {
   console.log('initApp called, readyState:', document.readyState);
   const loading = document.getElementById('loading');
-  if (loading) loading.textContent = '🔄 Initialisation…';
+  setLoadingText(loading, '🔄 Initialisation…');
 
   const timeoutId = setTimeout(() => {
-    if (loading) { loading.textContent = '⚠️ Initialisation lente…'; loading.style.color = '#ffd23f'; }
+    setLoadingText(loading, '⚠️ Initialisation lente…', '#ffd23f');
   }, 5000);
+
+  // Garde-fou : l'écran de chargement ne doit jamais bloquer définitivement.
+  // Passé ce délai sans initialisation, on propose une erreur + réessai explicites.
+  const watchdogId = setTimeout(() => {
+    if (window.keffStation?.initialized) return;
+    clearTimeout(timeoutId);
+    if (loading) {
+      loading.innerHTML = '<div class="loading-text">❌ Initialisation impossible (réseau trop lent ?).<br><button type="button" id="init-retry" style="margin-top:12px;min-height:48px;padding:10px 22px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;font-weight:700">↻ Réessayer</button></div>';
+      loading.style.color = '#ff3d9a';
+      document.getElementById('init-retry')?.addEventListener('click', () => window.location.reload());
+    }
+  }, 15000);
 
   try {
     window.keffStation = new KeffStation();
@@ -575,16 +588,20 @@ function initApp() {
     window.keffStation.setProgress(2, '📦 Chargement module…');
     window.keffStation.init().then(() => {
       clearTimeout(timeoutId);
-      if (loading) { loading.textContent = '✅ KeffStation prêt'; loading.style.color = '#27d17f'; setTimeout(() => loading.classList.add('hidden'), 1000); }
+      clearTimeout(watchdogId);
+      setLoadingText(loading, '✅ KeffStation prêt', '#27d17f');
+      setTimeout(() => loading.classList.add('hidden'), 1000);
     }).catch(e => {
       clearTimeout(timeoutId);
+      clearTimeout(watchdogId);
       console.error('App init failed:', e);
-      if (loading) { loading.textContent = '❌ Erreur: ' + (e?.message || e?.toString() || 'Erreur inconnue'); loading.style.color = '#ff3d9a'; }
+      setLoadingText(loading, '❌ Erreur: ' + (e?.message || e?.toString() || 'Erreur inconnue'), '#ff3d9a');
     });
   } catch (e) {
     clearTimeout(timeoutId);
+    clearTimeout(watchdogId);
     console.error('Constructor/InitApp sync error:', e);
-    if (loading) { loading.textContent = '❌ Erreur sync: ' + (e?.message || e?.toString() || 'Erreur inconnue'); loading.style.color = '#ff3d9a'; }
+    setLoadingText(loading, '❌ Erreur sync: ' + (e?.message || e?.toString() || 'Erreur inconnue'), '#ff3d9a');
   }
 }
 

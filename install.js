@@ -5,11 +5,12 @@ installBtn.id = 'install-btn';
 installBtn.textContent = 'Installer KeffStation';
 installBtn.style.cssText = `
   position: fixed;
-  bottom: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
   padding: 0.75rem 1.5rem;
+  padding-right: 0.75rem;
   background: #ffd23f;
   color: #070816;
   border: none;
@@ -17,20 +18,30 @@ installBtn.style.cssText = `
   font-weight: 700;
   font-size: 0.9rem;
   display: none;
+  max-width: calc(100vw - 2rem);
   box-shadow: 0 4px 20px rgba(255, 210, 63, 0.4);
   touch-action: manipulation;
+  min-height: 48px;
 `;
+installBtn.innerHTML = '<span>Installer KeffStation</span> <span id="install-dismiss" role="button" aria-label="Masquer" style="margin-left:8px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(0,0,0,.3)">✕</span>';
 document.body.appendChild(installBtn);
+function syncBodyPad(){ document.body.style.paddingBottom = (installBtn.style.display === 'block') ? 'calc(76px + env(safe-area-inset-bottom, 0px))' : ''; }
+installBtn.querySelector('#install-dismiss').addEventListener('click', (ev) => {
+  ev.stopPropagation();
+  installBtn.style.display = 'none'; syncBodyPad();
+  try { sessionStorage.setItem('keff-install-dismissed', '1'); } catch (e) {}
+});
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
+  try { if (sessionStorage.getItem('keff-install-dismissed') === '1') { deferredPrompt = e; return; } } catch (err) {}
   deferredPrompt = e;
-  installBtn.style.display = 'block';
+  installBtn.style.display = 'block'; syncBodyPad();
 });
 
 window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
-  installBtn.style.display = 'none';
+  installBtn.style.display = 'none'; syncBodyPad();
 });
 
 installBtn.addEventListener('click', async () => {
@@ -38,7 +49,7 @@ installBtn.addEventListener('click', async () => {
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
   if (outcome === 'accepted') {
-    installBtn.style.display = 'none';
+    installBtn.style.display = 'none'; syncBodyPad();
   }
   deferredPrompt = null;
 });

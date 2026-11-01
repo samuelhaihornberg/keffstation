@@ -1,0 +1,56 @@
+name: Sync Impact Catalog
+
+# Synchronisation manuelle du catalogue partenaire impact.com.
+# Les identifiants ne transitent que via les secrets Actions (jamais en clair, jamais en log).
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Test sans écriture (true/false)'
+        required: false
+        default: 'true'
+      limit:
+        description: 'Nombre max de produits (0 = sans limite)'
+        required: false
+        default: '20'
+      persona:
+        description: 'Type de compte (mediapartners|advertisers)'
+        required: false
+        default: 'advertisers'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Sync Impact -> JSON
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync catalogs
+        env:
+          IMPACT_ACCOUNT_SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
+          IMPACT_AUTH_TOKEN: ${{ secrets.IMPACT_AUTH_TOKEN }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/sync-impact.js --dry-run --limit=${{ inputs.limit }} --persona=${{ inputs.persona }} >> "$GITHUB_STEP_SUMMARY"
+          else
+            node scripts/sync-impact.js --limit=${{ inputs.limit }} --persona=${{ inputs.persona }} >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit JSON
+        if: inputs.dry_run != 'true'
+        run: |
+          git config user.name "keffstation-bot"
+          git config user.email "keffstation-bot@users.noreply.github.com"
+          git add kifftech/impact-products.json
+          git diff --cached --quiet && echo "Aucun changement, rien à commiter." && exit 0
+          git commit -m "data(kifftech): synchro catalogue impact.com"
+          git push

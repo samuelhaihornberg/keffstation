@@ -1,0 +1,11 @@
+# Secrets locaux : JAMAIS de .env dans le dépôt (Actions utilise les Secrets chiffrés).
+.env
+*.env
+.env.*
+!.env.example
+
+# Dépôts / OS
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
