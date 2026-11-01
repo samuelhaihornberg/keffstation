@@ -407,6 +407,7 @@ document.getElementById('llmBlmBtn').onclick=function(){
   }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
   // 2) LLM actuellement sélectionné.
   var bot=botsById[selectedBots[0]]||botsById[q];
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('BLM prêts. Adresse vide : la requête partirait vers GitHub Pages (405 garanti). Ouvre Réglages et saisis l’IP du PC, ex http://192.168.1.20:11434.');finir();return;}
   if(eng.provider==='local'){
     flushConvs();loadArmed=true;setState('checking');dire('BLM prêts. Chargement du modèle local…');
     ensureEngine().then(function(){updateIdCard();pump();dire('BLM prêts + modèle local prêt.');},function(e){dire('BLM prêts. Modèle local : '+((e&&e.message)?e.message:e));}).then(finir);
@@ -427,7 +428,7 @@ document.getElementById('llmBlmBtn').onclick=function(){
           var estOllama=(r.status===200&&/ollama is running/i.test(r.body))||(t.status===200&&/models/i.test(t.body));
           if(estOllama&&t.status===200)verdict='PC joint et Ollama identifié (tags OK) mais POST /api/chat refusé : un proxy/passerelle s’interpose, ou Ollama est trop ancien. Détail tags : '+t.body.slice(0,120);
           else if(estOllama)verdict='Ollama identifié sur ce PC (racine OK) mais /api/chat et /api/tags anormaux : mets Ollama à jour (ollama --version) et vérifie l’absence de proxy.';
-          else if(r.status||t.status)verdict='Quelque chose répond à cette adresse mais ce n’est PAS Ollama (racine HTTP '+(r.status||r.erreur||'?')+(r.body?' « '+r.body.slice(0,60)+' »':'')+' / tags HTTP '+(t.status||t.erreur||'?')+(t.body?' « '+t.body.slice(0,60)+' »':'')+') : mauvaise IP ou autre service sur ce port. Sur le PC, vérifie l’IP (ipconfig / ip addr) et qu’Ollama écoute 11434 (ollama serve).';
+          else if(r.status||t.status){var corps=(r.body||'')+' '+(t.body||'');var versPages=/Content-Security-Policy|default-src 'none'|github\.io|github/i.test(corps);verdict=versPages?'La requête est partie vers GitHub Pages (page 404 GitHub : Content-Security-Policy default-src), pas vers ton PC : le champ Adresse est vide ou invalide. Saisis http://TON-IP-PC:11434 dans Réglages (IP vue par ipconfig / ip addr, même Wi-Fi).':'Quelque chose répond à cette adresse mais ce n’est PAS Ollama (racine HTTP '+(r.status||r.erreur||'?')+(r.body?' « '+r.body.slice(0,60)+' »':'')+' / tags HTTP '+(t.status||t.erreur||'?')+(t.body?' « '+t.body.slice(0,60)+' »':'')+') : mauvaise IP ou autre service sur ce port. Sur le PC, vérifie l’IP (ipconfig / ip addr) et qu’Ollama écoute 11434 (ollama serve).';}
           else verdict='Rien ne répond à cette adresse ('+(r.erreur||t.erreur||'réseau')+') : PC et téléphone sur le même Wi-Fi ? Ollama démarré avec OLLAMA_HOST=0.0.0.0 (port 11434 ouvert au pare-feu) ?';
           dire(m+' '+verdict);
         });
@@ -560,6 +561,7 @@ function paintIdCard(card){
 }
 function runRemote(item){
   var b0=botsById[q]||botsById[selectedBots[0]];
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Adresse du moteur vide : la requête partirait vers GitHub Pages (erreur 405). Ouvre Réglages et saisis l’IP du PC, ex http://192.168.1.20:11434 (même Wi-Fi, Ollama démarré).');setState('idle');working=false;return Promise.resolve();}
   setState('responding',b0.name);
   var wait=addWait(b0);
   genCtl=new AbortController();
