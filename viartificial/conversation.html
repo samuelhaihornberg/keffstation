@@ -137,7 +137,7 @@ body[data-min="1"] .msn{display:none}
 <label>Fournisseur <select id="pProvider"><option value="local">Modèle local automatique (partagé)</option><option value="ollama">Ollama local (gratuit, sans clé)</option><option value="custom">Endpoint compatible OpenAI (saisi par toi)</option><option value="none">Aucun (désactivé)</option></select></label>
 <label>Adresse (Ollama/endpoint) <input id="pUrl" inputmode="url" placeholder="http://localhost:11434"></label>
 <label>Modèle (Ollama/endpoint) <input id="pModel" placeholder="llama3.2"></label>
-<p style="font-size:.8rem;color:#8f96bd">Si ton serveur Ollama est sur une autre machine, saisis son adresse telle qu’elle est joignable depuis cet appareil (sinon, utilise le moteur local). Sans moteur joignable, aucune réponse n’est simulée.</p>
+<p style="font-size:.8rem;color:#8f96bd">Champ Adresse : à remplir seulement si tu disposes d’un serveur Ollama joignable depuis cet appareil (sinon, utilise le moteur local). Sans moteur joignable, aucune réponse n’est simulée.</p>
 <label>Clé éventuelle (session seule, jamais sauvegardée) <input id="pKey" type="password" autocomplete="off" placeholder="optionnel, mémoire vive uniquement"></label>
 <span><button id="pTest" type="button">Tester</button></span>
 <span><button id="pUnload" type="button">Décharger le moteur (libère la mémoire)</button></span>
@@ -407,7 +407,7 @@ document.getElementById('llmBlmBtn').onclick=function(){
   }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
   // 2) LLM actuellement sélectionné.
   var bot=botsById[selectedBots[0]]||botsById[q];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('BLM : prêts (indépendants du LLM). LLM : adresse vide, rien n’a été testé. Choix : (1) saisir dans Réglages l’adresse d’un serveur réellement joignable depuis cet appareil ; (2) utiliser le moteur local (fournisseur « local »).');finir();return;}
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('Les BLM sont prêts, mais aucun moteur LLM n’est connecté. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');finir();return;}
   if(eng.provider==='local'){
     flushConvs();loadArmed=true;setState('checking');dire('BLM prêts. Chargement du modèle local…');
     ensureEngine().then(function(){updateIdCard();pump();dire('BLM prêts + modèle local prêt.');},function(e){dire('BLM prêts. Modèle local : '+((e&&e.message)?e.message:e));}).then(finir);
@@ -566,7 +566,7 @@ function paintIdCard(card){
 }
 function runRemote(item){
   var b0=botsById[q]||botsById[selectedBots[0]];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Adresse du moteur vide : rien n’a été envoyé. Saisis dans Réglages l’adresse d’un serveur réellement joignable, ou choisis le moteur local.');setState('idle');working=false;return Promise.resolve();}
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Les BLM sont prêts, mais aucun moteur LLM n’est connecté. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');setState('idle');working=false;return Promise.resolve();}
   setState('responding',b0.name);
   var wait=addWait(b0);
   genCtl=new AbortController();
