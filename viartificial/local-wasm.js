@@ -32,7 +32,7 @@
       if (m.type === 'progress' || m.type === 'stage') { if (h.onTick) h.onTick({ group: m.group, phase: S.phase, progress: m.progress, text: m.detail, detail: m.detail }); }
       else if (m.type === 'token') { if (h.onToken) h.onToken(m.text); }
       else if (m.type === 'ready') { picked = m.model; if (m.tokenizer) tokInfo = { source: m.tokenizer, hasTemplate: true }; delete pending[id]; h.resolve({ model: picked, tokenizer: tokInfo.source }); }
-      else if (m.type === 'done') { delete pending[id]; h.resolve(m.text !== undefined ? m.text : true); }
+      else if (m.type === 'done') { delete pending[id]; if (m.text !== undefined && m.text !== null && String(m.text).trim() !== '') h.resolve(m.text); else h.reject(err('EMPTY', 'Réponse vide du moteur.')); }
       else if (m.type === 'cancelled') { delete pending[id]; h.reject(err('ABORTED', 'Annulé à ta demande.')); }
       else if (m.type === 'error') { delete pending[id]; h.reject(err(m.code || 'ERROR', m.message || 'échec')); }
     } catch (ex) {}

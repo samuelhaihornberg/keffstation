@@ -172,6 +172,48 @@ body[data-min="1"] .msn{display:none}
 <script>window.BLMMemoire=window.module.exports;window.module={exports:{}};</script>
 <script src="./src/dico-philo.js"></script>
 <script>window.BLMPhilo=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot3={exports:{}};window.module=window.__blmSlot3;</script>
+<script src="./src/blm-contrat.js"></script>
+<script>window.BLMContrat=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot4={exports:{}};window.module=window.__blmSlot4;</script>
+<script src="./src/blm-comprehension.js"></script>
+<script>window.BLMComprehension=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot10={exports:{}};window.module=window.__blmSlot10;</script>
+<script src="./src/blm-routage.js"></script>
+<script>window.BLMRoutage=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot5={exports:{}};window.module=window.__blmSlot5;</script>
+<script src="./src/blm-langue.js"></script>
+<script>window.BLMLangue=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot6={exports:{}};window.module=window.__blmSlot6;</script>
+<script src="./src/blm-registre.js"></script>
+<script>window.BLMRegistre=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot8={exports:{}};window.module=window.__blmSlot8;</script>
+<script src="./src/blm-coherence.js"></script>
+<script>window.BLMCoherence=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot7={exports:{}};window.module=window.__blmSlot7;</script>
+<script src="./src/blm-exemples.js"></script>
+<script>window.BLMExemples=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot9={exports:{}};window.module=window.__blmSlot9;</script>
+<script src="./src/blm-correction.js"></script>
+<script>window.BLMCorrection=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot11={exports:{}};window.module=window.__blmSlot11;</script>
+<script src="./src/blm-savoir.js"></script>
+<script>window.BLMSavoir=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot12={exports:{}};window.module=window.__blmSlot12;</script>
+<script src="./src/blm-budget.js"></script>
+<script>window.BLMBudget=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot13={exports:{}};window.module=window.__blmSlot13;</script>
+<script src="./src/blm-couts.js"></script>
+<script>window.BLMCouts=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot14={exports:{}};window.module=window.__blmSlot14;</script>
+<script src="./src/blm-conscience.js"></script>
+<script>window.BLMConscience=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot15={exports:{}};window.module=window.__blmSlot15;</script>
+<script src="./src/blm-securite.js"></script>
+<script>window.BLMSecurite=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot16={exports:{}};window.module=window.__blmSlot16;</script>
+<script src="./src/blm-journal.js"></script>
+<script>window.BLMJournal=window.module.exports;window.module={exports:{}};</script>
 <script>
 var q=(new URLSearchParams(location.search).get('bot')||'geeko').toLowerCase();
 var body=document.body,thread=document.getElementById('thread');
@@ -227,6 +269,15 @@ var loadArmed=false; // vrai uniquement après appui explicite sur « Charger le
   }catch(e){}
 })();
 var botsById={},selectedBots=[],queue=[],working=false,lastFailure=null,enginePromise=null,genCtl=null,loadCancelled=false;
+/* Une promesse moteur n'est valable que si le moteur charge/génère encore :
+   après déchargement ou crash, la promesse résolue d'avant ne doit ni masquer
+   l'avis « non chargé » ni bloquer un vrai rechargement. */
+function promesseMoteurValide(){
+  if(!enginePromise)return false;
+  var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
+  if(ph==='downloading'||ph==='loading'||ph==='generating'||ph==='checking')return true;
+  enginePromise=null;return false;
+}
 var hists={};function H(id){if(!hists[id])hists[id]=[];return hists[id];}
 var banner=document.getElementById('engineBanner'),eline=document.getElementById('engineLine'),dotEl=document.querySelector('#msn .dot'),statusEl=document.getElementById('status');
 function setState(st,msg){
@@ -360,7 +411,10 @@ function paintTerm(){var el=document.getElementById('termLog');if(!el)return;var
 function ensureEngine(){
   var sm=ViaLocalEngine.summary();
   if(sm.phase==='ready')return Promise.resolve(true);
-  if(enginePromise)return enginePromise;
+  if(enginePromise){
+    if(!promesseMoteurValide()){/* obsolète : on la jette, on repart proprement */}
+    else return enginePromise;
+  }
   // JAMAIS de démarrage automatique : seul le bouton « Charger » arme le chargement.
   if(!loadArmed){var e0=new Error('Chargement non demandé : appuie sur « Charger le modèle local ».');e0.code='NEEDS_LOAD';return Promise.reject(e0);}
   enginePromise=(async function(){
@@ -398,11 +452,14 @@ document.getElementById('llmBlmBtn').onclick=function(){
   function finir(){btn.disabled=false;}
   // 1) BLM d'abord, sans LLM.
   try{
-    if(!window.BLMMemoire||!window.BLMPhilo)throw new Error('modules BLM non chargés');
+    if(!window.BLMMemoire||!window.BLMPhilo||!window.BLMCoherence||!window.BLMCorrection)throw new Error('modules BLM non chargés');
     var s=BLMMemoire.classerSouvenir({projet:'via',intention:'demande',type:'evolution',texte:'test BLM',statut:'actif'});
     var ctx=BLMMemoire.restaurerSurLancement([s],{app:'via'});
     var v=BLMPhilo.verifierReponse({langueOk:true,grammaireOk:true,pertinent:true,repetition:false,registreOk:true,coherent:true});
     if(!ctx.length||!v.ok)throw new Error('auto-test BLM refusé');
+    if(!window.BLMExemples||!BLMExemples.batterie)throw new Error('exemples BLM non chargés');
+    var bat=BLMExemples.batterie({comprehension:window.BLMComprehension,langue:window.BLMLangue,registre:window.BLMRegistre,memoire:window.BLMMemoire,philo:window.BLMPhilo,coherence:window.BLMCoherence,contrat:window.BLMContrat,correction:window.BLMCorrection,routage:window.BLMRoutage,savoir:window.BLMSavoir,budget:window.BLMBudget,couts:window.BLMCouts,conscience:window.BLMConscience,securite:window.BLMSecurite,journal:window.BLMJournal});
+    if(!bat.ok)throw new Error('auto-test BLM refusé ('+bat.reussis+'/'+bat.total+' exemples)');
     window.__blmReady=true;
   }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
   // 2) LLM actuellement sélectionné.
@@ -446,7 +503,7 @@ document.getElementById('llmBlmBtn').onclick=function(){
 document.getElementById('loadBtn').onclick=function(){
   var b=this;var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
   if(ph==='downloading'||ph==='loading'||ph==='generating'||ph==='ready')return;
-  if(enginePromise)return;
+  if(promesseMoteurValide())return;
   flushConvs();loadArmed=true;b.disabled=true;setState('checking');
   ensureEngine().then(function(){updateIdCard();pump();},function(){}).then(function(){b.disabled=false;});
 };
@@ -454,9 +511,9 @@ fillSettings();
 document.getElementById('pProvider').onchange=function(){eng.provider=this.value;eng.baseUrl=document.getElementById('pUrl').value.trim();eng.model=document.getElementById('pModel').value.trim();ViaProviders.save(eng);fillSettings();};
 document.getElementById('pUrl').onchange=function(){eng.baseUrl=this.value.trim();ViaProviders.save(eng);};
 document.getElementById('pModel').onchange=function(){eng.model=this.value.trim();ViaProviders.save(eng);};
-document.getElementById('withdrawBtn').onclick=function(){flushConvs();ViaLocalEngine.setConsent('withdrawn');enginePromise=null;lastFailure=null;try{ViaLocalEngine.unload();}catch(e){}setState('needs-consent');refreshConsent();document.getElementById('pMsg').textContent='Accord retiré. Les fichiers restent en cache : supprime-les ci-dessous si besoin.';};
+document.getElementById('withdrawBtn').onclick=function(){flushConvs();ViaLocalEngine.setConsent('withdrawn');enginePromise=null;lastFailure=null;try{ViaLocalEngine.unload();}catch(e){}try{if(window.BLMJournal)window.BLMJournal.effacer();}catch(e){}setState('needs-consent');refreshConsent();document.getElementById('pMsg').textContent='Accord retiré. Les fichiers restent en cache : supprime-les ci-dessous si besoin.';};
 document.getElementById('deleteModelsBtn').onclick=function(){flushConvs();if(!confirm('Supprimer les fichiers du modèle téléchargé ? Ils seront re-téléchargés au prochain usage autorisé.'))return;var self=this;self.disabled=true;ViaLocalEngine.deleteModels().then(function(n){enginePromise=null;document.getElementById('pMsg').textContent='Modèles supprimés ('+n+' cache(s) vidé(s)).';setState(ViaLocalEngine.getConsent()==='granted'?'idle':'needs-consent');paintStorage();}).catch(function(e){document.getElementById('pMsg').textContent='Suppression incomplète : '+(e&&e.message?e.message:e);}).finally(function(){self.disabled=false;});};
-document.getElementById('pUnload').onclick=function(){flushConvs();enginePromise=null;lastFailure=null;loadArmed=false;ViaLocalEngine.unload();document.getElementById('pProg').textContent='Modèle déchargé.';setState('idle');};
+document.getElementById('pUnload').onclick=function(){flushConvs();try{ViaLocalEngine.unload();}catch(e){}enginePromise=null;lastFailure=null;loadArmed=false;document.getElementById('pProg').textContent='Modèle déchargé.';setState('idle');};
 document.getElementById('pTest').onclick=function(){var k=document.getElementById('pKey').value;document.getElementById('pMsg').textContent='Test en cours…';var c=new AbortController();var t=setTimeout(function(){c.abort();},15000);ViaProviders.chat(eng,b,[{role:'user',content:'Dis juste : test OK.'}],c.signal,k||null).then(function(r){document.getElementById('pMsg').textContent='Test réussi : '+r.slice(0,80);}).catch(function(e){document.getElementById('pMsg').textContent='Échec : '+e.message;}).finally(function(){clearTimeout(t);});};
 add('bot',b.greeting+' — '+cfg.disclaimer);
 thread.lastChild.querySelector('.meta').textContent=b.name+' — accueil prédéfini (pas une réponse IA)';
@@ -465,6 +522,7 @@ selectedBots=botsById[q]?[q]:[cfg.bots[0].id];
 renderChips();
 var restoredN=restoreConvs();
 if(restoredN>0)addOnce('sys',restoredN+' message(s) précédent(s) restauré(s) pour le contexte.');
+try{if(window.BLMJournal)window.BLMJournal.ecrire(window.BLMJournal.lire());}catch(e){}
 try{window.addEventListener('pagehide',function(){try{for(var k in hists)saveConv(k);}catch(e){}});}catch(e){}
 function renderChips(){var box=document.getElementById('chips');box.innerHTML='';cfg.bots.forEach(function(x){var on=selectedBots.indexOf(x.id)>-1;var c=document.createElement('button');c.type='button';c.className='chip'+(on?' on':'');c.textContent=x.avatar+' '+x.name;c.setAttribute('aria-pressed',on);c.onclick=function(){var i=selectedBots.indexOf(x.id);if(i>-1){if(selectedBots.length>1){selectedBots.splice(i,1);c.classList.remove('on');c.setAttribute('aria-pressed','false');}}else{selectedBots.push(x.id);c.classList.add('on');c.setAttribute('aria-pressed','true');}};box.appendChild(c);});}
 var form=document.getElementById('form'),input=document.getElementById('input'),cancelBtn=document.getElementById('cancel');
@@ -475,7 +533,7 @@ function pump(){
   var sm={phase:'idle'};try{sm=ViaLocalEngine.summary();}catch(e){}
   if(eng.provider!=='local'){var it0=queue.shift();if(!it0)return;working=true;runItem(it0).then(function(){working=false;pump();},function(){working=false;pump();});return;}
   if(sm.phase!=='ready'){
-    if(!enginePromise)addOnce('sys','Modèle non chargé : appuie sur « Charger le modèle local » ci-dessus — ton message partira juste après.');
+    if(!promesseMoteurValide())addOnce('sys','Modèle non chargé : appuie sur « Charger le modèle local » ci-dessus — ton message partira juste après.');
     return;
   }
   var item=queue.shift();
@@ -496,12 +554,15 @@ function runItem(item){
         genCtl=new AbortController();
         var h=H(bot.id);h.push({role:'user',content:item.text});
         var orch=orchestrerBLM(item.text,bot,h);
-        return ViaLocalEngine.chat(bot,formulerEntree(orch,item.text),{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+        var prep=preparerEntreeMoteur(orch,item.text);
+        if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
+        return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+          r=blmCorrigerReponse(orch,r);
           r=verifierFinaleBLM(orch,r);
-          sd.body.textContent=r;h.push({role:'assistant',content:r});saveConv(bot.id);
+          sd.body.textContent=r;h.push({role:'assistant',content:r});saveConv(bot.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'succes',motif:'',verdict:'affiche',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(e){}
         },function(e){
           if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
-          else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));throw e;}
+          else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
         }).then(function(){genCtl=null;});
       });
     });
@@ -535,9 +596,21 @@ function xreadTouch(item){
   var h=H(pid);h.push({role:'user',content:item.text});
   var rb={};for(var k in bot)rb[k]=bot[k];
   rb.specialty=bot.specialty+' Consigne stricte : une seule phrase en réaction à ce que vient de dire '+aname+'. Complète ou contredis avec humour, sans répéter ses mots.';
-  return ViaLocalEngine.chat(rb,h.slice(-4),{signal:genCtl.signal}).then(function(r){
+  // Relecture branchée aux BLM : même EtatMessage, souvenirs classés du binôme,
+  // correction locale, cohérence en mode signalement (silence si incohérent,
+  // jamais de seconde génération).
+  var etatX=orchestrerBLM(item.text,bot,h);
+  var prepX=preparerEntreeMoteur(etatX,item.text);
+  if(!prepX.ok){wait.remove();return Promise.resolve();}
+  return ViaLocalEngine.chat(rb,prepX.msgs,{signal:genCtl.signal}).then(function(r){
     var m=String(r).match(/^[^.!?…]+[.!?…]/);var one=m?m[0]:r;
-    h.push({role:'assistant',content:one});wait.remove();addPulsed({name:bot.name+' (relecture)'},one);saveConv(bot.id);
+    one=blmCorrigerReponse(etatX,one);
+    var coh={verdict:'non-evalue',motifs:[],redemandes:[],indices:null};
+    try{if(window.BLMCoherence&&BLMCoherence.analyser)coh=BLMCoherence.analyser(etatX,one)||coh;}catch(e){coh={verdict:'non-evalue',motifs:['coherence-erreur'],redemandes:[],indices:null};}
+    (coh.redemandes||[]).forEach(function(rd){demanderReanalyse(etatX,rd);});
+    if(coh.verdict==='incoherent'){wait.remove();if(window.console&&console.warn)console.warn('[BLM xread] relecture écartée ('+coh.motifs.join(',')+') : silence, sans nouvelle génération.');try{if(window.BLMContrat)BLMContrat.tracer(etatX,'xread','relecture-ecartee',coh.motifs.join(','));}catch(e){}try{if(window.BLMJournal)window.BLMJournal.consigner({bot:pid,issue:'refus',motif:'relecture-ecartee',verdict:'incoherent',redemandes:(etatX&&etatX.redemandes?etatX.redemandes.length:0)});}catch(e){}return;}
+    if(coh.verdict==='doute'&&window.console&&console.warn)console.warn('[BLM xread] doute : '+coh.motifs.join(',')+' — relecture conservée.');try{if(coh.verdict==='doute'&&window.BLMContrat)BLMContrat.tracer(etatX,'xread','relecture-doute-conservee',coh.motifs.join(','));}catch(e){}
+    h.push({role:'assistant',content:one});wait.remove();addPulsed({name:bot.name+' (relecture)'},one);saveConv(bot.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'succes',motif:'relecture',verdict:'affiche',redemandes:(etatX&&etatX.redemandes?etatX.redemandes.length:0)});}catch(e){}
   },function(e){
     wait.remove();
     if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){item.cancelled=true;}
@@ -572,15 +645,18 @@ function runRemote(item){
   genCtl=new AbortController();
   var key=document.getElementById('pKey').value||null;var h=H(b0.id);h.push({role:'user',content:item.text});
   var orchR=orchestrerBLM(item.text,b0,h);
-  return ViaProviders.chat(eng,b0,formulerEntree(orchR,item.text),genCtl.signal,key).then(function(r){
+  var prepR=preparerEntreeMoteur(orchR,item.text);
+  if(!prepR.ok){wait.remove();addOnce('sys','Erreur : '+prepR.message);lastFailure={stage:'response',item:item};setState('error',prepR.message);return Promise.resolve();}
+  return ViaProviders.chat(eng,b0,prepR.msgs,genCtl.signal,key).then(function(r){
+    r=blmCorrigerReponse(orchR,r);
     r=verifierFinaleBLM(orchR,r);
-    h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;
+    h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b0.id,issue:'succes',motif:'',verdict:'affiche',redemandes:(orchR&&orchR.redemandes?orchR.redemandes.length:0)});}catch(e){}
   },function(e){
     wait.remove();
     if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
     else{
       if((e&&e.code)==='NOT_LOADED'&&ViaLocalEngine.getConsent()!=='granted')consentShown(true);
-      var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — POST refusé : cette adresse ne répond pas comme une API Ollama (URL et corps affichés ci-dessus). Choix : adresse d’un serveur réellement joignable, ou moteur local.';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));
+      var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — POST refusé : cette adresse ne répond pas comme une API Ollama (URL et corps affichés ci-dessus). Choix : adresse d’un serveur réellement joignable, ou moteur local.';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b0.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orchR&&orchR.redemandes?orchR.redemandes.length:0)});}catch(ex){}
     }
   }).then(function(){genCtl=null;});
 }
@@ -594,38 +670,70 @@ function diagServeur(base){
 }
 // Salutation + « ça va » = ouverture conviviale : réponse directe vérifiée, sans moteur.
 // Évite que le mini-modèle local et l'historique brut détournent la réponse.
-function estSalutation(t){var s=String(t||'').trim();return /^(salut|bonjour|bonsoir|coucou|hello|yo|hey)[,!.\s]*/i.test(s)&&/ça va|ca va|comment (tu vas|vas-tu)|vous allez|la forme|quoi de neuf|how are you/i.test(s);}
+function estSalutation(t){if(window.BLMComprehension&&BLMComprehension.detecterIntention)return BLMComprehension.detecterIntention(t)==='salutation';var s=String(t||'').trim();return /^(salut|bonjour|bonsoir|coucou|hello|yo|hey)[,!.\s]*/i.test(s)&&/ça va|ca va|comment (tu vas|vas-tu)|vous allez|la forme|quoi de neuf|how are you/i.test(s);}
 function reponseSalutation(){var candidat='Salut ! Ça va bien, merci 😊 Et toi, comment tu vas ?';var ok=/salut/i.test(candidat)&&/\?\s*$/.test(candidat.trim())&&!/vous/i.test(candidat);if(!ok)candidat='Salut ! Je suis là 😊 Et toi, comment tu vas ?';return candidat;}
 // --- Orchestrateur BLM du parcours réel (modules src/ chargés ci-dessus) ---
 // 1 compréhension (intention) → 2 contexte (souvenirs classés) → 3 langue →
 // 4 formulation (moteur ou modèle direct) → 5 vérification finale (BLMPhilo).
 // Chaque étape reçoit l'objet de la précédente et l'enrichit.
-function langueMessageLocal(t){var s=String(t||'');if(/[àâäéèêëîïôöùûüç]/i.test(s))return 'fr';if(/\b(le|la|les|des|est|une|vous|tu|que|pour|comment|avec)\b/i.test(s))return 'fr';return 'en';}
-function souvenirsPertinents(botId,h){
+function langueMessageLocal(t){var s=String(t||'');if(/[àâäéèêëîïôöùûüç]/i.test(s))return 'fr';if(/\b(le|la|les|des|est|une|vous|tu|que|pour|comment|avec)\b/i.test(s))return 'fr';if(/\b(hello|how|are|you|the|and|what|thanks|please|morning|today|with|for)\b/i.test(s))return 'en';return 'fr';}
+function souvenirsPertinents(botId,h,texteCourant){
   if(!window.BLMMemoire)return [];
-  var base=(h||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant')&&String(m.content||'').trim();}).slice(-8);
-  var mem=base.map(function(m){return BLMMemoire.classerSouvenir({projet:String(botId||'courant'),intention:m.role==='user'?'demande':'reponse',type:'evolution',texte:String(m.content||'').slice(0,500),statut:'actif'});});
-  try{return BLMMemoire.restaurerSurLancement(mem,{app:String(botId||'courant')});}catch(e){return mem;}
+  var M=window.BLMMemoire,projet=String(botId||'courant'),base;
+  try{base=(M.filtrerEchanges?M.filtrerEchanges(h||[]):(h||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant')&&String(m.content||'').trim();})).slice(-8);}catch(e){base=[];}
+  var mem=base.map(function(m){var txt=String(m.content||'').slice(0,500),inten=m.role==='user'?'demande':'reponse';
+    try{if(M.classerEchange)return M.classerEchange(projet,inten,txt);}catch(e){}
+    return M.classerSouvenir({projet:projet,intention:inten,type:'evolution',texte:txt,statut:'actif'});});
+  try{if(M.souvenirsDuCarnet&&typeof ViaMemory!=='undefined'&&ViaMemory.entries){var car=M.souvenirsDuCarnet(ViaMemory.entries(projet),projet);if(car&&car.length)mem=mem.concat(car);}}catch(e){}
+  try{if(M.sansProfilDeduit){mem=mem.filter(function(m){try{return M.sansProfilDeduit(m);}catch(x){return true;}});}}catch(e){}
+  try{
+    if(M.recupererPertinents)return M.recupererPertinents(mem,projet,texteCourant||'',8);
+    return M.restaurerSurLancement(mem,{app:projet});
+  }catch(e){return mem;}
 }
 // --- État commun BLM : circule entre les blocs, chacun l'enrichit ---
 // intention, contexte utile, langue, relations, temps, causes, ton,
 // contraintes, certitude ; un bloc peut signaler une contradiction ou
 // demander une nouvelle analyse (redemandes).
-function etatInitial(texte,bot){return {texte:String(texte||''),botId:bot&&bot.id,intention:null,contexte:[],langue:null,relations:[],temps:null,causes:[],ton:'neutre',contraintes:['tutoiement, jamais de « vous »','pas de preuve de conscience','réponse courte, une relance si salutation'],certitude:0.5,contradictions:[],redemandes:[]};}
-function blmComprehension(etat){var t=etat.texte,m=t.toLowerCase();
+function etatInitial(texte,bot){
+  // Socle étape 1 : forme imposée par le contrat versionné quand il est chargé.
+  if(window.BLMContrat&&BLMContrat.etatInitial)return BLMContrat.etatInitial(texte,bot&&bot.id);
+  return {texte:String(texte||''),botId:bot&&bot.id,intention:null,contexte:[],langue:null,relations:[],temps:null,causes:[],ton:'neutre',contraintes:['tutoiement, jamais de « vous »','pas de preuve de conscience','réponse courte, une relance si salutation'],certitude:0.5,contradictions:[],redemandes:[],sujet:null,demandes:[],ton_percu:'neutre',doute:false,perimetre:true,tronque:false,melange:false};
+}
+function blmComprehension(etat){
+  if(window.BLMComprehension){var C=window.BLMComprehension;etat.intention=C.detecterIntention(etat.texte);var that=etat;C.extraireCauses(etat.texte).forEach(function(c){that.causes.push(c);});var tp=C.extraireTemps(etat.texte);if(tp)etat.temps=tp;C.extraireRelations(etat.texte,etat.intention).forEach(function(r){that.relations.push(r);});
+    try{
+      if(C.tronquerTexte){var tr=C.tronquerTexte(etat.texte,2000);etat.texte=tr.texte;etat.tronque=tr.tronque;if(tr.tronque&&window.BLMContrat)BLMContrat.tracer(etat,'comprehension','longueur-plafonnee','2000c');}
+      if(C.extraireEntites){var en=C.extraireEntites(etat.texte);if(en.length)etat.sujet=en.join(' ');}
+      if(C.extraireDemandes){var dq=C.extraireDemandes(etat.texte);dq.forEach(function(x){that.demandes.push(x);});}
+      if(C.detecterSentiment)etat.ton_percu=C.detecterSentiment(etat.texte);
+      if(C.detecterAmbiguite){etat.doute=C.detecterAmbiguite(etat.texte);if(etat.doute&&window.BLMContrat)BLMContrat.tracer(etat,'comprehension','ambiguite-signalee','doute');}
+      if(C.dansPerimetre){etat.perimetre=C.dansPerimetre(etat.texte);if(!etat.perimetre&&window.BLMContrat)BLMContrat.tracer(etat,'comprehension','hors-perimetre','repli-poli');}
+      if(window.BLMContrat)BLMContrat.tracer(etat,'comprehension','intention-'+etat.intention,'champs-023-028');
+    }catch(e){}
+    return etat;}
+  var t=etat.texte,m=t.toLowerCase();
   etat.intention=estSalutation(t)?'salutation':(/\?\s*$/.test(t.trim())?'question':'message');
   if(/parce que|puisque|donc|alors|\bcar\b|grace à|à cause/.test(m))etat.causes.push('cause-marquee');
   if(/demain|hier|aujourd|ce soir|bientôt|la semaine/.test(m))etat.temps='mention-temporelle';
   if(etat.intention==='salutation')etat.relations.push('salutation->etat-personnel');
   if(/et\b.*\?/.test(m))etat.relations.push('multi-idees');
+  if(String(t).length>2000){etat.texte=String(t).slice(0,2000);etat.tronque=true;}
+  var mots=String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/[^a-z0-9]+/).filter(function(w){return w.length>=4;});
+  if(mots.length)etat.sujet=mots.slice(0,5).join(' ');
+  if(/(au revoir|adieu|bonne nuit|\bbye\b)/i.test(t)&&/^(salut|bonjour|bonsoir|coucou|hello|yo|hey)\b/i.test(t.trim()))etat.doute=true;
+  if(/(medicament|dosage|ordonnance|avocat|juridique|tribunal)/i.test(t.normalize? t.normalize('NFD').replace(/[\u0300-\u036f]/g,''):t))etat.perimetre=false;
   return etat;}
-function blmMemoire(etat,h){etat.contexte=souvenirsPertinents(etat.botId,h);return etat;}
-function blmLangue(etat){etat.langue=langueMessageLocal(etat.texte);return etat;}
-function blmTon(etat,bot){var p=String((bot&&bot.personality)||'');etat.ton=/drôle|fun|taquin|iron|enjoué/i.test(p)?'enjoue':'neutre';if(etat.intention==='salutation')etat.ton='convivial';return etat;}
+function blmMemoire(etat,h){etat.contexte=souvenirsPertinents(etat.botId,h,etat.texte);try{if(window.BLMSavoir&&window.BLMSavoir.chercherFait){var fz=window.BLMSavoir.chercherFait(etat.sujet||'',window.BLMSavoirBase||{faits:{}});etat.faits=fz?[fz]:[];}}catch(e){}return etat;}
+function blmLangue(etat){etat.langue=(window.BLMLangue&&BLMLangue.detecterLangue)?BLMLangue.detecterLangue(etat.texte):langueMessageLocal(etat.texte);try{if(window.BLMLangue&&BLMLangue.detecterMelange){etat.melange=BLMLangue.detecterMelange(etat.texte);}else{var s=String(etat.texte||'');var fr=(s.match(/[àâäéèêëîïôöùûüç]/gi)||[]).length;var en=(s.match(/\b(hello|how|are|you|the|and|what|thanks|today|with|for)\b/gi)||[]).length;etat.melange=fr>=1&&en>=2;}}catch(e){}return etat;}
+function blmTon(etat,bot){if(window.BLMRegistre&&BLMRegistre.choisirTon){etat.ton=BLMRegistre.choisirTon(bot&&bot.personality,etat.intention);return etat;}var p=String((bot&&bot.personality)||'');etat.ton=/drôle|fun|taquin|iron|enjoué/i.test(p)?'enjoue':'neutre';if(etat.intention==='salutation')etat.ton='convivial';return etat;}
 function blmCertitude(etat){etat.certitude=etat.intention==='salutation'?0.95:(etat.contexte.length?0.7:0.5);return etat;}
 function orchestrerBLM(texte,bot,h){
   var e=etatInitial(texte,bot);
-  blmComprehension(e);blmMemoire(e,h);blmLangue(e);blmTon(e,bot);blmCertitude(e);
+  blmComprehension(e);
+  try{if(window.BLMRoutage&&BLMRoutage.planifierBlocs){var pl=BLMRoutage.planifierBlocs(e.intention,{perimetre:e.perimetre});if(window.BLMContrat)BLMContrat.tracer(e,'routage','plan-'+pl.motif,pl.blocs.join(','));}}catch(err){}
+  blmMemoire(e,h);blmLangue(e);blmTon(e,bot);blmCertitude(e);
+  if(window.BLMContrat){var chk=BLMContrat.valider(e);if(!chk.ok&&window.console&&console.warn)console.warn('[BLM-contrat] '+chk.problemes.join(','));return chk.etat||e;}
   return e;
 }
 // Formulation de l'entrée moteur : SEUL le contexte classé est transmis, jamais
@@ -634,7 +742,25 @@ function orchestrerBLM(texte,bot,h){
 // vide et différent du message actuel) ; sinon, bloc mémoire clairement
 // étiqueté, jamais présenté comme une citation du user ou du bot.
 // Aucun souvenir pertinent → la demande actuelle seule.
+// S4 — porte d'entrée unique des appels moteur (WASM + Ollama) : budget
+// (005/099) puis enveloppe, puis contexte classé + savoir autorisé.
+// Ne jette jamais : le refus ({ok:false}) emprunte le parcours d'erreur
+// existant de l'appelant, jamais transformé en réponse réussie.
+function preparerEntreeMoteur(etat, texte){
+  try{
+    var plan=(window.BLMRoutage&&window.BLMRoutage.planifierBlocs)?window.BLMRoutage.planifierBlocs(etat.intention,{perimetre:etat.perimetre}):{moteur:true,blocs:[],motif:'routage-absent'};
+    var cpt=(window.BLMCouts&&window.BLMCouts.compteurDefaut)?window.BLMCouts.compteurDefaut():null;
+    var cEtat=cpt?{appels:cpt.appels(),plafond:cpt.plafond()}:{appels:0,plafond:50};
+    var env=(window.BLMBudget&&window.BLMBudget.calculerEnveloppe)?window.BLMBudget.calculerEnveloppe(plan,cEtat):{autorise:true,maxTokens:2048,motif:'budget-absent'};
+    if(!env.autorise)return {ok:false,code:env.motif==='plafond-atteint'?'PLAFOND':'NO_ENGINE',message:env.motif==='plafond-atteint'?'Plafond d’appels moteur atteint pour cette session : repli modèle.':'Plan sans moteur : repli modèle.'};
+    var msgs=(window.BLMMemoire&&window.BLMMemoire.formulerEntreeClasse)?window.BLMMemoire.formulerEntreeClasse((etat&&etat.contexte)||[],texte,(etat&&etat.faits)||[]):formulerEntree(etat,texte);
+    if(window.BLMBudget&&window.BLMBudget.appliquerEnveloppe)msgs=window.BLMBudget.appliquerEnveloppe(msgs,env.maxTokens);
+    if(cpt)cpt.compter();
+    return {ok:true,msgs:msgs};
+  }catch(e){return {ok:false,code:(e&&e.code)||'BUDGET',message:(e&&e.message)||'Budget moteur indisponible : repli modèle.'};}
+}
 function formulerEntree(etat, texteCourant){
+  try{if(window.BLMMemoire&&BLMMemoire.formulerEntreeClasse)return BLMMemoire.formulerEntreeClasse((etat&&etat.contexte)||[],texteCourant,(etat&&etat.faits)||[]);}catch(e){}
   var courant = String(texteCourant||'');
   var sv = (etat && etat.contexte) || [];
   var roles = [], memoire = [];
@@ -650,8 +776,32 @@ function formulerEntree(etat, texteCourant){
   msgs.push({role:'user', content:courant});
   return msgs;
 }
+function demanderReanalyse(etat,r){
+  // Redemande unique et terminale : le repli modèle ne réinvoque jamais le moteur.
+  // Délégué au contrat (testé en batterie) ; repli local si module absent.
+  try{if(window.BLMContrat&&window.BLMContrat.demanderReanalyse)return window.BLMContrat.demanderReanalyse(etat,r);}catch(e){}
+  var o=(typeof r==='object'&&r)?r:{bloc:'formulation',motif:String(r)};
+  if(!o.demande)o.demande='modele-verifie';
+  o.tentative=1;
+  var deja=etat.redemandes.some(function(x){
+    if(x==='modele-verifie'||(x&&x.demande==='modele-verifie'))return o.demande==='modele-verifie';
+    return x&&x.demande===o.demande&&x.motif===o.motif;
+  });
+  if(!deja)etat.redemandes.push(o);
+  return etat;
+}
+function blmCorrigerReponse(etat,rep){
+  // Correction locale après génération, avant vérification : aucun appel LLM.
+  // Trace chaque règle appliquée ; en cas de doute, le texte est conservé.
+  try{if(window.BLMCorrection&&BLMCorrection.corriger){var c=BLMCorrection.corriger(etat,rep);if(c&&typeof c.texte==='string'){if(window.BLMContrat&&c.corrections){var that=etat;c.corrections.forEach(function(k){BLMContrat.tracer(that,'correction',k.regle,k.avant+' → '+k.apres);});if(c.doute)BLMContrat.tracer(that,'correction','doute-conserve',String(rep));}return c.texte;}}}catch(e){}
+  return String(rep==null?'':rep);
+}
 function verifierFinaleBLM(etat,rep){
   var s=String(rep||'').trim(),fr=etat.langue==='fr';
+  try{if(window.BLMSecurite&&window.BLMSecurite.masquerPII){var m0=window.BLMSecurite.masquerPII(s);if(m0.texte!==s){s=m0.texte;if(window.BLMContrat)window.BLMContrat.tracer(etat,'securite','pii-masquee',m0.trouves.join(','));}}}catch(e){}
+  var coh={verdict:'non-evalue',motifs:[],redemandes:[],indices:null};
+  try{if(window.BLMCoherence&&BLMCoherence.analyser)coh=BLMCoherence.analyser(etat,s)||coh;}catch(e){coh={verdict:'non-evalue',motifs:['coherence-erreur'],redemandes:[],indices:null};}
+  (coh.redemandes||[]).forEach(function(r){demanderReanalyse(etat,r);});
   var base={langueOk:true,grammaireOk:true,pertinent:s.length>0,repetition:false,registreOk:true,coherent:true};
   if(etat.intention==='salutation'){
     base.langueOk=!fr||/[àâäéèêëîïôöùûüç]/i.test(s)||/\b(je|tu|nous|salut|bonjour)\b/i.test(s);
@@ -665,7 +815,12 @@ function verifierFinaleBLM(etat,rep){
   var v={ok:true,problemes:[]};
   try{if(window.BLMPhilo)v=BLMPhilo.verifierReponse(base);}catch(e){v={ok:base.langueOk&&base.grammaireOk&&base.pertinent&&!base.repetition&&base.registreOk&&base.coherent,problemes:['repli-local']};}
   if(/salut|bonjour/i.test(s)&&/\bvous\b/i.test(s))etat.contradictions.push('vouvoiement-vs-tutoiement');
-  if(!v.ok||etat.contradictions.length){etat.redemandes.push('modele-verifie');if(window.console&&console.warn)console.warn('[BLM] contradiction ('+(etat.contradictions.concat(v.problemes)).join(',')+'), nouvelle analyse : modèle vérifié.');return reponseSalutation();}
+  if(coh.verdict==='doute'){if(window.console&&console.warn)console.warn('[BLM] doute : '+coh.motifs.join(',')+' — réponse conservée, signalée.');}
+  var perso=false,fuite=false,tropLong=false;
+  try{if(window.BLMConscience&&window.BLMConscience.detecterPersonnification){var dp=window.BLMConscience.detecterPersonnification(s);perso=dp.atteinte;if(perso&&window.BLMContrat)window.BLMContrat.tracer(etat,'conscience','personnification-refusee',dp.motifs.join(','));}}catch(e){}
+  try{if(window.BLMSecurite&&window.BLMSecurite.detecterFuite){var df=window.BLMSecurite.detecterFuite(s);fuite=df.fuite;if(fuite&&window.BLMContrat)window.BLMContrat.tracer(etat,'securite','fuite-ecartee',df.motifs.join(','));}}catch(e){}
+  try{if(s.length>2000){tropLong=true;if(window.BLMContrat)window.BLMContrat.tracer(etat,'registre','longueur-refusee',String(s.length));}}catch(e){}
+  if(coh.verdict==='incoherent'||!v.ok||etat.contradictions.length||perso||fuite||tropLong){demanderReanalyse(etat,{bloc:'formulation',motif:(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[])).join(',')||'reponse-écartée'});if(window.console&&console.warn)console.warn('[BLM] incohérent ('+(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[])).join(',')+') : modèle vérifié (tentative unique).');return reponseSalutation();}
   return s;
 }
 form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){selectedBots.forEach(function(id){var b=botsById[id];if(!b)return;var h=H(b.id);h.push({role:'user',content:v});var r=reponseSalutation();h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);});input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
