@@ -1,0 +1,19 @@
+/* Base commune adaptative — ViArtificial Labs (téléphone, tablette, ordinateur).
+   Portrait/paysage, plein écran, fenêtre redimensionnable, écran partagé.
+   Ne promet rien au-delà : la détection réelle est dans capabilities.js. */
+:root{--tap:48px;--pad:clamp(10px,2.5vw,20px);--fs:16px}
+html{-webkit-text-size-adjust:100%}
+body{font-size:var(--fs)}
+img,video,canvas,svg{max-width:100%;height:auto}
+button,[role="button"],a.btn,input,select,textarea{min-height:var(--tap)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
+@media (pointer:coarse){:root{--tap:52px}.btn,button{font-size:1rem}}
+@media (pointer:fine){button:hover{filter:brightness(1.1)}}
+@media (max-width:720px){:root{--fs:17px}body{font-size:var(--fs)}}
+@media (min-width:721px) and (max-width:1100px){:root{--fs:17px}}
+@media (min-width:1100px){:root{--fs:18px}}
+@media (orientation:landscape) and (max-height:500px){:root{--tap:44px}header{position:static}}
+@media (max-width:720px) and (orientation:landscape){main,.stage{padding:8px}}
+@supports (height:100dvh){.app{min-height:100dvh}}
+@supports (padding:env(safe-area-inset-bottom)){form.composer,.composer{padding-bottom:max(10px,env(safe-area-inset-bottom))}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

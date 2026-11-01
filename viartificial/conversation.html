@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#b84dff">
+<meta name="description" content="Conversation MSN SuperBots Familliya — bulle interne PWA">
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./responsive.css">
+<title>Conversation — SuperBots Familliya</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark}html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif}
+.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;max-width:1100px;margin:0 auto;width:100%}
+header.top{padding:12px 16px;background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
+header.top a{color:#ffd23f;text-decoration:none;border:1px solid rgba(255,210,63,.5);border-radius:999px;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center;font-size:.85rem}
+header.top h1{font-size:1rem;flex:1;min-width:140px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.toolbar button{min-height:44px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:.85rem}
+.toolbar button[aria-pressed="true"]{border-color:#ffd23f;color:#ffd23f}
+.stage{flex:1;display:flex;gap:16px;padding:16px;align-items:flex-start}
+.activity{flex:1;min-width:0;border:1px dashed rgba(255,255,255,.2);border-radius:14px;padding:16px;color:#b9c0e6}
+.activity h2{font-size:1rem;color:#fff;margin-bottom:8px}
+.msn{width:min(420px,100%);border:1px solid rgba(184,77,255,.6);border-radius:14px;overflow:hidden;background:#0d1026;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(184,77,255,.25)}
+.msn-title{display:flex;align-items:center;gap:10px;padding:10px 12px;background:linear-gradient(135deg,#2a1b4d,#4d1b3a)}
+.msn-title .avatar{font-size:1.8rem}
+.msn-title .who{flex:1;min-width:0}
+.msn-title .who strong{display:block;font-size:.95rem}
+.status{display:flex;align-items:center;gap:6px;font-size:.78rem;color:#9fe8b8}
+.dot{width:10px;height:10px;border-radius:50%;background:#27d17f;flex-shrink:0}
+.winbtns{display:flex;gap:6px}
+.winbtns button{min-width:44px;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;font-size:1rem}
+#thread{padding:12px;display:flex;flex-direction:column;gap:8px;min-height:220px;max-height:46vh;overflow-y:auto}
+.msg{border-radius:12px;padding:10px 12px;max-width:92%;font-size:.95rem}
+.msg.bot{align-self:flex-start;background:rgba(255,255,255,.07);border:1px solid rgba(184,77,255,.4)}
+.msg.me{align-self:flex-end;background:rgba(184,77,255,.25)}
+.msg .meta{display:block;font-size:.72rem;color:#b9c0e6;margin-bottom:4px}
+form.composer{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.12);background:#070816}
+textarea{flex:1;min-height:48px;max-height:120px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:#12142e;color:#fff;padding:10px 12px;font-size:1rem;resize:vertical}
+.composer button{min-height:48px;min-width:56px;border-radius:12px;border:1px solid #b84dff;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;font-weight:700;font-size:1.1rem}
+a:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
+body[data-mode="fullscreen"] .activity{display:none}
+body[data-mode="fullscreen"] .msn{width:100%}
+body[data-mode="fullscreen"] #thread{max-height:60vh}
+body[data-mode="side"] .stage{flex-direction:row}
+body[data-mode="side"] .msn{position:sticky;top:70px}
+body[data-min="1"] .msn{display:none}
+#settings{margin:12px 16px 0;border:1px solid rgba(184,77,255,.5);border-radius:12px;padding:12px 14px;background:rgba(184,77,255,.07)}
+#settings h2{font-size:1rem;color:#ffd23f;margin-bottom:8px}
+#settings label{display:block;margin:6px 0;font-size:.85rem}
+#settings input,#settings select{min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:#12142e;color:#fff;padding:6px 10px;width:100%}
+#settings button{min-height:48px;padding:10px 18px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;margin:4px 4px 0 0;font-size:.9rem}
+#consentBar{margin:10px 16px 0;max-width:720px;border:1px solid rgba(184,77,255,.6);border-radius:14px;padding:12px 14px;background:rgba(184,77,255,.08)}
+#consentBar p{margin:6px 0;font-size:.9rem}
+#consentSize{color:#b9c0e6;font-size:.85rem}
+.consentBtns{display:flex;gap:8px;flex-wrap:wrap}
+.consentBtns button{min-height:52px;padding:12px 20px;border-radius:999px;font-weight:700;font-size:1rem}
+#consentGo{border:none;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;flex:1;min-width:200px}
+#consentLater,#consentDetails{border:1px solid #ffd23f;background:transparent;color:#ffd23f}
+#consentDetailText{font-size:.82rem;color:#b9c0e6;border-top:1px solid rgba(255,255,255,.12);margin-top:8px;padding-top:8px}
+#progWrap{margin-top:8px;border-radius:10px;background:#020604;border:1px solid #1f8f3f;padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+#progWrap .term{color:#39ff6a;font-size:.78rem;line-height:1.7;white-space:pre-wrap}
+#progBar{height:14px;border-radius:4px;background:#06130a;border:1px solid #1f8f3f;overflow:hidden;margin-top:6px}
+#progFill{height:100%;width:0%;background:repeating-linear-gradient(90deg,#39ff6a 0 8px,#0a3d1c 8px 10px)}
+#progText{font-size:.8rem;color:#39ff6a;margin:6px 0 0}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
+#permList{list-style:none;margin:8px 0;padding:0;font-size:.82rem;color:#b9c0e6}
+#permList li{margin:4px 0}
+#permList strong{color:#ffd23f}
+#chips{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin:10px 16px 0;padding-bottom:4px}
+.chip{flex-shrink:0;min-height:48px;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#b9c0e6;font-size:.85rem}
+.chip.on{border-color:#ffd23f;color:#ffd23f;background:rgba(255,210,63,.08)}
+.msg.sys{align-self:center;background:transparent;border:1px dashed rgba(255,255,255,.25);color:#b9c0e6;font-size:.82rem;max-width:96%}
+@media (max-width:720px){#consentBar{margin:8px 10px 0}#chips{margin:8px 10px 0}}
+.statusline{margin:10px 16px 0;font-size:.82rem;color:#b9c0e6}
+#gearBtn{min-width:48px;min-height:48px;border-radius:12px;border:1px solid rgba(255,210,63,.5);background:rgba(255,210,63,.08);color:#ffd23f;font-size:1.3rem}
+@media (max-width:720px){html,body{font-size:17px}.stage{flex-direction:column;padding:10px}body[data-mode="side"] .stage{flex-direction:column}body[data-mode="side"] .msn{position:static;width:100%}.msn{width:100%}#thread{max-height:none;min-height:44dvh}.msg{font-size:1rem;max-width:96%}textarea{min-height:56px}form.composer{padding-bottom:max(10px,env(safe-area-inset-bottom))}header.top{padding:10px 12px}#settings{margin:8px 10px 0}.statusline{margin:8px 10px 0}}
+.enginebar{display:flex;gap:8px;align-items:center;padding:8px 12px;font-size:.8rem;color:#b9c0e6;border-top:1px solid rgba(255,255,255,.1)}#cancel{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid #ff3d9a;background:transparent;color:#ff3d9a}#retryBtn{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-mode="fullscreen" data-min="0">
+<div class="app">
+<header class="top"><a href="./">← Bots</a><h1 id="title">Conversation</h1><button id="gearBtn" type="button" aria-label="Réglages">⚙️</button><a href="../">Hub</a></header>
+<div class="toolbar" role="toolbar" aria-label="Modes d'affichage" style="padding:10px 16px 0">
+<button id="bFull" aria-pressed="true">⛶ Plein écran</button>
+<button id="bSide" aria-pressed="false">◧ Panneau latéral</button>
+<button id="bMin" aria-pressed="false">_ Réduire</button>
+</div>
+<p class="statusline" id="engineBanner" role="status">Moteur : en attente d’autorisation…</p>
+<section id="consentBar" hidden aria-label="Accord modèle IA">
+<p><strong>Autoriser le téléchargement du modèle IA et son stockage sur cet appareil pour discuter avec les SuperBots ?</strong></p>
+<p id="consentSize">Modèle <span id="consentModel">…</span> — ≈ <span id="consentMB">…</span> Mo à télécharger une seule fois (Wi-Fi conseillé). La progression réelle s’affiche pendant le téléchargement.</p>
+<p class="consentBtns"><button id="consentGo" type="button">Autoriser</button><button id="consentLater" type="button">Plus tard</button><button id="consentDetails" type="button">Détails</button></p>
+<p id="consentNoLocal" hidden style="font-size:.85rem;color:#ff9db1"></p>
+<div id="consentDetailText" hidden>
+<p>Le modèle est partagé par tous les SuperBots : chacun garde sa personnalité, sa mémoire et ses conversations. Licence : <span id="consentLicense"></span>. Fichiers stockés dans le cache du navigateur, réutilisés sans re-téléchargement ; moteur chargé uniquement quand tu appuies sur Charger (jamais en arrière-plan, jamais sans ton appui).</p>
+<h4 style="font-size:.85rem;color:#fff">Autorisations de la plateforme KeffStation (KiffTech, Tricktrocjob, ViArtificial, Videogames)</h4>
+<ul id="permList">
+<li>🧠 Modèle IA local (≈ <span id="pmMB">…</span> Mo) : <strong id="psModel">—</strong></li>
+<li>💾 Stockage persistant (évite la purge par le navigateur) : <strong id="psPersist">—</strong></li>
+<li>🔔 Notifications (fin de réponse, actions) : <strong id="psNotify">—</strong></li>
+<li>🎙️ Micro · 📷 Caméra · 🖥️ Partage d’écran · 📍 Position : <strong>à l’usage uniquement</strong> <span id="psMediaState"></span></li>
+<li>📴 Hors-ligne (service workers des 4 PWA) : <strong id="psSW">—</strong></li>
+<li>🍪 Cookies / traceurs : <strong>aucun</strong></li>
+</ul>
+<p>Ceci n’est pas un bandeau cookies : aucun traceur, aucun cookie facultatif. Le bouton « Autoriser » accorde le modèle + stockage persistant + notifications ; micro, caméra, partage d’écran et position restent demandés séparément par le navigateur, uniquement par la fonction qui en a besoin. Accord retirable à tout moment dans ⚙️ Réglages (avec suppression des fichiers).</p>
+<p style="font-size:.82rem;color:#8f96bd">WASM réduit le risque de fermeture par manque de mémoire mais ne le garantit pas : si le navigateur ferme l’onglet, relance la page — le cache évite de tout retélécharger.</p>
+</div>
+<div id="progWrap" hidden><div class="term" id="termLog" aria-hidden="true"></div><div id="progBar"><div id="progFill"></div></div><p id="progText" class="term" role="status"></p></div>
+</section>
+<div id="chips" role="group" aria-label="SuperBots qui répondent"></div>
+<div id="loadBar" hidden style="margin:10px 16px 0;max-width:720px"><button id="loadBtn" type="button" style="min-height:56px;width:100%;padding:12px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#27d17f,#1e6bff);color:#fff;font-weight:700;font-size:1rem">📥 Charger le modèle local (≈390 Mo, Wi-Fi recommandé)</button><p style="font-size:.8rem;color:#8f96bd;margin-top:6px">Un seul moteur CPU/WASM partagé en Web Worker, conservé en cache. Aucun téléchargement sans ton appui.</p></div>
+<section id="settings" hidden aria-label="Réglages">
+<h2>⚙️ Réglages</h2>
+<p id="pMsg" role="status" style="font-size:.85rem;color:#b9c0e6"></p>
+<p style="font-size:.85rem">Accord modèle IA : <strong id="consentState">—</strong></p>
+<p style="font-size:.85rem"><label style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="pulseChk" type="checkbox" checked style="width:44px;min-height:44px"> Pulsation des réponses (mot à mot)</label></p>
+<p style="font-size:.85rem"><label style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="xreadChk" type="checkbox" checked style="width:44px;min-height:44px"> Relecture croisée Geeko ↔ Geekette (une phrase max)</label></p>
+<div id="idcard" style="margin-top:8px;border:1px dashed rgba(255,255,255,.25);border-radius:12px;padding:10px 12px;font-size:.82rem">
+<h4 style="font-size:.85rem;color:#fff">Carte d’identité locale (token automatique, sur cet appareil uniquement)</h4>
+<p>Token : <strong id="idcToken">—</strong> · Modèle : <span id="idcModel">—</span></p>
+<p>Chargée : <span id="idcLoaded">—</span> · Accord : <span id="idcConsent">—</span></p>
+</div>
+<p style="font-size:.8rem;color:#8f96bd">Stockage navigateur : <span id="storageInfo">—</span></p>
+<p><button id="withdrawBtn" type="button">Retirer l’accord</button> <button id="deleteModelsBtn" type="button">Supprimer les modèles téléchargés</button></p>
+<details><summary style="min-height:44px;color:#ffd23f">Avancé (autre moteur, actions)</summary>
+<label>Fournisseur <select id="pProvider"><option value="local">Modèle local automatique (partagé)</option><option value="ollama">Ollama local (gratuit, sans clé)</option><option value="custom">Endpoint compatible OpenAI (saisi par toi)</option><option value="none">Aucun (désactivé)</option></select></label>
+<label>Adresse (Ollama/endpoint) <input id="pUrl" inputmode="url" placeholder="http://localhost:11434"></label>
+<label>Modèle (Ollama/endpoint) <input id="pModel" placeholder="llama3.2"></label>
+<p style="font-size:.8rem;color:#8f96bd">Sur téléphone avec Ollama : remplace l’Adresse par l’IP du PC (même Wi-Fi). Sans moteur joignable, aucune réponse n’est simulée.</p>
+<label>Clé éventuelle (session seule, jamais sauvegardée) <input id="pKey" type="password" autocomplete="off" placeholder="optionnel, mémoire vive uniquement"></label>
+<span><button id="pTest" type="button">Tester</button></span>
+<span><button id="pUnload" type="button">Décharger le moteur (libère la mémoire)</button></span>
+<span id="pProg" role="status" style="font-size:.8rem"></span>
+<h3 style="font-size:.9rem;color:#fff;margin-top:8px">⚒️ Actions (outils explicitement connectés)</h3>
+<span id="actList" style="font-size:.8rem"></span>
+<span id="actState" role="status" style="font-size:.8rem">Aucune action en cours.</span>
+<span id="actResult" style="font-size:.8rem"></span>
+<span><button id="actStop" type="button" hidden>■ Arrêter</button> <button id="actTake" type="button" hidden>Reprendre la main</button></span>
+<span id="capsLine" style="font-size:.78rem;color:#8f96bd"></span>
+<h3 style="font-size:.9rem;color:#fff;margin-top:8px">🔍 Diagnostics appareil (pas de conclusion hâtive)</h3>
+<pre id="diagDetail" style="font-size:.75rem;color:#8f96bd;white-space:pre-wrap;background:rgba(0,0,0,.3);border-radius:8px;padding:8px">détection en cours…</pre>
+</details>
+</section>
+<div class="stage">
+<section class="activity" aria-label="Activité à côté du chat"><h2>📝 Activité en cours</h2><p id="actHint">Passe en « Panneau latéral » pour utiliser ce panneau à côté de la conversation (ex. notes, plan GuideoPlan). Tout reste dans la PWA.</p><ul><li>Note 1 : …</li><li>Note 2 : …</li></ul></section>
+<section class="msn" id="msn" aria-label="Fenêtre de conversation style MSN">
+<div class="msn-title"><span class="avatar" id="avatar">🤖</span><span class="who"><strong id="who">…</strong><span class="status"><span class="dot" aria-hidden="true"></span><span id="status">Hors ligne — en attente</span></span></span><span class="winbtns"><button id="wMin" aria-label="Réduire la fenêtre">_</button><button id="wFull" aria-label="Bascule plein écran">⛶</button></span></div>
+<div id="thread" role="log" aria-live="polite" aria-label="Historique"></div>
+<form class="composer" id="form"><textarea id="input" rows="1" placeholder="Écris ton message… (Entrée = envoyer, Maj+Entrée = ligne)" aria-label="Message"></textarea><button type="submit" aria-label="Envoyer">➤</button></form>
+<div class="enginebar"><span id="engineLine">Moteur : en attente d’autorisation…</span><button id="cancel" type="button" hidden>✕ Annuler</button><button id="retryBtn" type="button" hidden>↻ Réessayer</button></div>
+</section>
+</div>
+</div>
+<script src="./providers.js"></script>
+<script src="./actions.js"></script>
+<script src="./capabilities.js"></script>
+<script src="./local-wasm.js"></script>
+<script src="./local-engine.js"></script>
+<script>
+var q=(new URLSearchParams(location.search).get('bot')||'geeko').toLowerCase();
+var body=document.body,thread=document.getElementById('thread');
+function setMode(m){body.dataset.mode=m;document.getElementById('bFull').setAttribute('aria-pressed',m==='fullscreen');document.getElementById('bSide').setAttribute('aria-pressed',m==='side');try{localStorage.setItem('msn-mode',m);}catch(e){}}
+function setMin(v){body.dataset.min=v?'1':'0';document.getElementById('bMin').setAttribute('aria-pressed',!!v);if(!v)document.getElementById('input').focus();}
+document.getElementById('bFull').onclick=function(){setMin(false);setMode('fullscreen');};
+document.getElementById('bSide').onclick=function(){setMin(false);setMode('side');};
+document.getElementById('bMin').onclick=function(){setMin(body.dataset.min!=='1');};
+document.getElementById('wMin').onclick=function(){setMin(true);};
+document.getElementById('wFull').onclick=function(){setMin(false);setMode(body.dataset.mode==='fullscreen'?'side':'fullscreen');};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&body.dataset.min!=='1')setMin(true);});
+try{var sm=localStorage.getItem('msn-mode');if(sm==='side'||sm==='fullscreen')setMode(sm);}catch(e){}
+fetch('./bots.json').then(function(r){return r.json();}).then(function(cfg){
+var b=cfg.bots[0];cfg.bots.forEach(function(x){if(x.id===q)b=x;});
+document.getElementById('title').textContent=b.avatar+' '+b.name+' — '+b.specialty;
+document.getElementById('avatar').textContent=b.avatar;
+document.getElementById('who').textContent=b.name;
+function add(who,text,botObj){var d=document.createElement('div');d.className='msg '+who;var s=document.createElement('span');s.className='meta';s.textContent=who==='me'?'Moi':(botObj?botObj.name+' (moteur local)':b.name+' (simulé)');if(who==='sys')s.textContent='ℹ️ info';d.appendChild(s);d.appendChild(document.createTextNode(text));thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d;}
+function addWait(bot){var d=document.createElement('div');d.className='msg bot';d.textContent=bot.name+' écrit… ';var c=document.createElement('span');c.className='blink';c.textContent='▊';c.setAttribute('aria-hidden','true');d.appendChild(c);thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d;}
+function addStream(bot){var d=document.createElement('div');d.className='msg bot';var s=document.createElement('span');s.className='meta';s.textContent=bot.name+' (moteur local)';d.appendChild(s);var body=document.createElement('span');d.appendChild(body);thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return{box:d,body:body};}
+// Ajoute un message système sauf s'il est identique au dernier (pas de répétitions).
+function addOnce(kind,text){try{var ms=thread.querySelectorAll('.msg');if(ms.length&&ms[ms.length-1].textContent.indexOf(text)!==-1)return;}catch(e){}add(kind,text);}
+function pulseOn(){try{return localStorage.getItem('via-pulse')!=='off';}catch(e){return true;}}
+function reduceMotion(){try{return window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}}
+// Pulsation : affiche la réponse mot à mot (le bot respire). Réponses courtes =
+// vrombissement (tout d'un coup). Motion réduite ou pulsation coupée = tout d'un coup.
+function addPulsed(bot,text){
+  var d=document.createElement('div');d.className='msg bot';var s=document.createElement('span');s.className='meta';s.textContent=bot.name+' (moteur local)';d.appendChild(s);
+  var body=document.createElement('span');d.appendChild(body);thread.appendChild(d);thread.scrollTop=thread.scrollHeight;
+  var words=String(text).split(/(\s+)/);
+  if(!pulseOn()||reduceMotion()||words.length<40){body.textContent=text;return d;}
+  var i=0,cur='';
+  var t=setInterval(function(){
+    cur+=words[i++]||'';body.textContent=cur;thread.scrollTop=thread.scrollHeight;
+    if(i>=words.length){clearInterval(t);}
+  },120);
+  return d;
+}
+var eng=ViaProviders.load();
+var loadArmed=false; // vrai uniquement après appui explicite sur « Charger le modèle » (jamais auto)
+// Migration : un ancien réglage manuel « webllm » ne doit plus bloquer le parcours
+// automatique. Bascule vers le mode local automatique (une seule fois) SANS
+// supprimer conversations ni fichiers en cache (réutilisés par le moteur).
+// Le consentement existant est respecté tel quel : sans accord, rien ne démarre.
+(function migrateLegacyManual(){
+  try{
+    var done=false; try{done=!!localStorage.getItem('via-migrated-webllm');}catch(e){}
+    if(!done&&eng.provider==='webllm'){
+      eng={provider:'local',baseUrl:'',model:''};ViaProviders.save(eng);
+      try{localStorage.setItem('via-migrated-webllm','1');}catch(e){}
+      var mm=document.getElementById('pMsg');if(mm)mm.textContent='Ancien réglage « WebLLM manuel » migré vers le mode automatique (accord et fichiers conservés).';
+    }
+  }catch(e){}
+})();
+var botsById={},selectedBots=[],queue=[],working=false,lastFailure=null,enginePromise=null,genCtl=null,loadCancelled=false;
+var hists={};function H(id){if(!hists[id])hists[id]=[];return hists[id];}
+var banner=document.getElementById('engineBanner'),eline=document.getElementById('engineLine'),dotEl=document.querySelector('#msn .dot'),statusEl=document.getElementById('status');
+function setState(st,msg){
+  var map={idle:['Moteur : non chargé — appuie sur « Charger le modèle local ».','Hors ligne — non chargé','#8f96bd'],
+    'needs-consent':['Moteur : en attente d’autorisation…','Hors ligne — autorisation requise','#8f96bd'],
+    checking:['Vérification du moteur…','Vérification…','#ffd23f'],
+    downloading:['Téléchargement du modèle… '+(msg||''),'Téléchargement…','#ffd23f'],
+    loading:['Chargement du moteur en mémoire…','Chargement…','#ffd23f'],
+    ready:['Prêt — moteur local partagé','En ligne (moteur local, opérationnel)','#27d17f'],
+    responding:['Réponse en cours ('+(msg||'')+')…','En ligne — '+(msg||'')+' écrit…','#27d17f'],
+    error:['Erreur : '+(msg||'moteur indisponible'),'Hors ligne — erreur','#ff3d9a']};
+  var m=map[st]||map.idle;
+  eline.textContent=m[0];statusEl.textContent=m[1];if(dotEl)dotEl.style.background=m[2];
+  banner.textContent=(st==='ready'?'🟢 ':st==='error'?'🔴 ':st==='idle'||st==='needs-consent'?'⚪ ':'🟡 ')+m[0];
+  document.getElementById('cancel').hidden=!(st==='downloading'||st==='loading'||st==='responding');
+  document.getElementById('retryBtn').hidden=(st!=='error');
+  var pw=document.getElementById('progWrap');if(pw)pw.hidden=(st!=='downloading'&&st!=='loading');
+  var lb=document.getElementById('loadBar'),lbtn=document.getElementById('loadBtn');
+  if(lb){var granted=eng.provider==='local'&&ViaLocalEngine.getConsent()==='granted';lb.hidden=!(granted&&(st==='idle'||st==='error'||st==='checking'||st==='downloading'||st==='loading'));
+    if(lbtn){var mb2='≈390 Mo';try{var pk2=ViaLocalEngine.pickModel(window.__viaCap||null);if(pk2&&pk2.downloadMB)mb2='≈'+pk2.downloadMB+' Mo';}catch(e){};if(st==='downloading'||st==='loading'||st==='checking'){lbtn.disabled=true;lbtn.innerHTML='⏳ '+(m[0]||'Chargement…')+' ('+mb2+')';}else{lbtn.disabled=false;lbtn.innerHTML=(st==='error'?'↻ Recharger le modèle':'📥 Charger le modèle local')+' ('+mb2+' conservés en cache après le 1er chargement)';}}}
+}
+// Cause réelle, en clair : jamais de message générique quand le code est connu.
+function explain(e){
+  var code=e&&e.code,msg=e&&e.message?e.message:'moteur indisponible';
+  if(code==='NEEDS_CONSENT')return 'Autorisation requise : autorise le téléchargement ci-dessus (un seul accord).';
+  if(code==='NEEDS_LOAD')return 'Modèle non chargé : appuie sur « Charger le modèle local » ci-dessus — ton message partira juste après.';
+  if(code==='NOT_LOADED')return 'Modèle non chargé : autorise le téléchargement ci-dessus (un seul accord), ou recharge-le dans Réglages (Avancé).';
+  if(code==='NO_LOCAL')return msg+' Aucun service distant ne sera configuré sans ton accord : choisis-en un explicitement dans Réglages (Avancé).';
+  if(code==='LOAD_FAIL'||/404|Failed to fetch|NetworkError|network|réseau/i.test(msg))return msg+' (téléchargement impossible : vérifie la connexion, puis clique Réessayer — une seule tentative à la fois).';
+  if(code==='STORAGE_FULL')return msg+' Libère de l’espace puis clique Réessayer (une seule tentative à la fois).';
+  if(code==='BUSY')return 'Moteur occupé : attends la fin ou clique Annuler, puis Réessaie.';
+  if(code==='ABORTED')return 'Annulé à ta demande.';
+  return msg;
+}
+function fillSettings(){var pp=document.getElementById('pProvider');if(pp)pp.value=eng.provider;document.getElementById('pUrl').value=eng.baseUrl||'';document.getElementById('pModel').value=eng.model||'';}
+function consentShown(v){document.getElementById('consentBar').hidden=!v;}
+function refreshConsent(){
+  var c=ViaLocalEngine.getConsent();
+  // Accord retiré : on réaffiche la barre UNE fois (flag), puis on respecte le refus.
+  var reshown=false; try{reshown=!!localStorage.getItem('via-bar-reshown');}catch(e){}
+  if(c==='withdrawn'&&!reshown){consentShown(true);try{localStorage.setItem('via-bar-reshown','1');}catch(e){}}
+  else consentShown(c===null);
+  var st=document.getElementById('consentState');
+  if(st)st.textContent=c==='granted'?'accordé':c==='later'?'reporté (redemandé à l’envoi)':c==='withdrawn'?'retiré':'non demandé';
+  paintPick(window.__viaCap||null);
+  var lic=document.getElementById('consentLicense');if(lic)lic.textContent='Apache 2.0 — usage autorisé pour discuter avec les SuperBots sur cet appareil.';
+  paintStorage();paintIdCard();
+}
+// Taille réelle par appareil détecté (sans télécharger) + blocage explicite
+// si aucun moteur local ne convient. Ne conclut jamais sur « tout le téléphone ».
+function paintPick(cap){
+  var m=document.getElementById('consentModel'),mb=document.getElementById('consentMB'),nl=document.getElementById('consentNoLocal'),go=document.getElementById('consentGo');
+  if(!cap){if(m)m.textContent='…';if(mb)mb.textContent='…';return;}
+  var pick=ViaLocalEngine.pickModel(cap);
+  if(pick.error){
+    if(m)m.textContent='aucun compatible';if(mb)mb.textContent='0';
+    if(nl){nl.hidden=false;nl.textContent='Aucun moteur local compatible : '+pick.message+' Aucun service distant ne sera configuré sans ton accord.';}
+    if(go)go.disabled=true;
+  }else{
+    var short=(pick.id||'SmolLM2-360M-Instruct-ONNX').split('-Instruct')[0].split('/').pop();
+    if(m)m.textContent=short+' (CPU/WASM, monothread)';if(mb)mb.textContent=pick.downloadMB;
+    if(nl)nl.hidden=true;if(go)go.disabled=false;
+  }
+  paintDiag(cap);
+}
+function paintDiag(cap){
+  var el=document.getElementById('diagDetail');if(!el)return;
+  cap=cap||(ViaLocalEngine.lastDetect?ViaLocalEngine.lastDetect():null);
+  if(!cap){el.textContent='détection en cours…';return;}
+  var L=['contexte sécurisé : '+(cap.secure?'oui':'NON'),
+    'WebGPU : non utilisé (moteur CPU/WASM seul)',
+    'WebAssembly (moteur CPU) : '+(cap.wasm?'oui':'non) — requis')];
+  try{var pk=ViaLocalEngine.pickModel(cap);L.push('moteur sélectionné : '+(pk.error?('aucun ('+pk.error+')'):pk.backend+' / '+(pk.id||'auto')));}catch(e){}
+  try{var sm=ViaLocalEngine.summary();if(sm){L.push('moteur actif : '+(sm.backend||'?')+' / modèle : '+(sm.model||'—'));if(sm.tokenizer)L.push('tokenizer : '+sm.tokenizer);if(sm.mode&&sm.mode!=='—')L.push('mode : '+sm.mode);} }catch(e){}
+  if(cap.reasons&&cap.reasons.length)L.push('causes : '+cap.reasons.join(' | '));
+  else L.push('causes : aucune (appareil compatible)');
+  try{var sm2=ViaLocalEngine.summary();if(sm2){if(sm2.backend)L.push('moteur actif : '+sm2.backend+(sm2.model?' / '+sm2.model:''));if(sm2.threads)L.push('threads : '+sm2.threads);if(sm2.tokenizer)L.push('tokenizer : '+sm2.tokenizer);}}catch(e){}
+  el.textContent=L.join('\n');
+}
+function paintStorage(){
+  var el=document.getElementById('storageInfo');if(!el)return;el.textContent='calcul…';
+  ViaLocalEngine.storageCheck(0).then(function(s){el.textContent=s.unknown?'non mesurable sur ce navigateur':'utilisé '+s.usageMB+' / quota '+s.quotaMB+' Mo';});
+}
+document.getElementById('consentGo').onclick=function(){ViaLocalEngine.setConsent('granted');refreshConsent();requestPlatformPerms().then(function(){paintPerms();});setState('idle');};
+document.getElementById('consentLater').onclick=function(){ViaLocalEngine.setConsent('later');refreshConsent();setState('needs-consent');};
+document.getElementById('consentDetails').onclick=function(){var t=document.getElementById('consentDetailText');t.hidden=!t.hidden;if(!t.hidden)paintPerms();};
+// Autorisations réellement accordables en un geste : stockage persistant + notifications.
+// Micro, caméra, partage d'écran, position : JAMAIS demandés ici, uniquement à l'usage.
+async function requestPlatformPerms(){
+  try{if(navigator.storage&&navigator.storage.persist){await navigator.storage.persist();}}catch(e){}
+  try{
+    if('Notification' in window&&Notification.permission==='default'){
+      if(Notification.requestPermission.length>0){await Notification.requestPermission();}
+      else{await new Promise(function(res){Notification.requestPermission(function(){res();});});}
+    }
+  }catch(e){}
+}
+async function permState(name){
+  try{
+    if(!navigator.permissions||!navigator.permissions.query)return 'état non lisible ici';
+    var r=await navigator.permissions.query({name:name});
+    return r.state==='granted'?'accordée':r.state==='denied'?'refusée':'à demander à l’usage';
+  }catch(e){return 'non supportée ici';}
+}
+async function paintPerms(){
+  var c=ViaLocalEngine.getConsent();
+  var info=ViaLocalEngine.modelInfo(ViaLocalEngine.MODELS[0].id);
+  var mm=document.getElementById('pmMB');if(mm)mm.textContent=info.downloadMB;
+  var sm=document.getElementById('psModel');if(sm)sm.textContent=c==='granted'?'accordé':c==='later'?'reporté':c==='withdrawn'?'retiré':'non demandé';
+  var sp=document.getElementById('psPersist');
+  if(sp){try{if(navigator.storage&&navigator.storage.persisted){sp.textContent=await navigator.storage.persisted()?'accordé (persistant)':'standard (purge possible)';}else sp.textContent='inconnu ici';}catch(e){sp.textContent='inconnu ici';}}
+  var sn=document.getElementById('psNotify');
+  if(sn)sn.textContent=('Notification' in window)?(Notification.permission==='granted'?'accordée':Notification.permission==='denied'?'refusée (fonction indisponible)':'en attente (demandée au clic Autoriser)'):'non supportée ici';
+  var md=document.getElementById('psMediaState');
+  if(md){var parts=[];var names=[['microphone','micro'],['camera','caméra'],['display-capture','écran'],['geolocation','position']];for(var i=0;i<names.length;i++){parts.push(names[i][1]+' : '+await permState(names[i][0]));}md.textContent='('+parts.join(' · ')+')';}
+  var sw=document.getElementById('psSW');
+  if(sw){var on=false;try{on=!!(navigator.serviceWorker&&navigator.serviceWorker.controller);}catch(e){}sw.textContent=on?'actif':'enregistrement… (recharge si absent)';}
+}
+// Orchestrateur rétro : groupes de tâches du chargement, pilotés par ce que le
+// SuperBot doit assembler pour répondre (runtime → poids → personnalité → règles).
+var orch={};
+function orchReset(modelShort){orch={runtime:['RUNTIME WASM CPU','…',''],poids:['POIDS '+modelShort,'…',''],personnalite:['PERSONNALITE','…',''],regles:['REGLES reponse','…','']};paintTerm();}
+function orchSet(g,st,extra){if(orch[g]){orch[g][1]=st;if(extra!==undefined)orch[g][2]=extra;paintTerm();}}
+function paintTerm(){var el=document.getElementById('termLog');if(!el)return;var L='';for(var k in orch){var g=orch[k];var mark=g[1]==='OK'?'[OK]':g[1]==='ERREUR'? '[!!]':g[1]==='…'?'[..]':'[>>]';L+='&gt; '+g[0]+' '+mark+(g[2]?' '+g[2]:'')+'<br>';}el.innerHTML=L+'<span class="blink">▊</span>';}
+function ensureEngine(){
+  var sm=ViaLocalEngine.summary();
+  if(sm.phase==='ready')return Promise.resolve(true);
+  if(enginePromise)return enginePromise;
+  // JAMAIS de démarrage automatique : seul le bouton « Charger » arme le chargement.
+  if(!loadArmed){var e0=new Error('Chargement non demandé : appuie sur « Charger le modèle local ».');e0.code='NEEDS_LOAD';return Promise.reject(e0);}
+  enginePromise=(async function(){
+    var c=ViaLocalEngine.getConsent();
+    if(c!=='granted'){setState('needs-consent');consentShown(true);var e1=new Error('Autorisation requise pour télécharger le modèle.');e1.code='NEEDS_CONSENT';throw e1;}
+    loadCancelled=false;setState('downloading','0 %');
+    var info0=ViaLocalEngine.modelInfo(ViaLocalEngine.MODELS[0].id);
+    orchReset(info0.id.split('-Instruct')[0]);
+    var f=document.getElementById('progFill');if(f)f.style.width='0%';
+    await ViaLocalEngine.autoLoad(function(s){
+      if(s.group==='runtime'){orchSet('runtime',s.progress>=100?'OK':'>>');}
+      else if(s.group==='poids'){
+        if(s.phase==='downloading'){orchSet('runtime','OK');orchSet('poids','>>',(s.progress||0)+' %');setState('downloading',(s.progress||0)+' %');var ff=document.getElementById('progFill');if(ff)ff.style.width=(s.progress||0)+'%';var pt=document.getElementById('progText');if(pt)pt.textContent='LOAD poids '+(s.progress||0)+' %'+(s.detail?' — '+s.detail:'')+' — tu peux continuer à lire, rien n’est bloqué.';}
+        else{orchSet('poids','OK');setState('loading');}
+      }
+    });
+    if(loadCancelled){try{await ViaLocalEngine.unload();}catch(e){}var e2=new Error('Chargement annulé à ta demande.');e2.code='ABORTED';throw e2;}
+    orchSet('personnalite','OK');orchSet('regles','OK');
+    setState('ready');return true;
+  })();
+  enginePromise.then(function(){},function(e){enginePromise=null;if(e&&(e.code==='NEEDS_CONSENT'||e.code==='ABORTED'||e.code==='NEEDS_LOAD')){setState(e.code==='NEEDS_CONSENT'?'needs-consent':'idle');}else{setState('error',explain(e));for(var k in orch){if(orch[k][1]==='>>'||orch[k][1]==='…')orch[k][1]='ERREUR';}paintTerm();paintDiag();lastFailure={stage:'engine',item:null};}});
+  return enginePromise;
+}
+// Bouton unique de chargement : armé par l'utilisateur, jamais automatique.
+// Double-clic sans effet (promesse partagée + bouton désactivé pendant le chargement).
+function flushConvs(){try{for(var k in hists)saveConv(k);}catch(e){}}
+document.getElementById('loadBtn').onclick=function(){
+  var b=this;var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
+  if(ph==='downloading'||ph==='loading'||ph==='generating'||ph==='ready')return;
+  if(enginePromise)return;
+  flushConvs();loadArmed=true;b.disabled=true;setState('checking');
+  ensureEngine().then(function(){updateIdCard();pump();},function(){}).then(function(){b.disabled=false;});
+};
+fillSettings();
+document.getElementById('pProvider').onchange=function(){eng.provider=this.value;eng.baseUrl=document.getElementById('pUrl').value.trim();eng.model=document.getElementById('pModel').value.trim();ViaProviders.save(eng);fillSettings();};
+document.getElementById('pUrl').onchange=function(){eng.baseUrl=this.value.trim();ViaProviders.save(eng);};
+document.getElementById('pModel').onchange=function(){eng.model=this.value.trim();ViaProviders.save(eng);};
+document.getElementById('withdrawBtn').onclick=function(){flushConvs();ViaLocalEngine.setConsent('withdrawn');enginePromise=null;lastFailure=null;try{ViaLocalEngine.unload();}catch(e){}setState('needs-consent');refreshConsent();document.getElementById('pMsg').textContent='Accord retiré. Les fichiers restent en cache : supprime-les ci-dessous si besoin.';};
+document.getElementById('deleteModelsBtn').onclick=function(){flushConvs();if(!confirm('Supprimer les fichiers du modèle téléchargé ? Ils seront re-téléchargés au prochain usage autorisé.'))return;var self=this;self.disabled=true;ViaLocalEngine.deleteModels().then(function(n){enginePromise=null;document.getElementById('pMsg').textContent='Modèles supprimés ('+n+' cache(s) vidé(s)).';setState(ViaLocalEngine.getConsent()==='granted'?'idle':'needs-consent');paintStorage();}).catch(function(e){document.getElementById('pMsg').textContent='Suppression incomplète : '+(e&&e.message?e.message:e);}).finally(function(){self.disabled=false;});};
+document.getElementById('pUnload').onclick=function(){flushConvs();enginePromise=null;lastFailure=null;loadArmed=false;ViaLocalEngine.unload();document.getElementById('pProg').textContent='Modèle déchargé.';setState('idle');};
+document.getElementById('pTest').onclick=function(){var k=document.getElementById('pKey').value;document.getElementById('pMsg').textContent='Test en cours…';var c=new AbortController();var t=setTimeout(function(){c.abort();},15000);ViaProviders.chat(eng,b,[{role:'user',content:'Dis juste : test OK.'}],c.signal,k||null).then(function(r){document.getElementById('pMsg').textContent='Test réussi : '+r.slice(0,80);}).catch(function(e){document.getElementById('pMsg').textContent='Échec : '+e.message;}).finally(function(){clearTimeout(t);});};
+add('bot',b.greeting+' — '+cfg.disclaimer);
+thread.lastChild.querySelector('.meta').textContent=b.name+' — accueil prédéfini (pas une réponse IA)';
+botsById={};cfg.bots.forEach(function(x){botsById[x.id]=x;});
+selectedBots=botsById[q]?[q]:[cfg.bots[0].id];
+renderChips();
+var restoredN=restoreConvs();
+if(restoredN>0)addOnce('sys',restoredN+' message(s) précédent(s) restauré(s) pour le contexte.');
+try{window.addEventListener('pagehide',function(){try{for(var k in hists)saveConv(k);}catch(e){}});}catch(e){}
+function renderChips(){var box=document.getElementById('chips');box.innerHTML='';cfg.bots.forEach(function(x){var on=selectedBots.indexOf(x.id)>-1;var c=document.createElement('button');c.type='button';c.className='chip'+(on?' on':'');c.textContent=x.avatar+' '+x.name;c.setAttribute('aria-pressed',on);c.onclick=function(){var i=selectedBots.indexOf(x.id);if(i>-1){if(selectedBots.length>1){selectedBots.splice(i,1);c.classList.remove('on');c.setAttribute('aria-pressed','false');}}else{selectedBots.push(x.id);c.classList.add('on');c.setAttribute('aria-pressed','true');}};box.appendChild(c);});}
+var form=document.getElementById('form'),input=document.getElementById('input'),cancelBtn=document.getElementById('cancel');
+cancelBtn.onclick=function(){flushConvs();loadCancelled=true;if(genCtl)genCtl.abort();var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}if(ph==='downloading'||ph==='loading'||ph==='generating'){try{ViaWasmEngine.cancel();}catch(e){}loadArmed=false;}};
+document.getElementById('retryBtn').onclick=function(){enginePromise=null;var f=lastFailure;lastFailure=null;if(f&&f.item){queue.unshift({text:f.item.text,cancelled:false});}setState('idle');pump();};
+function pump(){
+  if(working||!queue.length)return;
+  var sm={phase:'idle'};try{sm=ViaLocalEngine.summary();}catch(e){}
+  if(eng.provider!=='local'){var it0=queue.shift();if(!it0)return;working=true;runItem(it0).then(function(){working=false;pump();},function(){working=false;pump();});return;}
+  if(sm.phase!=='ready'){
+    if(!enginePromise)addOnce('sys','Modèle non chargé : appuie sur « Charger le modèle local » ci-dessus — ton message partira juste après.');
+    return;
+  }
+  var item=queue.shift();
+  if(!item)return;
+  working=true;
+  runItem(item).then(function(){working=false;pump();},function(){working=false;pump();});
+}
+function runItem(item){
+  if(eng.provider!=='local')return runRemote(item);
+  return ensureEngine().then(function(){
+    var chain=Promise.resolve();
+    selectedBots.forEach(function(id){
+      chain=chain.then(function(){
+        if(item.cancelled)return;
+        var bot=botsById[id];if(!bot)return;
+        setState('responding',bot.name);
+        var sd=addStream(bot);
+        genCtl=new AbortController();
+        var h=H(bot.id);h.push({role:'user',content:item.text});
+        return ViaLocalEngine.chat(bot,h.slice(-4),{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+          sd.body.textContent=r;h.push({role:'assistant',content:r});saveConv(bot.id);
+        },function(e){
+          if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
+          else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));throw e;}
+        }).then(function(){genCtl=null;});
+      });
+    });
+    return chain.then(function(){
+      if(item.cancelled)return;
+      return xreadTouch(item);
+    }).then(function(){if(!item.cancelled){setState('ready');lastFailure=null;}});
+  },function(e){
+    if(e&&e.code==='NEEDS_CONSENT'){addOnce('sys','Autorise le téléchargement du modèle ci-dessus pour discuter (un seul accord, réutilisé ensuite).');consentShown(true);input.value=item.text;input.focus();}
+    else if(e&&e.code==='NEEDS_LOAD'){queue.unshift(item);addOnce('sys',explain(e));}
+    else if(e&&e.code==='ABORTED'){addOnce('sys','Chargement annulé.');}
+    else{lastFailure={stage:'engine',item:item};}
+  });
+}
+function saveConv(id){try{var h=hists[id];if(h&&h.length)localStorage.setItem('via-conv-'+id,JSON.stringify(h.slice(-20)));}catch(e){}}
+function restoreConvs(){var n=0;try{cfg.bots.forEach(function(x){try{var sv=JSON.parse(localStorage.getItem('via-conv-'+x.id)||'null');if(sv&&sv.length){hists[x.id]=sv.slice(-20);n+=sv.length;}}catch(e){}});}catch(e){}return n;}
+function xreadOn(){try{return localStorage.getItem('via-xread')!=='off';}catch(e){return true;}}
+// Synergetizer minimal : le binôme Geeko↔Geekette se relit (une phrase max).
+// Strict : une seule intervention par message, jamais de réponse à une réponse,
+// jamais si le binôme a déjà répondu. Silence en cas d'échec (pas de remplissage).
+function xreadTouch(item){
+  if(eng.provider!=='local'||!xreadOn())return Promise.resolve();
+  if(q!=='geeko'&&q!=='geekette')return Promise.resolve();
+  var pid=q==='geeko'?'geekette':'geeko';
+  if(selectedBots.indexOf(pid)>-1)return Promise.resolve();
+  var bot=botsById[pid];if(!bot)return Promise.resolve();
+  var aname=(botsById[q]||{}).name||q;
+  setState('responding',bot.name);
+  var wait=addWait(bot);
+  genCtl=new AbortController();
+  var h=H(pid);h.push({role:'user',content:item.text});
+  var rb={};for(var k in bot)rb[k]=bot[k];
+  rb.specialty=bot.specialty+' Consigne stricte : une seule phrase en réaction à ce que vient de dire '+aname+'. Complète ou contredis avec humour, sans répéter ses mots.';
+  return ViaLocalEngine.chat(rb,h.slice(-4),{signal:genCtl.signal}).then(function(r){
+    var m=String(r).match(/^[^.!?…]+[.!?…]/);var one=m?m[0]:r;
+    h.push({role:'assistant',content:one});wait.remove();addPulsed({name:bot.name+' (relecture)'},one);saveConv(bot.id);
+  },function(e){
+    wait.remove();
+    if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){item.cancelled=true;}
+  }).then(function(){genCtl=null;});
+}
+// Carte d'identité locale (token automatique) : modèle, chargements, accord.
+// Rien ne quitte l'appareil : aucun serveur, aucun compte.
+function updateIdCard(){
+  var key='via-idcard',card=null;
+  try{card=JSON.parse(localStorage.getItem(key)||'null');}catch(e){card=null;}
+  var now=new Date(),p=function(n){return ('0'+n).slice(-2);};
+  var stamp=now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(now.getDate())+' '+p(now.getHours())+':'+p(now.getMinutes());
+  var model=(ViaLocalEngine.summary().model)||ViaLocalEngine.MODELS[0].id;
+  if(!card||!card.token){var hh=0,s=model+stamp;for(var i=0;i<s.length;i++)hh=(hh*31+s.charCodeAt(i))>>>0;card={token:'VIA-'+hh.toString(36).toUpperCase(),firstLoaded:stamp,loads:0};}
+  card.model=model;card.lastLoaded=stamp;card.loads=(card.loads||0)+1;
+  try{localStorage.setItem(key,JSON.stringify(card));}catch(e){}
+  paintIdCard(card);
+}
+function paintIdCard(card){
+  try{if(!card)card=JSON.parse(localStorage.getItem('via-idcard')||'null');}catch(e){card=null;}
+  var t=document.getElementById('idcToken');if(t)t.textContent=card?card.token:'—';
+  var m=document.getElementById('idcModel');if(m)m.textContent=card?card.model:'—';
+  var l=document.getElementById('idcLoaded');if(l)l.textContent=card?('le '+card.lastLoaded+' ('+card.loads+' chargement(s))'):'—';
+  var c0=null;try{c0=JSON.parse(localStorage.getItem(ViaLocalEngine.CONSENT_KEY||'via-consent')||'null');}catch(e){}
+  var cs=document.getElementById('idcConsent');if(cs)cs.textContent=(c0&&c0.ts)?new Date(c0.ts).toLocaleString():'—';
+}
+function runRemote(item){
+  var b0=botsById[q]||botsById[selectedBots[0]];
+  setState('responding',b0.name);
+  var wait=addWait(b0);
+  genCtl=new AbortController();
+  var key=document.getElementById('pKey').value||null;var h=H(b0.id);h.push({role:'user',content:item.text});
+  return ViaProviders.chat(eng,b0,h.slice(-10),genCtl.signal,key).then(function(r){
+    h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;
+  },function(e){
+    wait.remove();
+    if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
+    else{
+      if((e&&e.code)==='NOT_LOADED'&&ViaLocalEngine.getConsent()!=='granted')consentShown(true);
+      addOnce('sys','Erreur : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));
+    }
+  }).then(function(){genCtl=null;});
+}
+form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';queue.push({text:v,cancelled:false});pump();input.focus();});
+input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
+var actCtl=null;
+function renderActs(){var el=document.getElementById('actList');el.innerHTML='';ViaActions.TOOLS.forEach(function(t){var d=document.createElement('div');var ok=ViaActions.available(t);d.textContent=(ok?'🟢 ':'🔴 ')+t.title+' — '+t.desc+' [accès : '+t.perms+']'+(t.sensitive?' [SENSIBLE : validation exigée]':'')+((t.needs&&!ok)?' [manquant : '+t.needs+']':'');var rb=document.createElement('button');rb.type='button';rb.textContent=ok?'Exécuter':'Indisponible';rb.style.cssText='margin-left:8px;min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f';rb.disabled=!ok;rb.onclick=function(){execAct(t);};d.appendChild(rb);el.appendChild(d);});}
+function actUI(state,res){document.getElementById('actState').textContent='État : '+state;if(res!==undefined)document.getElementById('actResult').textContent='Résultat réel : '+res;var r=(state==='en cours');document.getElementById('actStop').hidden=!r;document.getElementById('actTake').hidden=!r;}
+document.getElementById('actStop').onclick=function(){if(actCtl)actCtl.abort();};
+document.getElementById('actTake').onclick=function(){if(actCtl)actCtl.abort();actUI('repris en main','Tu as repris la main : action stoppée, écris directement dans le champ message.');input.focus();};
+function execAct(t){if(actCtl)return;if(t.sensitive){if(!confirm('VALIDATION EXIGÉE — « '+t.title+' » est sensible (achat, suppression importante, publication ou message externe). Confirmer ?')){actUI('refusée','Validation refusée : rien exécuté.');return;}}
+var txt='';if(t.id==='ask'){txt=prompt('Question pour le moteur (service connecté requis) :','');if(!txt)return;}
+actCtl=new AbortController();actUI('en cours');add('sys','⚒️ Action « '+t.title+' » — objectif : '+t.desc);
+ViaActions.run(t.id,{bot:q,botObj:b,text:txt,title:b.name+' — '+t.title,key:document.getElementById('pKey').value||null,signal:actCtl.signal},function(st,msg){document.getElementById('actState').textContent='État : en cours — '+msg;}).then(function(r){actUI('terminée',r);add('sys','⚒️ « '+t.title+' » terminé : '+r);}).catch(function(e){if(e&&e.name==='AbortError')actUI('arrêtée','Arrêtée à ta demande : reprends la main.');else actUI('erreur',(e&&e.message)||'échec');}).finally(function(){actCtl=null;document.getElementById('actStop').hidden=true;document.getElementById('actTake').hidden=true;});}
+renderActs();
+fillSettings();
+try{document.getElementById('pulseChk').checked=pulseOn();}catch(e){}
+document.getElementById('pulseChk').onchange=function(){try{localStorage.setItem('via-pulse',this.checked?'on':'off');}catch(e){}};
+try{document.getElementById('xreadChk').checked=xreadOn();}catch(e){}
+document.getElementById('xreadChk').onchange=function(){try{localStorage.setItem('via-xread',this.checked?'on':'off');}catch(e){}};
+document.getElementById('gearBtn').onclick=function(){var s=document.getElementById('settings');s.hidden=!s.hidden;if(!s.hidden){refreshConsent();paintPerms();paintDiag();}};
+refreshConsent();paintDiag();
+try{ViaLocalEngine.detect().then(function(c){window.__viaCap=c;paintPick(c);paintDiag(c);}).catch(function(){});}catch(e){}
+if(eng.provider==='local'&&ViaLocalEngine.getConsent()==='granted'){setState('idle');}else{setState(eng.provider==='local'?'needs-consent':'idle');if(eng.provider!=='local')document.getElementById('pMsg').textContent='Moteur manuel actif : '+eng.provider+'. Le modèle local automatique est en pause.';}
+ViaCaps.paint('capsLine');
+input.focus();
+}).catch(function(){document.getElementById('who').textContent='Hors-ligne : recharge en ligne une fois.';});
+</script>
+<script src="../refresh.js"></script>
+</body>
+</html>
