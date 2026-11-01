@@ -293,10 +293,10 @@ function paintDiag(cap){
     'WebGPU : non utilisé (moteur CPU/WASM seul)',
     'WebAssembly (moteur CPU) : '+(cap.wasm?'oui':'non) — requis')];
   try{var pk=ViaLocalEngine.pickModel(cap);L.push('moteur sélectionné : '+(pk.error?('aucun ('+pk.error+')'):pk.backend+' / '+(pk.id||'auto')));}catch(e){}
-  try{var sm=ViaLocalEngine.summary();if(sm){L.push('moteur actif : '+(sm.backend||'?')+' / modèle : '+(sm.model||'—'));if(sm.tokenizer)L.push('tokenizer : '+sm.tokenizer);if(sm.mode&&sm.mode!=='—')L.push('mode : '+sm.mode);} }catch(e){}
+  try{if(eng.provider==='local'){var sm=ViaLocalEngine.summary();if(sm){L.push('moteur actif : '+(sm.backend||'?')+' / modèle : '+(sm.model||'—'));if(sm.tokenizer)L.push('tokenizer : '+sm.tokenizer);if(sm.mode&&sm.mode!=='—')L.push('mode : '+sm.mode);}}else{L.push('moteur actif : '+eng.provider+(eng.model?' / '+eng.model:'')+(eng.baseUrl?' ('+eng.baseUrl+')':''));L.push('moteur WASM : en pause (fournisseur manuel sélectionné, pas un BLM)');}}catch(e){}
   if(cap.reasons&&cap.reasons.length)L.push('causes : '+cap.reasons.join(' | '));
   else L.push('causes : aucune (appareil compatible)');
-  try{var sm2=ViaLocalEngine.summary();if(sm2){if(sm2.backend)L.push('moteur actif : '+sm2.backend+(sm2.model?' / '+sm2.model:''));if(sm2.threads)L.push('threads : '+sm2.threads);if(sm2.tokenizer)L.push('tokenizer : '+sm2.tokenizer);}}catch(e){}
+  try{if(eng.provider==='local'){var sm2=ViaLocalEngine.summary();if(sm2){if(sm2.backend)L.push('moteur actif : '+sm2.backend+(sm2.model?' / '+sm2.model:''));if(sm2.threads)L.push('threads : '+sm2.threads);if(sm2.tokenizer)L.push('tokenizer : '+sm2.tokenizer);}}}catch(e){}
   el.textContent=L.join('\n');
 }
 function paintStorage(){
@@ -501,14 +501,16 @@ function runRemote(item){
   var wait=addWait(b0);
   genCtl=new AbortController();
   var key=document.getElementById('pKey').value||null;var h=H(b0.id);h.push({role:'user',content:item.text});
+  var orchR=orchestrerBLM(item.text,b0,h);
   return ViaProviders.chat(eng,b0,h.slice(-10),genCtl.signal,key).then(function(r){
+    r=verifierFinaleBLM(orchR,r);
     h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;
   },function(e){
     wait.remove();
     if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
     else{
       if((e&&e.code)==='NOT_LOADED'&&ViaLocalEngine.getConsent()!=='granted')consentShown(true);
-      addOnce('sys','Erreur : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));
+      var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — l’adresse ne répond pas comme Ollama (POST /api/chat refusé) : vérifie l’IP et le port (ex http://192.168.1.20:11434), Ollama démarré (ollama serve), puis « Tester ».';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));
     }
   }).then(function(){genCtl=null;});
 }
@@ -527,26 +529,44 @@ function souvenirsPertinents(botId,h){
   var mem=base.map(function(m){return BLMMemoire.classerSouvenir({projet:String(botId||'courant'),intention:m.role==='user'?'demande':'reponse',type:'evolution',texte:String(m.content||'').slice(0,500),statut:'actif'});});
   try{return BLMMemoire.restaurerSurLancement(mem,{app:String(botId||'courant')});}catch(e){return mem;}
 }
+// --- État commun BLM : circule entre les blocs, chacun l'enrichit ---
+// intention, contexte utile, langue, relations, temps, causes, ton,
+// contraintes, certitude ; un bloc peut signaler une contradiction ou
+// demander une nouvelle analyse (redemandes).
+function etatInitial(texte,bot){return {texte:String(texte||''),botId:bot&&bot.id,intention:null,contexte:[],langue:null,relations:[],temps:null,causes:[],ton:'neutre',contraintes:['tutoiement, jamais de « vous »','pas de preuve de conscience','réponse courte, une relance si salutation'],certitude:0.5,contradictions:[],redemandes:[]};}
+function blmComprehension(etat){var t=etat.texte,m=t.toLowerCase();
+  etat.intention=estSalutation(t)?'salutation':(/\?\s*$/.test(t.trim())?'question':'message');
+  if(/parce que|puisque|donc|alors|\bcar\b|grace à|à cause/.test(m))etat.causes.push('cause-marquee');
+  if(/demain|hier|aujourd|ce soir|bientôt|la semaine/.test(m))etat.temps='mention-temporelle';
+  if(etat.intention==='salutation')etat.relations.push('salutation->etat-personnel');
+  if(/et\b.*\?/.test(m))etat.relations.push('multi-idees');
+  return etat;}
+function blmMemoire(etat,h){etat.contexte=souvenirsPertinents(etat.botId,h);return etat;}
+function blmLangue(etat){etat.langue=langueMessageLocal(etat.texte);return etat;}
+function blmTon(etat,bot){var p=String((bot&&bot.personality)||'');etat.ton=/drôle|fun|taquin|iron|enjoué/i.test(p)?'enjoue':'neutre';if(etat.intention==='salutation')etat.ton='convivial';return etat;}
+function blmCertitude(etat){etat.certitude=etat.intention==='salutation'?0.95:(etat.contexte.length?0.7:0.5);return etat;}
 function orchestrerBLM(texte,bot,h){
-  var intention=estSalutation(texte)?'salutation':(/\?\s*$/.test(String(texte||'').trim())?'question':'message');
-  var souvenirs=souvenirsPertinents(bot&&bot.id,h);
-  var langue=langueMessageLocal(texte);
-  return {intention:intention,langue:langue,souvenirs:souvenirs,botId:bot&&bot.id};
+  var e=etatInitial(texte,bot);
+  blmComprehension(e);blmMemoire(e,h);blmLangue(e);blmTon(e,bot);blmCertitude(e);
+  return e;
 }
-function verifierFinaleBLM(orch,rep){
-  var s=String(rep||'').trim(),fr=orch.langue==='fr';
+function verifierFinaleBLM(etat,rep){
+  var s=String(rep||'').trim(),fr=etat.langue==='fr';
   var base={langueOk:true,grammaireOk:true,pertinent:s.length>0,repetition:false,registreOk:true,coherent:true};
-  if(orch.intention==='salutation'){
+  if(etat.intention==='salutation'){
     base.langueOk=!fr||/[àâäéèêëîïôöùûüç]/i.test(s)||/\b(je|tu|nous|salut|bonjour)\b/i.test(s);
     base.grammaireOk=/^[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]/.test(s)&&/[.?!…]\s*$/.test(s);
     base.registreOk=!fr||!/\bvous\b/i.test(s);
     base.coherent=/salut|bonjour|coucou|hello|ça va|comment/i.test(s)&&/\?\s*$/.test(s);
-    base.repetition=orch.souvenirs.some(function(m){return m.texte===s;});
+    base.repetition=etat.contexte.some(function(m){return m.texte===s;});
+  } else {
+    base.coherent=s.length>0&&etat.contexte.every(function(m){return m.texte!==s||etat.intention!=='question';});
   }
   var v={ok:true,problemes:[]};
   try{if(window.BLMPhilo)v=BLMPhilo.verifierReponse(base);}catch(e){v={ok:base.langueOk&&base.grammaireOk&&base.pertinent&&!base.repetition&&base.registreOk&&base.coherent,problemes:['repli-local']};}
-  if(!v.ok&&window.console&&console.warn)console.warn('[BLM] réponse écartée ('+v.problemes.join(',')+'), modèle vérifié appliqué.');
-  return v.ok?s:reponseSalutation();
+  if(/salut|bonjour/i.test(s)&&/\bvous\b/i.test(s))etat.contradictions.push('vouvoiement-vs-tutoiement');
+  if(!v.ok||etat.contradictions.length){etat.redemandes.push('modele-verifie');if(window.console&&console.warn)console.warn('[BLM] contradiction ('+(etat.contradictions.concat(v.problemes)).join(',')+'), nouvelle analyse : modèle vérifié.');return reponseSalutation();}
+  return s;
 }
 form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){selectedBots.forEach(function(id){var b=botsById[id];if(!b)return;var h=H(b.id);h.push({role:'user',content:v});var r=reponseSalutation();h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);});input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
