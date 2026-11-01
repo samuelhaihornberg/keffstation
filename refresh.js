@@ -55,7 +55,7 @@
     } catch (e) {}
     if (scope === ici) {
       toast('Actualisation ' + meta.label + '…');
-      setTimeout(function () { location.reload(); }, 600);
+      setTimeout(function () { window.location.reload(); }, 600);
     } else {
       toast(meta.label + ' prête pour la prochaine visite');
     }
