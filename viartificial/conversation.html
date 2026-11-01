@@ -160,6 +160,11 @@ body[data-min="1"] .msn{display:none}
 <script src="./capabilities.js"></script>
 <script src="./local-wasm.js"></script>
 <script src="./local-engine.js"></script>
+<script>window.__blmSlot={exports:{}};window.module=window.__blmSlot;</script>
+<script src="./src/memoire-classee.js"></script>
+<script>window.BLMMemoire=window.module.exports;window.module={exports:{}};</script>
+<script src="./src/dico-philo.js"></script>
+<script>window.BLMPhilo=window.module.exports;window.module={exports:{}};</script>
 <script>
 var q=(new URLSearchParams(location.search).get('bot')||'geeko').toLowerCase();
 var body=document.body,thread=document.getElementById('thread');
@@ -421,8 +426,9 @@ function runItem(item){
         var sd=addStream(bot);
         genCtl=new AbortController();
         var h=H(bot.id);h.push({role:'user',content:item.text});
+        var orch=orchestrerBLM(item.text,bot,h);
         return ViaLocalEngine.chat(bot,h.slice(-4),{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
-          r=verifierFinale(item.text,r);
+          r=verifierFinaleBLM(orch,r);
           sd.body.textContent=r;h.push({role:'assistant',content:r});saveConv(bot.id);
         },function(e){
           if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
@@ -510,9 +516,38 @@ function runRemote(item){
 // Évite que le mini-modèle local et l'historique brut détournent la réponse.
 function estSalutation(t){var s=String(t||'').trim();return /^(salut|bonjour|bonsoir|coucou|hello|yo|hey)[,!.\s]*/i.test(s)&&/ça va|ca va|comment (tu vas|vas-tu)|vous allez|la forme|quoi de neuf|how are you/i.test(s);}
 function reponseSalutation(){var candidat='Salut ! Ça va bien, merci 😊 Et toi, comment tu vas ?';var ok=/salut/i.test(candidat)&&/\?\s*$/.test(candidat.trim())&&!/vous/i.test(candidat);if(!ok)candidat='Salut ! Je suis là 😊 Et toi, comment tu vas ?';return candidat;}
-// Vérification finale : pour une entrée en salutation, la réponse du moteur
-// doit saluer, tutoyer et relancer ; sinon repli sur le modèle vérifié.
-function verifierFinale(userText,rep){var s=String(rep||'').trim();var salut=/^(salut|bonjour|bonsoir|coucou|hello|yo|hey)\b/i.test(String(userText||'').trim());if(!salut)return s||'…';var ok=s&&/salut|bonjour|coucou|hello|ça va|comment/i.test(s)&&!/\bvous\b/i.test(s)&&/\?\s*$/.test(s);return ok?s:reponseSalutation();}
+// --- Orchestrateur BLM du parcours réel (modules src/ chargés ci-dessus) ---
+// 1 compréhension (intention) → 2 contexte (souvenirs classés) → 3 langue →
+// 4 formulation (moteur ou modèle direct) → 5 vérification finale (BLMPhilo).
+// Chaque étape reçoit l'objet de la précédente et l'enrichit.
+function langueMessageLocal(t){var s=String(t||'');if(/[àâäéèêëîïôöùûüç]/i.test(s))return 'fr';if(/\b(le|la|les|des|est|une|vous|tu|que|pour|comment|avec)\b/i.test(s))return 'fr';return 'en';}
+function souvenirsPertinents(botId,h){
+  if(!window.BLMMemoire)return [];
+  var base=(h||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant')&&String(m.content||'').trim();}).slice(-8);
+  var mem=base.map(function(m){return BLMMemoire.classerSouvenir({projet:String(botId||'courant'),intention:m.role==='user'?'demande':'reponse',type:'evolution',texte:String(m.content||'').slice(0,500),statut:'actif'});});
+  try{return BLMMemoire.restaurerSurLancement(mem,{app:String(botId||'courant')});}catch(e){return mem;}
+}
+function orchestrerBLM(texte,bot,h){
+  var intention=estSalutation(texte)?'salutation':(/\?\s*$/.test(String(texte||'').trim())?'question':'message');
+  var souvenirs=souvenirsPertinents(bot&&bot.id,h);
+  var langue=langueMessageLocal(texte);
+  return {intention:intention,langue:langue,souvenirs:souvenirs,botId:bot&&bot.id};
+}
+function verifierFinaleBLM(orch,rep){
+  var s=String(rep||'').trim(),fr=orch.langue==='fr';
+  var base={langueOk:true,grammaireOk:true,pertinent:s.length>0,repetition:false,registreOk:true,coherent:true};
+  if(orch.intention==='salutation'){
+    base.langueOk=!fr||/[àâäéèêëîïôöùûüç]/i.test(s)||/\b(je|tu|nous|salut|bonjour)\b/i.test(s);
+    base.grammaireOk=/^[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]/.test(s)&&/[.?!…]\s*$/.test(s);
+    base.registreOk=!fr||!/\bvous\b/i.test(s);
+    base.coherent=/salut|bonjour|coucou|hello|ça va|comment/i.test(s)&&/\?\s*$/.test(s);
+    base.repetition=orch.souvenirs.some(function(m){return m.texte===s;});
+  }
+  var v={ok:true,problemes:[]};
+  try{if(window.BLMPhilo)v=BLMPhilo.verifierReponse(base);}catch(e){v={ok:base.langueOk&&base.grammaireOk&&base.pertinent&&!base.repetition&&base.registreOk&&base.coherent,problemes:['repli-local']};}
+  if(!v.ok&&window.console&&console.warn)console.warn('[BLM] réponse écartée ('+v.problemes.join(',')+'), modèle vérifié appliqué.');
+  return v.ok?s:reponseSalutation();
+}
 form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){selectedBots.forEach(function(id){var b=botsById[id];if(!b)return;var h=H(b.id);h.push({role:'user',content:v});var r=reponseSalutation();h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);});input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
 var actCtl=null;
