@@ -1,11 +1,11 @@
 // scripts/gen-cos-graphe.cjs — Graphe COS : UN MILLION de liens candidats.
 // Génère UNE fois : node scripts/gen-cos-graphe.cjs (cwd = racine KeffStation).
 // Modes : (défaut) générer | --cherche DE OP VERS CTX | --evoluer obs.jsonl
-// Nœuds (170) : 110 BLM + 16 familles + 2 langues + 15 patterns + 4 paramètres
+// Nœuds (176) : 110 BLM + 16 familles + 2 langues + 15 patterns + 4 paramètres
 // (registre généré du catalogue) + 7 SuperBots (bots.json) + 4 moteurs +
-// 11 orchestrateurs (PARCOURS) + 1 LLM partagé. Paires ordonnées sans auto-lien
-// (diagonale interdite, matrice) × 3 opérateurs traversables (to/→/← ; ↔
-// jamais traversable) × 12 contextes = 1 034 280 candidats.
+// 11 orchestrateurs (PARCOURS) + 1 LLM partagé + 6 notions (formation vérifiée).
+// Paires ordonnées sans auto-lien (diagonale interdite, matrice) × 3 opérateurs
+// traversables (to/→/← ; ↔ jamais traversable) × 12 contextes = 1 108 800 candidats.
 // Chaque lien est VÉRIFIÉ (compatibilité classes/propriétés), jamais créé
 // aveuglément : statut candidat → valide | ecarte (+motif). 'actif' est réservé
 // à la promotion par résultats/mesures réels (--evoluer) ; aucun actif initial.
@@ -22,6 +22,7 @@ const GDIR = path.join(VDIR, 'src', 'cos-graphe');
 const REG = require(path.join(VDIR, 'src', 'cos-registre.js')).REGISTRE;
 const Eq = require(path.join(VDIR, 'src', 'blm-equipe.js'));
 const COSL = require(path.join(VDIR, 'src', 'cos-langage.js'));
+const FORM = require(path.join(VDIR, 'src', 'blm-formation.js'));
 const BOTS = JSON.parse(fs.readFileSync(path.join(VDIR, 'bots.json'), 'utf8')).bots;
 const CTX = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'salutation', 'minimal', 'repli', 'linguistique', 'ordinaire', 'globale'];
 const OPS = ['to', '→', '←'];
@@ -39,6 +40,17 @@ function noeuds() {
   Object.keys(MOTEURS).forEach((k) => { N[k] = Object.assign({ id: k }, MOTEURS[k]); });
   Eq.PARCOURS.forEach((p) => { N['etape:' + p.nom] = { id: 'etape:' + p.nom, classe: 'orchestrateur', nom: p.nom, role: p.role, blm: p.blm, source: 'blm-equipe.js PARCOURS' }; });
   N['llm:partage'] = { id: 'llm:partage', classe: 'llm', nom: 'LLM partagé (inférence unique)', source: 'providers.js + local-wasm.js' };
+  // Notions de formation (blm-formation.js BASE) : socle vérifié + prerequis.
+  // Seules les notions homologuées entrent dans le graphe.
+  FORM.BASE.forEach((e) => {
+    var ok = false;
+    try { ok = FORM.homologuer(e).ok; } catch (x) { ok = false; }
+    if (!ok) { console.log('notion rejetee (non homologuee) : ' + e.id); return; }
+    N['notion:' + e.id] = { id: 'notion:' + e.id, classe: 'notion', nom: e.titre,
+      domaine: e.domaine, niveau: e.niveau, langue: e.langue, concepts: e.concepts || [],
+      depend: (e.prerequis || []).map(function (p) { return 'notion:' + p; }),
+      fiabilite: e.fiabilite, source: 'src/blm-formation.js BASE' };
+  });
   return N;
 }
 const N = noeuds();
@@ -55,6 +67,28 @@ function famDe(n) { const d = typeof n === 'string' ? N[n] : n; return d && d.de
 function compat(a, b) {
   if (a.id === b.id) return { ok: false, motif: 'diagonale-interdite' };
   const ca = a.def.classe, cb = b.def.classe;
+  // Notions de formation (graphe seul ; le parcours actif ne les charge pas) :
+  // prerequis entre notions ; savoir 045/046/049/050 puise ; superbot
+  // approfondit selon son domaine (motsClesBot) ; aucun autre lien.
+  if (ca === 'notion' || cb === 'notion') {
+    if (ca === 'notion' && cb === 'notion') {
+      if ((b.def.depend || []).indexOf(a.id) >= 0) return { ok: true, motif: 'prerequis-formation' };
+      return { ok: false, motif: 'pas-de-prerequis' };
+    }
+    if (ca === 'BLM' && ['045', '046', '049', '050'].indexOf(a.id) >= 0 && cb === 'notion') return { ok: true, motif: 'savoir-puise-formation' };
+    if (ca === 'superbot' && cb === 'notion') {
+      try {
+        var bot = null;
+        BOTS.forEach(function (x) { if ('bot:' + x.id === a.id) bot = x; });
+        var mots = FORM.motsClesBot(bot || {});
+        var cible = String(b.def.domaine || '') + ' ' + (b.def.concepts || []).join(' ');
+        var cn = ' ' + String(cible).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + ' ';
+        for (var i = 0; i < mots.length; i++) { if (cn.indexOf(' ' + mots[i] + ' ') >= 0) return { ok: true, motif: 'approfondissement-bot' }; }
+      } catch (e) {}
+      return { ok: false, motif: 'hors-domaine-bot' };
+    }
+    return { ok: false, motif: 'pas-de-lien-documente' };
+  }
   if (['BLM', 'famille', 'langue', 'pattern', 'parametre'].includes(ca) && ['BLM', 'famille', 'langue', 'pattern', 'parametre'].includes(cb)) {
     if (ca === 'famille' && cb === 'famille') {
       const pa = PHASE[a.def.nom], pb = PHASE[b.def.nom];
@@ -127,11 +161,18 @@ function generer() {
     if (c.ok) ok++;
     else console.log('DIVERGENCE doc-defaut : ' + p + ' -> ' + c.motif);
   });
-  const index = { version: 1, genereLe: new Date().toISOString(), total, valides, parContexte: parCtx,
+  // Vérifie : chaque prerequis de notion existe comme nœud (fondations présentes).
+  let prerequisOk = 0, prerequisTotal = 0;
+  Object.keys(N).filter((k) => N[k].classe === 'notion').forEach((k) => {
+    (N[k].depend || []).forEach((d) => { prerequisTotal++; if (N[d]) prerequisOk++; else console.log('PREREQUIS manquant : ' + d + ' (requis par ' + k + ')'); });
+  });
+  const index = { version: 2, genereLe: new Date().toISOString(), total, valides, parContexte: parCtx,
     statuts: ['candidat', 'valide', 'ecarte', 'actif-confirme(par --evoluer, résultats réels uniquement)'],
     dependDocDefaut: ok + '/' + paires.length + ' valides',
+    notions: Object.keys(N).filter((k) => N[k].classe === 'notion'),
+    prerequisVerifies: prerequisOk + '/' + prerequisTotal + ' resolus',
     generateur: 'scripts/gen-cos-graphe.cjs (déterministe, sans aléa)',
-    note: 'Le parcours actif ne charge jamais les shards : sélection sur liens utiles (cos-defaut + équipe + borne).' };
+    note: 'Le parcours actif ne charge jamais les shards : sélection sur liens utiles (cos-defaut + équipe + borne). Les notions vivent dans le graphe indexé ; le runtime ne transmet que des ancres (blm-formation.js).' };
   fs.writeFileSync(path.join(GDIR, 'index.json'), JSON.stringify(index, null, 1));
   console.log('TOTAL ' + total + ' valides ' + valides + ' en ' + ((Date.now() - t0) / 1000).toFixed(1) + 's');
   console.log('doc-defaut valides : ' + ok + '/' + paires.length);

@@ -22,13 +22,14 @@ function ecrireJournal(entrees, stockage) {
   } catch (e) { return false; }
 }
 function consigner(issue, stockage) {
-  // issue : {bot, issue:'succes'|'refus'|'erreur', motif, verdict, redemandes}
+  // issue : {bot, issue:'succes'|'refus'|'erreur', motif, verdict, redemandes, session}
   var e = {
     at: new Date().toISOString(),
     bot: String((issue && issue.bot) || 'inconnu').slice(0, 40),
     issue: String((issue && issue.issue) || 'inconnu'),
     motif: String((issue && issue.motif) || '').slice(0, 140),
     verdict: String((issue && issue.verdict) || ''),
+    session: String((issue && issue.session) || '').slice(0, 40),
     redemandes: +(issue && issue.redemandes) || 0
   };
   var a = lireJournal(stockage);

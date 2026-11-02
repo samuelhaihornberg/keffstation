@@ -6,8 +6,8 @@
 // Règles DÉJÀ PRÉSENTES réutilisées : plans 002 (blm-routage.js), portes S4
 // (budget/enveloppe), redemande unique terminale (blm-contrat.js), repli
 // modèle (conversation.html reponseSalutation), cloisonnement par bot
-// (memoire-classee.js). Règles NOUVELLES (à confirmer) : vagues ordre//
-// parallélisme ci-dessous + PRIORITES de résolution des contradictions.
+// (memoire-classee.js). Règles NOUVELLES (à confirmer) : ordre des vagues,
+// parallélisme documenté ci-dessous + PRIORITES de résolution des contradictions.
 // Garde : aucun BLM ne touche sysPrompt ni personality du bot (068,
 // providers.js) ; ViA garde sa sociabilité (096 AMI-CHALEUR + consigne ViA).
 'use strict';
@@ -21,8 +21,8 @@
 // (conversation.html, src/*). Divergences assumées : 005/099 (cat. étape 1) et
 // 097 (cat. étape 6) rangés en S4 car plan-v1 S4 + porte budget du code ;
 // 008/051-056/060/062 (cat. étape 5) rangés en S6 car plan-v1 S6 +
-// verifierFinaleBLM du code. 096/059 : étape catalogue reprise, NON CÂBLÉS en
-// code (aucun appel trouvé) — affectation à préciser. 026 : étape 2 seule
+// verifierFinaleBLM du code ; 096 câblé en S4, 059 câblé en S5
+// (affectations catalogue conservées : 096 étape 4, 059 étape 5). 026 : étape 2 seule
 // (acteur S5 = 077) — doublon S5 supprimé le 2026-11-03.
 var EQUIPES = {
   salutation: { blocs: ['019', '035', '057'], moteur: false, motif: 'salutation-sans-moteur',

@@ -3,13 +3,13 @@
 // (seules mentions : manifest « cos, SuperBots, BLM, BLSM » + recyclor « cos V5 »
 // + app.js « Syntaxe cos (connexions) »). Ce fichier NE prétend PAS relever
 // d'une spec existante : il définit un registre minimal et vérifiable.
-// Rôle : le BLM du bot actif (063-066 RSN) sélectionne et ORDONNE les moteurs
-// COS pertinents ; l'appel reste porte unique preparerEntreeMoteur (S4).
-// ROUTAGE INACTIF PAR DÉFAUT (2026-11-03, maintenu) : le langage COS est
-// spécifié (src/cos-langage.js + motor.s : README, COS, co-cos-commun) MAIS
-// aucune correspondance BLM↔moteur-COS n'est établie dans le projet.
-// selectionner() retourne null tant que activer() n'a pas été appelé ; le
-// repli existant (002/005/099, reponseSalutation) est conservé tel quel.
+// Rôle : les règles 063-066 déterminent, via le plan, la sélection et
+// l'ORDRE des moteurs COS pertinents ; l'orchestrateur applique cette
+// sélection et l'appel reste porte unique preparerEntreeMoteur (S4).
+// ROUTAGE ACTIF par défaut (COS_ACTIF = true, opt-out via desactiver()) :
+// le langage COS est spécifié (src/cos-langage.js + motor.s : README, COS,
+// co-cos-commun). Correspondances établies : sélection par les règles
+// 063-066 via le plan, transmise à resoudreMoteur (portes + repli conservés).
 // Ne JAMAIS supposer A1→B2.
 // Types (NOUVEAU, à confirmer) : 'inference' | 'savoir' | 'correction' | 'memoire'.
 // États (NOUVEAU, à confirmer) : 'disponible' | 'indisponible' | 'en-charge' |
@@ -37,8 +37,9 @@ function declarer(m) {
   REGISTRE.push(e);
   return e;
 }
-// Sélection + ordre par le BLM : intention/perimetre/budget → séquence typée.
-// Salutation ou hors-périmètre → repli seul, jamais de moteur (002/028).
+// Sélection + ordre déterminés par les règles 063-066 à partir du plan :
+// intention/perimetre/budget → séquence typée. Salutation ou hors-périmètre
+// → repli seul, jamais de moteur (002/028).
 // Question/message → inference disponible, sinon repli (064/066).
 function estActif() { return COS_ACTIF === true; }
 function activer() { COS_ACTIF = true; return true; }

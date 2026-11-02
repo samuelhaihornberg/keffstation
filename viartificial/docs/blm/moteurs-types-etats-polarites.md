@@ -90,8 +90,8 @@
   allégation non mesurée), `recyclor.js:2` (« cos V5 », version non définie
   ailleurs). `matrice-v1.csv` = paires BLM uniquement, aucun lien BLM↔COS.
   A1→B2 N'EST PAS une règle établie : jamais supposé.
-- DÉCIDÉ : routage COS INACTIF par défaut (`blm-moteurs-cos.js` : `COS_ACTIF =
-  false`, `selectionner()` → null, `activer()` opt-in explicite) ; les deux
+- DÉCIDÉ : routage COS ACTIF par défaut (`blm-moteurs-cos.js` : `COS_ACTIF =
+  true`, opt-out `desactiver()` explicite) ; les deux
   points d'appel (`conversation.html` orchestration + porte S4) n'agissent que
   si `estActif()`, sinon trace `cos-inactif-spec-manquante` ; repli existant
   (002/005/099 → reponseSalutation) conservé tel quel.
@@ -179,9 +179,10 @@
   005=2048 et 099=50 CÂBLÉS et appliqués (portes + refus + traces) ;
   classement compatibilité + tourniquet + MAX_LIENS=8 CÂBLÉS (sélection
   d'équipe) ; grammaire cos `<co bot>` DISPONIBLE et parseur `lireBlocCo`
-  RÉELLEMENT APPELÉ (chaîne unique choisirParleur→ficheDepuisBloc→lireBlocCo,
+  RÉELLEMENT APPELÉ (appel unique choisirParleur→ficheDepuisBloc→lireBlocCo,
   sans producteur de repli). Distinguer : sélection COS des moteurs
-  (`selectionner`) TOUJOURS INACTIVE par défaut — ce n'est pas 066.
+  (`selectionner`) ACTIVE par défaut (`COS_ACTIF = true`, opt-out explicite)
+  — complémentaire de 066, qu'elle alimente sans le remplacer.
 - À DÉCIDER : MAX_LIENS et critère d'ordre (biais S1 actuel), activation
   routage-sélection COS, seuils 005/099 définitifs, sort de « COS preserve ».
 
@@ -236,15 +237,14 @@ parole à l'utilisateur, SANS écriture mémoire. Seul le SuperBot sélectionné
 parle (salutations comprises). Exception à trancher : conservation du binôme
 relecteur vs sélection stricte.
 - Graphe COS (`scripts/gen-cos-graphe.cjs`, déterministe, une commande) :
-1 034 280 candidats (170 nœuds : 110 BLM + 16 familles + 2 langues + 15
-patterns + 4 paramètres + 7 SuperBots + 4 moteurs + 11 orchestrateurs + 1 LLM ;
-paires ordonnées sans auto-lien × to/→/← × 12 contextes), chacun vérifié :
-77 616 valides / 956 664 écartés + motif ; 0 actif initial (réservé aux
+1 108 800 candidats (176 nœuds : 170 + 6 notions de formation ; paires
+ordonnées sans auto-lien × to/→/← × 12 contextes), chacun vérifié :
+78 588 valides / 1 030 212 écartés + motif ; 0 actif initial (réservé aux
 résultats réels via `--evoluer`). Les 118 paires `Dépend:` du doc défaut sont
-toutes valides. Shards `src/cos-graphe/shard-*.jsonl` (ignorés git,
-régénérables) + `index.json` suivi ; consultation sans tout charger
-(`--cherche`) ; le parcours actif garde la sélection légère existante
-(cos-defaut + équipe + borne).
+toutes valides ; notions reliées par prerequis. Shards
+`src/cos-graphe/shard-*.jsonl` (ignorés git, régénérables) + `index.json`
+suivi ; consultation sans tout charger (`--cherche`) ; le parcours actif
+garde la sélection légère existante (cos-defaut + équipe + borne).
 - Vérifié statiquement : 10 fonctions parsées, PARCOURS 11 au registre,
 handoffs 001→002/002→065 `depend-catalogue`, sélection (explicite >
 mémoires > défaut), moteur (3 cas), graphe (total + 118/118). AUCUN
@@ -273,8 +273,8 @@ lancement, AUCUNE conversation, AUCUNE batterie.
   (`memLangue`) ; seul le SuperBot sélectionné parle.
 - 005 (=2048, `blm-budget.js`) et 099 (=50, `blm-couts.js`) inchangés :
   limites, pas objectifs. Classement compatibilité + tourniquet par vague
-  avant MAX_LIENS=8 inchangés. Graphe : candidats 1 034 280 / valides 77 616
-  / 0 actif (réservé aux résultats réels via `--evoluer`, jamais auto-promu, vérifié : aucun `actif-confirme` dans les 12 shards).
+  avant MAX_LIENS=8 inchangés. Graphe : candidats 1 108 800 / valides 78 588
+  / 0 actif (réservé aux résultats réels via `--evoluer`, jamais auto-promu ; notions indexées, prerequis vérifiés).
 
 ## Matrice de circulation requête→réponse + alignement local/Pages (2026-11-04, statique, rien exécuté)
 Chaîne vérifiée dans le code : version fichiers (`__VIA_BUILD`,
@@ -315,8 +315,32 @@ pour ViA). Corrigé à la source : le `?bot=` entrant est conservé
 (`./conversation.html?bot=<id>`, `esc()` neutre sur les ids) étaient déjà
 correctes ; le cube ouvre l'index (aucun bot requis à ce niveau).
 
-## Suivi des écarts — état unique au 2026-11-03 (inspection statique, rien exécuté)
+## Suivi des écarts — état unique au 2026-11-04 (inspection statique, rien exécuté)
 RÉSOLUS (câblés, vérifiés dans le code, comportements non observés en exécution) :
+- Séances cloisonnées par bot : `lire/ecrireSeances`, `definirSeanceActive`,
+  `assurerSeance` (contexte vide à la création), `reprendreSeance`
+  (explicite), panneau `#seances` par bot, migration unique des anciens
+  `via-conv-<bot>` en séance archivée `s-legacy` consultable puis suppression
+  des clés ; AUCUNE réinjection automatique (plus de bandeau « restaurés ») ;
+  réponses tardives ignorées (`item.sessionId` vs séance active + abort à la
+  bascule) ; journal avec `session` ; ViaMemory (carnet/profil) intact et séparé.
+- Formulation sociale : « Salut » seul → salut bref sans présupposition ni
+  relance (`FORMULES` brèves + `doserChaleur` + `reponseSalutation` brève) ;
+  « Ça va ? » seul → `question-sociale` → réponse brève (`FORMULES_REPONSE`),
+  moteur contourné comme pour les salutations ; suite/doute/cohérence vérifient
+  la réponse directe (`blmCorrigerReponse` + `verifierFinaleBLM` : bref≤120
+  accepté, emoji final accepté, pas de relance exigée pour un salut simple) ;
+  071 `blm-coherence` aligné (bref OU relance). JUSTIFICATION : ne pas exiger
+  de relance là où le bot répond volontairement bref ; 120 = heuristique non
+  validée, tracée comme telle.
+- Mémoires séparées : question-sociale/salutation-simple sans moteur ;
+  ViaMemory jamais lu/écrit par le parcours de séance. Langue cohérente par
+  séance : marqueurs forts > langue de la séance active > langue du bot >
+  français (mise à jour à chaque message, jamais inventée).
+- Aucun corpus d'usages/publications/transcriptions dans le dépôt (vérifié :
+  aucun .srt/.vtt/.txt, aucune donnée) : 106 reste une consultation tracée à
+  base vide (`popularite: 0, véracité non évaluée`) ; les dicos restent des
+  aides internes jamais récitées. MANQUE SIGNALÉ, rien inventé.
 - XRead en relecture interne + un seul bot visible : `xreadTouch(item,
   dernierTexte)` sans `chat`/`addPulsed`/`push`/`saveConv`, langue du binôme
   restaurée, appelé avec la réponse produite ; `runItem`, salutations et
@@ -328,7 +352,16 @@ RÉSOLUS (câblés, vérifiés dans le code, comportements non observés en exé
   MAX_LIENS=8 : `liensPourEquipe` appelé avec les vagues dans
   `orchestrerBLM` ; `classerLiens` + `parVague` + `MAX_LIENS = 8`
   (`cos-langage.js`) inchangés et en place.
-- Parseur `lireBlocCo` appelé : chaîne unique
+- Formation documentaire et simulée (`src/blm-formation.js`, AUCUN nouveau
+  numéro BLM) : niveaux 1→5, socle de 6 notions internes vérifiées
+  (tutoiement-fr, salutation-breve, credits-virtuels, memoire-cloisonnee,
+  coherence-doute, redemande-unique) ; N1 et N5 vides, manque signalé ;
+  homologation avec refus structurel des textes intégraux ; seules les
+  entrées vérifiées atteignent le moteur (max 2 ancres étiquetées) ;
+  formation invisible (aucun titre annoncé, aucune liste récitée) ;
+  `vecu: documentaire|simule`, jamais de vécu personnel revendiqué
+  (garde `detecterRevendicationVecu`, repli modèle).
+- Parseur `lireBlocCo` appelé : appel unique
   `choisirParleur` → `ficheDepuisBloc` → `lireBlocCo` sur représentation
   `<co>` générée de `bots.json` (source unique, aller-retour vérifié, valeurs
   manquantes → `nonRenseigne`) ; aucun producteur de repli dans le parcours.
@@ -348,8 +381,7 @@ RÉSOLUS (câblés, vérifiés dans le code, comportements non observés en exé
 - Routeur 066 CÂBLÉ pour les moteurs pris en charge : `resoudreMoteur`
   (none/webllm/local/ollama/custom/gpu) + gates runItem/runRemote qui
   REFUSENT sans moteur valide — la fonction détermine l'appel réel.
-- `selectionner()` COS : TOUJOURS INACTIVE par défaut (opt-in `activer()`) ;
-  ce n'est pas 066 et ne le remplace pas.
+- `selectionner()` COS : ACTIVÉ par défaut (`COS_ACTIF = true`, opt-out `desactiver()` conservé) ; il consulte bot + équipe + configuration puis TRANSMET à 066 (`resoudreMoteur`, portes + repli conservés) ; trace `route/<moteur>` séparée des liens graphe `cos/lien-*`.
 - Graphe : 1 034 280 candidats / 77 616 valides / 0 ACTIF (`actif-confirme`
   absent des 12 shards ; promotion réservée aux résultats réels via
   `--evoluer`, aucun lien ne devient actif sans mesure réelle).

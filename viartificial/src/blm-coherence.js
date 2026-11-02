@@ -26,8 +26,11 @@ function blmAnalyserCoherence(etat, reponse) {
   if (intention === 'salutation') {
     var aSalue = /salut|bonjour|coucou|hello|bonsoir/i.test(s);
     var relance = /\?\s*$/.test(s);
+    // Bref sans présupposition accepté pour un simple « Salut » (120 =
+    // heuristique non validée ; voir verifierFinaleBLM) ; sinon relance exigée.
+    var bref = (etat && etat.demandeType === 'salutation-simple') && String(s).length <= 120 && !/ça va bien|et toi|\bvous\b/i.test(s);
     if (!s) { res.verdict = 'incoherent'; res.motifs.push('reponse-vide'); }
-    else if (!aSalue || !relance) {
+    else if (!aSalue || (!relance && !bref)) {
       res.verdict = 'incoherent';
       res.motifs.push(!aSalue ? 'salutation-absente' : 'relance-absente');
       res.redemandes.push({ demande: 'modele-verifie', bloc: 'formulation', motif: 'réponse hors-sujet à une salutation', tentative: 1 });

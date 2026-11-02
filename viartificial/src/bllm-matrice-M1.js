@@ -1,0 +1,11 @@
+// src/bllm-matrice-M1.js — Matrice M1 UNIQUE : 100 blocs B001-B100 (borne 10-100 OK).
+// Pur, sans réseau, sans LLM. 1 matrice de 100 blocs ; blocs de 10-13 règles rattachées.
+// Définitions : bllm-registre-A/B.js ; rattachements : bllm-d01..d10-*.js.
+// Les règles coopèrent en parallèle via l\u2019orchestrateur ; ni bots, ni chaîne linéaire.
+'use strict';
+var MATRICE = { id: 'M1', nom: 'BLM-GLOBAL', blocs: 100,
+  domaines: ['D1-ENTREE', 'D2-COMPREHENSION', 'D3-MEMOIRE', 'D4-SAVOIR', 'D5-REGISTRE-APPEL', 'D6-RAISONNEMENT', 'D7-COHERENCE', 'D8-CORRECTION', 'D9-JUGEMENT-SOCIAL', 'D10-CLOTURE'],
+  blocsIds: ['B001','B002','B003','B004','B005','B006','B007','B008','B009','B010','B011','B012','B013','B014','B015','B016','B017','B018','B019','B020','B021','B022','B023','B024','B025','B026','B027','B028','B029','B030','B031','B032','B033','B034','B035','B036','B037','B038','B039','B040','B041','B042','B043','B044','B045','B046','B047','B048','B049','B050','B051','B052','B053','B054','B055','B056','B057','B058','B059','B060','B061','B062','B063','B064','B065','B066','B067','B068','B069','B070','B071','B072','B073','B074','B075','B076','B077','B078','B079','B080','B081','B082','B083','B084','B085','B086','B087','B088','B089','B090','B091','B092','B093','B094','B095','B096','B097','B098','B099','B100'],
+  liaisons: ['001 to 019 (assaini -> intention)', '019 to 002 (intention -> plan)', '028 to 002/099 (périmètre)', '036 to 063/069 (contexte)', '063 to 064 to 066 (arbitrage -> moteur)', '068 to 069 (consigne -> entrée)', '049 to 111 to 036 (source -> provenance -> contexte)', '071 to 077 to 084 (doute : 026 détecte, 077 arbitre, 084 conserve)', '053 to 060 (salutation -> relance)', '023 to 033 to 083 (entités -> noms -> correction)', '093 to 094, 075 to 095 (relecture -> 1 phrase / silence)', '051/071/008 to 087 (portes finales)', '006 to 100 (journal -> bilan)'] };
+var SYSTEME = { id: 'BLM-GLOBAL', nom: 'Système BLM global', matrices: ['M1'], blocs: 100, reglesDistinctes: 111, rattachements: 1000, principe: 'BLLM = Bloc, Logics, Learning, Matrices. Un seul SuperBot s\u2019exprime ; LLM = formulation ; BLLM = logique et organisation.' };
+if (typeof module !== 'undefined' && module.exports) module.exports = { MATRICE: MATRICE, SYSTEME: SYSTEME };
