@@ -207,8 +207,18 @@ function sansProfilDeduit(souvenir) {
   const sujets = String(souvenir.sujet || '').split(' ').filter((w) => w);
   return sujets.every((w) => motsTexte.has(w));
 }
+// ---- Cloisonnement par bot (EXPLICITE 2026-11-02, comportement inchangé) ----
+// Le projet d'un souvenir EST l'id du bot (projetDuBot). verifierCloisonnement
+// refuse tout souvenir dont le projet n'est ni le bot ni 'courant' : même
+// moteur LLM partagé, mémoires jamais mélangées. ViA garde sa sociabilité
+// (personality bots.json + sysPrompt providers.js, intacts).
+function projetDuBot(botId) { return String((botId && botId.id) || botId || 'courant'); }
+function verifierCloisonnement(memoires, botId) {
+  const cible = projetDuBot(botId);
+  return (memoires || []).every((m) => !m || String(m.projet || 'courant') === cible || String(m.projet || '') === 'courant');
+}
 module.exports = { STATUTS, TYPES, classerSouvenir, restaurerSurLancement,
   extraireMotsCles, detecterCorrection, classerEchange, dedupliquerSouvenirs,
   marquerDepasses, noterPertinence, recupererPertinents, passagesErrones,
   reinitialiserSouvenirs, filtrerEchanges, formulerEntreeClasse,
-  souvenirsDuCarnet, sansProfilDeduit };
+  souvenirsDuCarnet, sansProfilDeduit, projetDuBot, verifierCloisonnement };

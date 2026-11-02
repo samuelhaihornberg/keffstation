@@ -215,6 +215,39 @@ body[data-min="1"] .msn{display:none}
 <script>window.__blmSlot16={exports:{}};window.module=window.__blmSlot16;</script>
 <script src="./src/blm-journal.js"></script>
 <script>window.BLMJournal=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot17={exports:{}};window.module=window.__blmSlot17;</script>
+<script src="./src/blm-moteurs-cos.js"></script>
+<script>window.BLMCos=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot18={exports:{}};window.module=window.__blmSlot18;</script>
+<script src="./src/noeuds-calcul.js"></script>
+<script>window.BLMNoeuds=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmSlot19={exports:{}};window.module=window.__blmSlot19;</script>
+<script src="./src/blm-equipe.js"></script>
+<script>window.BLMEquipe=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmUs={exports:{}};window.module=window.__blmUs;</script>
+<script src="./src/blm-usages.js"></script>
+<script>window.BLMUsages=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmDx={exports:{}};window.module=window.__blmDx;</script>
+<script src="./src/dico-expressions.js"></script>
+<script>window.BLMDicos=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmEt={exports:{}};window.module=window.__blmEt;</script>
+<script src="./src/etats-keff.js"></script>
+<script>window.BLMEtats=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmFi={exports:{}};window.module=window.__blmFi;</script>
+<script src="./src/cos-fiches.js"></script>
+<script>window.COSFiches=window.module.exports;window.module={exports:{}};</script>
+<script>window.__blmMs={exports:{}};window.module=window.__blmMs;</script>
+<script src="./src/blm-mesures.js"></script>
+<script>window.BLMMesures=window.module.exports;window.module={exports:{}};</script>
+<script>window.__cosReg={exports:{}};window.module=window.__cosReg;</script>
+<script src="./src/cos-registre.js"></script>
+<script>window.COSRegistre=window.module.exports;window.module={exports:{}};</script>
+<script>window.__cosDef={exports:{}};window.module=window.__cosDef;</script>
+<script src="./src/cos-defaut.js"></script>
+<script>window.COSDefaut=window.module.exports;window.module={exports:{}};</script>
+<script>window.__cosLang={exports:{}};window.module=window.__cosLang;</script>
+<script src="./src/cos-langage.js"></script>
+<script>window.COSLangage=window.module.exports;window.module={exports:{}};</script>
 <script>
 var q=(new URLSearchParams(location.search).get('bot')||'geeko').toLowerCase();
 var body=document.body,thread=document.getElementById('thread');
@@ -547,7 +580,10 @@ function runItem(item){
   if(eng.provider!=='local')return runRemote(item);
   return ensureEngine().then(function(){
     var chain=Promise.resolve();
-    selectedBots.forEach(function(id){
+    // Orchestrateur de sélection : un seul SuperBot prend la parole.
+    var choix=choisirParleur(selectedBots,item.text);
+    var parleurId=choix.id, motifChoix=choix.motif;
+    [parleurId].forEach(function(id){
       chain=chain.then(function(){
         if(item.cancelled)return;
         var bot=botsById[id];if(!bot)return;
@@ -556,12 +592,16 @@ function runItem(item){
         genCtl=new AbortController();
         var h=H(bot.id);h.push({role:'user',content:item.text});
         var orch=orchestrerBLM(item.text,bot,h);
+        try{if(window.BLMContrat)BLMContrat.tracer(orch,'registre','selection-'+bot.id,motifChoix||'');}catch(xSel){}
         var prep=preparerEntreeMoteur(orch,item.text);
         if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
+        // BLM 066 : resoudreMoteur DÉTERMINE le moteur appelé (pas une trace).
+        var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
+        if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
         return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
           r=blmCorrigerReponse(orch,r);
           r=verifierFinaleBLM(orch,r);
-          sd.body.textContent=r;h.push({role:'assistant',content:r});saveConv(bot.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'succes',motif:'',verdict:'affiche',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(e){}
+          sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes','parcours-standard');
         },function(e){
           if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
           else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
@@ -570,7 +610,7 @@ function runItem(item){
     });
     return chain.then(function(){
       if(item.cancelled)return;
-      return xreadTouch(item);
+      return xreadTouch(item,item.dernierReponse);
     }).then(function(){if(!item.cancelled){setState('ready');lastFailure=null;}});
   },function(e){
     if(e&&e.code==='NEEDS_CONSENT'){addOnce('sys','Autorise le téléchargement du modèle ci-dessus pour discuter (un seul accord, réutilisé ensuite).');consentShown(true);input.value=item.text;input.focus();}
@@ -585,38 +625,30 @@ function xreadOn(){try{return localStorage.getItem('via-xread')!=='off';}catch(e
 // Synergetizer minimal : le binôme Geeko↔Geekette se relit (une phrase max).
 // Strict : une seule intervention par message, jamais de réponse à une réponse,
 // jamais si le binôme a déjà répondu. Silence en cas d'échec (pas de remplissage).
-function xreadTouch(item){
-  if(eng.provider!=='local'||!xreadOn())return Promise.resolve();
-  if(q!=='geeko'&&q!=='geekette')return Promise.resolve();
+function xreadTouch(item,dernierTexte){
+  // Relecture interne 093-095 (lecture seule) : le binôme relit SANS générer,
+  // SANS parler à l'utilisateur, SANS écrire ses mémoires ni les mélanger.
+  // Analyse locale de la réponse produite contre les souvenirs classés du
+  // binôme ; trace interne uniquement. Aucun appel moteur, aucun affichage.
+  if(typeof xreadOn==='function'?!xreadOn():false)return Promise.resolve();
+  if(typeof q==='undefined'||(q!=='geeko'&&q!=='geekette'))return Promise.resolve();
   var pid=q==='geeko'?'geekette':'geeko';
-  if(selectedBots.indexOf(pid)>-1)return Promise.resolve();
-  var bot=botsById[pid];if(!bot)return Promise.resolve();
-  var aname=(botsById[q]||{}).name||q;
-  setState('responding',bot.name);
-  var wait=addWait(bot);
-  genCtl=new AbortController();
-  var h=H(pid);h.push({role:'user',content:item.text});
-  var rb={};for(var k in bot)rb[k]=bot[k];
-  rb.specialty=bot.specialty+' Consigne stricte : une seule phrase en réaction à ce que vient de dire '+aname+'. Complète ou contredis avec humour, sans répéter ses mots.';
-  // Relecture branchée aux BLM : même EtatMessage, souvenirs classés du binôme,
-  // correction locale, cohérence en mode signalement (silence si incohérent,
-  // jamais de seconde génération).
-  var etatX=orchestrerBLM(item.text,bot,h);
-  var prepX=preparerEntreeMoteur(etatX,item.text);
-  if(!prepX.ok){wait.remove();return Promise.resolve();}
-  return ViaLocalEngine.chat(rb,prepX.msgs,{signal:genCtl.signal}).then(function(r){
-    var m=String(r).match(/^[^.!?…]+[.!?…]/);var one=m?m[0]:r;
-    one=blmCorrigerReponse(etatX,one);
-    var coh={verdict:'non-evalue',motifs:[],redemandes:[],indices:null};
-    try{if(window.BLMCoherence&&BLMCoherence.analyser)coh=BLMCoherence.analyser(etatX,one)||coh;}catch(e){coh={verdict:'non-evalue',motifs:['coherence-erreur'],redemandes:[],indices:null};}
-    (coh.redemandes||[]).forEach(function(rd){demanderReanalyse(etatX,rd);});
-    if(coh.verdict==='incoherent'){wait.remove();if(window.console&&console.warn)console.warn('[BLM xread] relecture écartée ('+coh.motifs.join(',')+') : silence, sans nouvelle génération.');try{if(window.BLMContrat)BLMContrat.tracer(etatX,'xread','relecture-ecartee',coh.motifs.join(','));}catch(e){}try{if(window.BLMJournal)window.BLMJournal.consigner({bot:pid,issue:'refus',motif:'relecture-ecartee',verdict:'incoherent',redemandes:(etatX&&etatX.redemandes?etatX.redemandes.length:0)});}catch(e){}return;}
-    if(coh.verdict==='doute'&&window.console&&console.warn)console.warn('[BLM xread] doute : '+coh.motifs.join(',')+' — relecture conservée.');try{if(coh.verdict==='doute'&&window.BLMContrat)BLMContrat.tracer(etatX,'xread','relecture-doute-conservee',coh.motifs.join(','));}catch(e){}
-    h.push({role:'assistant',content:one});wait.remove();addPulsed({name:bot.name+' (relecture)'},one);saveConv(bot.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'succes',motif:'relecture',verdict:'affiche',redemandes:(etatX&&etatX.redemandes?etatX.redemandes.length:0)});}catch(e){}
-  },function(e){
-    wait.remove();
-    if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){item.cancelled=true;}
-  }).then(function(){genCtl=null;});
+  var bot=(typeof botsById!=='undefined')?botsById[pid]:null;if(!bot)return Promise.resolve();
+  var h=H(pid); // lecture seule : jamais de push ici.
+  // Garde anti-mélange : la langue persistée du binôme est restaurée intacte
+  // après relecture (blmLangue écrit via-langue-<bot>).
+  var cleLangue='via-langue-'+pid,memLangue=null;
+  try{memLangue=localStorage.getItem(cleLangue);}catch(xL){}
+  var etatX=null;
+  try{etatX=orchestrerBLM(item.text,bot,h);}catch(e){try{if(memLangue!==null)localStorage.setItem(cleLangue,memLangue);}catch(xR){}return Promise.resolve();}
+  try{if(memLangue!==null)localStorage.setItem(cleLangue,memLangue);}catch(xR){}
+  var txt=String(dernierTexte==null?'':dernierTexte).trim();
+  if(!txt)return Promise.resolve();
+  var coh={verdict:'non-evalue',motifs:[],redemandes:[],indices:null};
+  try{if(window.BLMCoherence&&window.BLMCoherence.analyser)coh=window.BLMCoherence.analyser(etatX,txt)||coh;}catch(e){coh={verdict:'non-evalue',motifs:['coherence-erreur'],redemandes:[],indices:null};}
+  try{if(window.BLMContrat)window.BLMContrat.tracer(etatX,'xread','lecture-seule-'+coh.verdict,coh.motifs.join(',')||'sans-motif');}catch(e){}
+  try{if(window.BLMJournal)window.BLMJournal.consigner({bot:pid,issue:'succes',motif:'relecture-interne',verdict:coh.verdict,redemandes:(etatX&&etatX.redemandes?etatX.redemandes.length:0)});}catch(e){}
+  return Promise.resolve();
 }
 // Carte d'identité locale (token automatique) : modèle, chargements, accord.
 // Rien ne quitte l'appareil : aucun serveur, aucun compte.
@@ -642,6 +674,9 @@ function paintIdCard(card){
 function runRemote(item){
   var b0=botsById[q]||botsById[selectedBots[0]];
   if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Aucun serveur LLM configuré. Les BLM sont prêts. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');setState('idle');working=false;return Promise.resolve();}
+  // BLM 066 : le moteur réellement appelé est celui de resoudreMoteur.
+  var rmDistant=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:eng.provider,ollamaUrl:eng.baseUrl,gpuDemande:false}):{moteur:eng.provider+'-distant',repli:'',physique:true};
+  if(rmDistant.moteur==='aucun'){addOnce('sys','Erreur : '+rmDistant.repli+'. Les BLM sont prêts.');setState('error',rmDistant.repli);lastFailure={stage:'response',item:item};working=false;return Promise.resolve();}
   setState('responding',b0.name);
   var wait=addWait(b0);
   genCtl=new AbortController();
@@ -652,7 +687,7 @@ function runRemote(item){
   return ViaProviders.chat(eng,b0,prepR.msgs,genCtl.signal,key).then(function(r){
     r=blmCorrigerReponse(orchR,r);
     r=verifierFinaleBLM(orchR,r);
-    h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b0.id,issue:'succes',motif:'',verdict:'affiche',redemandes:(orchR&&orchR.redemandes?orchR.redemandes.length:0)});}catch(e){}
+    h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;finaliserSortie(b0,h,r,orchR,'succes','parcours-standard');
   },function(e){
     wait.remove();
     if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
@@ -672,8 +707,11 @@ function diagServeur(base){
 }
 // Salutation + « ça va » = ouverture conviviale : réponse directe vérifiée, sans moteur.
 // Évite que le mini-modèle local et l'historique brut détournent la réponse.
-function estSalutation(t){if(window.BLMComprehension&&BLMComprehension.detecterIntention)return BLMComprehension.detecterIntention(t)==='salutation';var s=String(t||'').trim();return /^(salut|bonjour|bonsoir|coucou|hello|yo|hey)[,!.\s]*/i.test(s)&&/ça va|ca va|comment (tu vas|vas-tu)|vous allez|la forme|quoi de neuf|how are you/i.test(s);}
+function estSalutation(t){try{if(window.BLMUsages&&BLMUsages.distinguerDemande&&BLMUsages.distinguerDemande(t)==='salutation-simple')return true;}catch(x){}if(window.BLMComprehension&&BLMComprehension.detecterIntention)return BLMComprehension.detecterIntention(t)==='salutation';var s=String(t||'').trim();return /^(salut|bonjour|bonsoir|coucou|hello|yo|hey)[,!.\s]*/i.test(s)&&/ça va|ca va|comment (tu vas|vas-tu)|vous allez|la forme|quoi de neuf|how are you/i.test(s);}
 function reponseSalutation(){var candidat='Salut ! Ça va bien, merci 😊 Et toi, comment tu vas ?';var ok=/salut/i.test(candidat)&&/\?\s*$/.test(candidat.trim())&&!/vous/i.test(candidat);if(!ok)candidat='Salut ! Je suis là 😊 Et toi, comment tu vas ?';return candidat;}
+// Réponse sociale (usages) : formule habituelle brève + relance, un seul texte.
+// Repli sur reponseSalutation si le module est absent. Personnalités intactes.
+function reponseSociale(bot,texte,langue){try{if(window.BLMUsages&&window.BLMUsages.choisirFormule){var f=window.BLMUsages.choisirFormule('salutation-simple',langue||'fr',texte);if(f&&f.formule){if(window.BLMUsages.doserChaleur){var d=window.BLMUsages.doserChaleur(f,langue||'fr');if(!d.ok){if(window.console&&console.warn)console.warn('[096] formule recadrée ('+d.motif+') : repli formule vérifiée');}else return f.formule;}else return f.formule;}}}catch(x){}return reponseSalutation();}
 // --- Orchestrateur BLM du parcours réel (modules src/ chargés ci-dessus) ---
 // 1 compréhension (intention) → 2 contexte (souvenirs classés) → 3 langue →
 // 4 formulation (moteur ou modèle direct) → 5 vérification finale (BLMPhilo).
@@ -727,15 +765,124 @@ function blmComprehension(etat){
   if(/(medicament|dosage|ordonnance|avocat|juridique|tribunal)/i.test(t.normalize? t.normalize('NFD').replace(/[\u0300-\u036f]/g,''):t))etat.perimetre=false;
   return etat;}
 function blmMemoire(etat,h){etat.contexte=souvenirsPertinents(etat.botId,h,etat.texte);try{if(window.BLMSavoir&&window.BLMSavoir.chercherFait){var fz=window.BLMSavoir.chercherFait(etat.sujet||'',window.BLMSavoirBase||{faits:{}});etat.faits=fz?[fz]:[];}}catch(e){}return etat;}
-function blmLangue(etat){etat.langue=(window.BLMLangue&&BLMLangue.detecterLangue)?BLMLangue.detecterLangue(etat.texte):langueMessageLocal(etat.texte);try{if(window.BLMLangue&&BLMLangue.detecterMelange){etat.melange=BLMLangue.detecterMelange(etat.texte);}else{var s=String(etat.texte||'');var fr=(s.match(/[àâäéèêëîïôöùûüç]/gi)||[]).length;var en=(s.match(/\b(hello|how|are|you|the|and|what|thanks|today|with|for)\b/gi)||[]).length;etat.melange=fr>=1&&en>=2;}}catch(e){}return etat;}
+function blmLangue(etat){var lg=(window.BLMLangue&&BLMLangue.detecterLangue)?BLMLangue.detecterLangue(etat.texte):langueMessageLocal(etat.texte);
+  // Persistance ViA (NOUVEAU 2026-11-03) : langue choisie au début conservée
+  // sauf changement explicite (marqueurs forts de l'autre langue).
+  try{var cle='via-langue-'+(etat.botId||'courant');var s=String(etat.texte||'');var frM=/[àâäéèêëîïôöùûüç]/i.test(s)||/\b(le|la|les|des|est|une|vous|tu|que|pour|comment|avec|bonjour|merci)\b/i.test(s);var enM=/\b(hello|how|are|you|the|and|what|thanks|please|morning|today|with|for|your|good|know|time|work|need|like|think)\b/i.test(s);
+    var mem=null;try{mem=localStorage.getItem(cle);}catch(x){}
+    if(enM&&!frM){lg='en';try{localStorage.setItem(cle,'en');}catch(x){}}
+    else if(frM){lg='fr';try{localStorage.setItem(cle,'fr');}catch(x){}}
+    else if(mem==='en'||mem==='fr'){lg=mem;}
+  }catch(x){}
+  etat.langue=lg;try{if(window.BLMLangue&&BLMLangue.detecterMelange){etat.melange=BLMLangue.detecterMelange(etat.texte);}else{var s=String(etat.texte||'');var fr=(s.match(/[àâäéèêëîïôöùûüç]/gi)||[]).length;var en=(s.match(/\b(hello|how|are|you|the|and|what|thanks|today|with|for)\b/gi)||[]).length;etat.melange=fr>=1&&en>=2;}}catch(e){}return etat;}
 function blmTon(etat,bot){if(window.BLMRegistre&&BLMRegistre.choisirTon){etat.ton=BLMRegistre.choisirTon(bot&&bot.personality,etat.intention);return etat;}var p=String((bot&&bot.personality)||'');etat.ton=/drôle|fun|taquin|iron|enjoué/i.test(p)?'enjoue':'neutre';if(etat.intention==='salutation')etat.ton='convivial';return etat;}
 function blmCertitude(etat){etat.certitude=etat.intention==='salutation'?0.95:(etat.contexte.length?0.7:0.5);return etat;}
+// --- Parcours global (PARCOURS blm-equipe.js) : handoffs via COS existantes,
+// sélection d'un seul SuperBot, sortie unique. Les dictionnaires et notes
+// internes ne deviennent jamais le texte affiché.
+function relierEtape(etat,deId,versId,etape){
+  // Handoff inter-étapes : résolu + compatible → tracé cos ; sinon simple
+  // trace d'étape (jamais de lien inventé).
+  try{
+    if(window.COSLangage&&window.COSLangage.resoudreId&&window.COSLangage.compatible){
+      var a=window.COSLangage.resoudreId(deId,{}),b=window.COSLangage.resoudreId(versId,{});
+      var c=window.COSLangage.compatible(a,b);
+      if(window.BLMContrat)BLMContrat.tracer(etat,'cos','etape-'+(c.ok?'ok':'signalee'),deId+'→'+versId+' ('+etape+', '+(c.ok?c.motif:(c.motif||'non-resolu'))+')');
+      return c.ok;
+    }
+  }catch(x){}
+  try{if(window.BLMContrat)BLMContrat.tracer(etat,'parcours',etape,deId+'→'+versId);}catch(y){}
+  return false;
+}
+function choisirParleur(ids,texte){
+  // Orchestrateur de sélection : un seul bot parle. Priorité explicite SEULEMENT
+  // si la demande la contient (?bot= présent dans l'URL et bot connu) ; sinon
+  // mémoires pertinentes (noterPertinence), puis chevauchement mots/tags des
+  // fiches COS ; égalité persistante → ordre des chips. Personnalités et
+  // mémoires intactes.
+  var liste=(ids||[]).filter(function(id){return typeof botsById!=='undefined'&&botsById[id];});
+  if(!liste.length) return {id:(ids||[])[0]||null,motif:'aucun'};
+  if(liste.length===1) return {id:liste[0],motif:'choix-unique'};
+  var demandeExplicite=null;
+  try{if(typeof location!=='undefined'&&location.search&&botsById){var pb=new URLSearchParams(location.search).get('bot');if(pb&&liste.indexOf(pb)>=0)demandeExplicite=pb;}}catch(xQ){}
+  if(demandeExplicite) return {id:demandeExplicite,motif:'choix-explicite-demande'};
+  try{
+    if(window.BLMEquipe&&window.BLMEquipe.choisirSuperBot&&window.BLMMemoire&&window.BLMMemoire.recupererPertinents&&window.BLMMemoire.classerEchange){
+      // Fiches SuperBots (cos.js : grammaire + gardes) : validation + mots/tags
+      // pour départager une égalité de mémoires. Rien d'inventé.
+      // Fiches via la GRAMMAIRE cos UNIQUEMENT (lireBlocCo sur représentation
+      // générée de bots.json, source unique). Échec de parse → fiche invalide
+      // (null) + trace, JAMAIS de producteur de repli : une seule grammaire,
+      // un seul parseur, pas de divergence silencieuse.
+      var fiches={};try{if(window.COSFiches&&window.COSFiches.ficheDepuisBloc){liste.forEach(function(id){try{var fb=window.COSFiches.ficheDepuisBloc(botsById[id]);if(fb&&fb.fiche){fiches[id]=fb.fiche;}else{fiches[id]=null;if(window.console&&console.warn)console.warn('[registre] fiche COS illisible pour '+id+' : '+((fb&&fb.erreurs||[]).join(';')||'inconnue')+' — fiche écartée, mémoire seule');}}catch(xFb){fiches[id]=null;if(window.console&&console.warn)console.warn('[registre] fiche COS en erreur pour '+id+' — fiche écartée, mémoire seule');}});var presents=liste.filter(function(id){return fiches[id];});var vr=window.COSFiches.validerRegistre(presents.map(function(id){return fiches[id];}));if(window.BLMContrat&&(!vr.ok)&&window.console&&console.warn)console.warn('[registre] fiches invalides : '+vr.erreurs.join(';'));} }catch(xF){}
+      var motsSujet=(function(s){try{return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/[^a-z0-9]+/).filter(function(w){return w.length>=4;});}catch(x){return [];}})(texte);
+      var scores=liste.map(function(id){
+        var base=[];try{base=window.BLMMemoire.filtrerEchanges?window.BLMMemoire.filtrerEchanges(H(id)).slice(-8):(H(id)||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant');}).slice(-8);}catch(x){}
+        var mem=base.map(function(m){try{return window.BLMMemoire.classerEchange(id,m.role==='user'?'demande':'reponse',String(m.content||'').slice(0,500));}catch(y){return null;}}).filter(Boolean);
+        var pts=0;try{pts=window.BLMMemoire.recupererPertinents(mem,id,texte||'',8).length;}catch(z){}
+        var ov=0;try{if(window.COSFiches&&window.COSFiches.chevauchement&&fiches[id])ov=window.COSFiches.chevauchement(fiches[id],motsSujet);}catch(xO){}
+        return {id:id,points:pts,chevauchement:ov,motif:pts>0?('memoires-pertinentes-'+pts):(ov>0?('fiche-mots-'+ov):'aucune-memoire-pertinente')};
+      });
+      var ch=window.BLMEquipe.choisirSuperBot(liste,scores);
+      if(ch&&ch.id&&botsById[ch.id]) return ch;
+    }
+  }catch(x){}
+  return {id:liste[0],motif:'defaut-premier-choisi'};
+}
+function finaliserSortie(bot,h,reponse,orch,issue,motif){
+  // Orchestrateur de sortie (006) : un seul texte, journal sans brut, sauvegarde.
+  h.push({role:'assistant',content:reponse});
+  try{saveConv(bot.id);}catch(e){}
+  try{if(window.BLMContrat)BLMContrat.tracer(orch||{},'parcours','sortie-006',issue||'succes');}catch(e){}
+  try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:issue||'succes',motif:String(motif||''),verdict:'affiche',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(e){}
+}
 function orchestrerBLM(texte,bot,h){
   var e=etatInitial(texte,bot);
   blmComprehension(e);
-  try{if(window.BLMRoutage&&BLMRoutage.planifierBlocs){var pl=BLMRoutage.planifierBlocs(e.intention,{perimetre:e.perimetre});if(window.BLMContrat)BLMContrat.tracer(e,'routage','plan-'+pl.motif,pl.blocs.join(','));}}catch(err){}
+  // Parcours : entrée (001). Nœuds : seules les ressources physiques sont
+  // déclarées (jamais un nœud logique comme actif).
+  try{if(window.BLMContrat)BLMContrat.tracer(e,'parcours','entree-001',e.botId||'?');}catch(err0){}
+  try{if(window.BLMNoeuds&&window.BLMNoeuds.ressourcesPhysiques){var rn=window.BLMNoeuds.ressourcesPhysiques().map(function(n){return n.id+':'+n.etat;});if(window.BLMContrat)BLMContrat.tracer(e,'noeuds','ressources-physiques-seules',rn.join(','));}}catch(errN){}
+  // USAGES (blm-usages.js) : 1 reconnaissance (salut simple vs explication
+  // linguistique vs ordinaire), 2 coutumes (formule interne, dicos en aide
+  // jamais récitée), 3 suite attendue (interne, jamais affichée).
+  // Salut simple → intention salutation + formule directe, sans moteur.
+  try{if(window.BLMUsages&&BLMUsages.distinguerDemande){e.demandeType=BLMUsages.distinguerDemande(e.texte);if(window.BLMContrat)BLMContrat.tracer(e,'comprehension','demande-'+e.demandeType,'019-028');
+    if(e.demandeType==='salutation-simple'){e.intention='salutation';}
+    if(e.demandeType==='explication-linguistique'&&window.BLMSavoir&&window.BLMSavoir.definirMot){var mots=(e.sujet||'').split(' ').filter(function(w){return w;});var def=window.BLMSavoir.definirMot(mots[0]||'',window.BLMSavoirBase||{definitions:{}});if(def){e.faits=(e.faits||[]).concat([{texte:String(def).slice(0,300),source:'dico-local (aide interne, jamais récité)'}]);if(window.BLMContrat)BLMContrat.tracer(e,'savoir','aide-interne-046','1-fait-etiquete');}}
+  }}catch(errU){}
+  try{if(window.BLMRoutage&&BLMRoutage.planifierBlocs){var pl=BLMRoutage.planifierBlocs(e.intention,{perimetre:e.perimetre});if(window.BLMContrat)BLMContrat.tracer(e,'routage','plan-'+pl.motif,pl.blocs.join(','));relierEtape(e,'001','002','orchestrateur-entree');}}catch(err){}
   blmMemoire(e,h);blmLangue(e);blmTon(e,bot);blmCertitude(e);
-  if(window.BLMContrat){var chk=BLMContrat.valider(e);if(!chk.ok&&window.console&&console.warn)console.warn('[BLM-contrat] '+chk.problemes.join(','));return chk.etat||e;}
+  // Formule + suite (internes, jamais affichées ni transmises au moteur) :
+  // formule seulement pour le salut simple (réponse directe), suite estimée
+  // pour tout message (vérification S5/S6 : relance attendue ou non).
+  try{if(window.BLMUsages&&BLMUsages.estimerSuite){e.suite=BLMUsages.estimerSuite(e.demandeType,e.intention,(e.contexte||[]).length);if(BLMUsages.choisirFormule&&(e.demandeType==='salutation-simple'||e.intention==='salutation')){var fl=BLMUsages.choisirFormule('salutation-simple',e.langue||'fr',e.texte);e.formule={formule:fl.formule,relance:fl.relance,ton:fl.ton,langue:fl.langue};}if(window.BLMContrat)BLMContrat.tracer(e,'registre','suite-'+((e.suite&&e.suite.type)||'?'),e.demandeType||'?');}}catch(errF){}
+  // 101/103/104/105/106 — exécution seulement si pertinent (jamais forcés) :
+  // 101 candidats si ≥2 mots porteurs ; 103 contrainte traduction si verbe +
+  // cible ; 104/105 aide dico partagée si linguistique + mot (1 seul appel,
+  // base vide = tracé, rien d'inventé) ; 106 popularité si marqueurs d'usage
+  // ou candidats (appel réel, résultat interne, jamais affiché).
+  try{
+    var motsSujet2=(e.sujet||'').split(' ').filter(function(w){return w;});
+    if(window.BLMComprehension&&BLMComprehension.repererCandidats&&motsSujet2.length>=2){var cd=BLMComprehension.repererCandidats(e.texte,motsSujet2);if(cd&&cd.length){e.expressions=cd.slice(0,5);if(window.BLMContrat)BLMContrat.tracer(e,'comprehension','101-candidats',cd.length+'-candidats-non-verifies');}}
+    if(window.BLMUsages&&BLMUsages.traductionDemandee){var tr=BLMUsages.traductionDemandee(e.texte);if(tr&&tr.demande){e.contraintes.push('traduction vers '+tr.vers+' demandée (103, via moteur, jamais de dico récité)');if(window.BLMContrat)BLMContrat.tracer(e,'registre','103-traduction-vers-'+tr.vers,'contrainte-ajoutee');}}
+    if(e.demandeType==='explication-linguistique'&&window.BLMSavoir&&window.BLMSavoir.definirMot&&motsSujet2.length){var df=window.BLMSavoir.definirMot(motsSujet2[0],window.BLMSavoirBase||{definitions:{}});if(df){e.faits=(e.faits||[]).concat([{texte:String(df).slice(0,300),source:'dico-local 104/105/046 (aide interne, jamais récitée)'}]);if(window.BLMContrat)BLMContrat.tracer(e,'savoir','104-105-aide-consultee','1-fait-etiquete');}else if(window.BLMContrat){BLMContrat.tracer(e,'savoir','104-105-046-base-vide','aucune-definition-ni-invention');}}
+    var usageMk=/usage|coutume|populaire|populair|expression/.test((function(s){try{return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(x){return String(s||'').toLowerCase();}})(e.texte));
+    if(e.demandeType==='explication-linguistique'&&(usageMk||(e.expressions||[]).length>0)&&window.BLMDicos&&window.BLMDicos.scorerPublication){var sc=window.BLMDicos.scorerPublication({},function(){return 1;});if(window.BLMContrat)BLMContrat.tracer(e,'savoir','106-popularite-'+(sc.popularite||0)+'-veracite-non-evaluee','interne-jamais-affiche');}
+  }catch(errG){}
+  // ÉQUIPE (blm-equipe.js) : composition tracée selon intention/périmètre —
+  // jamais 100 blocs ; S2/S3/S5 = vagues logiques (PWA monothread, lecture
+  // seule vérifiée), S1/S4/S6 = portes séquentielles.
+  try{if(window.BLMEquipe&&BLMEquipe.composer){var eq=BLMEquipe.composer(e.intention,e.perimetre);if(window.BLMContrat)BLMContrat.tracer(e,'routage','equipe-'+eq.motif,eq.vagues.map(function(v){return v.nom+':'+v.mode;}).join(','));}}catch(err2){}
+  // COS-LANGAGE (cos-langage.js) : liens du document par défaut dont les deux
+  // extrémités sont mobilisées par l'équipe → tracés dans EtatMessage
+  // (etat.cosLiens), ils contribuent aux garde-fous de la cohérence S5/S6.
+  // Mémoires, rôles et sysPrompt restent séparés par bot ; ViA inchangée.
+  try{if(window.COSLangage&&window.COSLangage.liensPourEquipe&&window.BLMEquipe&&typeof eq!=='undefined'&&eq){var bq=[];eq.vagues.forEach(function(v){(v.blocs||[]).forEach(function(b){if(bq.indexOf(b)<0)bq.push(b);});});var fq=[];try{Object.keys(window.BLMEquipe.FAMILLES_PAR_VAGUE||{}).forEach(function(vn){(window.BLMEquipe.FAMILLES_PAR_VAGUE[vn]||[]).forEach(function(f){if(fq.indexOf(f)<0)fq.push(f);});});}catch(x2){}var lr=window.COSLangage.liensPourEquipe(window.COSDefaut||'',bq,fq,eq.vagues);e.cosLiens=(lr.executes||[]).map(function(l){return l.donneur+l.op+l.receveur;});lr.executes.forEach(function(l){if(window.BLMContrat)BLMContrat.tracer(e,'cos','lien-'+l.sens+'-r'+(l.rang||'?'),l.donneur+'→'+l.receveur+' ('+(l.vague||'?')+')');});(lr.signales||[]).slice(0,4).forEach(function(sg){if(window.BLMContrat)BLMContrat.tracer(e,'cos',sg.statut,(sg.de||'')+(sg.op||' ')+(sg.vers||'')+' '+(sg.detail||''));});}}catch(err3){}
+  // COS-MOTEURS : sélection inactive par défaut (spec établie = langage, pas
+  // de correspondance BLM↔moteur) ; repli existant conservé.
+  try{if(window.BLMCos&&BLMCos.selectionner&&window.BLMCos.estActif&&BLMCos.estActif()){var pl0=null;try{if(window.BLMRoutage&&BLMRoutage.planifierBlocs)pl0=BLMRoutage.planifierBlocs(e.intention,{perimetre:e.perimetre});}catch(x){}var bes0={fournisseur:(typeof eng!=='undefined'&&eng.provider)||'local',ollamaUrl:(typeof eng!=='undefined'&&eng.baseUrl)||'',gpuDemande:false,bot:e.botId};var sel0=BLMCos.selectionner(e,pl0||{motif:'routage-absent'},null,bes0);if(sel0){e.moteurs=sel0;if(window.BLMContrat){BLMContrat.tracer(e,'routage','cos-'+(sel0.map(function(m){return m.id;}).join(',')||'repli'),e.intention||'nulle');BLMContrat.tracer(e,'route','route-'+sel0[0].id,sel0[0].motif);}}else if(window.BLMContrat){BLMContrat.tracer(e,'routage','cos-inactif','repli-existant-conserve');}}else if(window.BLMContrat){BLMContrat.tracer(e,'routage','cos-inactif','repli-existant-conserve');}}catch(err){}
+  if(window.BLMContrat){var chk=BLMContrat.valider(e);if(!chk.ok&&window.console&&console.warn)console.warn('[BLM-contrat] '+chk.problemes.join(','));try{window.__dernierEtat=chk.etat||e;if(window.console&&window.console.info&&window.__dernierEtat.cosLiens)window.console.info('[BLM+COS] intention='+(window.__dernierEtat.intention||'?')+' cosLiens='+window.__dernierEtat.cosLiens.join(' '));}catch(_){}return chk.etat||e;}
   return e;
 }
 // Formulation de l'entrée moteur : SEUL le contexte classé est transmis, jamais
@@ -755,8 +902,23 @@ function preparerEntreeMoteur(etat, texte){
     var cEtat=cpt?{appels:cpt.appels(),plafond:cpt.plafond()}:{appels:0,plafond:50};
     var env=(window.BLMBudget&&window.BLMBudget.calculerEnveloppe)?window.BLMBudget.calculerEnveloppe(plan,cEtat):{autorise:true,maxTokens:2048,motif:'budget-absent'};
     if(!env.autorise)return {ok:false,code:env.motif==='plafond-atteint'?'PLAFOND':'NO_ENGINE',message:env.motif==='plafond-atteint'?'Plafond d’appels moteur atteint pour cette session : repli modèle.':'Plan sans moteur : repli modèle.'};
+    // 005/099 : limites tracées (budget d'entrée / plafond d'appels), jamais
+    // des objectifs de vitesse. Moteur réellement choisi + son repli.
+    try{if(window.BLMContrat)BLMContrat.tracer(etat,'couts','limite-'+(env.motif||'budget'),'refus-moteur-possible-repli');}catch(xL){}
+    try{if(window.BLMCos&&window.BLMCos.resoudreMoteur){var rm=window.BLMCos.resoudreMoteur({fournisseur:(typeof eng!=='undefined'&&eng.provider)||'local',ollamaUrl:(typeof eng!=='undefined'&&eng.baseUrl)||'',gpuDemande:false});if(window.BLMContrat)BLMContrat.tracer(etat,'parcours','moteur-'+rm.moteur,rm.repli);}}catch(xM){}
+    // COS : ordre BLM appliqué (moteurs[0] = premier appelé). Repli => refus porte.
+    try{if(window.BLMCos&&BLMCos.selectionner&&window.BLMCos.estActif&&BLMCos.estActif()){var bes=(typeof eng!=='undefined')?{fournisseur:eng.provider,ollamaUrl:eng.baseUrl,gpuDemande:false,bot:etat.botId}:null;var sel=BLMCos.selectionner(etat,plan,env,bes);if(sel){etat.moteurs=sel;try{if(window.BLMContrat)BLMContrat.tracer(etat,'route','route-'+sel[0].id,sel[0].motif);}catch(xR){}if(sel.length===1&&sel[0].id==='repli')return {ok:false,code:sel[0].etat==='hors-perimetre'?'HORS_PERIMETRE':'NO_ENGINE',message:'Repli modèle ('+sel[0].motif+'), aucun moteur COS appelé.'};}}}catch(x){}
+    // 110 COU-MESURES (porte S4, appel moteur uniquement) : déclare les mesures
+    // réellement disponibles, jamais tokens/s, FPS/IPS, GPU ni CPU%.
+    try{if(window.BLMMesures&&BLMMesures.mesuresReelles){var mm=window.BLMMesures.mesuresReelles();etat.mesures={disponibles:Object.keys(mm.disponibles||{}),indisponibles:mm.indisponibles||[]};if(window.BLMContrat)BLMContrat.tracer(etat,'couts','110-mesures-reelles',(mm.disponibles?Object.keys(mm.disponibles).length:0)+'-dispo-'+(mm.indisponibles||[]).length+'-indispo');}}catch(x110){}
     var msgs=(window.BLMMemoire&&window.BLMMemoire.formulerEntreeClasse)?window.BLMMemoire.formulerEntreeClasse((etat&&etat.contexte)||[],texte,(etat&&etat.faits)||[]):formulerEntree(etat,texte);
     if(window.BLMBudget&&window.BLMBudget.appliquerEnveloppe)msgs=window.BLMBudget.appliquerEnveloppe(msgs,env.maxTokens);
+    // Orchestrateur de synthèse (065) : résultats rassemblés avant génération ;
+    // LLM partagé pour formuler (068, consigne unique).
+    try{relierEtape(etat,'002','065','orchestrateur-synthese');if(window.BLMContrat){BLMContrat.tracer(etat,'parcours','synthese-065','entree-classee-prete');BLMContrat.tracer(etat,'parcours','llm-partage-formulation',etat.botId||'?');}}catch(xS){}
+    // 103 : la contrainte de traduction rejoint la demande (bloc étiqueté,
+    // même style que les blocs mémoire) pour qu'elle parvienne au moteur.
+    try{var tr103=(etat.contraintes||[]).filter(function(c){return /\(103,/.test(c);});if(tr103.length&&msgs.length){var dl=msgs[msgs.length-1];msgs[msgs.length-1]={role:dl.role,content:String(dl.content)+'\n[Consigne BLM-103 : '+tr103[0]+']'};if(window.BLMContrat)BLMContrat.tracer(etat,'raisonnement','103-consigne-transmise','demande-annotee');}}catch(x103){}
     if(cpt)cpt.compter();
     return {ok:true,msgs:msgs};
   }catch(e){return {ok:false,code:(e&&e.code)||'BUDGET',message:(e&&e.message)||'Budget moteur indisponible : repli modèle.'};}
@@ -800,6 +962,11 @@ function blmCorrigerReponse(etat,rep){
 }
 function verifierFinaleBLM(etat,rep){
   var s=String(rep||'').trim(),fr=etat.langue==='fr';
+  // Orchestrateur de réponse (087) : un seul texte final.
+  try{if(window.BLMContrat)BLMContrat.tracer(etat,'parcours','reponse-087','verification-finale');}catch(xR){}
+  // 109 CON-ETATS : états simulés calculés (fiction, conscienceVecue:false),
+  // jamais affichés, jamais ressentis. Pertinent pour toute réponse à afficher.
+  try{if(window.BLMEtats&&window.BLMEtats.etatAffectif&&s){etat.simulation=window.BLMEtats.etatAffectif({emotion:String(etat.ton_percu||'neutre'),sentiment:String(etat.sujet||'').slice(0,120),sensation:''});if(window.BLMContrat)BLMContrat.tracer(etat,'conscience','109-fiction-confirmee','calcule-sans-vecu');}}catch(x109){}
   try{if(window.BLMSecurite&&window.BLMSecurite.masquerPII){var m0=window.BLMSecurite.masquerPII(s);if(m0.texte!==s){s=m0.texte;if(window.BLMContrat)window.BLMContrat.tracer(etat,'securite','pii-masquee',m0.trouves.join(','));}}}catch(e){}
   var coh={verdict:'non-evalue',motifs:[],redemandes:[],indices:null};
   try{if(window.BLMCoherence&&BLMCoherence.analyser)coh=BLMCoherence.analyser(etat,s)||coh;}catch(e){coh={verdict:'non-evalue',motifs:['coherence-erreur'],redemandes:[],indices:null};}
@@ -821,11 +988,14 @@ function verifierFinaleBLM(etat,rep){
   var perso=false,fuite=false,tropLong=false;
   try{if(window.BLMConscience&&window.BLMConscience.detecterPersonnification){var dp=window.BLMConscience.detecterPersonnification(s);perso=dp.atteinte;if(perso&&window.BLMContrat)window.BLMContrat.tracer(etat,'conscience','personnification-refusee',dp.motifs.join(','));}}catch(e){}
   try{if(window.BLMSecurite&&window.BLMSecurite.detecterFuite){var df=window.BLMSecurite.detecterFuite(s);fuite=df.fuite;if(fuite&&window.BLMContrat)window.BLMContrat.tracer(etat,'securite','fuite-ecartee',df.motifs.join(','));}}catch(e){}
-  try{if(s.length>2000){tropLong=true;if(window.BLMContrat)window.BLMContrat.tracer(etat,'registre','longueur-refusee',String(s.length));}}catch(e){}
+  // 059 REG-LONGUEUR (registre, étape 5, après 087) : pavé signalé → repli ;
+  // réponse courte exigée par la consigne. Le seuil 2000c est le garde-fou
+  // existant (027/tronque), pas un optimum.
+  try{if(s.length>2000){tropLong=true;if(window.BLMContrat)window.BLMContrat.tracer(etat,'registre','059-longueur-pave-signale',String(s.length));}}catch(e){}
   if(coh.verdict==='incoherent'||!v.ok||etat.contradictions.length||perso||fuite||tropLong){demanderReanalyse(etat,{bloc:'formulation',motif:(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[])).join(',')||'reponse-écartée'});if(window.console&&console.warn)console.warn('[BLM] incohérent ('+(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[])).join(',')+') : modèle vérifié (tentative unique).');return reponseSalutation();}
   return s;
 }
-form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){selectedBots.forEach(function(id){var b=botsById[id];if(!b)return;var h=H(b.id);h.push({role:'user',content:v});var r=reponseSalutation();h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);});input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
+form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){var chx=choisirParleur(selectedBots,v);var b=botsById[chx.id];if(b){var h=H(b.id);h.push({role:'user',content:v});var r=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);}input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
 var actCtl=null;
 function renderActs(){var el=document.getElementById('actList');el.innerHTML='';ViaActions.TOOLS.forEach(function(t){var d=document.createElement('div');var ok=ViaActions.available(t);d.textContent=(ok?'🟢 ':'🔴 ')+t.title+' — '+t.desc+' [accès : '+t.perms+']'+(t.sensitive?' [SENSIBLE : validation exigée]':'')+((t.needs&&!ok)?' [manquant : '+t.needs+']':'');var rb=document.createElement('button');rb.type='button';rb.textContent=ok?'Exécuter':'Indisponible';rb.style.cssText='margin-left:8px;min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f';rb.disabled=!ok;rb.onclick=function(){execAct(t);};d.appendChild(rb);el.appendChild(d);});}

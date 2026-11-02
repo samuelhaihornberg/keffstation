@@ -1,4 +1,4 @@
-# Catalogue BLM v1 — 100 blocs (familles décidées, monde IArL)
+# Catalogue BLM v1 — 110 blocs (100 v1 + extension 101–110 du 2026-11-03, familles décidées, monde IArL)
 16 familles : orchestration, transparence (007,010), conscience simulée (008,009), sécurité, compréhension, langue (029–034 + 033), mémoire, savoir, philosophie, registre, raisonnement, cohérence, correction, vérification, amitié simulée, coûts (garde réelle 097/099, suivi 098/100).
 Principes : simulation comportementale ≠ conscience réelle ; crédits virtuels ≠ vrais tokens LLM ; mémorisé ≠ supposé.
 
@@ -304,3 +304,34 @@ Erreurs: dépassement silencieux → interdit ; compteur absent → refus moteur
 ### BLM-100 `COU-BILAN` — coûts (étape 6)
 Reçoit: journal (006) → Produit: bilan par message — Dépend: 006,097 — Déclencheur: fin de parcours.
 Erreurs: bilan sans crédits → incomplet — Test: bilan = crédits + vrais tokens.
+## Extension 101–110 (2026-11-03, familles existantes, aucun renommage des 001–100)
+### BLM-101 `CMP-IDIOMES` — compréhension (étape 2)
+Reçoit: texte → Produit: EtatMessage.expressions[] (idiomes repérés, jamais récités) — Dépend: 019 — Déclencheur: message non vide.
+Erreurs: idiome inventé → interdit ; liste affichée → interdite — Test: « poser un lapin » repéré, jamais récité. Statut : défini, non câblé.
+### BLM-102 `LAN-MAINTIEN` — langue (étape 2)
+Reçoit: texte + langue stockée du bot → Produit: EtatMessage.langue (persistée) — Dépend: 029 — Déclencheur: tout message.
+Erreurs: bascule sans marqueurs forts → interdite ; changement explicite refusé → interdit — Test: EN conservé sur « Salut », bascule sur « Hello, how are you? ». Statut : défini, câblé (conversation.html `via-langue-<bot>`).
+### BLM-103 `LAN-TRADUIRE` — langue (étape 4)
+Reçoit: demande de traduction → Produit: traduction via moteur, jamais de dico récité — Dépend: 029,068 — Déclencheur: marqueurs traduire/traduction/comment on dit.
+Erreurs: traduction sans moteur → interdite ; dico récité → interdit — Test: demande routée moteur avec contrainte de langue. Statut : défini, non câblé (aucune règle dédiée, moteur seul).
+### BLM-104 `SAV-SYNONYMES` — savoir (étape 3)
+Reçoit: mot → Produit: synonymes/racines (aide interne, jamais récités) — Dépend: 023 — Déclencheur: mot porteur.
+Erreurs: synonyme inventé → interdit ; liste affichée → interdite — Test: ressource liée, aide non branchée. Ressource: dico-philo.js fichePhilo (qualités). Statut : défini, non câblé.
+### BLM-105 `SAV-OPPOSITIONS` — savoir (étape 3)
+Reçoit: mot → Produit: anti-antonymes/anti-antithèses + synthèse des sens (interne) — Dépend: 023 — Déclencheur: mot porteur.
+Erreurs: opposition inventée → interdite ; synthèse affichée comme vérité → interdite — Test: ressource liée, aide non branchée. Ressource: dico-philo.js fichePhilo (défauts/anti-défauts/synthèse). Statut : défini, non câblé.
+### BLM-106 `SAV-USAGES` — savoir (étape 3)
+Reçoit: expression/contexte → Produit: usages + popularité (interne, popularité ≠ vérité) — Dépend: 035 — Déclencheur: expression repérée.
+Erreurs: popularité présentée comme vérité → interdit ; liste affichée → interdite — Test: ressource liée, aide non branchée. Ressource: dico-expressions.js (usages, scorerPublication). Statut : défini, non câblé.
+### BLM-107 `REG-FORMULES` — registre (étape 3)
+Reçoit: demande + langue + bot → Produit: formule sociale habituelle (interne, un seul texte final) — Dépend: 057 — Déclencheur: salutation.
+Erreurs: formule récitée comme cours → interdite ; liste de formules affichée → interdite — Test: « Salut » → bonjour bref + relance, jamais de cours. Ressource: blm-usages.js choisirFormule. Statut : défini, câblé.
+### BLM-108 `REG-SUITE` — registre (étape 3)
+Reçoit: demande + intention + contexte → Produit: suite estimée typée (inviter-repondre|poursuivre-sujet|conclure), jamais affichée — Dépend: 019,057 — Déclencheur: tout message.
+Erreurs: suite promise comme vraie réponse → interdite ; suite affichée → interdite — Test: types seuls en trace, jamais à l'écran. Ressource: blm-usages.js estimerSuite. Statut : défini, câblé.
+### BLM-109 `CON-ETATS` — conscience simulée (étape 5)
+Reçoit: brouillon réponse → Produit: états simulés calculés (émotion/sentiment/sensation, conscienceVecue:false) — Dépend: 087 — Déclencheur: réponse générée.
+Erreurs: sentiment revendiqué comme vécu → interdit (fiction exigée, 008) — Test: états calculés, jamais ressentis. Ressource: etats-keff.js etatAffectif. Statut : défini, non câblé.
+### BLM-110 `COU-MESURES` — coûts (étape 6)
+Reçoit: environnement → Produit: mesures réellement disponibles (deviceMemory, threads, stockage estimé, tokens estimés heuristiques, compteurs) — Dépend: 097 — Déclencheur: diagnostic.
+Erreurs: tokens/s, FPS/IPS, GPU, CPU% déclarés → interdits (non mesurés : WebGPU non utilisé, aucun chronométrage) — Test: seules les mesures du code sont déclarées. Ressource: etats-keff.js comparerTemperatures/arbitrerCharge + local-engine.js detect. Statut : référentiel documentaire, non exécuté.

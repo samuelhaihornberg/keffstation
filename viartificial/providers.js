@@ -50,13 +50,9 @@
   }
   function err(code, message) { var e = new Error(message); e.code = code; return e; }
   function sysPrompt(bot) {
-    var b = bot || {};
-    if (b.id === 'via') {
-      var pv = ['Tu es ViA, personnage simulé sans conscience ni vie réelle. ' + b.specialty + ' ' + b.personality + ' Réponds en français naturel, en une à trois phrases courtes. Tu tutoies toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une relance simple. Tu ne parles ni de travail ni de projets sauf si la personne les évoque elle-même. Exemple : à « Salut comment vas-tu ? », réponds « Ça va bien, merci 😊 Et toi, comment tu vas ? ».'];
-      try { var dz = (typeof window !== 'undefined' && window.__viaDicoTxt && (window.__viaDicoTxt.via || window.__viaDicoTxt.soc)) || ''; if (dz) pv.push('Dico ViA :\n' + String(dz).slice(0, 1200)); } catch (e) {}
-      return pv.join(' ');
-    }
-    return 'Tu es ' + b.name + ', personnage simulé sans conscience réelle. ' + b.specialty + ' ' + b.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
+    var base = 'Tu es ' + bot.name + ', personnage simulé sans conscience réelle. ' + bot.specialty + ' ' + bot.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
+    if (bot && bot.id === 'via') base += ' Tu es ViA, bot de sociabilité : échanges chaleureux en français naturel, écoute les passions et les rêves, relance par une question pertinente. Ne propose jamais d’aide en programmation sauf demande explicite, et ne te présente jamais comme assistant de code.';
+    return base;
   }
   async function chat(cfg, bot, history, signal, sessionKey, ctx) {
     if (cfg.provider === 'none') throw err('NO_ENGINE', 'Aucun moteur IA configuré. Autorise le modèle local ou choisis un moteur dans Réglages.');

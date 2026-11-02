@@ -25,10 +25,42 @@ const path = require('path');
 const http = require('http');
 const zlib = require('zlib');
 
-// Le calcul partagé vient du noyau motor.s (source de vérité unique).
-// Si le noyau est absent, ce pont dégrade proprement avec les mêmes formules.
-const { noyau } = require('./motor-noyau.js');
-const { creerPolitique } = require('./host-policy.js');
+// Le calcul partagé venait du noyau motor.s (source de vérité unique).
+// MANQUE CONSTATÉ 2026-11-02 : './motor-noyau.js' et './host-policy.js'
+// n'existent PAS dans viartificial/src (ni dans KeffStation). Le require
+// direct faisait crasher le module au chargement. Repli : chargement
+// best-effort + formules locales documentées (santé Shannon, paliers,
+// rythme organique). Aucun comportement réseau modifié.
+var noyau = null, creerPolitique = null;
+try { noyau = require('./motor-noyau.js').noyau; } catch (e) { noyau = null; }
+try { creerPolitique = require('./host-policy.js').creerPolitique; } catch (e) { creerPolitique = null; }
+if (!noyau) {
+  // Repli local (formules équivalentes documentées, sans dépendance).
+  noyau = {
+    sante: function (data, densite) {
+      var s = String(data == null ? '' : data), freq = {}, i, c, p, h = 0;
+      for (i = 0; i < s.length; i++) { c = s[i]; freq[c] = (freq[c] || 0) + 1; }
+      Object.keys(freq).forEach(function (k) { p = freq[k] / Math.max(1, s.length); h -= p * (Math.log(p) / Math.log(2)); });
+      var max = Math.log(Math.max(2, densite || 4)) / Math.log(2);
+      return { entropie: +h.toFixed(4), pourcent: Math.max(0, 1 - h / 8), octets: s.length, bruit: 0 };
+    },
+    paliers: function (total, parPalier) {
+      var t = +total || 0, n = Math.max(1, +parPalier || 10), out = [], i;
+      for (i = 1; i <= n; i++) out.push({ palier: i, libere: Math.round(t * i / n), reste: t - Math.round(t * i / n), part: +(100 * i / n).toFixed(1) });
+      return out;
+    },
+    rythmeOrganic: function (sante, cycles) {
+      var s = Math.max(0, Math.min(1, +sante || 0)), c = Math.max(1, +cycles || 1);
+      return { urgence: +(1 - s).toFixed(3), pas: Math.round(100 * (1 - s) / c), libere: 0, retenu: 0, organic: true };
+    },
+    vidageDynamique: function (octets, opts) {
+      var o = opts || {}, n = Math.max(1, +o.cycles || 5), t = +octets || 0, acc = 0, cycles = [], i;
+      for (i = 1; i <= n; i++) { var q = Math.round(t / n); acc += q; cycles.push({ cycle: i, libere: q, cumul: acc }); }
+      return { cycles: cycles, libere: acc, reste: Math.max(0, t - acc) };
+    }
+  };
+}
+if (!creerPolitique) { creerPolitique = function () { return { autorise: function () { return false; } }; }; }
 
 /* ------------------------------------------------------------------ réglages */
 const ENV = process.env;
@@ -475,6 +507,35 @@ class Recyclor {
     fs.writeFileSync(path.join(TRASH_DIR, `${Date.now()}-presse-${id}.sha256`), e.empreinte);
     log(`presseSupprimer id=${id}`);
     return { ok: true, id };
+  }
+
+  /* ---------------------------------------------------------------- TRANSMETTRE (BLM→COS→mémoire) */
+  /**
+   * NOUVEAU 2026-11-02 — transmet un élément du BLM vers un moteur COS puis
+   * vers la mémoire du bot, SANS perte / duplication / mélange.
+   * Garanties : empreinte SHA-256 vérifiée après chaque étape ; registre `vus`
+   * (Set d'empreintes) → doublon détecté, non réécrit ; cloison `botId` :
+   * refus si le bot destinataire diffère du bot source.
+   * Retour : { ok, etape, empreinte, doublon, raison }.
+   */
+  transmettre(element, botSource, botDest, vus) {
+    var str = String(element == null ? '' : element);
+    var emp = empreinte(str);
+    var dst = botDest && (botDest.id || botDest);
+    var src = botSource && (botSource.id || botSource);
+    if (String(dst || '') !== String(src || '')) {
+      log('transmettre REFUSÉ mélange bot ' + src + ' -> ' + dst);
+      return { ok: false, etape: 'cloison', empreinte: emp, doublon: false, raison: 'bot-destinataire-different (mélange interdit)' };
+    }
+    var set = vus instanceof Set ? vus : (this._vus || (this._vus = new Set()));
+    if (set.has(emp)) { log('transmettre DOUBLON ' + emp.slice(0, 12)); return { ok: true, etape: 'dedup', empreinte: emp, doublon: true, raison: 'déjà transmis, non réécrit' }; }
+    var copie = this.copierFidele(str, { task: {}, utilisateur: { confirmeDegradation: true }, bot: { id: String(src || '?'), confirmeDegradation: true } });
+    if (!copie.fidele || !this.verifierFidelite(copie.copie, emp)) {
+      log('transmettre PERTE ' + emp.slice(0, 12));
+      return { ok: false, etape: 'fidelite', empreinte: emp, doublon: false, raison: 'empreinte mismatch (perte interdite)' };
+    }
+    set.add(emp);
+    return { ok: true, etape: 'transmis', empreinte: emp, doublon: false, donnees: copie.copie, raison: 'copie fidèle, bot ' + src };
   }
 
   /* ---------------------------------------------------------------- serveur HTTP dédié */

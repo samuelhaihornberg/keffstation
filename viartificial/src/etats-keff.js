@@ -1,6 +1,8 @@
 // src/etats-keff.js — polarite, Keff, emotions, traduction, raisonnement, thermique.
 // Etats affectifs = etats CALCULES, pas preuve de conscience vecue.
-// COS preserve : gain ~50% observe en essais, mesure sans garantie materiel.
+// Ancienne hypothèse NON MESURÉE (sans effet de code : aucun appelant) :
+// "COS preserve : gain ~50 %" — chiffre non établi, conservé ici comme trace
+// historique à ne pas utiliser comme règle.
 'use strict';
 const POLARITES = new Set(['positive', 'negative', 'abstraite']);
 function etatAffectif({ emotion = 'neutre', sentiment = '', sensation = '' } = {}) {

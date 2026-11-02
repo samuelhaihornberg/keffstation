@@ -97,4 +97,18 @@ function blmExtraireCauses(texte) {
   if (BLM_COMP_CAUSE.test(String(texte || '').toLowerCase())) out.push('cause-marquee');
   return out;
 }
-module.exports = { detecterIntention: blmDetecterIntention, extraireRelations: blmExtraireRelations, extraireTemps: blmExtraireTemps, extraireCauses: blmExtraireCauses, extraireEntites: blmExtraireEntites, extraireDemandes: blmExtraireDemandes, detecterSentiment: blmDetecterSentiment, detecterAmbiguite: blmDetecterAmbiguite, tronquerTexte: blmTronquerTexte, dansPerimetre: blmDansPerimetre };
+function blmRepererCandidats(texte, entites) {
+  // 101 CMP-IDIOMES — segments multi-mots composés UNIQUEMENT de mots porteurs
+  // (023) déjà extraits, ordre conservé. FAUTE de dictionnaire d'idiomes dans
+  // le projet, ce sont des CANDIDATS non vérifiés (statut explicite) : jamais
+  // affichés, jamais transmis tels quels — contexte interne pour 106/usages.
+  var ens = {};
+  (entites || []).forEach(function (w) { ens[w] = true; });
+  var toks = normeCleCmp(texte).split(/[^a-z0-9]+/).filter(function (w) { return w; });
+  var out = [], run = [];
+  function flush() { if (run.length >= 2) out.push({ texte: run.join(' '), statut: 'candidat-non-verifie' }); run = []; }
+  toks.forEach(function (w) { if (ens[w]) run.push(w); else flush(); });
+  flush();
+  return out.slice(0, 5);
+}
+module.exports = { detecterIntention: blmDetecterIntention, extraireRelations: blmExtraireRelations, extraireTemps: blmExtraireTemps, extraireCauses: blmExtraireCauses, extraireEntites: blmExtraireEntites, extraireDemandes: blmExtraireDemandes, detecterSentiment: blmDetecterSentiment, detecterAmbiguite: blmDetecterAmbiguite, tronquerTexte: blmTronquerTexte, dansPerimetre: blmDansPerimetre, repererCandidats: blmRepererCandidats };

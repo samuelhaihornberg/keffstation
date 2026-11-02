@@ -76,8 +76,9 @@
   function sysPrompt(bot) {
     // Constructeur unique : même consigne pour le moteur local et les fournisseurs externes.
     if (global.ViaProviders && global.ViaProviders.sysPrompt) return global.ViaProviders.sysPrompt(bot);
-    var b = bot || {};
-    return 'Tu es ' + b.name + ', personnage simulé sans conscience réelle. ' + b.specialty + ' ' + b.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
+    var base = 'Tu es ' + bot.name + ', personnage simulé sans conscience réelle. ' + bot.specialty + ' ' + bot.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
+    if (bot && bot.id === 'via') base += ' Tu es ViA, bot de sociabilité : échanges chaleureux en français naturel, écoute les passions et les rêves, relance par une question pertinente. Ne propose jamais d’aide en programmation sauf demande explicite, et ne te présente jamais comme assistant de code.';
+    return base;
   }
   async function chat(bot, history, opt) {
     if (!worker || S.phase !== 'ready') throw err('NOT_LOADED', 'Modèle non chargé : appuie sur « Charger le modèle local », puis réessaie.');
@@ -85,11 +86,12 @@
     busy = true; set('generating', 'génération…');
     var o = opt || {};
     try {
-      // Système TOUJOURS conservé : on ne tronque que l'historique (4 derniers),
-      // jamais la consigne système (un slice direct l'éjectait dès 5 messages).
-      var sys = { role: 'system', content: sysPrompt(bot) };
-      var hist = (history || []).filter(function (m) { return !m || m.role !== 'system'; }).slice(-4);
-      var msgs = [sys].concat(hist);
+      var msgs = [{ role: 'system', content: sysPrompt(bot) }].concat(history);
+      // Historique déjà borné en amont (formulerEntree : rôles ≤ 4 + bloc
+      // mémoire + demande ; enveloppe tokens via preparerEntreeMoteur) :
+      // aucune troncature aveugle ici, la consigne système part toujours.
+      // (Une coupe aveugle type slice(-5) éjectait la consigne dès que
+      // l'historique restauré remplissait le contexte.)
       var t = await rpc('chat', { messages: msgs }, { onToken: o.onToken });
       t = String(t).trim();
       if (!t) throw err('EMPTY', 'Réponse vide du moteur.');

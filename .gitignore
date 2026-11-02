@@ -9,3 +9,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+# Graphe COS complet (régénérable en une commande : node scripts/gen-cos-graphe.cjs)
+viartificial/src/cos-graphe/*.jsonl

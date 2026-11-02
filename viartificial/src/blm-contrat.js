@@ -45,7 +45,23 @@ function blmEtatInitial(texte, botId) {
       'réponse courte, une relance si salutation'],
     certitude: 0.5, contradictions: [], redemandes: [], trace: [],
     sujet: null, demandes: [], ton_percu: 'neutre', doute: false,
-    perimetre: true, tronque: false, melange: false, faits: [] };
+    perimetre: true, tronque: false, melange: false, faits: [],
+    // NOUVEAU 2026-11-02 (optionnel, à confirmer) : sélection COS ordonnée par
+    // le BLM (063-066) + polarités de circulation. Absent = non planifié.
+    // Types NOUVEAUX : 'inference'|'savoir'|'correction'|'memoire'.
+    // États NOUVEAUX : 'disponible'|'indisponible'|'en-charge'|'refuse-budget'|'hors-perimetre'.
+    // Polarités NOUVELLES (circulation seule, SANS rapport avec POLARITES
+    // affectives de etats-keff.js) : 'emetteur'|'receveur'|'neutre'.
+    moteurs: [], cosLiens: [],
+    // NOUVEAU 2026-11-03 (usages, internes, jamais transmis au moteur) :
+    // demandeType = salutation-simple|explication-linguistique|
+    // conversation-ordinaire ; formule = {formule, relance, ton, langue} ;
+    // suite = {type}. formulerEntreeClasse ne les lit jamais.
+    demandeType: null, formule: null, suite: null,
+    // NOUVEAU 2026-11-03 (101/109/110, internes, jamais au moteur) :
+    // expressions = candidats 101 (jamais affichés) ; simulation = états
+    // simulés 109 (fiction) ; mesures = 110 (noms dispo/indispo).
+    expressions: [], simulation: null, mesures: null };
   if (nz.neutralise) e.trace.push({ bloc: 'entree', regle: 'injection-neutralisee', sortie: nz.motifs.join(',') });
   return e;
 }
@@ -69,6 +85,36 @@ function blmValiderEtat(e) {
     if (Array.isArray(e[k])) r[k] = e[k];
     else if (e[k] !== undefined) problemes.push(k + '-non-tableau');
   });
+  // NOUVEAU optionnel : sélection COS (absente = [], jamais d'erreur bloquante
+  // pour les états v4 existants). Chaque entrée : {id, type, polarite, etat}.
+  if (e.moteurs === undefined) r.moteurs = [];
+  else if (Array.isArray(e.moteurs)) r.moteurs = e.moteurs;
+  else problemes.push('moteurs-non-tableau');
+  // Liens COS exécutés pour l'équipe (cos-langage.js) : tracés, jamais de brut.
+  if (e.cosLiens === undefined) r.cosLiens = [];
+  else if (Array.isArray(e.cosLiens)) r.cosLiens = e.cosLiens;
+  else problemes.push('cosLiens-non-tableau');
+  // Usages internes (jamais transmis au moteur, jamais persistés) : validés
+  // strictement, sinon signalés et remis à null.
+  if (e.demandeType === undefined || e.demandeType === null) r.demandeType = null;
+  else if (typeof e.demandeType === 'string' && e.demandeType.length <= 40) r.demandeType = e.demandeType;
+  else problemes.push('demandeType-invalide');
+  if (e.formule === undefined || e.formule === null) r.formule = null;
+  else if (typeof e.formule === 'object' && typeof e.formule.formule === 'string' && e.formule.formule.length <= 280) r.formule = e.formule;
+  else problemes.push('formule-invalide');
+  if (e.suite === undefined || e.suite === null) r.suite = null;
+  else if (typeof e.suite === 'object' && typeof e.suite.type === 'string' && e.suite.type.length <= 40) r.suite = e.suite;
+  else problemes.push('suite-invalide');
+  // 101/109/110 internes : validés strictement, jamais transmis ni persistés.
+  if (e.expressions === undefined) r.expressions = [];
+  else if (Array.isArray(e.expressions) && e.expressions.every(function (x) { return x && typeof x.texte === 'string' && x.texte.length <= 200; })) r.expressions = e.expressions;
+  else problemes.push('expressions-invalide');
+  if (e.simulation === undefined || e.simulation === null) r.simulation = null;
+  else if (typeof e.simulation === 'object' && e.simulation.conscienceVecue === false) r.simulation = e.simulation;
+  else problemes.push('simulation-invalide');
+  if (e.mesures === undefined || e.mesures === null) r.mesures = null;
+  else if (typeof e.mesures === 'object' && Array.isArray(e.mesures.disponibles) && Array.isArray(e.mesures.indisponibles)) r.mesures = e.mesures;
+  else problemes.push('mesures-invalide');
   ['doute', 'perimetre', 'tronque', 'melange'].forEach(function (k) {
     if (typeof e[k] === 'boolean') r[k] = e[k];
     else if (e[k] !== undefined) problemes.push(k + '-invalide');

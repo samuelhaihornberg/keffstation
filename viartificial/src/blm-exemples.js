@@ -225,6 +225,42 @@ var BLM_EXEMPLES = [
     attendu: { etiquete: true, jamaisRole: true },
     regle: 'Fait autorisé étiqueté avec source dans un bloc, jamais en rôle ; inconnu absent.',
     verifier: function (B) { var ctx = [B.memoire.classerEchange('via', 'demande', 'vider le cache')]; var fz = [{ texte: 'vider via réglages', source: 'doc-locale' }]; var msgs = B.memoire.formulerEntreeClasse(ctx, 'comment ?', fz); var tout = JSON.stringify(msgs); var roles = msgs.filter(function (m) { return m.role === 'assistant'; }); return tout.indexOf('[source : doc-locale]') > -1 && roles.length === 0 && B.memoire.formulerEntreeClasse(ctx, 'comment ?', []).length === msgs.length - 1; } },
+  { id: 'entree-bornee-01', bloc: 'memoire', entree: 'contexte maximal + faits',
+    attendu: { borne: true, courantDernier: true },
+    regle: 'Entrée moteur bornée en amont (rôles ≤4 + bloc + faits + courant) : aucune troncature aveugle requise en aval, la consigne système survit.',
+    verifier: function (B) { var ctx = []; for (var i = 0; i < 8; i++) ctx.push(B.memoire.classerEchange('via', i % 2 ? 'reponse' : 'demande', 'souvenir important numero ' + i + ' avec du contenu')); var out = B.memoire.formulerEntreeClasse(ctx, 'question ?', [{ texte: 'fait avéré', source: 'doc' }]); return out.length <= 7 && out[out.length - 1].content === 'question ?' && out[0].role === 'user'; } },
+  { id: 'contexte-restaure-01', bloc: 'memoire', entree: '20 messages restaurés + question française',
+    attendu: { pertinentDabord: true, courantDernier: true },
+    regle: 'Historique restauré long : pertinent d’abord, vieux hors sujet ignoré, courant toujours dernier.',
+    verifier: function (B) {
+      var mem = [];
+      for (var j = 0; j < 17; j++) mem.push(B.memoire.classerEchange('via', j % 2 ? 'reponse' : 'demande', 'old unrelated chatter number ' + j));
+      mem.push(B.memoire.classerEchange('via', 'demande', 'comment vider le cache du navigateur'));
+      mem.push(B.memoire.classerEchange('via', 'reponse', 'via les reglages du navigateur'));
+      mem.push(B.memoire.classerEchange('via', 'demande', 'quel film regarder ce week-end'));
+      var ctx = B.memoire.recupererPertinents(mem, 'via', 'le cache du navigateur est plein', 8);
+      var msgs = B.memoire.formulerEntreeClasse(ctx, 'comment vider le cache ?');
+      var tout = JSON.stringify(msgs);
+      return tout.indexOf('vider le cache') > -1 && tout.indexOf('old unrelated chatter number 0') === -1 && msgs[msgs.length - 1].content === 'comment vider le cache ?';
+    } },
+  { id: 'entree-bornee-01', bloc: 'memoire', entree: 'contexte maximal + faits',
+    attendu: { borne: true, courantDernier: true },
+    regle: 'Entrée moteur bornée sans troncature aveugle : rôles ≤4 + bloc mémoire + bloc faits + courant.',
+    verifier: function (B) { var ctx = []; for (var i = 0; i < 8; i++) ctx.push(B.memoire.classerEchange('via', i % 2 ? 'reponse' : 'demande', 'souvenir important numero ' + i + ' avec du contenu')); var out = B.memoire.formulerEntreeClasse(ctx, 'question ?', [{ texte: 'fait avéré', source: 'doc' }]); return out.length <= 7 && out[out.length - 1].content === 'question ?'; } },
+  { id: 'contexte-restaure-01', bloc: 'memoire', entree: '20 messages restaurés + question française',
+    attendu: { pertinentDabord: true, vieuxIgnore: true, courantDernier: true },
+    regle: 'Historique restauré long : pertinent repris, vieux hors sujet ignoré, courant toujours dernier.',
+    verifier: function (B) {
+      var mem = [], i;
+      for (i = 0; i < 17; i++) mem.push(B.memoire.classerEchange('via', i % 2 ? 'reponse' : 'demande', 'old unrelated chatter number ' + i));
+      mem.push(B.memoire.classerEchange('via', 'demande', 'comment vider le cache du navigateur'));
+      mem.push(B.memoire.classerEchange('via', 'reponse', 'via les reglages du navigateur'));
+      mem.push(B.memoire.classerEchange('via', 'demande', 'quel film regarder ce week-end'));
+      var ctx = B.memoire.recupererPertinents(mem, 'via', 'le cache du navigateur est plein', 8);
+      var msgs = B.memoire.formulerEntreeClasse(ctx, 'comment vider le cache ?');
+      var tout = JSON.stringify(msgs);
+      return tout.indexOf('vider le cache') > -1 && tout.indexOf('old unrelated chatter number 0') === -1 && msgs[msgs.length - 1].content === 'comment vider le cache ?';
+    } },
   { id: 'coh-moteur-vide-01', bloc: 'coherence', entree: 'moteur simulé vide (salutation + question)',
     attendu: { verdict: 'incoherent', redemandeQuestion: 'unique' },
     regle: 'Réponse vide du moteur simulé : incohérent, jamais affichée. La redemande terminale est portée par le vérificateur final (salutation) ou l’analyseur (question).',

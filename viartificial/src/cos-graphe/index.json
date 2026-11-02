@@ -1,0 +1,65 @@
+{
+ "version": 1,
+ "genereLe": "2026-11-02T07:27:27.616Z",
+ "total": 1034280,
+ "valides": 77616,
+ "parContexte": {
+  "S1": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "S2": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "S3": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "S4": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "S5": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "S6": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "salutation": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "minimal": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "repli": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "linguistique": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "ordinaire": {
+   "total": 86190,
+   "valides": 6468
+  },
+  "globale": {
+   "total": 86190,
+   "valides": 6468
+  }
+ },
+ "statuts": [
+  "candidat",
+  "valide",
+  "ecarte",
+  "actif-confirme(par --evoluer, résultats réels uniquement)"
+ ],
+ "dependDocDefaut": "118/118 valides",
+ "generateur": "scripts/gen-cos-graphe.cjs (déterministe, sans aléa)",
+ "note": "Le parcours actif ne charge jamais les shards : sélection sur liens utiles (cos-defaut + équipe + borne)."
+}

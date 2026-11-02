@@ -85,13 +85,16 @@ onmessage = async function (e) {
       try {
         stream = new TextStreamer(pipe.tokenizer, { skip_prompt: true, skip_special_tokens: true, callback_function: function (t) { send(id, { type: 'token', text: t }); } });
       } catch (err3) { stream = null; }
-      // Contexte court + réponses courtes (mobile) : système TOUJOURS gardé,
-      // puis 3 derniers messages d'historique. Un slice() direct éjecterait la
-      // consigne système dès que l'historique grandit (cause du bug ViA).
-      var sys = (p.messages || []).filter(function (m) { return m && m.role === 'system'; })[0] || null;
-      var hist = (p.messages || []).filter(function (m) { return !m || m.role !== 'system'; }).slice(-3);
-      var courts = sys ? [sys].concat(hist) : hist.slice(-4);
-      var out = await pipe(courts, { max_new_tokens: 64, temperature: 0.7, do_sample: true, top_p: 0.9, streamer: stream });
+      // Contexte court + réponses courtes (mobile) : 64 tokens max.
+      // Historiques complets conservés en localStorage (intacts). La consigne
+      // système (rôle 'system', toujours en tête) n'est JAMAIS coupée par la
+      // troncature : sans elle, le template injecte un prompt anglais par
+      // défaut et le modèle répond hors langue et hors sujet.
+      var entree = p.messages || [];
+      var sys0 = (entree.length && entree[0] && entree[0].role === 'system') ? [entree[0]] : [];
+      var corps = sys0.length ? entree.slice(1) : entree.slice();
+      entree = sys0.concat(corps.slice(-(6 - sys0.length)));
+      var out = await pipe(entree, { max_new_tokens: 64, temperature: 0.7, do_sample: true, top_p: 0.9, streamer: stream });
       var g = out && out[0] && out[0].generated_text, t = '';
       if (Array.isArray(g)) { var last = g[g.length - 1]; t = (last && (last.content || last.text)) || ''; }
       else if (typeof g === 'string') { t = g; }
