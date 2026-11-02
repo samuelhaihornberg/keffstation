@@ -1,4 +1,4 @@
-const CACHE = 'viartificial-v28';
+const CACHE = 'viartificial-v29'; // v29 : purge le mixte ancien/nouveau après publication (même nom = l'ancien parcours restait servi).
 const ASSETS = ['./', './index.html', './xsstream.html', './conversation.html', './bots.json', './providers.js', './memory.js', './actions.js', './local-engine.js', './local-wasm.js', './local-wasm-worker.js', './responsive.css', './capabilities.js', './manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :

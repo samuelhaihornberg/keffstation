@@ -265,7 +265,7 @@ var b=cfg.bots[0];cfg.bots.forEach(function(x){if(x.id===q)b=x;});
 document.getElementById('title').textContent=b.avatar+' '+b.name+' — '+b.specialty;
 document.getElementById('avatar').textContent=b.avatar;
 document.getElementById('who').textContent=b.name;
-function add(who,text,botObj){var d=document.createElement('div');d.className='msg '+who;var s=document.createElement('span');s.className='meta';s.textContent=who==='me'?'Moi':(botObj?botObj.name+' (moteur local)':b.name+' (simulé)');if(who==='sys')s.textContent='ℹ️ info';d.appendChild(s);d.appendChild(document.createTextNode(text));thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d;}
+function add(who,text,botObj,moteur){var d=document.createElement('div');d.className='msg '+who;var s=document.createElement('span');s.className='meta';s.textContent=who==='me'?'Moi':(botObj?botObj.name+' ('+(moteur||'moteur local')+')':b.name+' (simulé)');if(who==='sys')s.textContent='ℹ️ info';d.appendChild(s);d.appendChild(document.createTextNode(text));thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d;}
 function addWait(bot){var d=document.createElement('div');d.className='msg bot';d.textContent=bot.name+' écrit… ';var c=document.createElement('span');c.className='blink';c.textContent='▊';c.setAttribute('aria-hidden','true');d.appendChild(c);thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d;}
 function addStream(bot){var d=document.createElement('div');d.className='msg bot';var s=document.createElement('span');s.className='meta';s.textContent=bot.name+' (moteur local)';d.appendChild(s);var body=document.createElement('span');d.appendChild(body);thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return{box:d,body:body};}
 // Ajoute un message système sauf s'il est identique au dernier (pas de répétitions).
@@ -274,8 +274,8 @@ function pulseOn(){try{return localStorage.getItem('via-pulse')!=='off';}catch(e
 function reduceMotion(){try{return window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}}
 // Pulsation : affiche la réponse mot à mot (le bot respire). Réponses courtes =
 // vrombissement (tout d'un coup). Motion réduite ou pulsation coupée = tout d'un coup.
-function addPulsed(bot,text){
-  var d=document.createElement('div');d.className='msg bot';var s=document.createElement('span');s.className='meta';s.textContent=bot.name+' (moteur local)';d.appendChild(s);
+function addPulsed(bot,text,moteur){
+  var d=document.createElement('div');d.className='msg bot';var s=document.createElement('span');s.className='meta';s.textContent=bot.name+' ('+(moteur||'moteur local')+')';d.appendChild(s);
   var body=document.createElement('span');d.appendChild(body);thread.appendChild(d);thread.scrollTop=thread.scrollHeight;
   var words=String(text).split(/(\s+)/);
   if(!pulseOn()||reduceMotion()||words.length<40){body.textContent=text;return d;}
@@ -383,6 +383,10 @@ function paintPick(cap){
   }
   paintDiag(cap);
 }
+// Version réellement chargée (à bumper à chaque publication : repère
+// anti-décalage local/Pages/cache) + moteur réellement utilisé (à distinguer
+// de « site accessible en ligne », qui ne dit rien de l'inférence).
+window.__VIA_BUILD = '2026-11-04-parcours11+110BLM';
 function paintDiag(cap){
   var el=document.getElementById('diagDetail');if(!el)return;
   cap=cap||(ViaLocalEngine.lastDetect?ViaLocalEngine.lastDetect():null);
@@ -395,6 +399,7 @@ function paintDiag(cap){
   if(cap.reasons&&cap.reasons.length)L.push('causes : '+cap.reasons.join(' | '));
   else L.push('causes : aucune (appareil compatible)');
   try{if(eng.provider==='local'){var sm2=ViaLocalEngine.summary();if(sm2){if(sm2.backend)L.push('moteur actif : '+sm2.backend+(sm2.model?' / '+sm2.model:''));if(sm2.threads)L.push('threads : '+sm2.threads);if(sm2.tokenizer)L.push('tokenizer : '+sm2.tokenizer);}}}catch(e){}
+  try{L.push('build : '+(window.__VIA_BUILD||'?'));L.push('inférence : '+(eng.provider==='local'?'locale (cet appareil, CPU/WASM)':'DISTANTE ('+eng.provider+' — le site reste joignable en ligne, l’inférence ne l’est pas)'));}catch(e){}
   el.textContent=L.join('\n');
 }
 function paintStorage(){
@@ -592,7 +597,7 @@ function runItem(item){
         genCtl=new AbortController();
         var h=H(bot.id);h.push({role:'user',content:item.text});
         var orch=orchestrerBLM(item.text,bot,h);
-        try{if(window.BLMContrat)BLMContrat.tracer(orch,'registre','selection-'+bot.id,motifChoix||'');}catch(xSel){}
+        try{if(window.BLMContrat){BLMContrat.tracer(orch,'registre','selection-'+bot.id,motifChoix||'');BLMContrat.tracer(orch,'parcours','requete-'+(item.id||'?'),bot.id);}}catch(xSel){}
         var prep=preparerEntreeMoteur(orch,item.text);
         if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
         // BLM 066 : resoudreMoteur DÉTERMINE le moteur appelé (pas une trace).
@@ -601,7 +606,7 @@ function runItem(item){
         return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
           r=blmCorrigerReponse(orch,r);
           r=verifierFinaleBLM(orch,r);
-          sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes','parcours-standard');
+          sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
         },function(e){
           if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
           else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
@@ -682,12 +687,13 @@ function runRemote(item){
   genCtl=new AbortController();
   var key=document.getElementById('pKey').value||null;var h=H(b0.id);h.push({role:'user',content:item.text});
   var orchR=orchestrerBLM(item.text,b0,h);
+  try{if(window.BLMContrat){BLMContrat.tracer(orchR,'registre','selection-'+b0.id,'choix-distant');BLMContrat.tracer(orchR,'parcours','requete-'+(item.id||'?'),b0.id);}}catch(xSelR){}
   var prepR=preparerEntreeMoteur(orchR,item.text);
   if(!prepR.ok){wait.remove();addOnce('sys','Erreur : '+prepR.message);lastFailure={stage:'response',item:item};setState('error',prepR.message);return Promise.resolve();}
   return ViaProviders.chat(eng,b0,prepR.msgs,genCtl.signal,key).then(function(r){
     r=blmCorrigerReponse(orchR,r);
     r=verifierFinaleBLM(orchR,r);
-    h.push({role:'assistant',content:r});wait.remove();addPulsed(b0,r);setState('ready');lastFailure=null;finaliserSortie(b0,h,r,orchR,'succes','parcours-standard');
+    h.push({role:'assistant',content:r});wait.remove();var moteurDistant=(eng.provider==='ollama'?'Ollama distant (réseau)':(eng.provider==='custom'?'Endpoint distant (réseau)':eng.provider));addPulsed(b0,r,moteurDistant);setState('ready');lastFailure=null;finaliserSortie(b0,h,r,orchR,'succes',item.id||'parcours-standard');
   },function(e){
     wait.remove();
     if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
@@ -963,6 +969,8 @@ function blmCorrigerReponse(etat,rep){
 function verifierFinaleBLM(etat,rep){
   var s=String(rep||'').trim(),fr=etat.langue==='fr';
   // Orchestrateur de réponse (087) : un seul texte final.
+  // Traçabilité requête→réponse : requestId porté par l'item, le bot et la
+  // conversation (h) ; le journal consigne motif=requestId.
   try{if(window.BLMContrat)BLMContrat.tracer(etat,'parcours','reponse-087','verification-finale');}catch(xR){}
   // 109 CON-ETATS : états simulés calculés (fiction, conscienceVecue:false),
   // jamais affichés, jamais ressentis. Pertinent pour toute réponse à afficher.
@@ -995,7 +1003,7 @@ function verifierFinaleBLM(etat,rep){
   if(coh.verdict==='incoherent'||!v.ok||etat.contradictions.length||perso||fuite||tropLong){demanderReanalyse(etat,{bloc:'formulation',motif:(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[])).join(',')||'reponse-écartée'});if(window.console&&console.warn)console.warn('[BLM] incohérent ('+(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[])).join(',')+') : modèle vérifié (tentative unique).');return reponseSalutation();}
   return s;
 }
-form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){var chx=choisirParleur(selectedBots,v);var b=botsById[chx.id];if(b){var h=H(b.id);h.push({role:'user',content:v});var r=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());h.push({role:'assistant',content:r});add('bot',r,b);saveConv(b.id);}input.focus();return;}queue.push({text:v,cancelled:false});pump();input.focus();});
+form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){var chx=choisirParleur(selectedBots,v);var b=botsById[chx.id];if(b){var h=H(b.id);h.push({role:'user',content:v});var r=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());h.push({role:'assistant',content:r});add('bot',r,b,'réponse directe (sans moteur)');saveConv(b.id);}input.focus();return;}try{window.__qseq=(window.__qseq||0)+1;}catch(x){}queue.push({id:'q'+Date.now().toString(36)+(window.__qseq||0),text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
 var actCtl=null;
 function renderActs(){var el=document.getElementById('actList');el.innerHTML='';ViaActions.TOOLS.forEach(function(t){var d=document.createElement('div');var ok=ViaActions.available(t);d.textContent=(ok?'🟢 ':'🔴 ')+t.title+' — '+t.desc+' [accès : '+t.perms+']'+(t.sensitive?' [SENSIBLE : validation exigée]':'')+((t.needs&&!ok)?' [manquant : '+t.needs+']':'');var rb=document.createElement('button');rb.type='button';rb.textContent=ok?'Exécuter':'Indisponible';rb.style.cssText='margin-left:8px;min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f';rb.disabled=!ok;rb.onclick=function(){execAct(t);};d.appendChild(rb);el.appendChild(d);});}

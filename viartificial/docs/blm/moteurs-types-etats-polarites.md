@@ -274,7 +274,36 @@ lancement, AUCUNE conversation, AUCUNE batterie.
 - 005 (=2048, `blm-budget.js`) et 099 (=50, `blm-couts.js`) inchangés :
   limites, pas objectifs. Classement compatibilité + tourniquet par vague
   avant MAX_LIENS=8 inchangés. Graphe : candidats 1 034 280 / valides 77 616
-  / 0 actif (réservé aux résultats réels via `--evoluer`, jamais auto-promu).
+  / 0 actif (réservé aux résultats réels via `--evoluer`, jamais auto-promu, vérifié : aucun `actif-confirme` dans les 12 shards).
+
+## Matrice de circulation requête→réponse + alignement local/Pages (2026-11-04, statique, rien exécuté)
+Chaîne vérifiée dans le code : version fichiers (`__VIA_BUILD`,
+SW `viartificial-v29`) → PWA/SW/cache (navigate réseau-d'abord, .js
+cache-d'abord + rafraîchi en arrière-plan, bots.json no-store, purge auto sauf
+modèles IA) → bot + conversation (`H(bot.id)`, `saveConv`, `via-conv-<id>`) →
+requête (`queue.push({id,text})`, `q<base36><seq>`) → orchestrateur + BLM
+(traces `parcours/requete-<id>`, `selection-<bot>`, équipe, `cos/lien-r*`,
+`suite-*`, `mesures`) → moteur réellement appelé (`resoudreMoteur` + gate +
+trace `parcours/moteur-*`) → réponse rattachée (`item.dernierReponse`,
+`finaliserSortie`, journal motif=requestId, `saveConv`) → affichage (méta =
+bot + moteur réel : `moteur local`, `Ollama distant (réseau)`,
+`réponse directe`, `simulé`).
+Local vs Pages (constaté par fetch, fichiers intacts) : conversation.html
+identique à l'octet (102 926, même ordre des 27 scripts) ; sw.js identique
+v28 des deux côtés au moment du contrôle — ÉCART : sans bump, les navigateurs
+ayant l'ancien SW resservent l'ancien parcours (HTML neuf + modules vieux en
+cache-first). CORRIGÉ : cache `viartificial-v29` (purge à l'activation,
+re-téléchargement des modules).
+« En ligne » ≠ « moteur local » : le bandeau dit la joignabilité du SITE,
+la bulle dit le MOTEUR d'inférence. Le diagnostic (`paintDiag`, Réglages)
+affiche désormais les deux : `build : …` (version réellement chargée) +
+`inférence : locale (cet appareil, CPU/WASM)` vs `DISTANTE (…)` +
+`moteur actif : …`. Toute divergence build local/diag = décalage de
+publication ou de cache, repérable immédiatement.
+Reste à vérifier sur l'appareil : ouvrir `?bot=via`, lire diagDetail
+(build + moteur actif), salutation (méta `réponse directe`), question
+(méta moteur + journal motif=requestId), comparer `__VIA_BUILD` au déployé ;
+si écart : vider les données du site (le SW v29 purge au prochain chargement).
 
 ## Suivi des écarts — état unique au 2026-11-03 (inspection statique, rien exécuté)
 RÉSOLUS (câblés, vérifiés dans le code, comportements non observés en exécution) :
