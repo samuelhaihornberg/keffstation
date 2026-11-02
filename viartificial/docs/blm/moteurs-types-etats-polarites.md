@@ -305,6 +305,16 @@ Reste à vérifier sur l'appareil : ouvrir `?bot=via`, lire diagDetail
 (méta moteur + journal motif=requestId), comparer `__VIA_BUILD` au déployé ;
 si écart : vider les données du site (le SW v29 purge au prochain chargement).
 
+## Liens ?bot= préservés (2026-11-04, cause trouvée à la création, corrigée)
+Constat : `xsstream.html` forçait `bot` à geeko/geekette et jetait `?bot=via`
+à la création du lien retour (`xChat.onclick` → `?bot=geeko` même en venant
+pour ViA). Corrigé à la source : le `?bot=` entrant est conservé
+(`botDemande`, lettres seules, sinon ignoré) et transmis tel quel vers
+`conversation.html` ; le choix explicite dans la page (sélecteur) l'emporte
+(`botDemande` réinitialisé au changement). Les cartes `index.html`
+(`./conversation.html?bot=<id>`, `esc()` neutre sur les ids) étaient déjà
+correctes ; le cube ouvre l'index (aucun bot requis à ce niveau).
+
 ## Suivi des écarts — état unique au 2026-11-03 (inspection statique, rien exécuté)
 RÉSOLUS (câblés, vérifiés dans le code, comportements non observés en exécution) :
 - XRead en relecture interne + un seul bot visible : `xreadTouch(item,

@@ -21,7 +21,11 @@ internes (aide à comprendre/formuler), jamais du texte à réciter.
   générée depuis `bots.json`, source unique, aller-retour vérifié, valeurs
   manquantes → `nonRenseigne`). AUCUN producteur de repli : `ficheDepuisJson`
   n'est employé nulle part dans le parcours (relique non branchée). Échec de
-  parse → fiche écartée + trace, mémoire seule.
+  parse → fiche écartée + trace, mémoire seule. Liens `?bot=<id>` préservés à
+  la création : cartes `index.html` (`?bot=<id>`), bouton direct ViA dans le
+  hero (`conversation.html?bot=via`, statique, sans JS), `xsstream.html`
+  transmet le `?bot=` entrant (choix explicite de la page prioritaire) ;
+  `via.html` = raccourci cliquable (redirection auto + bouton).
 - Liens avec l'équipe : `orchestrerBLM` exécute `liensPourEquipe` sur l'équipe
   mobilisée (classement compatibilité + tourniquet par vague, borne MAX_LIENS=8
   après classement) ; liens tracés `cos/lien-*`, écartés tracés avec raison ;

@@ -80,13 +80,15 @@ footer a{color:#ffd23f}
 <script src="./memory.js"></script>
 <script src="./capabilities.js"></script>
 <script>
+var botDemande=(new URLSearchParams(location.search).get('bot')||'').toLowerCase();
+if(!/^[a-z]+$/.test(botDemande))botDemande='';
 var bot=(new URLSearchParams(location.search).get('bot')||'geeko').toLowerCase();
 if(bot!=='geeko'&&bot!=='geekette')bot='geeko';
 document.getElementById('xBot').value=bot;
 function paintSet(){var s=ViaMemory.settings(bot);document.getElementById('xSkill').value=String(s.skill);document.getElementById('xInit').value=String(s.initiative);var pr=ViaMemory.progression(bot);document.getElementById('xProg').textContent='Progression '+ (bot==='geeko'?'Geeko':'Geekette') +' : '+pr.total+' expériences enregistrées ('+pr.confirmed+' confirmées). Réglages indépendants de l’autre compagnon.';}
-document.getElementById('xBot').onchange=function(e){bot=e.target.value;paintSet();};
+document.getElementById('xBot').onchange=function(e){bot=e.target.value;botDemande='';paintSet();};
 document.getElementById('xSave').onclick=function(){var cur=ViaMemory.settings(bot);ViaMemory.saveSettings(bot,{skill:document.getElementById('xSkill').value,initiative:document.getElementById('xInit').value,advice:cur.advice,persona:cur.persona});paintSet();};
-document.getElementById('xChat').onclick=function(){location.href='./conversation.html?bot='+bot;};
+document.getElementById('xChat').onclick=function(){location.href='./conversation.html?bot='+(botDemande||bot);};
 paintSet();
 try{var g=JSON.parse(localStorage.getItem('xs-game')||'{}');document.getElementById('xGame').value=g.game||'';document.getElementById('xEdition').value=g.edition||'';if(g.game)document.getElementById('xGameMsg').textContent='Enregistré localement : '+g.game+' — '+g.edition+' (aucune connexion au jeu).';}catch(e){}
 document.getElementById('xGameSave').onclick=function(){var g={game:document.getElementById('xGame').value.trim(),edition:document.getElementById('xEdition').value.trim()};try{localStorage.setItem('xs-game',JSON.stringify(g));}catch(e){}document.getElementById('xGameMsg').textContent=g.game?('Enregistré localement : '+g.game+' — '+g.edition+' (aucune connexion au jeu).'):'Champ vide : rien enregistré.';};
