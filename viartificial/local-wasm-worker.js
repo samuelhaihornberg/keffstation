@@ -85,9 +85,13 @@ onmessage = async function (e) {
       try {
         stream = new TextStreamer(pipe.tokenizer, { skip_prompt: true, skip_special_tokens: true, callback_function: function (t) { send(id, { type: 'token', text: t }); } });
       } catch (err3) { stream = null; }
-      // Contexte court + réponses courtes (mobile) : 4 derniers messages,
-      // 64 tokens max. Historiques complets conservés en localStorage (intacts).
-      var out = await pipe(p.messages.slice(-4), { max_new_tokens: 64, temperature: 0.7, do_sample: true, top_p: 0.9, streamer: stream });
+      // Contexte court + réponses courtes (mobile) : système TOUJOURS gardé,
+      // puis 3 derniers messages d'historique. Un slice() direct éjecterait la
+      // consigne système dès que l'historique grandit (cause du bug ViA).
+      var sys = (p.messages || []).filter(function (m) { return m && m.role === 'system'; })[0] || null;
+      var hist = (p.messages || []).filter(function (m) { return !m || m.role !== 'system'; }).slice(-3);
+      var courts = sys ? [sys].concat(hist) : hist.slice(-4);
+      var out = await pipe(courts, { max_new_tokens: 64, temperature: 0.7, do_sample: true, top_p: 0.9, streamer: stream });
       var g = out && out[0] && out[0].generated_text, t = '';
       if (Array.isArray(g)) { var last = g[g.length - 1]; t = (last && (last.content || last.text)) || ''; }
       else if (typeof g === 'string') { t = g; }

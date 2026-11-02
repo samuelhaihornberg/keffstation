@@ -76,7 +76,8 @@
   function sysPrompt(bot) {
     // Constructeur unique : même consigne pour le moteur local et les fournisseurs externes.
     if (global.ViaProviders && global.ViaProviders.sysPrompt) return global.ViaProviders.sysPrompt(bot);
-    return 'Tu es ' + bot.name + ', personnage simulé sans conscience réelle. ' + bot.specialty + ' ' + bot.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
+    var b = bot || {};
+    return 'Tu es ' + b.name + ', personnage simulé sans conscience réelle. ' + b.specialty + ' ' + b.personality + ' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';
   }
   async function chat(bot, history, opt) {
     if (!worker || S.phase !== 'ready') throw err('NOT_LOADED', 'Modèle non chargé : appuie sur « Charger le modèle local », puis réessaie.');
@@ -84,8 +85,12 @@
     busy = true; set('generating', 'génération…');
     var o = opt || {};
     try {
-      var msgs = [{ role: 'system', content: sysPrompt(bot) }].concat(history);
-      var t = await rpc('chat', { messages: msgs.slice(-5) }, { onToken: o.onToken });
+      // Système TOUJOURS conservé : on ne tronque que l'historique (4 derniers),
+      // jamais la consigne système (un slice direct l'éjectait dès 5 messages).
+      var sys = { role: 'system', content: sysPrompt(bot) };
+      var hist = (history || []).filter(function (m) { return !m || m.role !== 'system'; }).slice(-4);
+      var msgs = [sys].concat(hist);
+      var t = await rpc('chat', { messages: msgs }, { onToken: o.onToken });
       t = String(t).trim();
       if (!t) throw err('EMPTY', 'Réponse vide du moteur.');
       return t;
@@ -111,5 +116,5 @@
   }
   function summary() { return { phase: S.phase, model: S.model || picked, progress: S.progress, detail: S.detail, mode: S.phase === 'ready' || S.phase === 'generating' ? 'CPU/WASM local (worker)' : '—', backend: 'wasm', tokenizer: tokInfo.hasTemplate ? ('chat_template ' + tokInfo.source) : 'chat_template non chargé', threads: (typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated) ? 'multithread' : 'monothread (Pages sans COOP/COEP)' }; }
   function info() { return { candidates: CANDIDATES.map(function (c) { return c.id; }), picked: picked, tokenizer: tokInfo, device: 'wasm (CPU), monothread sans COOP/COEP', lib: '3.7.2', cdn: CDN, worker: WORKER_URL }; }
-  global.ViaWasmEngine = { CANDIDATES: CANDIDATES, load: load, chat: chat, cancel: cancel, unload: unload, summary: summary, info: info, CDN: CDN, WORKER_URL: WORKER_URL };
+  global.ViaWasmEngine = { CANDIDATES: CANDIDATES, load: load, chat: chat, sysPrompt: sysPrompt, cancel: cancel, unload: unload, summary: summary, info: info, CDN: CDN, WORKER_URL: WORKER_URL };
 })(window);

@@ -167,6 +167,7 @@ body[data-min="1"] .msn{display:none}
 <script src="./capabilities.js"></script>
 <script src="./local-wasm.js"></script>
 <script src="./local-engine.js"></script>
+<script src="./dico-loader.js"></script>
 <script>window.__blmSlot={exports:{}};window.module=window.__blmSlot;</script>
 <script src="./src/memoire-classee.js"></script>
 <script>window.BLMMemoire=window.module.exports;window.module={exports:{}};</script>
@@ -520,6 +521,7 @@ thread.lastChild.querySelector('.meta').textContent=b.name+' — accueil prédé
 botsById={};cfg.bots.forEach(function(x){botsById[x.id]=x;});
 selectedBots=botsById[q]?[q]:[cfg.bots[0].id];
 renderChips();
+try{if(typeof ViaDico!=='undefined'){window.__viaDicoTxt=window.__viaDicoTxt||{};['via','geeko','geekette','theo'].forEach(function(id){ViaDico.textePour(id).then(function(t){window.__viaDicoTxt[id]=t;}).catch(function(){});});}}catch(e){}
 var restoredN=restoreConvs();
 if(restoredN>0)addOnce('sys',restoredN+' message(s) précédent(s) restauré(s) pour le contexte.');
 try{if(window.BLMJournal)window.BLMJournal.ecrire(window.BLMJournal.lire());}catch(e){}
