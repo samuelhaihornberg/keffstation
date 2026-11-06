@@ -107,7 +107,7 @@ check('vitrine ronde : anneau, ondes et satellites', () => {
 check('KiffTech : page rayons + filtre ?rayon', () => {
   const rayons = fs.readFileSync(path.join(ROOT, 'kifftech/rayons.html'), 'utf8');
   assert(rayons.includes('catalog.html?rayon='), 'rayons.html: liens ?rayon absents');
-  for (const c of ["'Smartphones'", "'Computers'", "'Tablets'", "'Audio & Wearables'", "'VR AR gadgets'", "'Garden & furnitures smart devices'", "'Composant electronic & informatic'", "'Company & studying Robots'"]) {
+  for (const c of ["'Smartphones'", "'Computers'", "'Tablets'", "'Audio & Wearables'", "'VR AR gadgets'", "'Drones & Caméras'", "'Smart Home'", "'Garden & furnitures smart devices'", "'Composant electronic & informatic'", "'Company & studying Robots'"]) {
     assert(rayons.includes(`id: ${c}`), `rayons.html: rayon ${c} absent`);
   }
   const kapp = fs.readFileSync(path.join(ROOT, 'kifftech/app.v2.js'), 'utf8');
@@ -147,7 +147,7 @@ check('catalogue filtré : uniquement produits illustrés', () => {
   const start = kapp.indexOf('const LOCAL_DB = [');
   const end = kapp.indexOf('\n];', start);
   const DB = new Function('return ' + kapp.slice(start + 'const LOCAL_DB = '.length, end + 2))();
-  assert(DB.length === 56, `produits: ${DB.length} != 56`);
+  assert(DB.length === 156, `produits: ${DB.length} != 156`);
   assert(DB.every(p => p.images && p.images.length), 'produit sans image restant');
   for (const p of DB) {
     for (const img of p.images) {
@@ -157,8 +157,23 @@ check('catalogue filtré : uniquement produits illustrés', () => {
     }
   }
   const kcat = fs.readFileSync(path.join(ROOT, 'kifftech/catalog.html'), 'utf8');
-  assert(kcat.includes('56 produits illustrés'), 'meta description non mise à jour');
+  assert(kcat.includes('156 produits illustrés'), 'meta description non mise à jour');
+  const modern = DB.filter(p => p.year >= 2020 && p.year <= 2026).length;
+  assert(modern >= 100, `gadgets 2020-2026: ${modern} < 100`);
+  const cats = new Set(DB.map(p => p.category));
+  assert(cats.has('Drones & Caméras') && cats.has('Smart Home'), 'nouveaux rayons absents de LOCAL_DB');
 });
+check('crédits : 1 ligne par image, aucune orpheline', () => {
+  const files = fs.readdirSync(path.join(ROOT, 'kifftech/img')).filter(f => f !== 'CREDITS.txt');
+  const creds = fs.readFileSync(path.join(ROOT, 'kifftech/img/CREDITS.txt'), 'utf8').trim().split('\n')
+    .map(l => (l.match(/^- (\S+)/) || [])[1]).filter(Boolean);
+  assert(files.length === creds.length, `${files.length} images / ${creds.length} crédits`);
+  assert(new Set(creds).size === creds.length, 'crédits en double');
+  for (const f of files) assert(creds.includes(f), `crédit manquant : ${f}`);
+  const html = fs.readFileSync(path.join(ROOT, 'kifftech/credits.html'), 'utf8');
+  assert(html.includes('Les ' + files.length + ' visuels'), 'credits.html non régénéré');
+});
+
 check('tri catalogue + galerie multi-médias', () => {
   const kapp = fs.readFileSync(path.join(ROOT, 'kifftech/app.v2.js'), 'utf8');
   assert(kapp.includes('price-asc') && kapp.includes('price-desc'), 'tri prix absent');

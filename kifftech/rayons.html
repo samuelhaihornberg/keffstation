@@ -49,15 +49,17 @@ const RAYONS = [
   { id: 'Smartphones', icon: '📱', desc: 'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google et plus.' },
   { id: 'Computers', icon: '💻', desc: 'Ultrabooks, pro, gaming — Apple Silicon, Intel Core Ultra, Ryzen + RTX.' },
   { id: 'Tablets', icon: '📲', desc: 'Tablettes pro et famille — stylet, clavier, grand écran.' },
-  { id: 'Audio & Wearables', icon: '🎧', desc: 'Écouteurs ANC, montres connectées, bracelets — Samsung, Apple, Xiaomi, Garmin.' },
+  { id: 'Audio & Wearables', icon: '🎧', desc: 'Écouteurs ANC, casques, montres connectées, bracelets — Sony, Bose, Apple, Garmin.' },
   { id: 'VR AR gadgets', icon: '🥽', desc: 'Casques VR/AR, lunettes connectées, accessoires immersifs.' },
+  { id: 'Drones & Caméras', icon: '🚁', desc: 'Drones, caméras d’action, stabilisateurs et hybrides — DJI, GoPro, Insta360, Sony, Canon.' },
+  { id: 'Smart Home', icon: '🏠', desc: 'Enceintes connectées, hubs, éclairage et robots ménagers — Amazon, Google, Apple, Philips, Roborock.' },
   { id: 'Garden & furnitures smart devices', icon: '🪴', desc: 'Maison et jardin connectés — robots, éclairage, mobilier smart.' },
-  { id: 'Composant electronic & informatic', icon: '🔌', desc: 'Composants PC, chargeurs GaN, stockage, connectique.' },
+  { id: 'Composant electronic & informatic', icon: '🔌', desc: 'Cartes graphiques, CPU, SSD, cartes SBC — NVIDIA, AMD, Intel, Raspberry Pi, Arduino.' },
   { id: 'Company & studying Robots', icon: '🤖', desc: 'Robots compagnons et éducatifs — programmation, IA embarquée.' },
-  { id: 'Accessories', icon: '🧰', desc: 'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage — 6 références illustrées.' },
-  { id: 'Consoles & Videogames', icon: '🎮', desc: 'Consoles rétro (NES, Mega Drive, PS1…) et modernes (PS5, Switch 2, Xbox, Steam Deck Linux) — 13 références illustrées.' }
+  { id: 'Accessories', icon: '🧰', desc: 'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
+  { id: 'Consoles & Videogames', icon: '🎮', desc: 'Consoles rétro (NES, Mega Drive, PS1…) et modernes (PS5, Switch, Xbox, Steam Deck Linux).' }
 ];
-const COUNTS = { Smartphones: 13, Computers: 5, Tablets: 6, 'Audio & Wearables': 4, 'VR AR gadgets': 3, 'Garden & furnitures smart devices': 0, 'Composant electronic & informatic': 1, 'Company & studying Robots': 5, Accessories: 6, 'Consoles & Videogames': 13 }; // synchronisé avec LOCAL_DB (produits illustrés uniquement)
+const COUNTS = {'Smartphones':40,'Computers':13,'Tablets':15,'Audio & Wearables':18,'VR AR gadgets':8,'Drones & Caméras':14,'Smart Home':6,'Garden & furnitures smart devices':0,'Composant electronic & informatic':11,'Company & studying Robots':5,'Accessories':8,'Consoles & Videogames':18}; // synchronisé avec LOCAL_DB (produits illustrés uniquement)
 const VISIBLE = RAYONS.filter(r => (COUNTS[r.id] || 0) > 0);
 const PL = n => n > 1 ? 'produits' : 'produit';
 const grid = document.getElementById('rayons-grid');
@@ -72,8 +74,8 @@ grid.innerHTML = VISIBLE.map(r => `
   <a class="rayon-card all" role="listitem" href="./catalog.html" aria-label="Tous les produits">
     <span class="rayon-icon" aria-hidden="true">🛍️</span>
     <span class="rayon-name">Tous</span>
-    <span class="rayon-count">56 produits</span>
-    <span class="rayon-desc">Tout le catalogue smart devices illustré, tous rayons confondus.</span>
+    <span class="rayon-count">156 produits</span>
+    <span class="rayon-desc">Tout le catalogue smart devices illustré, tous rayons confondus — 100 nouveaux gadgets 2020-2026.</span>
     <span class="rayon-cta">Tout explorer →</span>
   </a>`;
 fetch('./impact-products.json').then(r => r.ok ? r.json() : null).then(d => {
