@@ -142,12 +142,22 @@ check('visuels produits officiels (batch smartphones)', () => {
     assert(st.size > 5000, `${img}: fichier trop petit`);
   }
 });
-check('20 produits par rayon (smartphones)', () => {
+check('catalogue filtré : uniquement produits illustrés', () => {
   const kapp = fs.readFileSync(path.join(ROOT, 'kifftech/app.v2.js'), 'utf8');
-  const n = (kapp.match(/category:'Smartphones'/g) || []).length;
-  assert(n === 20, `smartphones: ${n} != 20`);
-  const na = (kapp.match(/category:'Accessories'/g) || []).length;
-  assert(na === 100, `accessories: ${na} != 100`);
+  const start = kapp.indexOf('const LOCAL_DB = [');
+  const end = kapp.indexOf('\n];', start);
+  const DB = new Function('return ' + kapp.slice(start + 'const LOCAL_DB = '.length, end + 2))();
+  assert(DB.length === 56, `produits: ${DB.length} != 56`);
+  assert(DB.every(p => p.images && p.images.length), 'produit sans image restant');
+  for (const p of DB) {
+    for (const img of p.images) {
+      const rel = img.replace(/^\.\//, '');
+      const st = fs.statSync(path.join(ROOT, 'kifftech', rel));
+      assert(st.size > 5000, `${img}: fichier trop petit`);
+    }
+  }
+  const kcat = fs.readFileSync(path.join(ROOT, 'kifftech/catalog.html'), 'utf8');
+  assert(kcat.includes('56 produits illustrés'), 'meta description non mise à jour');
 });
 check('tri catalogue + galerie multi-médias', () => {
   const kapp = fs.readFileSync(path.join(ROOT, 'kifftech/app.v2.js'), 'utf8');

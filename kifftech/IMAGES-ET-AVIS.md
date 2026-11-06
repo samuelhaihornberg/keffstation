@@ -1,46 +1,33 @@
-# KiffTech — Images officielles + Reviews complets (200 produits)
+# KiffTech — Catalogue illustré
 
-## État (56 photos réelles / 216 — vérif visuelle systématique)
-- 216 produits LOCAL_DB (200 + 16 Consoles & Videogames avec era retro/modern + filtre Époque + carte Rayons)
-- Photos CC câblées : 50 (dont co5 PS1, co11 PS5*, co13 Series X, co15 Steam Deck Linux, co16 ROG Ally*) — * = rapprochée notée
-- Rejetées après contrôle visuel : Zapper pour NES, carte mère PS5, schéma Xbox, macro puce Steam Deck, carré noir Series S
-- Sans photo libre : co1 NES, co12 PS5 Pro, co14 Series S → aperçu généré + page officielle + review complet
-- 216 produits LOCAL_DB (200 + 16 Consoles & Videogames avec era retro/modern + filtre Époque + carte Rayons)
-- Photos CC câblées : 45 (30 d'origine + sp12, sp14, sp16, tb2, tb13, cp2, aw6, co2, co3, co4*, co6, co7, co8, co9, co10) — * = génération rapprochée notée dans crédits
-- Rejetés lot consoles : co1 (photo SNES pour NES), co11 (carte mère nue pour PS5), co13 (schéma vectoriel), co15 (macro puce AMD pour Steam Deck)
-- Sans photo libre : co1 NES, co5 PS1, co11/12 PS5, co13/14 Xbox, co15 Steam Deck, co16 ROG Ally → aperçu généré + page officielle + review complet
-- 200 produits LOCAL_DB (sp 20, cp 10, tb 20, ac 100, vr 10, ce 10, rb 10, gf 10, aw 10)
-- 37 fichiers locaux `img/` (CC Wikimedia, voir `img/CREDITS.txt`) couvrant 36 produits (30 d'origine + sp12, sp14, sp16, tb2, cp2, aw6)
-- 4 lots Commons testés (~40 requêtes) : 8 faux visuels supprimés (mairie, Ford, chien, immeuble, mauvais modèles), barrière auto marque+n° modèle en place (`/tmp/prio_fetch.sh`)
-- Rejetés (pas de photo libre exacte) : vr3, aw2, sp3/5/7/9/10/19/20, lots 3-4 (owi : Commons ne couvre pas accessoires/téléphones récents/robots de niche)
-- 164 produits restants → **aperçu SVG généré** (badge « Aperçu généré ») + bouton page officielle constructeur + review complet (déjà en place)
+## État
+- **56 produits** dans `LOCAL_DB` (`app.v2.js`), tous avec au moins une photo réelle.
+- **9 rayons visibles** : Smartphones 13, Consoles & Videogames 13, Tablets 6, Accessories 6, Computers 5, Company & studying Robots 5, Audio & Wearables 4, VR AR gadgets 3, Composant electronic & informatic 1.
+- Le rayon « Garden & furnitures smart devices » n'a aucune photo libre : il est filtré de `rayons.html` tant qu'il n'est pas illustré.
+- **58 fichiers** dans `img/`, tous utilisés, tous crédités dans `img/CREDITS.txt`.
+- Page **`credits.html`** : attribution visible, lien vers chaque fichier Wikimedia Commons.
 
-## Pourquoi pas de copie « images officielles » ?
-Les visuels fabricants sont © constructeurs. Les copier en local = risque juridique.
-Solution légale appliquée :
-1. Garder les 32 photos CC BY-SA existantes (badge « Photo CC »).
-2. Pour les 170 autres : aperçu généré local (offline) + bouton **« Page officielle {marque} »** dans la modale → l'utilisateur voit l'image officielle chez le fabricant.
-3. Badge honnête : `Photo CC` vs `Aperçu généré` (plus de faux « Officiel »).
+## Politique visuelle
+1. Source unique : **Wikimedia Commons** (CC BY-SA 4.0 ou CC0 / domaine public).
+2. Redimensionnement 500 px, nommage `{id}.jpg` ou `{id}.png`.
+3. Une ligne de crédit par fichier dans `img/CREDITS.txt` + entrée dans `credits.html`.
+4. **Pas de copie d'images fabricants** ni de résultat Google Images sans licence vérifiée : risque juridique.
+5. La licence CC BY-SA impose attribution et partage à l'identique ; la page crédits couvre cette obligation.
 
-## Review complet (tous produits, sans copie presse)
-`productReview(p)` dans `app.v2.js` génère pour chaque fiche :
-- résumé original (marque, modèle, année, catégorie, top 3 specs, prix officiel + prix KiffTech)
-- note KiffTech /5 (+0.2 si photo CC)
-- 2 points + / 2 points « à vérifier »
-- ligne « Visuel : Photo CC / Aperçu généré — voir page officielle »
+## Pourquoi les produits sans photo ont été retirés
+La base complète comptait 216 fiches, dont 160 sans photo libre (74 %). Plutôt que d'afficher 160 aperçus SVG générés, le catalogue ne conserve que les produits réellement illustrés. Le code de secours `previewImage()` reste présent pour les produits partenaires éventuels, mais aucun produit local n'en dépend.
 
-Affiché dans la modale : description + 4 cartes specs (Note, Points +, À vérifier, Visuel).
+## Review et descriptions
+`productReview(p)` génère pour chaque fiche un résumé (marque, modèle, année, catégorie, top specs, prix), une note KiffTech /5 et des points « + » / « à vérifier ». Aucune fiche n'a de description rédigée : la modale affiche ce résumé automatique. Les 56 fiches ont donc un contenu minimum, mais pas encore de texte marketing original.
 
-## Liens officiels
-`BRAND_SITES` (~70 marques) + `officialUrl(p)` → page constructeur + recherche modèle.
-Ex : Samsung → https://www.samsung.com/fr/search?q=Galaxy+S24+Ultra
-
-## Ajouter une vraie photo (procédure)
-1. Chercher sur Wikimedia Commons uniquement (licence CC BY-SA / CC0).
-2. Télécharger, resize 500px, nommer `{id}.jpg` dans `img/`.
-3. Ajouter `images:['./img/{id}.jpg']` dans LOCAL_DB + ligne dans `img/CREDITS.txt` (fichier source + auteur).
-4. Ne jamais ajouter d'image fabricant sans licence écrite.
+## Ajouter un produit illustré
+1. Trouver une photo sur Wikimedia Commons (CC BY-SA ou CC0).
+2. Télécharger, redimensionner 500 px, nommer `img/{id}.jpg`.
+3. Ajouter l'entrée dans `LOCAL_DB` avec `images:['./img/{id}.jpg']`.
+4. Ajouter la ligne dans `img/CREDITS.txt`, régénérer `credits.html`, et mettre à jour `COUNTS` dans `rayons.html`.
+5. Vérifier : `npm test` + `node --check kifftech/app.v2.js`.
 
 ## Vérif
-- `node --check app.v2.js` OK
-- 200/200 fiches ont résumé + note + lien officiel (générés dynamiquement, pas de fiche vide)
+- `node --check kifftech/app.v2.js` OK
+- `npm test` : 16/16
+- 56/56 fiches avec photo, 0 produit sans image, 0 fichier orphelin.
