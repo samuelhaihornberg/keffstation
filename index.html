@@ -4,187 +4,56 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070816">
-<meta name="description" content="KeffStation — Cube 3D des 4 PWAs : KiffTech, Tricktrocjob, ViArtificial (cos + NLP inclus), Videogames">
+<meta name="description" content="KeffStation — vitrine ronde animée des applications : Kifftech, Tricktrocjob, ViArtificial, Videogames, cos Editor, Linguistic Motors.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KeffStation">
 <link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./vitrine.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🔮%3C/text%3E%3C/svg%3E">
-<title>KeffStation — Cube des Apps</title>
-<style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html{height:100%;font-size:16px}
-  @media (max-width:360px){html{font-size:14px}}
-  @media (min-width:768px){html{font-size:18px}}
-  @media (min-width:1200px){html{font-size:20px}}
-  body{min-height:100vh;min-height:100dvh;background:#070816;color:#f4f6ff;font:1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-  @supports (height:100dvh){body{height:100dvh}}
-  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
-  #bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(30,107,255,.1) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(255,61,154,.1) 0%,transparent 50%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,210,63,.1) 0%,transparent 70%)}
-  
-  .reader{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(95vw,560px);aspect-ratio:1;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
-  @media (orientation:landscape) and (max-height:500px){.reader{width:min(85vh,560px);aspect-ratio:1}}
-  @media (orientation:portrait) and (max-width:420px){.reader{width:98vw;aspect-ratio:1}}
-  
-  .vitrine{position:relative;width:100%;height:100%;background:transparent;border:none;box-shadow:none;overflow:visible}
-  
-  .cube{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
-  .cube.face-expanded{transform:none !important}
-  
-  .cube-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:clamp(16px,4vw,28px);text-align:center;background:rgba(10,12,34,.85);border:1px solid rgba(255,255,255,.1);border-radius:0;box-shadow:0 20px 60px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);transform-origin:center center;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1), opacity .3s, z-index 0s .6s;overflow:hidden}
-  
-  /* 4 faces en carré : pas de 90° */
-  .cube-face[data-face="0"]{transform:rotateY(0deg) translateZ(180px);background:linear-gradient(135deg,rgba(30,107,255,.15),rgba(138,77,255,.08))}
-  .cube-face[data-face="1"]{transform:rotateY(-90deg) translateZ(180px);background:linear-gradient(135deg,rgba(255,61,154,.15),rgba(255,210,63,.08))}
-  .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(180px);background:linear-gradient(135deg,rgba(184,77,255,.15),rgba(138,77,255,.08))}
-  .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(180px);background:linear-gradient(135deg,rgba(255,107,0,.15),rgba(255,210,63,.08))}
-  
-  @media (max-width:420px){
-    .cube-face[data-face="0"]{transform:rotateY(0deg) translateZ(140px)}
-    .cube-face[data-face="1"]{transform:rotateY(-90deg) translateZ(140px)}
-    .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(140px)}
-    .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(140px)}
-  }
-  @media (min-width:768px){
-    .cube-face[data-face="0"]{transform:rotateY(0deg) translateZ(220px)}
-    .cube-face[data-face="1"]{transform:rotateY(-90deg) translateZ(220px)}
-    .cube-face[data-face="2"]{transform:rotateY(180deg) translateZ(220px)}
-    .cube-face[data-face="3"]{transform:rotateY(90deg) translateZ(220px)}
-  }
-  
-  /* Active face - front and center, chaque face contre-compense la rotation du cube */
-  .cube-face.active[data-face="0"]{opacity:1;z-index:10;transform:rotateY(0deg) translateZ(200px) scale(1.05)}
-  .cube-face.active[data-face="1"]{opacity:1;z-index:10;transform:rotateY(90deg) translateZ(200px) scale(1.05)}
-  .cube-face.active[data-face="2"]{opacity:1;z-index:10;transform:rotateY(180deg) translateZ(200px) scale(1.05)}
-  .cube-face.active[data-face="3"]{opacity:1;z-index:10;transform:rotateY(-90deg) translateZ(200px) scale(1.05)}
-  .cube-face:not(.active){opacity:0.15;pointer-events:none}
-  
-  /* Expanded face - unfolds from top */
-  .cube-face.expanded{
-    transform:rotateX(0deg) translateY(0) translateZ(0) scale(1) !important;
-    opacity:1 !important;
-    z-index:100 !important;
-    width:100%;height:100%;
-    border-radius:0;
-    box-shadow:0 0 80px -10px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.15);
-    overflow-y:auto;
-  }
-  .cube.face-expanded .cube-face:not(.expanded){
-    opacity:0 !important;pointer-events:none;transform:scale(0.5) translateZ(-200px) !important
-  }
-  
-  .face-header{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:clamp(16px,3vw,24px);flex-shrink:0}
-  .face-title{font-size:clamp(1.1rem,3vw,1.5rem);font-weight:700;background:linear-gradient(90deg,#1e6bff,#ff3d9a,#ffd23f);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .face-close{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#ffd23f;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,background .15s,border-color .15s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transform:translateY(-10px);transition:opacity .3s,transform .3s}
-  .cube-face.expanded .face-close{opacity:1;transform:translateY(0)}
-  .face-close:hover{background:rgba(255,61,154,.3);border-color:#ff3d9a;transform:scale(1.1)}
-  
-  .face-content{flex:1;overflow-y:auto;overflow-x:hidden;padding-right:8px;display:flex;flex-direction:column;gap:clamp(12px,2vw,16px);width:100%;overflow-wrap:anywhere}
-  .article-card p,.face-desc{overflow-wrap:anywhere;hyphens:auto}
-  .face-content img,.face-content video,.face-content iframe{max-width:100%;height:auto}
-  
-  .face-desc{font-size:clamp(.9rem,2vw,1rem);color:#b9c0e6;line-height:1.5;margin-bottom:clamp(12px,2vw,16px);max-width:90%}
-  
-  .article-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:clamp(14px,3vw,20px);transition:transform .2s,box-shadow .2s,border-color .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-align:left}
-  .article-card:hover{transform:translateY(-2px);border-color:rgba(30,107,255,.4);box-shadow:0 8px 30px rgba(30,107,255,.15)}
-  .article-card h3{font-size:clamp(.95rem,2.2vw,1.1rem);margin:0 0 .5em;color:#ffd23f}
-  .article-card p{font-size:clamp(.85rem,1.8vw,.95rem);color:#b9c0e6;line-height:1.55;margin-bottom:.8em}
-  .article-tags{display:flex;flex-wrap:wrap;gap:6px}
-  .article-tag{font-size:clamp(.55rem,1.3vw,.65rem);padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#ffd23f;white-space:nowrap}
-  
-  .face-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:clamp(16px,3vw,24px);padding-top:clamp(12px,2vw,16px);border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
-  .face-tag{font-size:clamp(.55rem,1.4vw,.65rem);padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#ffd23f;white-space:nowrap}
-  
-  .embed-btn{margin-top:clamp(16px,3vw,24px);padding:clamp(12px,2.5vw,16px) clamp(20px,4vw,28px);border-radius:999px;border:1px solid rgba(30,107,255,.4);background:linear-gradient(135deg,rgba(30,107,255,.2),rgba(138,77,255,.15));color:#8ab4ff;font-weight:600;font-size:clamp(.9rem,2vw,1rem);cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;display:inline-flex;align-items:center;gap:10px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(30,107,255,.2);flex-shrink:0}
-  .embed-btn:hover{transform:translateY(-2px);border-color:#1e6bff;box-shadow:0 8px 30px rgba(30,107,255,.3)}
-  .embed-btn .embed-preload-status{width:10px;height:10px;border-radius:50%;background:rgba(255,210,63,.5);transition:background .3s,transform .3s}
-  .embed-btn.preloaded .embed-preload-status{background:#27d17f;transform:scale(1.2)}
-  
-  /* Navigation arrows */
-  .arrows{position:absolute;inset:0;z-index:60;pointer-events:none}
-  .arrows button{pointer-events:auto;position:absolute;width:clamp(44px,6vw,56px);height:clamp(44px,6vw,56px);border-radius:50%;border:1px solid rgba(255,255,255,.15);background:rgba(10,12,34,.8);color:#ffd23f;font-size:clamp(20px,3vw,26px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,background .15s,border-color .15s,box-shadow .15s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.4);touch-action:manipulation;opacity:0.6}
-  .arrows button:hover{opacity:1;background:rgba(30,107,255,.2);border-color:#1e6bff;transform:scale(1.1);box-shadow:0 0 25px rgba(30,107,255,.3)}
-  .arrows button:active{transform:scale(.95)}
-  .arrows button:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
-  .arrow-up{top:clamp(12px,2vh,20px);left:50%;transform:translateX(-50%)}
-  .arrow-down{bottom:clamp(12px,2vh,20px);left:50%;transform:translateX(-50%)}
-  .arrow-left{left:clamp(12px,2vw,20px);top:50%;transform:translateY(-50%)}
-  .arrow-right{right:clamp(12px,2vw,20px);top:50%;transform:translateY(-50%)}
-  @media (pointer:coarse){.arrows button{width:clamp(52px,7vw,64px);height:clamp(52px,7vw,64px)}.arrow-up{top:clamp(16px,3vh,24px)}.arrow-down{bottom:clamp(16px,3vh,24px)}.arrow-left{left:clamp(16px,3vw,24px)}.arrow-right{right:clamp(16px,3vw,24px)}}
-  .cube.face-expanded ~ .arrows button{opacity:0;pointer-events:none}
-  
-  /* Bottom nav dots */
-  .nav{display:flex;gap:clamp(8px,1.5vw,12px);margin-top:clamp(16px,3vh,24px);flex-shrink:0}
-  .nav button{width:clamp(12px,2vw,16px);height:clamp(12px,2vw,16px);border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer;transition:transform .15s,background .15s,border-color .15s,box-shadow .15s;touch-action:manipulation}
-  .nav button:hover{background:rgba(30,107,255,.3);border-color:#1e6bff}
-  .nav button.active{background:#ffd23f;border-color:#ffd23f;box-shadow:0 0 12px rgba(255,210,63,.6),inset 0 0 0 1px rgba(255,210,63,.3);transform:scale(1.2)}
-  .nav button:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
-  
-  /* Particles */
-  .particules{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-  .particule{position:absolute;width:3px;height:3px;border-radius:50%;opacity:0;animation:float 15s ease-in-out infinite}
-  @keyframes float{0%{transform:translate(var(--sx),var(--sy)) scale(0);opacity:0}10%{opacity:var(--op)}90%{opacity:var(--op)}100%{transform:translate(var(--ex),var(--ey)) scale(1);opacity:0}}
-  
-  /* Loading */
-  .loading{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#070816;color:#ffd23f;font:1rem/1.55 system-ui;gap:16px}
-  .loading.hidden{display:none}
-  .loading-bar{width:min(280px,80vw);height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
-  .loading-bar-inner{width:0%;height:100%;background:linear-gradient(90deg,#1e6bff,#ff3d9a,#ffd23f);border-radius:2px;transition:width .3s ease}
-  .loading-text{font-size:clamp(14px,3vw,18px)}
-  
-  /* Embed overlay */
-  .embed-overlay{position:fixed;inset:0;z-index:200;background:#070816;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
-  .embed-overlay.visible{opacity:1;visibility:visible}
-  .embed-header{display:flex;align-items:center;justify-content:space-between;padding:clamp(12px,2vh,20px) clamp(16px,3vw,24px);background:rgba(10,12,34,.95);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-shrink:0}
-  .embed-header-left{display:flex;align-items:center;gap:12px}
-  .embed-back{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#ffd23f;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,background .15s,border-color .15s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-  .embed-back:hover{background:rgba(255,61,154,.3);border-color:#ff3d9a;transform:scale(1.05)}
-  .embed-title{font-weight:600;font-size:clamp(16px,3.5vw,20px);color:#fff}
-  .embed-subtitle{font-size:clamp(12px,2.5vw,14px);color:#b9c0e6}
-  .embed-actions{display:flex;gap:8px}
-  .embed-action{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#ffd23f;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,background .15s,border-color .15s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-  .embed-action:hover{background:rgba(30,107,255,.3);border-color:#1e6bff;transform:scale(1.1)}
-  .embed-action.newtab{color:#27d17f}
-  .embed-action.newtab:hover{background:rgba(39,209,127,.3);border-color:#27d17f}
-  .embed-iframe{flex:1;width:100%;border:none;background:#070816;display:none}
-  .embed-iframe.loaded{display:block}
-  .embed-loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#ffd23f;padding:20px}
-  .embed-loading-bar{width:min(240px,70vw);height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
-  .embed-loading-bar-inner{width:0%;height:100%;background:linear-gradient(90deg,#1e6bff,#ff3d9a,#ffd23f);border-radius:2px;animation:embed-progress 2.5s ease-in-out infinite}
-  @keyframes embed-progress{0%{width:0%}50%{width:70%}100%{width:100%}}
-  
-  @media (prefers-color-scheme:light){:root{color-scheme:dark}}
-</style>
+<title>KeffStation — Vitrine des Apps</title>
 </head>
 <body>
-<div id="bg"></div>
-<div class="particules" id="particules"></div>
 <div class="loading" id="loading">
   <div class="loading-text">🔄 Initialisation KeffStation…</div>
   <div class="loading-bar" aria-hidden="true"><div class="loading-bar-inner" id="loading-bar-inner"></div></div>
 </div>
 
-<div class="reader" role="region" aria-roledescription="cube des applications" aria-label="Kifftech, Tricktrocjob, ViArtificial labs, Videogames">
-  <div class="vitrine">
-    <div class="cube" id="cube">
-      <!-- Faces will be injected by JS -->
+<main class="reader" role="region" aria-roledescription="vitrine ronde" aria-label="Vitrine des applications KeffStation">
+  <div class="vitrine" id="vitrine">
+    <div class="halo" aria-hidden="true"></div>
+    <div class="floor-glow" aria-hidden="true"></div>
+
+    <div class="waves" aria-hidden="true">
+      <span class="wave"></span>
+      <span class="wave"></span>
+      <span class="wave"></span>
     </div>
-    <div class="arrows" id="arrows" aria-label="Navigation cube">
-      <button class="arrow-up" type="button" aria-label="Face précédente" title="Face précédente">▲</button>
-      <button class="arrow-down" type="button" aria-label="Face suivante" title="Face suivante">▼</button>
-      <button class="arrow-left" type="button" aria-label="Face gauche" title="Face gauche">◀</button>
-      <button class="arrow-right" type="button" aria-label="Face droite" title="Face droite">▶</button>
+
+    <div class="core" id="core" aria-hidden="true">
+      <div class="core-inner">
+        <div class="core-k">K</div>
+        <div class="core-name">KEFFSTATION</div>
+        <div class="core-count"><span id="app-count">6</span> apps</div>
+      </div>
     </div>
+
+    <div class="orbit" id="orbit"></div>
   </div>
-  <nav class="nav" id="nav" aria-label="Navigation faces"></nav>
+
+  <nav class="nav" id="nav" aria-label="Navigation des applications"></nav>
+</main>
+
+<!-- Panneau détail application (injecté par app.js) -->
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Détail de l'application">
+  <div class="panel-card" id="panel-card"></div>
 </div>
 
-<!-- Embed overlay -->
+<!-- Overlay PWA intégrée -->
 <div class="embed-overlay" id="embed-overlay" role="dialog" aria-modal="true" aria-label="PWA intégrée">
   <div class="embed-header">
     <div class="embed-header-left">
-      <button class="embed-back" id="embed-back" type="button" aria-label="Retour au cube">←</button>
+      <button class="embed-back" id="embed-back" type="button" aria-label="Retour à la vitrine">←</button>
       <div>
         <div class="embed-title" id="embed-title"></div>
         <div class="embed-subtitle" id="embed-subtitle"></div>
@@ -197,7 +66,7 @@
   </div>
   <div class="embed-loading" id="embed-loading">
     <div>Chargement…</div>
-    <div class="embed-loading-bar"><div class="embed-loading-bar-inner"></div></div>
+    <div class="embed-loading-bar" aria-hidden="true"><div class="embed-loading-bar-inner"></div></div>
   </div>
   <iframe class="embed-iframe" id="embed-iframe" allow="camera; microphone; geolocation; payment; clipboard-read; clipboard-write; fullscreen" loading="eager"></iframe>
 </div>

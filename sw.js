@@ -1,5 +1,5 @@
-const CACHE = 'keffstation-cube-v6';
-const ASSETS = ['./', './index.html', './manifest.json', './app.js', './refresh.js'];
+const CACHE = 'keffstation-vitrine-v7';
+const ASSETS = ['./', './index.html', './vitrine.css', './manifest.json', './app.js', './refresh.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

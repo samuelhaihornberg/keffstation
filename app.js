@@ -111,88 +111,137 @@ const APPS = [
       { title: "Benchmarks GPU/CPU", desc: "FPS, frametime, 1% low, 0.1% low, consommation, DLSS/FSR/XeSS, frame gen.", tags: ["Benchmark", "Performance", "Upscaling"] },
       { title: "Mods & Tools", desc: "Nexus, Thunderstore, Vortex, MO2, r2modman — profils, déploiement, résolution conflits.", tags: ["Mods", "Tools", "Gestion"] }
     ]
+  },
+  {
+    num: "cos Editor",
+    title: "cos Editor",
+    desc: "Éditeur cos dans le navigateur : connexions A1 ➡️ B2, mode sandwich miroir, validation temps réel, coloration syntaxique et export JSON.",
+    tags: ["cos", "Éditeur", "Dev"],
+    appUrl: "https://samuelhaihornberg.github.io/keffstation/cos-editor/",
+    embedUrl: "https://samuelhaihornberg.github.io/keffstation/cos-editor/",
+    embedLabel: "Ouvrir cos Editor",
+    color: "#27d17f",
+    subArticles: [
+      { title: "Syntaxe cos", desc: "Connexions, sandwich miroir, adresses alphanumériques et CSM.", tags: ["cos", "Syntaxe", "Référence"] },
+      { title: "Validation temps réel", desc: "Erreurs soulignées, suggestions, exécution pas à pas et export JSON.", tags: ["Validation", "Debug", "Export"] },
+      { title: "Snippets prêts à l'emploi", desc: "Templates pipelines, boucles, conditions, parallélisme.", tags: ["Snippets", "Templates"] }
+    ]
+  },
+  {
+    num: "Linguistic Motors",
+    title: "Linguistic Motors",
+    desc: "Moteurs linguistiques local-first : tokenisation, embeddings, génération contrôlée, quantization GGUF. Inférence zéro serveur dans le navigateur.",
+    tags: ["NLP", "LLM", "Local-first", "WASM"],
+    appUrl: "https://samuelhaihornberg.github.io/keffstation/linguistic-motors/",
+    embedUrl: "https://samuelhaihornberg.github.io/keffstation/linguistic-motors/",
+    embedLabel: "Ouvrir Linguistic Motors",
+    color: "#ffd23f",
+    subArticles: [
+      { title: "Tokenizer Visualizer", desc: "Visualisation interactive BPE/WordPiece/Unigram, vocabulaire, merges, ratio de compression.", tags: ["Tokenizer", "Visualisation", "NLP"] },
+      { title: "Embedding Explorer", desc: "Projection 2D/3D, similarité cosinus, analogies vectorielles, clusters.", tags: ["Embeddings", "Projection", "NLP"] },
+      { title: "Generation Playground", desc: "Sampling top-k/p, température, repetition penalty, seeds reproductibles.", tags: ["Génération", "Sampling", "LLM"] },
+      { title: "Quantization Lab", desc: "GGUF q2_k → q8_0, calibration, perplexity, benchmark vitesse/mémoire.", tags: ["Quantization", "GGUF", "Benchmark"] }
+    ]
   }
 ];
 
 // ============ UTILITIES ============
 function sanitizeHTML(str) {
   const div = document.createElement('div');
-  div.textContent = str;
+  div.textContent = String(str ?? '');
   return div.innerHTML;
 }
 
-// ============ CUBE CLASS ============
+// Position d'un satellite sur l'anneau (en % du conteneur carré).
+// index 0 = midi, puis sens horaire. Radius 38 = anneau à 38% du centre.
+function orbitPosition(index, total, radius = 36) {
+  const step = 360 / total;
+  const deg = -90 + step * index;
+  const rad = (deg * Math.PI) / 180;
+  return {
+    x: 50 + radius * Math.cos(rad),
+    y: 50 + radius * Math.sin(rad),
+    deg,
+    step
+  };
+}
+
+const APP_ICONS = {
+  'Kifftech': '🛍️',
+  'Tricktrocjob': '🔄',
+  'ViArtificial labs': '🤖',
+  'Videogames': '🎮',
+  'cos Editor': '🧩',
+  'Linguistic Motors': '🧠'
+};
+
+// ============ VITRINE RONDE ============
 class KeffStation {
   constructor() {
     this.apps = APPS;
     this.current = 0;
-    this.isExpanded = false;
-    this.isDragging = false;
-    this.startX = 0;
-    this.currentRotationY = 0;
-    this.initialized = false;
     this.pwaCache = new Map();
 
-    // DOM elements
-    this.cube = document.getElementById('cube');
+    this.vitrine = document.getElementById('vitrine');
+    this.orbit = document.getElementById('orbit');
     this.nav = document.getElementById('nav');
-    this.arrows = document.getElementById('arrows');
     this.loading = document.getElementById('loading');
     this.loadingBar = document.getElementById('loading-bar-inner');
+    this.appCount = document.getElementById('app-count');
+
+    this.panel = document.getElementById('panel');
+    this.panelCard = document.getElementById('panel-card');
+
     this.embedOverlay = document.getElementById('embed-overlay');
     this.embedIframe = document.getElementById('embed-iframe');
     this.embedLoading = document.getElementById('embed-loading');
     this.embedTitle = document.getElementById('embed-title');
     this.embedSubtitle = document.getElementById('embed-subtitle');
 
-    // Check elements
     const elementsFound = {
-      cube: !!this.cube, nav: !!this.nav, arrows: !!this.arrows,
-      loading: !!this.loading, embedOverlay: !!this.embedOverlay,
-      embedIframe: !!this.embedIframe, embedLoading: !!this.embedLoading
+      vitrine: !!this.vitrine, orbit: !!this.orbit, nav: !!this.nav,
+      loading: !!this.loading, panel: !!this.panel, panelCard: !!this.panelCard,
+      embedOverlay: !!this.embedOverlay, embedIframe: !!this.embedIframe,
+      embedLoading: !!this.embedLoading
     };
-    console.log('KeffStation constructor - Elements found:', elementsFound);
-    const missing = Object.entries(elementsFound).filter(([_, found]) => !found).map(([name]) => name);
+    console.log('KeffStation constructor - Éléments trouvés :', elementsFound);
+    const missing = Object.entries(elementsFound).filter(([, found]) => !found).map(([name]) => name);
     if (missing.length > 0) {
       const msg = 'Missing DOM elements: ' + missing.join(', ');
-      console.error('KeffStation constructor - Missing elements:', missing);
+      console.error('KeffStation constructor - Éléments manquants :', missing);
       throw new Error(msg);
     }
 
-    this.faces = null;
-    this.dots = null;
+    this.nodes = [];
+    this.dots = [];
   }
 
   async init() {
     try {
-      console.log('KeffStation: Starting initialization...');
-      this.setProgress(5, '🔄 Initialisation...');
-      
-      this.setProgress(15, '🔍 Vérification endpoints...');
-      // Non bloquant : le cube reste utilisable même si le réseau est lent (mobile).
-      this.validateEndpoints().then(() => this.setProgress(25, '✅ Endpoints validés'))
+      console.log('KeffStation: démarrage de l\'initialisation…');
+      this.setProgress(5, '🔄 Initialisation…');
+
+      this.setProgress(15, '🔍 Vérification endpoints…');
+      // Non bloquant : la vitrine reste utilisable même si le réseau est lent.
+      this.validateEndpoints()
+        .then(() => this.setProgress(25, '✅ Endpoints validés'))
         .catch(() => this.setProgress(25, '⚠️ Vérification écourtée'));
 
-      this.setProgress(35, '🏗️ Construction du cube...');
-      this.buildCube();
-      this.setProgress(50, '✅ Cube construit');
+      this.setProgress(40, '🪐 Construction de la vitrine…');
+      this.buildVitrine();
+      this.setProgress(65, '✅ Vitrine construite');
 
-      this.setProgress(60, '⌨️ Configuration événements...');
+      this.setProgress(75, '⌨️ Configuration événements…');
       this.setupEventListeners();
-      this.setProgress(70, '✅ Événements configurés');
+      this.setProgress(85, '✅ Événements configurés');
 
-      this.setProgress(80, '✨ Particules...');
-      this.initParticles();
-      this.setProgress(90, '✅ Particules prêtes');
-
-      this.setProgress(95, '🎯 Presque prêt...');
+      this.setProgress(95, '🎯 Presque prêt…');
       this.hideLoading();
       this.setProgress(100, '✅ KeffStation prêt');
 
       this.initialized = true;
-      console.log('KeffStation initialized successfully');
-      
-      // Preload embedded PWAs immediately
+      console.log('KeffStation initialisée');
+
       this.preloadAllEmbedded();
     } catch (error) {
       console.error('Initialization failed:', error);
@@ -202,7 +251,7 @@ class KeffStation {
   }
 
   async validateEndpoints() {
-    // Best-effort et borné : ne doit JAMAIS bloquer l'initialisation (réseau mobile lent).
+    // Best-effort et borné : ne doit JAMAIS bloquer l'initialisation.
     const endpoints = this.apps.map(app => app.appUrl).filter(Boolean);
     const ctl = new AbortController();
     const to = setTimeout(() => ctl.abort(), 6000);
@@ -217,127 +266,91 @@ class KeffStation {
     }
   }
 
-  buildCube() {
+  // ---- Construction ----
+  buildVitrine() {
+    const total = this.apps.length;
+    this.vitrine.style.setProperty('--count', total);
+    if (this.appCount) this.appCount.textContent = total;
+
     this.apps.forEach((app, i) => {
-      const face = document.createElement('div');
-      face.className = 'cube-face';
-      face.dataset.face = i;
-      face.dataset.index = i;
-      
-      // Build articles HTML
-      const articlesHTML = app.subArticles.map(sub => `
-        <article class="article-card">
-          <h3>${sanitizeHTML(sub.title)}</h3>
-          <p>${sanitizeHTML(sub.desc)}</p>
-          <div class="article-tags">${sub.tags.map(t => `<span class="article-tag">${sanitizeHTML(t)}</span>`).join('')}</div>
-        </article>
-      `).join('');
-      
-      const faceTags = app.tags.map(t => `<span class="face-tag">${sanitizeHTML(t)}</span>`).join('');
-      
-      face.innerHTML = `
-        <div class="face-header">
-          <div class="face-title">${sanitizeHTML(app.title)}</div>
-          <button class="face-close" type="button" aria-label="Fermer" title="Fermer">×</button>
-        </div>
-        <div class="face-content">
-          <p class="face-desc">${sanitizeHTML(app.desc)}</p>
-          ${articlesHTML}
-          <div class="face-tags">${faceTags}</div>
-          <button type="button" class="embed-btn" data-app-index="${i}" data-app-url="${sanitizeHTML(app.appUrl)}" data-embed-url="${sanitizeHTML(app.embedUrl)}">
-            <span>📱</span>
-            <span class="embed-btn-text">${sanitizeHTML(app.embedLabel || 'Ouvrir ' + app.num)}</span>
-            <span class="embed-preload-status"></span>
-          </button>
-        </div>
+      const pos = orbitPosition(i, total);
+
+      const node = document.createElement('button');
+      node.type = 'button';
+      node.className = 'node';
+      node.dataset.index = i;
+      node.style.setProperty('--x', pos.x.toFixed(2) + '%');
+      node.style.setProperty('--y', pos.y.toFixed(2) + '%');
+      node.style.setProperty('--accent', app.color || '#1e6bff');
+      node.style.setProperty('--i', i);
+      node.setAttribute('aria-label', `Ouvrir ${app.title}`);
+      node.innerHTML = `
+        <span class="node-pulse" aria-hidden="true"></span>
+        <span class="node-disc" aria-hidden="true">${sanitizeHTML(APP_ICONS[app.num] || app.title.slice(0, 1))}</span>
+        <span class="node-label">${sanitizeHTML(app.title)}</span>
       `;
-      this.cube.appendChild(face);
+      node.addEventListener('click', () => this.openApp(i));
+      this.orbit.appendChild(node);
 
-      // Embed button event - open PWA in overlay (new-tab button opens full page)
-      const embedBtnEl = face.querySelector('.embed-btn');
-      if (embedBtnEl) {
-        embedBtnEl.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const idx = parseInt(embedBtnEl.dataset.appIndex, 10);
-          const app = this.apps[idx];
-          if (app.embedUrl) {
-            this.openEmbed(app);
-          } else if (app.appUrl) {
-            window.location.href = app.appUrl;
-          }
-        });
-      }
-
-      // Face click to expand
-      face.addEventListener('click', (e) => {
-        if (e.target.closest('.embed-btn') || e.target.closest('.face-close')) return;
-        if (!this.isExpanded) this.expandFace(i);
-      });
-
-      // Close button
-      face.querySelector('.face-close')?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.collapseFace();
-      });
-
-      // Nav dot
       const dot = document.createElement('button');
       dot.type = 'button';
-      dot.setAttribute('aria-label', `Face ${i + 1}: ${app.num}`);
-      if (i === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => this.rotateTo(i));
+      dot.dataset.index = i;
+      dot.setAttribute('aria-label', `Ouvrir ${app.num}`);
+      dot.addEventListener('click', () => this.openApp(i));
       this.nav.appendChild(dot);
     });
 
-    this.faces = Array.from(this.cube.querySelectorAll('.cube-face'));
-    this.dots = Array.from(this.nav.children);
-    
-    // Set initial rotation
-    this.updateCubeRotation();
+    this.nodes = Array.from(this.orbit.querySelectorAll('.node'));
+    this.dots = Array.from(this.nav.querySelectorAll('button'));
+    this.setFocus(0, false);
+  }
+
+  setFocus(index, open = false) {
+    this.current = index;
+    this.nodes.forEach((node, i) => {
+      node.classList.toggle('focused', i === index);
+      node.setAttribute('aria-current', i === index ? 'true' : 'false');
+    });
+    this.dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    if (open) this.openApp(index);
   }
 
   setupEventListeners() {
-    // Arrow buttons
-    this.arrows.querySelector('.arrow-left')?.addEventListener('click', () => this.rotateBy(-1));
-    this.arrows.querySelector('.arrow-right')?.addEventListener('click', () => this.rotateBy(1));
-    this.arrows.querySelector('.arrow-up')?.addEventListener('click', () => this.rotateBy(-1));
-    this.arrows.querySelector('.arrow-down')?.addEventListener('click', () => this.rotateBy(1));
-
-    // Nav dots
-    this.nav.querySelectorAll('button').forEach((btn, i) => {
-      btn.addEventListener('click', () => this.rotateTo(i));
-    });
-
-    // Keyboard
+    // Flèches clavier : navigue dans l'anneau ; Entrée ouvre.
     document.addEventListener('keydown', (e) => {
-      if (this.isExpanded) {
-        if (e.key === 'Escape') this.collapseFace();
+      if (this.embedOverlay.classList.contains('visible')) {
+        if (e.key === 'Escape') this.closeEmbed();
         return;
       }
-      if (e.key === 'ArrowLeft') this.rotateBy(-1);
-      else if (e.key === 'ArrowRight') this.rotateBy(1);
-      else if (e.key === 'Enter' || e.key === ' ') {
+      if (this.panel.classList.contains('open')) {
+        if (e.key === 'Escape') this.closePanel();
+        return;
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
-        this.expandFace(this.current);
+        this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        this.setFocus((this.current + 1) % this.apps.length);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.openApp(this.current);
       }
     });
 
-    // Touch drag on cube
-    const gestureZone = this.cube;
-    gestureZone.addEventListener('pointerdown', (e) => this.onDragStart(e));
-    gestureZone.addEventListener('pointermove', (e) => this.onDragMove(e));
-    gestureZone.addEventListener('pointerup', (e) => this.onDragEnd(e));
-    gestureZone.addEventListener('pointercancel', () => this.onDragEnd(null));
-    gestureZone.addEventListener('touchstart', (e) => this.onDragStart(e), { passive: true });
-    gestureZone.addEventListener('touchmove', (e) => this.onDragMove(e), { passive: true });
-    gestureZone.addEventListener('touchend', (e) => this.onDragEnd(e));
-    gestureZone.addEventListener('touchcancel', () => this.onDragEnd(null));
+    // Pause de la rotation pendant l'inspection.
+    this.vitrine.addEventListener('pointerenter', () => this.vitrine.classList.add('paused'));
+    this.vitrine.addEventListener('pointerleave', () => this.vitrine.classList.remove('paused'));
 
-    // Embed overlay events
+    // Panneau de détail : fermeture au clic sur le fond.
+    this.panel.addEventListener('click', (e) => {
+      if (e.target === this.panel) this.closePanel();
+    });
+
+    // Overlay PWA embarquée.
     document.getElementById('embed-back')?.addEventListener('click', () => this.closeEmbed());
     document.getElementById('embed-refresh')?.addEventListener('click', () => {
       if (!this.embedIframe || !this.currentEmbedApp) return;
-      // Hard-refresh de la SPA embarquée : cache-buster pour contourner le cache SW.
       const base = this.currentEmbedApp.embedUrl;
       const sep = base.includes('?') ? '&' : '?';
       this.embedIframe.src = `${base}${sep}refresh=${Date.now()}`;
@@ -345,136 +358,77 @@ class KeffStation {
     document.getElementById('embed-newtab')?.addEventListener('click', () => {
       if (this.currentEmbedApp) window.open(this.currentEmbedApp.embedUrl, '_blank', 'noopener,noreferrer');
     });
-    
-    // Escape to close embed
-    this.embedKeydownHandler = (e) => {
-      if (e.key === 'Escape') this.closeEmbed();
-    };
   }
 
-  rotateBy(delta) {
-    const newIndex = (this.current + delta + this.apps.length) % this.apps.length;
-    this.rotateTo(newIndex);
-  }
+  // ---- Panneau détail ----
+  openApp(index) {
+    const app = this.apps[index];
+    if (!app) return;
+    this.setFocus(index);
 
-  rotateTo(index) {
-    if (this.isExpanded) return;
-    this.current = index;
-    this.updateCubeRotation();
-    this.updateNav();
-  }
+    const articles = (app.subArticles || []).map(sub => `
+      <article class="article-card">
+        <h3>${sanitizeHTML(sub.title)}</h3>
+        <p>${sanitizeHTML(sub.desc)}</p>
+        <div class="article-tags">${(sub.tags || []).map(t => `<span class="article-tag">${sanitizeHTML(t)}</span>`).join('')}</div>
+      </article>
+    `).join('');
 
-  updateCubeRotation() {
-    // 4 faces en carré : pas de 90° sur l'axe Y
-    const angle = -this.current * 90;
-    this.currentRotationY = angle;
-    this.cube.style.transform = `rotateY(${angle}deg)`;
-    this.faces.forEach((face, i) => {
-      face.classList.toggle('active', i === this.current);
-    });
-  }
+    const tags = (app.tags || []).map(t => `<span class="face-tag">${sanitizeHTML(t)}</span>`).join('');
 
-  updateNav() {
-    this.dots.forEach((dot, i) => dot.classList.toggle('active', i === this.current));
-  }
+    this.panelCard.style.setProperty('--accent', app.color || '#1e6bff');
+    this.panelCard.innerHTML = `
+      <div class="panel-head">
+        <div class="panel-badge" aria-hidden="true">${sanitizeHTML(APP_ICONS[app.num] || app.title.slice(0, 1))}</div>
+        <div class="panel-heading">
+          <h2 class="panel-title">${sanitizeHTML(app.title)}</h2>
+          <div class="face-tags panel-tags">${tags}</div>
+        </div>
+        <button class="panel-close" type="button" aria-label="Fermer">×</button>
+      </div>
+      <p class="panel-desc">${sanitizeHTML(app.desc)}</p>
+      <div class="panel-grid">${articles}</div>
+      <button type="button" class="embed-btn" data-app-index="${index}">
+        <span aria-hidden="true">📱</span>
+        <span class="embed-btn-text">${sanitizeHTML(app.embedLabel || 'Ouvrir ' + app.num)}</span>
+        <span class="embed-preload-status" aria-hidden="true"></span>
+      </button>
+    `;
 
-  expandFace(index) {
-    if (index !== this.current) {
-      this.rotateTo(index);
-      // Wait for rotation to complete then expand
-      setTimeout(() => this.doExpandFace(index), 400);
-    } else {
-      this.doExpandFace(index);
-    }
-  }
-
-  doExpandFace(index) {
-    const face = this.faces[index];
-    if (!face) return;
-    
-    this.isExpanded = true;
-    this.cube.classList.add('face-expanded');
-    face.classList.add('expanded');
-    
-    // Scroll to top
-    face.scrollTop = 0;
-    
-    // Focus management
-    setTimeout(() => face.querySelector('.face-close')?.focus(), 100);
-  }
-
-  collapseFace() {
-    if (!this.isExpanded) return;
-    const face = this.faces[this.current];
-    if (!face) return;
-    
-    this.isExpanded = false;
-    this.cube.classList.remove('face-expanded');
-    face.classList.remove('expanded');
-    face.scrollTop = 0;
-  }
-
-  onDragStart(e) {
-    if (this.isExpanded) return;
-    this.isDragging = true;
-    this.startX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
-    this.cube.style.transition = 'none';
-    if (e.target?.setPointerCapture) e.target.setPointerCapture(e.pointerId);
-  }
-
-  onDragMove(e) {
-    if (!this.isDragging || this.isExpanded) return;
-    const dx = (e.clientX ?? e.touches?.[0]?.clientX ?? 0) - this.startX;
-    const angle = this.currentRotationY + dx * 0.4;
-    this.cube.style.transform = `rotateY(${angle}deg)`;
-  }
-
-  onDragEnd(e) {
-    if (!this.isDragging || this.isExpanded) return;
-    this.isDragging = false;
-    const dx = (e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0) - this.startX;
-    const threshold = 60;
-    this.cube.style.transition = 'transform .6s cubic-bezier(.2,.8,.2,1)';
-    if (Math.abs(dx) > threshold) {
-      this.rotateBy(dx > 0 ? -1 : 1);
-    } else {
-      this.updateCubeRotation();
-    }
-    if (e.target?.releasePointerCapture) e.target.releasePointerCapture(e.pointerId);
-  }
-
-  initParticles() {
-    try {
-      const container = document.getElementById('particules');
-      if (!container) return;
-      const colors = ['#1e6bff','#ff3d9a','#ffd23f','#27d17f','#8a4dff','#ff6b00'];
-      for (let i = 0; i < 20; i++) {
-        const p = document.createElement('div');
-        p.className = 'particule';
-        const sx = (Math.random() - .5) * window.innerWidth * .8;
-        const sy = (Math.random() - .5) * window.innerHeight * .8;
-        const ex = (Math.random() - .5) * window.innerWidth * .8;
-        const ey = (Math.random() - .5) * window.innerHeight * .8;
-        const delay = Math.random() * 15;
-        const dur = 12 + Math.random() * 10;
-        const op = .15 + Math.random() * .25;
-        const clr = colors[Math.floor(Math.random() * colors.length)];
-        p.style.cssText = `left:50%;top:50%;--sx:${sx}px;--sy:${sy}px;--ex:${ex}px;--ey:${ey}px;--op:${op};background:${clr};animation-duration:${dur}s;animation-delay:${delay}s`;
-        container.appendChild(p);
+    this.panelCard.querySelector('.panel-close')?.addEventListener('click', () => this.closePanel());
+    this.panelCard.querySelector('.embed-btn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (app.embedUrl) {
+        this.openEmbed(app);
+      } else if (app.appUrl) {
+        window.location.href = app.appUrl;
       }
-    } catch (e) { console.error('initParticles error:', e); }
+    });
+
+    this.panel.classList.add('open');
+    this.panelCard.scrollTop = 0;
+    document.body.classList.add('overlay-open');
+    setTimeout(() => this.panelCard.querySelector('.panel-close')?.focus(), 60);
   }
 
-  // ============ PWA PRELOADING ============
+  closePanel() {
+    this.panel.classList.remove('open');
+    document.body.classList.remove('overlay-open');
+  }
+
+  // ---- PWA préchargement ----
   preloadPWA(app) {
     if (!app.embedUrl || this.pwaCache.has(app.embedUrl)) return Promise.resolve();
     return fetch(app.embedUrl, { method: 'GET', mode: 'no-cors', credentials: 'omit' })
-      .then(() => { this.pwaCache.set(app.embedUrl, true); this.updatePreloadStatus(app.embedUrl, true); })
-      .catch(() => {}); // CORS expected
+      .then(() => {
+        this.pwaCache.set(app.embedUrl, true);
+        this.updatePreloadStatus(app.embedUrl, true);
+      })
+      .catch(() => {}); // CORS attendu
   }
 
   preloadAllEmbedded() {
-    this.apps.filter(a => a.embedded && a.embedUrl).forEach(app => this.preloadPWA(app));
+    this.apps.filter(a => a.embedUrl).forEach(app => this.preloadPWA(app));
   }
 
   updatePreloadStatus(embedUrl, loaded) {
@@ -486,14 +440,14 @@ class KeffStation {
     });
   }
 
-  // ============ EMBED ============
+  // ---- Overlay PWA ----
   currentEmbedApp = null;
 
   openEmbed(app) {
     if (!app.embedUrl) return;
     console.log('Opening embed:', app.num);
     this.currentEmbedApp = app;
-    
+
     this.embedTitle.textContent = app.title;
     this.embedSubtitle.textContent = app.num;
     this.embedIframe.style.display = 'none';
@@ -501,11 +455,8 @@ class KeffStation {
     this.embedLoading.style.display = 'flex';
     this.embedIframe.src = app.embedUrl;
     this.embedOverlay.classList.add('visible');
-    document.body.style.overflow = 'hidden';
-    
-    document.addEventListener('keydown', this.embedKeydownHandler);
-    
-    // Handle iframe load
+    document.body.classList.add('overlay-open');
+
     const onLoad = () => {
       this.embedLoading.style.display = 'none';
       this.embedIframe.style.display = 'block';
@@ -523,18 +474,17 @@ class KeffStation {
     this.embedIframe.style.display = 'none';
     this.embedIframe.classList.remove('loaded');
     this.currentEmbedApp = null;
-    document.body.style.overflow = '';
-    document.removeEventListener('keydown', this.embedKeydownHandler);
+    document.body.classList.remove('overlay-open');
   }
 
-  // ============ LOADING ============
+  // ---- Chargement ----
   hideLoading() {
     if (this.loading) this.loading.classList.add('hidden');
   }
 
   showError(msg) {
     if (this.loading) {
-      this.loading.innerHTML = `<div class="loading-text">❌ ${msg}</div>`;
+      this.loading.innerHTML = `<div class="loading-text">❌ ${sanitizeHTML(msg)}</div>`;
       this.loading.style.color = '#ff3d9a';
     }
   }
@@ -571,7 +521,6 @@ function initApp() {
   }, 5000);
 
   // Garde-fou : l'écran de chargement ne doit jamais bloquer définitivement.
-  // Passé ce délai sans initialisation, on propose une erreur + réessai explicites.
   const watchdogId = setTimeout(() => {
     if (window.keffStation?.initialized) return;
     clearTimeout(timeoutId);
@@ -607,4 +556,5 @@ function initApp() {
 
 // Expose for debugging
 window.KeffStation = KeffStation;
+window.orbitPosition = orbitPosition;
 console.log('KeffStation module loaded');

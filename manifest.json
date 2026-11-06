@@ -1,7 +1,7 @@
 {
   "name": "KeffStation",
   "short_name": "KeffStation",
-  "description": "Cube 3D — 4 PWAs : KiffTech, Tricktrocjob, ViArtificial (cos + NLP inclus), Videogames",
+  "description": "Vitrine ronde animée — KiffTech, Tricktrocjob, ViArtificial, Videogames, cos Editor, Linguistic Motors",
   "start_url": "./",
   "display": "standalone",
   "orientation": "any",

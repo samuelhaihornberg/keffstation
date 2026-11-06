@@ -44,29 +44,37 @@ check('caches vidés (v2) et adaptatifs', () => {
   }
 });
 
-check('4 faces PWA avec URLs', () => {
+check('apps PWA avec URLs', () => {
   const urls = [...appJs.matchAll(/appUrl:\s*"([^"]+)"/g)].map((m) => m[1]);
-  assert(urls.length === 4, `attendu 4 appUrl, trouvé ${urls.length}`);
+  assert(urls.length === 6, `attendu 6 appUrl, trouvé ${urls.length}`);
   assert(urls.every((u) => u.startsWith('https://samuelhaihornberg.github.io/keffstation/')), 'URLs hors scope keffstation');
   for (const gone of ['num: "Moteurs linguistiques"', 'num: "Éditeur cos"']) {
     assert(!appJs.includes(gone), `face restante : ${gone}`);
   }
-  assert(appJs.includes('num: "Tricktrocjob"'), 'face Tricktrocjob absente');
+  for (const kept of [
+    'num: "Kifftech"', 'num: "Tricktrocjob"', 'num: "ViArtificial labs"',
+    'num: "Videogames"', 'num: "cos Editor"', 'num: "Linguistic Motors"'
+  ]) {
+    assert(appJs.includes(kept), `app absente : ${kept}`);
+  }
   assert(appJs.includes('Moteurs linguistiques : NLP local'), 'articles NLP absents de ViArtificial');
   assert(appJs.includes('Éditeur cos : écrire la syntaxe'), 'articles cos absents de ViArtificial');
 });
 
-check('rotation cube correcte faces 0-5', () => {
-  const m = appJs.match(/updateCubeRotation\(\) \{([\s\S]*?)\n  \}\n/);
-  assert(m, 'méthode introuvable');
-  const ctx = { current: 0, currentRotationY: 0, cube: { style: {} }, faces: [] };
-  const fn = new Function(m[1]);
-  const expected = ['rotateY(0deg)', 'rotateY(-90deg)', 'rotateY(-180deg)', 'rotateY(-270deg)'];
-  expected.forEach((exp, i) => {
-    ctx.current = i;
-    fn.call(ctx);
-    assert(ctx.cube.style.transform === exp, `face ${i}: ${ctx.cube.style.transform} != ${exp}`);
-  });
+check('vitrine ronde : satellites répartis régulièrement', () => {
+  const m = appJs.match(/function orbitPosition\(index, total, radius = 36\) \{([\s\S]*?)\n\}/);
+  assert(m, 'orbitPosition introuvable');
+  const orbitPosition = new Function('index', 'total', 'radius', m[1]);
+  const near = (a, b) => Math.abs(a - b) < 1e-9;
+  const p0 = orbitPosition(0, 4, 36);
+  assert(near(p0.x, 50) && near(p0.y, 14), `index 0: ${p0.x},${p0.y}`);
+  const p1 = orbitPosition(1, 4, 36);
+  assert(near(p1.x, 86) && near(p1.y, 50), `index 1: ${p1.x},${p1.y}`);
+  const p2 = orbitPosition(2, 4, 36);
+  assert(near(p2.x, 50) && near(p2.y, 86), `index 2: ${p2.x},${p2.y}`);
+  const p3 = orbitPosition(3, 4, 36);
+  assert(near(p3.x, 14) && near(p3.y, 50), `index 3: ${p3.x},${p3.y}`);
+  assert(near(orbitPosition(1, 6, 36).deg, -30), 'pas de 60° incorrect pour 6 apps');
 });
 
 check('boutons embed ouvrent overlay (pas de navigation forcée)', () => {
@@ -80,28 +88,20 @@ check('chemins relatifs GitHub Pages (SW + manifest)', () => {
 });
 
 check('éléments DOM requis présents', () => {
-  for (const id of ['cube', 'nav', 'arrows', 'loading', 'embed-overlay', 'embed-iframe']) {
+  for (const id of ['vitrine', 'orbit', 'nav', 'loading', 'panel', 'embed-overlay', 'embed-iframe']) {
     assert(indexHtml.includes(`id="${id}"`), `#${id} manquant`);
   }
 });
 
-check('faces actives droites (pas de miroir)', () => {
-  // rotation cube + transform .active doivent s'annuler (net 0°)
-  const cubeRot = { 0: 0, 1: -90, 2: -180, 3: -270 };
-  const faceRotY = { 0: 0, 1: 90, 2: 180, 3: -90 };
-  const get = (face) => {
-    const re = new RegExp(`\\.cube-face\\.active\\[data-face="${face}"\\]\\{[^}]*transform:([^;}]+)`);
-    const m = indexHtml.match(re);
-    assert(m, `règle .active face ${face} introuvable`);
-    return m[1];
-  };
-  for (const i of [0, 1, 2, 3]) {
-    const t = get(i);
-    const ry = new RegExp(`rotateY\\(${faceRotY[i]}deg\\)`).test(t);
-    assert(ry, `face ${i} active non droite : ${t.trim()}`);
-    assert(((cubeRot[i] + faceRotY[i]) % 360 + 360) % 360 === 0, `face ${i}: net non nul`);
+check('vitrine ronde : anneau, ondes et satellites', () => {
+  const css = fs.readFileSync(path.join(ROOT, 'vitrine.css'), 'utf8');
+  for (const token of ['.orbit', '.node-disc', '.wave', '.core', '@keyframes ripple', '@keyframes spin']) {
+    assert(css.includes(token), `vitrine.css: ${token} absent`);
   }
-  assert(!/data-face="[45]"/.test(indexHtml), 'règles CSS pour faces inexistantes');
+  assert(indexHtml.includes('vitrine.css'), 'index.html ne charge pas vitrine.css');
+  assert(!indexHtml.includes('cube-face'), 'anciennes faces de cube restantes');
+  assert(appJs.includes('buildVitrine'), 'buildVitrine absent');
+  assert(appJs.includes('orbitPosition'), 'orbitPosition absent');
 });
 
 check('KiffTech : page rayons + filtre ?rayon', () => {
