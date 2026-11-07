@@ -801,6 +801,68 @@ body::before {
   100% { width: 100%; }
 }
 
+/* ===== BOIS PLAQUÉ — CIRCUITS ÉLECTRONIQUES ===== */
+:root {
+  --kf-wood-dark: #2e1b14;
+  --kf-wood-mid: #5d4037;
+  --kf-wood-light: #d7ccc8;
+  --kf-circuit: #ffd23f;
+  --kf-circuit-dim: #8d6e63;
+}
+
+/* Cadre périphérique bois plaqué autour de toute la page vitrine */
+.reader::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border: 26px solid var(--kf-wood-dark);
+  outline: 5px solid var(--kf-circuit-dim);
+  outline-offset: -8px;
+  box-shadow:
+    inset 0 0 60px rgba(46, 27, 20, .8),
+    0 0 50px rgba(255, 210, 63, .12);
+}
+
+/* Bordure bois plaqué épais avec traces de circuit sur la vitrine */
+.kf-wood-pcb-border {
+  position: relative;
+  border: 12px solid var(--kf-wood-mid);
+  background:
+    linear-gradient(135deg, var(--kf-wood-dark) 0%, var(--kf-wood-mid) 35%, var(--kf-wood-light) 65%, var(--kf-wood-dark) 100%)
+    padding-box,
+    #040406 border-box;
+  box-shadow:
+    0 0 0 4px var(--kf-circuit-dim),
+    inset 0 0 35px rgba(255, 210, 63, .15);
+}
+.kf-wood-pcb-border::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 2px solid var(--kf-circuit-dim);
+  box-shadow: 0 0 0 3px var(--kf-circuit), 0 0 25px rgba(255, 210, 63, .35);
+  animation: circuit-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Bordure bois plaqué plus fine sur le panneau détail */
+.panel-card {
+  border: 3px solid var(--kf-wood-mid) !important;
+  box-shadow:
+    0 30px 90px -20px #000,
+    0 0 70px -18px var(--kf-circuit),
+    inset 0 0 20px rgba(255, 210, 63, .1) !important;
+}
+
+@keyframes circuit-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--kf-circuit), 0 0 25px rgba(255, 210, 63, .35); opacity: .7; }
+  50% { box-shadow: 0 0 0 5px var(--kf-circuit), 0 0 40px rgba(255, 210, 63, .6); opacity: 1; }
+}
+
 /* ===== Accessibilité / petits écrans ===== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
