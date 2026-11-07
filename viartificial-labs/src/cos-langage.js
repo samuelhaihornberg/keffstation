@@ -38,6 +38,119 @@ function resoudreId(id, cartes) {
   if (mod) return { resolu: false, id: brut, manque: 'modificateur présumé « ' + brut[0] + ' » non défini par aucune classe/propriété (cf. A1→iB2) : signification inconnue' };
   return { resolu: false, id: brut, manque: 'aucune définition au registre (ni BLM, famille, langue, pattern, paramètre, ni carte ↔ du document)' };
 }
+// ---------------------------------------------------------------------------
+// CSS alphanumérique (NOUVEAU 2026-11-07, à confirmer) : un bloc
+// <script_Alphanumerotation(aconnecter)>…</script_Alphanumerotation(aconnecter)>
+// peut vivre dans <cos> ou dans <co>. Son contenu est du CSS réel (règles,
+// déclarations, @media). Les sélecteurs purement alphanumériques (A1, B2) sont
+// des nœuds COS : ils sont appliqués à [data-cos="A1"] dans l'aperçu. Le
+// runtime ne fait qu'analyser/valider : aucun CSS n'est exécuté côté serveur.
+var CSS_TAG_RE = /<script_Alphanumerotation\(aconnecter\)>([\s\S]*?)<\/script_Alphanumerotation\(aconnecter\)>/gi;
+var CSS_INTERDIT = /<\s*\/?\s*(script|style|iframe|object|embed|link|meta)\b|javascript\s*:|expression\s*\(|behavior\s*:|-moz-binding|@import\b/i;
+function normaliserSelecteurCss(sel) {
+  return String(sel || '').split(',').map(function (s) {
+    var t = s.trim();
+    if (/^[A-Za-z][A-Za-z0-9]*$/.test(t)) return '[data-cos="' + t + '"]';
+    return t;
+  }).join(', ');
+}
+function analyserDeclarationsCss(corps) {
+  var declarations = [], erreurs = [];
+  String(corps || '').split(';').forEach(function (m) {
+    var t = m.trim();
+    if (!t) return;
+    var idx = t.indexOf(':');
+    if (idx < 0) { erreurs.push('déclaration sans « : » : ' + t.slice(0, 40)); return; }
+    var prop = t.slice(0, idx).trim(), val = t.slice(idx + 1).trim();
+    if (!/^--?[A-Za-z][\w-]*$/.test(prop) && !/^[A-Za-z][\w-]*$/.test(prop)) {
+      erreurs.push('propriété invalide : ' + prop.slice(0, 40)); return;
+    }
+    if (!val) { erreurs.push('valeur vide pour ' + prop); return; }
+    declarations.push({ propriete: prop, valeur: val });
+  });
+  return { declarations: declarations, erreurs: erreurs };
+}
+function analyserCss(source) {
+  var src = String(source || '').trim();
+  var out = { ok: false, source: src, rules: [], erreurs: [] };
+  if (!src) { out.erreurs.push('CSS vide'); return out; }
+  if (CSS_INTERDIT.test(src)) { out.erreurs.push('construction CSS interdite (script/import/expression)'); return out; }
+  var s = src.replace(/\/\*[\s\S]*?\*\//g, '');
+  var i = 0, n = s.length;
+  function parseBloc(finAttendue) {
+    var rules = [];
+    while (i < n) {
+      while (i < n && /[\s;]/.test(s[i])) i++;
+      if (i >= n) break;
+      if (s[i] === '}') {
+        if (finAttendue) { i++; return rules; }
+        out.erreurs.push('accolade fermante sans ouvrante'); i++; continue;
+      }
+      var debut = i, paren = 0, brace = -1;
+      for (; i < n; i++) {
+        var ch = s[i];
+        if (ch === '(') paren++;
+        else if (ch === ')') paren = Math.max(0, paren - 1);
+        else if (ch === '{' && paren === 0) { brace = i; break; }
+        else if (ch === '}' && paren === 0) break;
+      }
+      if (brace < 0) {
+        var reste = s.slice(debut, i).trim();
+        if (reste) out.erreurs.push('règle sans bloc : ' + reste.slice(0, 40));
+        if (i < n && s[i] === '}') { if (finAttendue) { i++; return rules; } out.erreurs.push('accolade fermante sans ouvrante'); i++; }
+        continue;
+      }
+      var selecteur = s.slice(debut, brace).trim();
+      i = brace + 1;
+      if (!selecteur) { out.erreurs.push('sélecteur vide'); continue; }
+      if (selecteur.charAt(0) === '@') {
+        var save = i, prof2 = 1, j = i;
+        for (; j < n; j++) { if (s[j] === '{') prof2++; else if (s[j] === '}') { prof2--; if (prof2 === 0) break; } }
+        if (j >= n) { out.erreurs.push('accolade non fermée pour ' + selecteur.slice(0, 40)); break; }
+        var corpsAt = s.slice(save, j);
+        if (corpsAt.indexOf('{') >= 0) {
+          i = save;
+          var enfants = parseBloc(true);
+          rules.push({ selecteur: selecteur, selecteurApplique: selecteur, atRule: true, children: enfants, brut: s.slice(debut, i) });
+        } else {
+          var dAt = analyserDeclarationsCss(corpsAt);
+          dAt.erreurs.forEach(function (e) { out.erreurs.push(selecteur.slice(0, 40) + ' : ' + e); });
+          rules.push({ selecteur: selecteur, selecteurApplique: selecteur, atRule: true, declarations: dAt.declarations, brut: s.slice(debut, j + 1) });
+          i = j + 1;
+        }
+        continue;
+      }
+      var corpsDebut = i, prof = 1;
+      for (; i < n; i++) {
+        if (s[i] === '{') prof++;
+        else if (s[i] === '}') { prof--; if (prof === 0) break; }
+      }
+      if (prof !== 0) { out.erreurs.push('accolade non fermée pour ' + selecteur.slice(0, 40)); break; }
+      var corps = s.slice(corpsDebut, i);
+      i++;
+      var d = analyserDeclarationsCss(corps);
+      d.erreurs.forEach(function (e) { out.erreurs.push(selecteur.slice(0, 40) + ' : ' + e); });
+      rules.push({ selecteur: selecteur, selecteurApplique: normaliserSelecteurCss(selecteur), declarations: d.declarations, brut: s.slice(debut, i) });
+    }
+    if (finAttendue) out.erreurs.push('accolade non fermée');
+    return rules;
+  }
+  out.rules = parseBloc(false);
+  out.ok = out.erreurs.length === 0 && out.rules.length > 0;
+  if (!out.rules.length && !out.erreurs.length) out.erreurs.push('aucune règle CSS reconnue');
+  return out;
+}
+function extraireCss(texte) {
+  var styles = [];
+  var sans = String(texte || '').replace(CSS_TAG_RE, function (_, css) {
+    styles.push(String(css || ''));
+    return '';
+  });
+  return { texte: sans, styles: styles };
+}
+function analyserStyles(styles) {
+  return (styles || []).map(function (css) { return analyserCss(css); });
+}
 // Analyse un document <cos> : ordre documentaire conservé (rotation).
 // Sortie : {ok, cartes, liens[{de,vers,op,sens,donneur,receveur,description}], notes[]}.
 function analyser(src) {
