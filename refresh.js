@@ -10,7 +10,7 @@
 (function () {
   var SCOPE = {
     keff: { label: 'KeffStation', re: /^keffstation-/i, path: '/keffstation/' },
-    via: { label: 'ViArtificial Labs', re: /^viartificial-/i, path: '/keffstation/viartificial/' }
+    via: { label: 'ViArtificial Labs', re: /^viartificial-labs-/i, path: '/keffstation/viartificial-labs/' }
   };
   var KEEP = /transformers|onnx|webllm|mlc/i; // caches du modèle local : jamais vidés
   var ICONS = {
@@ -55,14 +55,14 @@
     return n; // localStorage / IndexedDB / modèles : intouchés
   }
   async function rafraichir(scope, hard) {
-    var meta = SCOPE[scope], ici = location.pathname.indexOf('/viartificial/') > -1 ? 'via' : 'keff';
+    var meta = SCOPE[scope], ici = location.pathname.indexOf('/viartificial-labs/') > -1 ? 'via' : 'keff';
     if (hard) { try { await viderCache(scope); } catch (e) {} }
     try {
       if ('serviceWorker' in navigator) {
         var regs = await navigator.serviceWorker.getRegistrations();
         for (var i = 0; i < regs.length; i++) {
           var url = regs[i].scope || '';
-          var vise = scope === 'via' ? url.indexOf('/viartificial/') > -1 : /keffstation\/?$/.test(url);
+          var vise = scope === 'via' ? url.indexOf('/viartificial-labs/') > -1 : /keffstation\/?$/.test(url);
           if (vise) { try { await regs[i].update(); } catch (e) {} }
         }
       }

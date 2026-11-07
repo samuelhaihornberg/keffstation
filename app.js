@@ -60,8 +60,8 @@ const APPS = [
     title: "ViArtificial labs",
     desc: "Syntaxe cos (connexions), famille SuperBots (ViA, BTB+Golem, Geeko, Guideoplan), blocs logiques BLM/BLSM, motor.s injection.",
     tags: ["cos", "SuperBots", "BLM", "motor.s"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/viartificial/",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/viartificial/",
+    appUrl: "https://samuelhaihornberg.github.io/keffstation/viartificial-labs/",
+    embedUrl: "https://samuelhaihornberg.github.io/keffstation/viartificial-labs/",
     embedLabel: "Ouvrir SuperBots",
     color: "#b84dff",
     subArticles: [
