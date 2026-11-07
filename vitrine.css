@@ -26,25 +26,32 @@ html { height: 100%; font-size: 16px; -webkit-text-size-adjust: 100%; }
 body {
   min-height: 100vh;
   min-height: 100dvh;
-  background: linear-gradient(90deg, #040406 0%, #040406 50%, #ffffff 50%, #ffffff 100%);
-  color: #111;
+  background: #040406;
+  color: #f4f6ff;
   font: 1rem/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Séparation blanc / noir — moitié moitié, fendue par des éclairs horizontaux */
+/* Fond Matrix — colonnes de lumière bleue, rouge, verte, jaune sur fond noir */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, #040406 0%, #040406 50%, #ffffff 50%, #ffffff 100%);
+  background:
+    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(30, 107, 255, .07) 2px, rgba(30, 107, 255, .07) 4px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(255, 61, 154, .07) 4px, rgba(255, 61, 154, .07) 6px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(39, 209, 127, .07) 6px, rgba(39, 209, 127, .07) 8px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(255, 210, 63, .07) 8px, rgba(255, 210, 63, .07) 10px);
+  background-size: 100% 500%;
+  animation: matrix-scroll 18s linear infinite;
+  opacity: .5;
 }
 
-/* Éclairs horizontaux qui traversent la séparation au centre */
+/* Éclairs horizontaux dorés qui traversent l'écran au centre */
 .lightning-divider {
   position: fixed;
   left: 0;
@@ -63,7 +70,7 @@ body::before {
   position: absolute;
   height: 1px;
   border-radius: 2px;
-  background: linear-gradient(90deg, transparent 0%, #ffd23f 40%, #ffffff 50%, #ffd23f 60%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, #ffe082 35%, #ffd23f 50%, #ffe082 65%, transparent 100%);
   opacity: 0;
   transform: scaleX(0);
   transform-origin: center;
@@ -78,6 +85,11 @@ body::before {
   0%, 88%, 100% { opacity: 0; transform: scaleX(0); }
   90% { opacity: 1; transform: scaleX(1); }
   92% { opacity: 0; transform: scaleX(0); }
+}
+
+@keyframes matrix-scroll {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 100%; }
 }
 
 /* Boule sphère vitrine au centre — renforcée, bordure or, reflet miroitant */
@@ -803,64 +815,86 @@ body::before {
 
 /* ===== BOIS PLAQUÉ — CIRCUITS ÉLECTRONIQUES ===== */
 :root {
-  --kf-wood-dark: #2e1b14;
-  --kf-wood-mid: #5d4037;
-  --kf-wood-light: #d7ccc8;
-  --kf-circuit: #ffd23f;
-  --kf-circuit-dim: #8d6e63;
+  --kf-gold-pure: #ffd23f;
+  --kf-gold-deep: #daa520;
+  --kf-gold-dark: #b8860b;
+  --kf-gold-light: #ffe082;
+  --kf-circuit-blue: #1e6bff;
+  --kf-circuit-red: #ff3d9a;
+  --kf-circuit-green: #27d17f;
+  --kf-circuit-yellow: #ffd23f;
 }
 
-/* Cadre périphérique bois plaqué autour de toute la page vitrine */
+/* Cadre périphérique doré pur or miroitant autour de toute la page vitrine */
 .reader::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  border: 26px solid var(--kf-wood-dark);
-  outline: 5px solid var(--kf-circuit-dim);
-  outline-offset: -8px;
+  border: 24px solid transparent;
+  border-image: conic-gradient(from 0deg,
+    var(--kf-gold-pure), var(--kf-gold-deep), var(--kf-gold-pure), var(--kf-gold-dark), var(--kf-gold-pure)
+  ) 1;
+  outline: 6px solid rgba(255, 210, 63, .45);
+  outline-offset: -10px;
   box-shadow:
-    inset 0 0 60px rgba(46, 27, 20, .8),
-    0 0 50px rgba(255, 210, 63, .12);
+    inset 0 0 90px rgba(255, 210, 63, .35),
+    0 0 90px rgba(255, 210, 63, .18);
+  animation: gold-shimmer 5s linear infinite;
 }
 
-/* Bordure bois plaqué épais avec traces de circuit sur la vitrine */
+/* Bordure doré pur or miroitant sur la vitrine */
 .kf-wood-pcb-border {
   position: relative;
-  border: 12px solid var(--kf-wood-mid);
-  background:
-    linear-gradient(135deg, var(--kf-wood-dark) 0%, var(--kf-wood-mid) 35%, var(--kf-wood-light) 65%, var(--kf-wood-dark) 100%)
-    padding-box,
-    #040406 border-box;
+  border: 10px solid transparent;
+  border-image: linear-gradient(135deg,
+    var(--kf-gold-pure), var(--kf-gold-deep), var(--kf-gold-pure), var(--kf-gold-dark), var(--kf-gold-pure)
+  ) 1;
+  background: #040406;
   box-shadow:
-    0 0 0 4px var(--kf-circuit-dim),
-    inset 0 0 35px rgba(255, 210, 63, .15);
+    0 0 0 5px rgba(255, 210, 63, .4),
+    inset 0 0 45px rgba(255, 210, 63, .15);
 }
 .kf-wood-pcb-border::after {
   content: '';
   position: absolute;
-  inset: -14px;
+  inset: -12px;
   border-radius: 50%;
-  border: 2px solid var(--kf-circuit-dim);
-  box-shadow: 0 0 0 3px var(--kf-circuit), 0 0 25px rgba(255, 210, 63, .35);
-  animation: circuit-pulse 3s ease-in-out infinite;
+  border: 2px solid rgba(218, 165, 32, .55);
+  box-shadow: 0 0 0 5px var(--kf-gold-pure), 0 0 35px rgba(255, 210, 63, .5);
+  animation: gold-pulse 3s ease-in-out infinite;
   pointer-events: none;
   z-index: 2;
 }
 
-/* Bordure bois plaqué plus fine sur le panneau détail */
+/* Bordure doré pur or sur le panneau détail */
 .panel-card {
-  border: 3px solid var(--kf-wood-mid) !important;
+  border: 3px solid var(--kf-gold-deep) !important;
   box-shadow:
     0 30px 90px -20px #000,
-    0 0 70px -18px var(--kf-circuit),
-    inset 0 0 20px rgba(255, 210, 63, .1) !important;
+    0 0 70px -18px var(--kf-gold-pure),
+    inset 0 0 25px rgba(255, 210, 63, .12) !important;
 }
 
-@keyframes circuit-pulse {
-  0%, 100% { box-shadow: 0 0 0 3px var(--kf-circuit), 0 0 25px rgba(255, 210, 63, .35); opacity: .7; }
-  50% { box-shadow: 0 0 0 5px var(--kf-circuit), 0 0 40px rgba(255, 210, 63, .6); opacity: 1; }
+@keyframes gold-shimmer {
+  0%, 100% {
+    border-image: conic-gradient(from 0deg,
+      var(--kf-gold-pure), var(--kf-gold-deep), var(--kf-gold-pure), var(--kf-gold-dark), var(--kf-gold-pure)
+    ) 1;
+    outline-color: rgba(255, 210, 63, .45);
+  }
+  50% {
+    border-image: conic-gradient(from 180deg,
+      var(--kf-gold-pure), var(--kf-gold-dark), var(--kf-gold-pure), var(--kf-gold-deep), var(--kf-gold-pure)
+    ) 1;
+    outline-color: rgba(255, 224, 130, .7);
+  }
+}
+
+@keyframes gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 5px var(--kf-gold-pure), 0 0 25px rgba(255, 210, 63, .35); opacity: .7; }
+  50% { box-shadow: 0 0 0 7px var(--kf-gold-pure), 0 0 45px rgba(255, 210, 63, .7); opacity: 1; }
 }
 
 /* ===== Accessibilité / petits écrans ===== */
