@@ -346,6 +346,33 @@ function cartTotals(){
   }
   return{official,kifftech,savings:official-kifftech,count:cartCount()};
 }
+
+// ============ HISTORIQUE DES COMMANDES PAYEES (localStorage) ============
+const ORDERS_KEY='kifftech.commandes.payees.v1';
+function getCommandesPayees(){
+  try{
+    const raw=localStorage.getItem(ORDERS_KEY);
+    if(!raw)return [];
+    const arr=JSON.parse(raw);
+    return Array.isArray(arr)?arr:[];
+  }catch(e){return [];}
+}
+function saveCommandePayee(order){
+  try{
+    const arr=getCommandesPayees();
+    arr.unshift({...order,date:order.date||new Date().toISOString()});
+    localStorage.setItem(ORDERS_KEY,JSON.stringify(arr));
+  }catch(e){console.warn('[Caisse] Impossible de sauvegarder la commande',e);}
+}
+function clearCommandesPayees(){
+  try{localStorage.removeItem(ORDERS_KEY);}catch(e){}
+}
+function supprimerCommandePayee(ref){
+  try{
+    const arr=getCommandesPayees().filter(o=>o.ref!==ref);
+    localStorage.setItem(ORDERS_KEY,JSON.stringify(arr));
+  }catch(e){}
+}
 function updateCartBadge(){
   const c=cartCount();
   const badge=$('#cart-count');if(badge){badge.textContent=c;badge.style.display=c?'flex':'none';}
@@ -459,7 +486,7 @@ function caisseField(key,label,type='text',half=false,placeholder=''){
   return `<label class="caisse-field${half?' is-half':''}"><span>${label}</span><input class="caisse-input" type="${type}" data-caisse-field="${key}" value="${escAttr(caisseDraft[key]||'')}" placeholder="${escAttr(placeholder)}"></label>`;
 }
 function validateCaisse(){
-  const required=[['name','nom complet'],['email','adresse email'],['address','adresse'],['zip','code postal'],['city','ville']];
+  const required=[['name','nom complet'],['email','adresse email'],['phone','numéro de téléphone'],['address','adresse'],['zip','code postal'],['city','ville']];
   for(const [key,label] of required){
     if(!String(caisseDraft[key]||'').trim()){
       toast('Renseignez votre '+label+' avant de payer','warning');
@@ -520,7 +547,7 @@ function renderCaisse(){
     <form class="caisse-form" id="caisse-form" onsubmit="return false">
       ${caisseField('name','Nom complet','text',false,'Prénom et nom')}
       ${caisseField('email','Email','email',false,'vous@exemple.fr')}
-      ${caisseField('phone','Téléphone','tel',true,'Facultatif')}
+      ${caisseField('phone','Téléphone (requis)','tel',true,'06 00 00 00 00')}
       ${caisseField('address','Adresse','text',false,'Numéro et rue')}
       ${caisseField('zip','Code postal','text',true,'75000')}
       ${caisseField('city','Ville','text',true,'Paris')}
@@ -607,9 +634,16 @@ function renderPayPalButton(total,slotSel='#paypal-button-container',statusSel='
       onApprove:(data,actions)=>actions.order.capture().then(details=>{
         const payer=details&&details.payer&&details.payer.name?details.payer.name.given_name:'';
         const t=cartTotals();
-        caisseLastOrder={ref:caisseOrderRef||newOrderRef(),total:t.kifftech,count:t.count,name:payer||caisseDraft.name||'',email:String(caisseDraft.email||'').trim(),date:new Date()};
+        const ref=caisseOrderRef||newOrderRef();
+        const items=userContext.cartItems.map(i=>{
+          const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
+          return{id:i.id,brand:i.brand,model:i.model,year:i.year,category:i.category,qty:Number(i.qty)||1,official:kt.official,kifftech:kt.kifftech};
+        });
+        const order={ref,total:t.kifftech,count:t.count,name:payer||caisseDraft.name||'',email:String(caisseDraft.email||'').trim(),phone:String(caisseDraft.phone||'').trim(),date:new Date().toISOString(),mode:'PayPal',statut:'payee',items};
+        caisseLastOrder=order;
+        saveCommandePayee(order);
         clearCart();
-        toast('Paiement confirmé — commande '+caisseLastOrder.ref,'success');
+        toast('Paiement confirmé — commande '+order.ref,'success');
       }),
       onCancel:()=>toast('Paiement PayPal annulé','info'),
       onError:err=>{console.error('[PayPal]',err);toast('Erreur PayPal — réessayez','error');}
