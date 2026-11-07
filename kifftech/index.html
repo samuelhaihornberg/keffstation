@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1e6bff">
+<meta name="theme-color" content="#070708">
 <meta name="description" content="KiffTech - Agent IA veille tech, prix officiels & réseaux sociaux 2020-2026">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🤖%3C/text%3E%3C/svg%3E">
@@ -208,6 +208,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 
 @media (prefers-color-scheme:light){:root{color-scheme:dark}}
 </style>
+<link rel="stylesheet" href="./theme.css">
 </head>
 <body>
 <div class="app">
@@ -223,7 +224,8 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
 <span id="cart-count">0</span>
 </button>
-<a href="./credits.html" style="display:flex;align-items:center;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#b9c0e6;font-weight:700;font-size:.8rem;text-decoration:none;white-space:nowrap">Crédits</a>
+<a href="./rayons.html" class="nav-link nav-link--accent">Rayons</a>
+<a href="./credits.html" class="nav-link">Crédits</a>
 </div>
 </header>
 <main>
@@ -250,6 +252,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <div class="filter-row" id="filter-category" role="group" aria-label="Catégories"></div>
 <div class="filter-row" id="filter-year" role="group" aria-label="Années"></div>
 <div class="filter-row" id="filter-brand" role="group" aria-label="Marques"></div>
+</div>
 </section>
 
 <!-- Sources Configuration -->
@@ -271,7 +274,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>KiffTech Club</div>
 <div id="promo-indicator" style="margin-bottom:12px;padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:.8rem"></div>
 <button class="action-btn" id="btn-subscribe" type="button" style="margin-bottom:12px"></button>
-<div style="font-size:.75rem;color:#8a92b8;line-height:1.6">
+<div class="club-details">
 <strong>1€/jour</strong> (≈30€/mois) • Sans engagement<br>
 • -10% à -21% selon ancienneté<br>
 • Livraison toujours offerte<br>
@@ -281,7 +284,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 
 <!-- Ma Sélection -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>Ma Sélection <span id="cart-count" style="background:#1e6bff;color:#fff;padding:2px 6px;border-radius:999px;font-size:.65rem;margin-left:8px;display:none">0</span></div>
+<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>Ma Sélection <span class="cart-panel-count">0</span></div>
 <div id="cart-panel" style="max-height:200px;overflow-y:auto"></div>
 </section>
 </aside>
@@ -307,7 +310,8 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <button class="modal-close" id="modal-close" type="button" aria-label="Fermer">×</button>
 </header>
 <div class="modal-body">
-<div class="modal-media" id="modal-media">
+<div class="modal-visual">
+<div class="modal-media" id="modal-media"></div>
 <div class="media-nav" id="media-nav"></div>
 </div>
 <div class="modal-details">
@@ -315,9 +319,8 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <div class="modal-brand" id="modal-brand"></div>
 <h2 class="modal-name" id="modal-name"></h2>
 <div class="modal-meta" id="modal-meta"></div>
-<p class="modal-desc" id="modal-desc"></div>
+<p class="modal-desc" id="modal-desc"></p>
 </div>
-<div>
 <section class="spec-card"><h4>Caractéristiques</h4><div class="spec-grid" id="modal-specs"></div></section>
 <section class="spec-card"><h4>Prix & Sources</h4><div class="modal-prices" id="modal-prices"></div></section>
 </div>
@@ -329,7 +332,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="paypal-config.js"></script>
-<script src="app.v2.js?v=23"></script>
+<script src="app.v2.js?v=24"></script>
 <script src="../refresh.js"></script>
 </body>
 </html>
