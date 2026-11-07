@@ -297,9 +297,52 @@ async function loadProducts(){
 // ============ CART / SUB ============
 function addToCart(id){const p=products.find(x=>x.id===id);if(!p||userContext.cartItems.some(i=>i.id===id))return;userContext.cartItems.push({...p,qty:1});refreshKiffTechPrices();renderProducts();updateCartPanel();toast(`${p.model} ajoute`,`success`);}
 function removeFromCart(id){userContext.cartItems=userContext.cartItems.filter(i=>i.id!==id);refreshKiffTechPrices();renderProducts();updateCartPanel();}
-function updateCartBadge(){const c=userContext.cartItems.length;$('#cart-count').textContent=c;$('#cart-count').style.display=c?'flex':'none';updatePromoUI();}
+function updateCartBadge(){const c=userContext.cartItems.length;const badge=$('#cart-count');if(badge){badge.textContent=c;badge.style.display=c?'flex':'none';}const pc=document.querySelector('.cart-panel-count');if(pc)pc.textContent=c;updatePromoUI();}
 function updatePromoUI(){const el=$('#promo-indicator');if(!el)return;if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne • ${calcKiffTechPrice(100,{isSubscriber:true}).discount}% + Livraison</span>`;else if(userContext.cartItems.length>=10)el.innerHTML=`<span class="promo-active">Promo -20% activee</span>`;else el.innerHTML=`<span class="promo-pending">Ajoutez ${10-userContext.cartItems.length} articles pour -20%</span>`;}
-function updateCartPanel(){const p=$('#cart-panel');if(!p)return;if(!userContext.cartItems.length){p.innerHTML=`<p style="color:#8a92b8;text-align:center;padding:20px">Selection vide</p>`;return;}let to=0,tk=0;const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";p.innerHTML=userContext.cartItems.map(i=>{const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});to+=kt.official;tk+=kt.kifftech;const imgSrc = previewImage(i);return `<div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06)"><img src="${imgSrc}" decoding="async" style="width:50px;height:50px;object-fit:cover;border-radius:8px"><div style="flex:1"><div style="font-weight:600">${i.model}</div><div style="font-size:.8rem;color:#8a92b8">${i.brand}</div></div><div style="text-align:right"><div style="font-size:.75rem;color:#8a92b8;text-decoration:line-through">${fmtPrice(kt.official)}</div><div style="font-weight:700;color:#27d17f">${fmtPrice(kt.kifftech)}</div></div><button onclick="removeFromCart('${i.id}')" style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,61,154,.3);background:rgba(255,61,154,.1);color:#ff3d9a;cursor:pointer">x</button></div>`;}).join('')+`<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between"><div><div style="font-size:.8rem;color:#8a92b8">Total officiel</div><div style="text-decoration:line-through;color:#b9c0e6">${fmtPrice(to)}</div></div><div style="text-align:right"><div style="font-size:.8rem;color:#8a92b8">Prix KiffTech</div><div style="font-weight:800;color:#27d17f;font-size:1.2rem">${fmtPrice(tk)}</div><div style="font-size:.7rem;color:#27d17f">Economie ${fmtPrice(to-tk)}</div></div></div><button class="action-btn primary" style="margin-top:12px;width:100%" onclick="checkout()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>Commander</button><div id="paypal-button-container" style="margin-top:10px"></div><div id="paypal-status" style="margin-top:8px;font-size:.7rem;color:#8a92b8;text-align:center;line-height:1.4"></div>`;renderPayPalButton(tk);}
+function updateCartPanel(){
+  const p=$('#cart-panel');
+  if(!p)return;
+  if(!userContext.cartItems.length){
+    p.innerHTML='<p class="cart-empty">Sélection vide</p>';
+    return;
+  }
+  let to=0,tk=0;
+  const items=userContext.cartItems.map(i=>{
+    const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});
+    to+=kt.official;tk+=kt.kifftech;
+    return `<div class="cart-item">
+      <img class="cart-item-media" src="${previewImage(i)}" alt="${i.brand} ${i.model}" decoding="async">
+      <div class="cart-item-body">
+        <div class="cart-item-name">${i.model}</div>
+        <div class="cart-item-brand">${i.brand}</div>
+      </div>
+      <div class="cart-item-prices">
+        <span class="cart-item-official">${fmtPrice(kt.official)}</span>
+        <span class="cart-item-kifftech">${fmtPrice(kt.kifftech)}</span>
+      </div>
+      <button class="cart-item-remove" type="button" onclick="removeFromCart('${i.id}')" aria-label="Retirer ${i.model}">×</button>
+    </div>`;
+  }).join('');
+  p.innerHTML=`<div class="cart-list">${items}</div>
+    <div class="cart-totals">
+      <div class="cart-total">
+        <span class="cart-total-label">Total officiel</span>
+        <span class="cart-total-official">${fmtPrice(to)}</span>
+      </div>
+      <div class="cart-total is-accent">
+        <span class="cart-total-label">Prix KiffTech</span>
+        <span class="cart-total-kifftech">${fmtPrice(tk)}</span>
+        <span class="cart-savings">Économie ${fmtPrice(to-tk)}</span>
+      </div>
+    </div>
+    <button class="action-btn primary cart-checkout" type="button" onclick="checkout()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>
+      Commander
+    </button>
+    <div id="paypal-button-container" class="paypal-slot"></div>
+    <div id="paypal-status" class="paypal-status"></div>`;
+  renderPayPalButton(tk);
+}
 function checkout(){if(paypalClientId()){const b=$('#paypal-button-container');if(b)b.scrollIntoView({behavior:'smooth',block:'center'});toast('Utilisez le bouton PayPal ci-dessous','info');}else{toast('Paiement PayPal non configuré','info');}}
 
 // ============ PAYPAL ============
@@ -330,12 +373,12 @@ function renderPayPalButton(total){
     paypalStatus('PayPal : Client ID public non configuré. Le bouton « Commander » reste disponible.');
     return;
   }
-  box.innerHTML='<div style="padding:10px;text-align:center;color:#8a92b8;font-size:.8rem">Chargement de PayPal…</div>';
+  box.innerHTML='<div class="paypal-loading">Chargement de PayPal…</div>';
   loadPayPalSdk().then(paypal=>{
     if(!document.body.contains(box))return;
     box.innerHTML='';
     paypal.Buttons({
-      style:{shape:'pill',color:'gold',layout:'vertical',label:'paypal',height:42},
+      style:{shape:'rect',color:'gold',layout:'vertical',label:'paypal',height:42},
       createOrder:(data,actions)=>actions.order.create({purchase_units:[{description:'KiffTech — '+userContext.cartItems.length+' article(s)',amount:{value:Number(total).toFixed(2),currency_code:'EUR'}}]}),
       onApprove:(data,actions)=>actions.order.capture().then(details=>{
         const name=details&&details.payer&&details.payer.name?details.payer.name.given_name:'';
@@ -373,18 +416,35 @@ function agentFind(query){
   return { match: null, suggestions };
 }
 function agentRender(){
-  const box = $('#agent-result'); if (!box) return;
-  const q = $('#agent-input') ? $('#agent-input').value : '';
-  const found = agentFind(q) || { match: null, suggestions: [] };
-  if (found.match) {
-    const p = found.match;
-    const kt = p.kifftech || calcKiffTechPrice(p.price.official, { isSubscriber: userContext.isSubscriber, cartItems: userContext.cartItems });
-    box.innerHTML = `<div style="display:flex;gap:12px;padding:12px;background:rgba(30,107,255,.08);border:1px solid rgba(30,107,255,.35);border-radius:12px"><img src="${previewImage(p)}" alt="${p.brand} ${p.model}" decoding="async" style="width:72px;height:72px;object-fit:cover;border-radius:10px;flex-shrink:0"><div style="flex:1;min-width:0"><div style="font-size:.7rem;color:#1e6bff;text-transform:uppercase;letter-spacing:.06em;font-weight:700">${p.brand} • ${p.category}${p.year ? ' • ' + p.year : ''}</div><div style="font-weight:800">${p.model}</div><div style="font-size:.78rem;color:#b9c0e6;margin:2px 0">${p.description ? String(p.description).slice(0, 120) : Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `${k}: ${v}`).join(' • ')}</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0"><span class="price-crossed">${fmtPrice(kt.official)}</span><span class="price-kifftech has-discount">${fmtPrice(kt.kifftech)}</span><span class="discount-badge">-${kt.discount}%</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-sm primary" onclick="openModal('${p.id}')">Aperçu complet</button><button class="btn-sm" onclick="addToCart('${p.id}')">Ajouter</button></div></div></div>`;
-  } else if (found.suggestions.length) {
-    box.innerHTML = `<p style="font-size:.8rem;color:#b9c0e6">Pas d'exactitude — essayez :</p>` + found.suggestions.map(p => `<button class="btn-sm" data-agent-suggest="${p.brand} ${p.model}">${p.brand} ${p.model}</button>`).join('');
-    box.querySelectorAll('[data-agent-suggest]').forEach(b => b.addEventListener('click', () => { $('#agent-input').value = b.dataset.agentSuggest; agentRender(); }));
+  const box=$('#agent-result');if(!box)return;
+  const q=$('#agent-input')?$('#agent-input').value:'';
+  const found=agentFind(q)||{match:null,suggestions:[]};
+  if(found.match){
+    const p=found.match;
+    const kt=p.kifftech||calcKiffTechPrice(p.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});
+    const desc=p.description?String(p.description).slice(0,120):Object.entries(p.specs||{}).slice(0,3).map(([k,v])=>`${k}: ${v}`).join(' • ');
+    box.innerHTML=`<div class="agent-hit">
+      <img class="agent-hit-media" src="${previewImage(p)}" alt="${p.brand} ${p.model}" decoding="async">
+      <div class="agent-hit-body">
+        <div class="agent-hit-kicker">${p.brand} • ${p.category}${p.year?' • '+p.year:''}</div>
+        <div class="agent-hit-name">${p.model}</div>
+        <p class="agent-hit-desc">${desc}</p>
+        <div class="agent-hit-prices">
+          <span class="price-crossed">${fmtPrice(kt.official)}</span>
+          <span class="price-kifftech has-discount">${fmtPrice(kt.kifftech)}</span>
+          <span class="discount-badge">-${kt.discount}%</span>
+        </div>
+        <div class="agent-hit-actions">
+          <button class="btn-sm primary" onclick="openModal('${p.id}')">Aperçu complet</button>
+          <button class="btn-sm" onclick="addToCart('${p.id}')">Ajouter</button>
+        </div>
+      </div>
+    </div>`;
+  } else if(found.suggestions.length){
+    box.innerHTML=`<p class="agent-hint">Pas d'exactitude — essayez :</p><div class="agent-suggestions">`+found.suggestions.map(p=>`<button class="btn-sm" data-agent-suggest="${p.brand} ${p.model}">${p.brand} ${p.model}</button>`).join('')+`</div>`;
+    box.querySelectorAll('[data-agent-suggest]').forEach(b=>b.addEventListener('click',()=>{$('#agent-input').value=b.dataset.agentSuggest;agentRender();}));
   } else {
-    box.innerHTML = `<p style="font-size:.8rem;color:#b9c0e6">Aucun produit « ${String(q).slice(0, 60)} ». Tapez marque + modèle exacts.</p>`;
+    box.innerHTML=`<p class="agent-hint">Aucun produit « ${String(q).slice(0,60)} ». Tapez marque + modèle exacts.</p>`;
   }
 }
 

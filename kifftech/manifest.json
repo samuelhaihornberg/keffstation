@@ -4,8 +4,8 @@
   "description": "Agent IA veille tech 2020-2026 : prix officiels, réseaux sociaux, specs complètes, images, vidéos",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#070816",
-  "theme_color": "#1e6bff",
+  "background_color": "#070708",
+  "theme_color": "#070708",
   "orientation": "portrait-primary",
   "icons": [
     { "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🤖%3C/text%3E%3C/svg%3E", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
