@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0066ff">
-<meta name="description" content="Éditeur COS : syntaxe &lt;cos&gt;, &lt;co&gt;, balises &lt;script_…&gt; et CSS alphanumérique. Analyse locale, aperçu HTML, diagnostics et export JSON.">
+<meta name="description" content="Éditeur COS : syntaxe <cos>, <co>, balises <script_…> et CSS alphanumérique. Analyse locale, aperçu SPA, tutoriels et export JSON. PWA offline-first.">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🧩%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="./editor.css">
-<title>Éditeur COS — analyse, aperçu et export</title>
+<title>Éditeur COS — Analyse, Aperçu et Tutoriels</title>
 </head>
 <body>
 <div class="app">
@@ -17,7 +17,7 @@
       <span class="logo" aria-hidden="true">🧩</span>
       <div>
         <h1>Éditeur COS</h1>
-        <p>Syntaxe <code>&lt;cos&gt;</code> · <code>&lt;co&gt;</code> · <code>&lt;script_…&gt;</code> · CSS alphanumérique</p>
+        <p>Syntaxe <code><cos></code> · <code><co></code> · <code><script_…></code> · CSS alphanumérique</p>
       </div>
     </div>
     <div class="entete-actions">
@@ -25,6 +25,7 @@
       <button type="button" id="btn-defaut" class="btn">cos-defaut (118)</button>
       <button type="button" id="btn-exemple" class="btn">Exemple</button>
       <button type="button" id="btn-effacer" class="btn">Effacer</button>
+      <button type="button" id="btn-tutoriel" class="btn">Tutoriel</button>
     </div>
   </header>
 
@@ -43,7 +44,7 @@
         <button type="button" id="btn-copier" class="btn">Copier JSON</button>
         <button type="button" id="btn-telecharger" class="btn">Télécharger JSON</button>
       </div>
-      <p class="note-runtime">Les balises <code>&lt;script_…&gt;</code> (NOUVEAU, à confirmer) sont des opérandes typés : l’éditeur les analyse, ne les exécute jamais.</p>
+      <p class="note-runtime">Les balises <code><script_…></code> (NOUVEAU, à confirmer) sont des opérandes typés : l'éditeur les analyse, ne les exécute jamais.</p>
     </section>
 
     <section class="panneau panneau-resultats" aria-labelledby="titre-resultats">
@@ -56,10 +57,11 @@
         <button type="button" class="onglet" data-vue="liens" role="tab" aria-selected="false" aria-controls="vue-liens">Liens <span id="badge-liens" class="badge-onglet">0</span></button>
         <button type="button" class="onglet" data-vue="diagnostics" role="tab" aria-selected="false" aria-controls="vue-diagnostics">Diagnostics <span id="badge-diags" class="badge-onglet">0</span></button>
         <button type="button" class="onglet" data-vue="css" role="tab" aria-selected="false" aria-controls="vue-css">CSS <span id="badge-css" class="badge-onglet">0</span></button>
+        <button type="button" class="onglet" data-vue="tutoriel" role="tab" aria-selected="false" aria-controls="vue-tutoriel">Tutoriel <span id="badge-tuto" class="badge-onglet">?</span></button>
       </div>
       <div class="vues">
         <div id="vue-apercu" class="vue" role="tabpanel">
-          <iframe id="apercu" class="apercu" title="Aperçu HTML du document COS" sandbox=""></iframe>
+          <main id="apercu" class="apercu" role="main" aria-label="Aperçu SPA du document COS"></main>
         </div>
         <div id="vue-liens" class="vue" role="tabpanel" hidden>
           <div id="liste-liens" class="liste-liens"></div>
@@ -69,6 +71,9 @@
         </div>
         <div id="vue-css" class="vue" role="tabpanel" hidden>
           <div id="liste-css" class="liste-css"></div>
+        </div>
+        <div id="vue-tutoriel" class="vue" role="tabpanel" hidden>
+          <div id="conteneur-tutoriel" class="conteneur-tutoriel"></div>
         </div>
       </div>
     </section>

@@ -47,8 +47,8 @@ body::before {
     repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(39, 209, 127, .07) 6px, rgba(39, 209, 127, .07) 8px),
     repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(255, 210, 63, .07) 8px, rgba(255, 210, 63, .07) 10px);
   background-size: 100% 500%;
-  animation: matrix-scroll 18s linear infinite;
-  opacity: .5;
+  animation: matrix-scroll 24s linear infinite;
+  opacity: .25;
 }
 
 /* Éclairs horizontaux dorés qui traversent l'écran au centre */
@@ -844,18 +844,22 @@ body::before {
 }
 .matrix-code {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-family: var(--kf-mono), monospace;
   font-weight: 700;
-  font-size: clamp(10px, 1.8vw, 13px);
-  line-height: 1.3;
+  font-size: clamp(9px, 1.6vw, 12px);
+  line-height: 1.25;
   letter-spacing: -.02em;
   white-space: nowrap;
+  opacity: .85;
 }
 .matrix-code.vert { color: #27d17f; }
 .matrix-code.bleu { color: #1e6bff; }
 .matrix-code.blanc { color: #ffffff; }
 .matrix-code.rouge { color: #ff3d9a; }
+.matrix-col {
+  width: 18px;
+}
 
 @keyframes matrix-fall {
   0%   { transform: translateY(-120%); opacity: 0; }
