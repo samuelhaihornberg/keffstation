@@ -1,4 +1,4 @@
-/// script local non éxecuté
+/// script local non exécuté
 /// script local non exécute
 // cos-editor/editor.js — éditeur COS réel (NOUVEAU 2026-11-07, à confirmer).
 /// script local non executed
