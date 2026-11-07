@@ -34,6 +34,7 @@
 </script>
 </head>
 <body>
+  <div class="matrix-rain" aria-hidden="true"></div>
   <div class="lightning-divider" aria-hidden="true">
     <span class="bolt"></span>
     <span class="bolt"></span>
@@ -46,7 +47,7 @@
 </div>
 
 <main class="reader" role="region" aria-roledescription="vitrine ronde" aria-label="Vitrine des applications KeffStation">
-  <div class="vitrine kf-wood-pcb-border" id="vitrine">
+  <div class="vitrine" id="vitrine">
     <div class="halo" aria-hidden="true"></div>
     <div class="floor-glow" aria-hidden="true"></div>
 
@@ -107,5 +108,57 @@ if ('serviceWorker' in navigator) {
 </script>
 <script src="./install.js"></script>
 <script src="./refresh.js"></script>
+<script>
+(function () {
+  var container = document.querySelector('.matrix-rain');
+  if (!container) return;
+  var width = window.innerWidth;
+  var colCount = Math.ceil(width / 18);
+  var codes = [
+    { text: '<co>', klass: 'co' },
+    { text: '<recyclor_data>', klass: 'recyclor' },
+    { text: 'hello world', klass: 'hello' },
+    { text: 'KT-', klass: 'hl' },
+    { text: '01', klass: 'hl' },
+    { text: 'BLM', klass: 'hl' },
+    { text: 'COS', klass: 'hl' }
+  ];
+  function randomCode() {
+    var c = codes[Math.floor(Math.random() * codes.length)];
+    return '<span class="matrix-code ' + c.klass + '">' + c.text + '</span>';
+  }
+  function buildColumn(left, delay, duration) {
+    var col = document.createElement('div');
+    col.className = 'matrix-col';
+    col.style.left = left + 'px';
+    col.style.animationDelay = delay + 's';
+    col.style.animationDuration = duration + 's';
+    var lines = Math.floor(20 + Math.random() * 30);
+    var html = '';
+    for (var i = 0; i < lines; i++) {
+      html += randomCode();
+    }
+    col.innerHTML = html;
+    return col;
+  }
+  for (var i = 0; i < colCount; i++) {
+    var left = i * 18 + (Math.random() * 6);
+    var delay = Math.random() * 10;
+    var duration = 10 + Math.random() * 15;
+    container.appendChild(buildColumn(left, delay, duration));
+  }
+  window.addEventListener('resize', function () {
+    width = window.innerWidth;
+    colCount = Math.ceil(width / 18);
+    while (container.firstChild) container.removeChild(container.firstChild);
+    for (var i = 0; i < colCount; i++) {
+      var left = i * 18 + (Math.random() * 6);
+      var delay = Math.random() * 10;
+      var duration = 10 + Math.random() * 15;
+      container.appendChild(buildColumn(left, delay, duration));
+    }
+  });
+})();
+</script>
 </body>
 </html>

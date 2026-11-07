@@ -1,5 +1,11 @@
-const CACHE = 'cos-editor-v4';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const CACHE = 'cos-editor-v5';
+const ASSETS = [
+  './', './index.html', './manifest.json', './editor.js', './editor.css',
+  '../viartificial-labs/src/cos-registre.js',
+  '../viartificial-labs/src/cos-defaut.js',
+  '../viartificial-labs/src/cos-langage.js',
+  '../refresh.js'
+];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :
 // ils sont partagés à l'échelle de l'origine et re-téléchargés à grand coût.

@@ -211,6 +211,9 @@ function operandeDepuisToken(token, operandes) {
   var op = operandes[Number(m[1])] || { nom: token, valeur: token, attrs: {}, contenu: '' };
   return { token: token, id: op.valeur, script: true, nom: op.nom, attrs: op.attrs, contenu: op.contenu };
 }
+function carteScript(op) {
+  return { classe: 'script', nom: op.nom, famille: 'document', etape: [], source: 'script personnalisé <co>', attrs: op.attrs, contenu: op.contenu };
+}
 // Analyse un document <cos> : ordre documentaire conservé (rotation).
 // Sortie : {ok, cartes, liens[{de,vers,op,sens,donneur,receveur,description}], notes[]}.
 function analyser(src) {
@@ -247,6 +250,14 @@ function analyser(src) {
       var donneurOp = (sens === 'retour') ? opVers : opDe;
       var lien = { de: opDe.id, vers: opVers.id, op: m[2], modificateur: m[3] || null, sens: sens, donneur: donneurOp.id, receveur: receveurOp.id };
       if (opDe.script || opVers.script) { lien.script = true; lien.operandes = { de: opDe, vers: opVers }; }
+      // Les opérandes <script_…> deviennent des cartes locales du document :
+      // elles sont déclarées même si un autre lien les référence avant leur
+      // balise (l'ordre documentaire reste celui des liens, pas des cartes).
+      [opDe, opVers].forEach(function (op) {
+        if (!op.script) return;
+        if (r.cartes[op.id] && r.cartes[op.id].classe !== 'script') r.notes.push('ID de script « ' + op.id + ' » remplace une carte locale du même ID');
+        r.cartes[op.id] = carteScript(op);
+      });
       if (css.length) lien.css = css;
       css.forEach(function (x) { r.styles.push(x); });
       r.liens.push(lien);
@@ -324,9 +335,7 @@ function liensPourEquipe(src, refBlocs, refFamilles, vagues) {
     if (ln.operandes) {
       ['de', 'vers'].forEach(function (cote) {
         var op = ln.operandes[cote];
-        if (op && op.script && !doc.cartes[op.id]) {
-          doc.cartes[op.id] = { classe: 'script', nom: op.nom, famille: 'document', etape: [], source: 'script personnalisé <co>' };
-        }
+        if (op && op.script && !doc.cartes[op.id]) doc.cartes[op.id] = carteScript(op);
       });
     }
     var rDe = resoudreId(ln.donneur, doc.cartes), rVers = resoudreId(ln.receveur, doc.cartes);

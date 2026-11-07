@@ -4,41 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0066ff">
-<meta name="description" content="Éditeur cos - Syntaxe interactive">
+<meta name="description" content="Éditeur COS : syntaxe &lt;cos&gt;, &lt;co&gt;, balises &lt;script_…&gt; et CSS alphanumérique. Analyse locale, aperçu HTML, diagnostics et export JSON.">
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E📝%3C/text%3E%3C/svg%3E">
-<title>Éditeur cos — Syntaxe interactive</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{color-scheme:dark}html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif;overflow-x:clip}
-.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-header{padding:clamp(16px,4vh,24px) clamp(12px,3vw,20px);background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.logo{font-size:clamp(24px,5vw,32px)} h1{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:700;background:linear-gradient(90deg,#0066ff,#00d4ff,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent}
-main{flex:1;width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24px);padding-left:max(clamp(12px,3vw,20px),env(safe-area-inset-left));padding-right:max(clamp(12px,3vw,20px),env(safe-area-inset-right));padding-bottom:max(clamp(16px,3vw,24px),env(safe-area-inset-bottom));display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
-.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,20px);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:12px}
-.card:hover{transform:translateY(-4px);border-color:#0066ff;box-shadow:0 12px 40px rgba(0,102,255,.2)}
-.card h3{font-size:clamp(1rem,2.5vw,1.2rem);color:#ffd23f}
-.card p{color:#b9c0e6;line-height:1.5;flex:1}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(0,102,255,.2);border:1px solid rgba(0,102,255,.4);color:#8ab4ff}
-.btn{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding:12px 20px;border-radius:999px;border:1px solid #0066ff;background:linear-gradient(135deg,#0066ff,#00d4ff);color:#fff;font-weight:600;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.btn:hover{transform:scale(1.02);box-shadow:0 8px 24px rgba(0,102,255,.4)}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media (max-width:360px){html,body{font-size:14px}.btn{width:100%;justify-content:center;padding:14px 20px}}@media (min-width:1400px){:root{font-size:19px}}
-</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🧩%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./editor.css">
+<title>Éditeur COS — analyse, aperçu et export</title>
 </head>
 <body>
 <div class="app">
-<header><span class="logo">📝</span><h1>Éditeur cos</h1></header>
-<main>
-<article class="card"><h3>Guide de démarrage</h3><p>Premiers pas : syntaxe de base, connexions A1➡️B2, mode sandwich miroir, adresses alphanumériques.</p><div class="tags"><span class="tag">Guide</span><span class="tag">Débutant</span><span class="tag">cos</span></div><a href="#" class="btn">Commencer →</a></article>
-<article class="card"><h3>Référence complète</h3><p>Tous opérateurs, motifs CSM, adresses, exemples commentés. Recherche instantanée.</p><div class="tags"><span class="tag">Référence</span><span class="tag">Doc</span><span class="tag">cos</span></div><a href="#" class="btn">Voir →</a></article>
-<article class="card"><h3>Snippets prêts à l'emploi</h3><p>Templates : pipelines, boucles, conditions, parallélisme, gestion erreurs, retry/timeout.</p><div class="tags"><span class="tag">Snippets</span><span class="tag">Templates</span><span class="tag">cos</span></div><a href="#" class="btn">Copier →</a></article>
-<article class="card"><h3>Débogage visuel</h3><p>Inspecteur graphe, points d'arrêt, exécution pas à pas, logs colorés, time-travel debugging.</p><div class="tags"><span class="tag">Debug</span><span class="tag">Inspecteur</span><span class="tag">Time-travel</span></div><a href="#" class="btn">Lancer →</a></article>
-<article class="card"><h3>Playground live</h3><p>Éditeur Monaco/CodeMirror, validation temps réel, coloration, autocomplétion, export JSON.</p><div class="tags"><span class="tag">Playground</span><span class="tag">Live</span><span class="tag">Export</span></div><a href="#" class="btn">Éditer →</a></article>
-<article class="card"><h3>Intégration CI/CD</h3><p>GitHub Actions, GitLab CI, validation PR, tests cos unitaires, déploiement auto.</p><div class="tags"><span class="tag">CI/CD</span><span class="tag">GitHub</span><span class="tag">GitLab</span></div><a href="#" class="btn">Config →</a></article>
-</main>
+  <header class="entete">
+    <div class="marque">
+      <span class="logo" aria-hidden="true">🧩</span>
+      <div>
+        <h1>Éditeur COS</h1>
+        <p>Syntaxe <code>&lt;cos&gt;</code> · <code>&lt;co&gt;</code> · <code>&lt;script_…&gt;</code> · CSS alphanumérique</p>
+      </div>
+    </div>
+    <div class="entete-actions">
+      <span id="statut" class="statut" data-niveau="info" role="status" aria-live="polite">Initialisation…</span>
+      <button type="button" id="btn-defaut" class="btn">cos-defaut (118)</button>
+      <button type="button" id="btn-exemple" class="btn">Exemple</button>
+      <button type="button" id="btn-effacer" class="btn">Effacer</button>
+    </div>
+  </header>
+
+  <main class="atelier">
+    <section class="panneau panneau-source" aria-labelledby="titre-source">
+      <div class="panneau-tete">
+        <h2 id="titre-source">Source COS</h2>
+        <span id="compteur-source" class="compteur">0 ligne</span>
+      </div>
+      <div class="zone-editeur">
+        <div id="gouttiere" class="gouttiere" aria-hidden="true">1</div>
+        <textarea id="source" class="source" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Source COS"></textarea>
+      </div>
+      <div class="barre-actions">
+        <button type="button" id="btn-analyser" class="btn primaire">Analyser</button>
+        <button type="button" id="btn-copier" class="btn">Copier JSON</button>
+        <button type="button" id="btn-telecharger" class="btn">Télécharger JSON</button>
+      </div>
+      <p class="note-runtime">Les balises <code>&lt;script_…&gt;</code> sont des opérandes typés : l’éditeur les analyse, ne les exécute jamais.</p>
+    </section>
+
+    <section class="panneau panneau-resultats" aria-labelledby="titre-resultats">
+      <div class="panneau-tete">
+        <h2 id="titre-resultats">Résultats</h2>
+        <div id="stats" class="stats" aria-live="polite"></div>
+      </div>
+      <div class="onglets" role="tablist" aria-label="Vues des résultats">
+        <button type="button" class="onglet actif" data-vue="apercu" role="tab" aria-selected="true" aria-controls="vue-apercu">Aperçu</button>
+        <button type="button" class="onglet" data-vue="liens" role="tab" aria-selected="false" aria-controls="vue-liens">Liens <span id="badge-liens" class="badge-onglet">0</span></button>
+        <button type="button" class="onglet" data-vue="diagnostics" role="tab" aria-selected="false" aria-controls="vue-diagnostics">Diagnostics <span id="badge-diags" class="badge-onglet">0</span></button>
+        <button type="button" class="onglet" data-vue="css" role="tab" aria-selected="false" aria-controls="vue-css">CSS <span id="badge-css" class="badge-onglet">0</span></button>
+      </div>
+      <div class="vues">
+        <div id="vue-apercu" class="vue" role="tabpanel">
+          <iframe id="apercu" class="apercu" title="Aperçu HTML du document COS" sandbox=""></iframe>
+        </div>
+        <div id="vue-liens" class="vue" role="tabpanel" hidden>
+          <div id="liste-liens" class="liste-liens"></div>
+        </div>
+        <div id="vue-diagnostics" class="vue" role="tabpanel" hidden>
+          <div id="liste-diagnostics" class="liste-diagnostics"></div>
+        </div>
+        <div id="vue-css" class="vue" role="tabpanel" hidden>
+          <div id="liste-css" class="liste-css"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">COS · analyse locale dans le navigateur · aucun script personnalisé exécuté</footer>
 </div>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>window.module={exports:{}};</script>
+<script src="../viartificial-labs/src/cos-registre.js"></script>
+<script>window.COSRegistre=window.module.exports;window.module={exports:{}};</script>
+<script src="../viartificial-labs/src/cos-defaut.js"></script>
+<script>window.COSDefaut=window.module.exports;window.module={exports:{}};</script>
+<script src="../viartificial-labs/src/cos-langage.js"></script>
+<script>window.COSLangage=window.module.exports;</script>
+<script src="./editor.js"></script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){})}</script>
 <script src="../refresh.js"></script>
 </body>
 </html>
