@@ -23,6 +23,9 @@ function normeCle(s) {
 function resoudreId(id, cartes) {
   var brut = String(id || '').trim();
   var reg = registry();
+  // Script personnalisé (NOUVEAU 2026-11-07) : une balise <script_…> est un
+  // nœud local typé, pas un ID du registre. Elle reste résolue dans le document.
+  if (cartes && cartes[brut] && cartes[brut].classe === 'script') return { resolu: true, id: brut, def: cartes[brut], script: true };
   // Extension ViArtificial (NOUVELLE, à confirmer) : références BLM numériques
   // 001-100 acceptées comme alias (le catalogue numérote ainsi ; COS.alphanum
   // historique exigeait une lettre initiale). Zéro-paddées, jamais tronquées.
@@ -77,7 +80,8 @@ function analyserCss(source) {
   if (CSS_INTERDIT.test(src)) { out.erreurs.push('construction CSS interdite (script/import/expression)'); return out; }
   var s = src.replace(/\/\*[\s\S]*?\*\//g, '');
   var i = 0, n = s.length;
-  function parseBloc(finAttendue) {
+  function parseBloc(finAttendue, normaliser) {
+    var normaliserSelecteurs = normaliser !== false;
     var rules = [];
     while (i < n) {
       while (i < n && /[\s;]/.test(s[i])) i++;
@@ -110,7 +114,11 @@ function analyserCss(source) {
         var corpsAt = s.slice(save, j);
         if (corpsAt.indexOf('{') >= 0) {
           i = save;
-          var enfants = parseBloc(true);
+          // Les sélecteurs internes de @keyframes (from/to/50%) ne sont pas
+          // des nœuds COS : on ne les convertit pas en [data-cos="…"].
+          var cleAt = selecteur.toLowerCase().split(/\s+/)[0];
+          var normaliserEnfants = !/^@(-[a-z]+-)?keyframes$/.test(cleAt);
+          var enfants = parseBloc(true, normaliserEnfants);
           rules.push({ selecteur: selecteur, selecteurApplique: selecteur, atRule: true, children: enfants, brut: s.slice(debut, i) });
         } else {
           var dAt = analyserDeclarationsCss(corpsAt);
@@ -130,7 +138,7 @@ function analyserCss(source) {
       i++;
       var d = analyserDeclarationsCss(corps);
       d.erreurs.forEach(function (e) { out.erreurs.push(selecteur.slice(0, 40) + ' : ' + e); });
-      rules.push({ selecteur: selecteur, selecteurApplique: normaliserSelecteurCss(selecteur), declarations: d.declarations, brut: s.slice(debut, i) });
+      rules.push({ selecteur: selecteur, selecteurApplique: normaliserSelecteurs ? normaliserSelecteurCss(selecteur) : selecteur, declarations: d.declarations, brut: s.slice(debut, i) });
     }
     if (finAttendue) out.erreurs.push('accolade non fermée');
     return rules;
@@ -151,33 +159,104 @@ function extraireCss(texte) {
 function analyserStyles(styles) {
   return (styles || []).map(function (css) { return analyserCss(css); });
 }
+// ---------------------------------------------------------------------------
+// Scripts personnalisés (NOUVEAU 2026-11-07, à confirmer) : les opérandes
+// peuvent être des balises <script_…> au lieu d'IDs nus. Forme donnée par le
+// document : <co><script_…> to <script_…></co>. Le scanner accepte la balise
+// seule, la balise avec attributs (id/valeur/value/nom/name/attribut) et la
+// balise avec contenu. La valeur retenue est l'attribut, sinon le contenu,
+// sinon le nom de la balise. Aucun script n'est exécuté : les balises sont
+// seulement des opérandes typés du graphe COS.
+function extraireScripts(texte) {
+  var src = String(texte || '');
+  var operandes = [];
+  var out = '';
+  var i = 0;
+  var TAG_START = '<script_';
+  var NOM_RE = /[A-Za-z0-9_\-éèêëàâäôöûüçÉÈÊËÀÂÄÔÖÛÜÇ]/;
+  while (i < src.length) {
+    var start = src.toLowerCase().indexOf(TAG_START, i);
+    if (start < 0) { out += src.slice(i); break; }
+    out += src.slice(i, start);
+    var finNom = start + TAG_START.length;
+    while (finNom < src.length && NOM_RE.test(src.charAt(finNom))) finNom++;
+    var nom = src.slice(start + TAG_START.length, finNom);
+    var finTag = src.indexOf('>', finNom);
+    if (finTag < 0) { out += src.slice(start); break; }
+    var attrsTexte = src.slice(finNom, finTag);
+    var fermant = '</script_' + nom + '>';
+    var finContenu = src.toLowerCase().indexOf(fermant.toLowerCase(), finTag + 1);
+    var contenu = '';
+    var fin = finTag + 1;
+    if (finContenu >= 0) {
+      contenu = src.slice(finTag + 1, finContenu);
+      fin = finContenu + fermant.length;
+    }
+    var attrs = {};
+    String(attrsTexte).replace(/([A-Za-z0-9_:-]+)\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/g, function (_, k, __, v1, v2, v3) {
+      attrs[k] = v1 !== undefined ? v1 : (v2 !== undefined ? v2 : v3);
+      return '';
+    });
+    var valeur = attrs.id || attrs.valeur || attrs.value || attrs.nom || attrs.name || attrs.attribut || contenu.trim() || nom;
+    var placeholder = '__COS_SCRIPT_' + operandes.length + '__';
+    operandes.push({ nom: nom, attrs: attrs, contenu: contenu.trim(), valeur: valeur, placeholder: placeholder });
+    out += placeholder;
+    i = fin;
+  }
+  return { texte: out, operandes: operandes };
+}
+function operandeDepuisToken(token, operandes) {
+  var m = String(token || '').match(/^__COS_SCRIPT_(\d+)__$/);
+  if (!m) return { token: token, id: token, script: false };
+  var op = operandes[Number(m[1])] || { nom: token, valeur: token, attrs: {}, contenu: '' };
+  return { token: token, id: op.valeur, script: true, nom: op.nom, attrs: op.attrs, contenu: op.contenu };
+}
 // Analyse un document <cos> : ordre documentaire conservé (rotation).
 // Sortie : {ok, cartes, liens[{de,vers,op,sens,donneur,receveur,description}], notes[]}.
 function analyser(src) {
-  var r = { ok: false, cartes: {}, liens: [], notes: [] };
+  var r = { ok: false, cartes: {}, liens: [], styles: [], notes: [], blocs: 0 };
   var s = String(src || '').replace(/<!--[\s\S]*?-->/g, '').replace(/[︎\uFE0E\uFE0F]/g, '');
   var blocs = s.match(/<cos[^>]*>([\s\S]*?)<\/cos>/g) || [];
+  r.blocs = blocs.length;
   if (!blocs.length) { r.notes.push('aucun bloc <cos>…</cos>'); return r; }
   blocs.forEach(function (b) {
     var inners = b.match(/<co[^>]*>([\s\S]*?)<\/co>/g) || [];
     inners.forEach(function (c) {
-      var t = c.replace(/<\/?co[^>]*>/g, '').trim();
-      if (!t) return;
+      var inner = c.replace(/<\/?co[^>]*>/g, '');
+      var exCss = extraireCss(inner);
+      var exScripts = extraireScripts(exCss.texte);
+      var t = exScripts.texte.trim();
+      var css = analyserStyles(exCss.styles);
+      if (!t) {
+        css.forEach(function (x) { r.styles.push(x); });
+        return;
+      }
       if (/↔/.test(t)) { // DESCRIPTION (co-cos-commun), jamais traversable.
         var parts = t.split('↔').map(function (x) { return x.trim(); });
         if (ID_RE.test(parts[0])) r.cartes[parts[0]] = { classe: 'carte', nom: parts.slice(1).join(' ↔ ').slice(0, 500), famille: 'document', etape: [], source: 'document <cos> local' };
         else r.notes.push('carte ↔ ignorée (ID invalide) : ' + t.slice(0, 60));
+        css.forEach(function (x) { r.styles.push(x); });
         return;
       }
-      var m = t.match(/^([A-Za-z][A-Za-z0-9]*|[0-9]{1,3})\s*(to|➡|→|⬅|←)\s*([a-z])?\s*([A-Za-z][A-Za-z0-9]*|[0-9]{1,3})$/);
-      if (!m) { r.notes.push('forme non conforme (ni to, ni flèche, ni ↔) : ' + t.slice(0, 60)); return; }
+      var m = t.match(/^([A-Za-z][A-Za-z0-9]*|[0-9]{1,3}|__COS_SCRIPT_\d+__)\s*(to|➡|→|⬅|←)\s*([a-z])?\s*([A-Za-z][A-Za-z0-9]*|[0-9]{1,3}|__COS_SCRIPT_\d+__)$/);
+      if (!m) { r.notes.push('forme non conforme (ni to, ni flèche, ni ↔) : ' + t.slice(0, 60)); css.forEach(function (x) { r.styles.push(x); }); return; }
       var sens = (m[2] === 'to') ? 'textuel' : (/⬅|←/.test(m[2]) ? 'retour' : 'aller');
-      var receveur = (sens === 'retour') ? m[1] : m[4]; // pointe = receveur.
-      var donneur = (sens === 'retour') ? m[4] : m[1];
-      r.liens.push({ de: m[1], vers: m[4], op: m[2], modificateur: m[3] || null, sens: sens, donneur: donneur, receveur: receveur });
+      var opDe = operandeDepuisToken(m[1], exScripts.operandes);
+      var opVers = operandeDepuisToken(m[4], exScripts.operandes);
+      var receveurOp = (sens === 'retour') ? opDe : opVers; // pointe = receveur.
+      var donneurOp = (sens === 'retour') ? opVers : opDe;
+      var lien = { de: opDe.id, vers: opVers.id, op: m[2], modificateur: m[3] || null, sens: sens, donneur: donneurOp.id, receveur: receveurOp.id };
+      if (opDe.script || opVers.script) { lien.script = true; lien.operandes = { de: opDe, vers: opVers }; }
+      if (css.length) lien.css = css;
+      css.forEach(function (x) { r.styles.push(x); });
+      r.liens.push(lien);
     });
+    // CSS hors <co> mais dans <cos> : feuille du groupe.
+    var sansCo = b.replace(/<co[^>]*>([\s\S]*?)<\/co>/g, '');
+    var exBloc = extraireCss(sansCo);
+    analyserStyles(exBloc.styles).forEach(function (x) { r.styles.push(x); });
   });
-  r.ok = r.liens.length > 0 || Object.keys(r.cartes).length > 0;
+  r.ok = r.liens.length > 0 || Object.keys(r.cartes).length > 0 || r.styles.length > 0;
   if (!r.ok) r.notes.push('aucune connexion');
   return r;
 }
@@ -193,6 +272,9 @@ var PATTERN_BLMS = { '019': ['BLM_COMP_SALUT', 'BLM_COMP_ETAT', 'BLM_COMP_CAUSE'
 function compatible(de, vers) {
   if (!de.resolu || !vers.resolu) return { ok: false, motif: 'non-resolu' };
   var a = de.def, b = vers.def;
+  // Script personnalisé : la compatibilité est portée par le document local,
+  // pas par le catalogue BLM. Le lien reste traçable, jamais exécuté ici.
+  if (a.classe === 'script' || b.classe === 'script') return { ok: true, motif: 'script-personnalise' };
   if (a.classe === 'BLM' && b.classe === 'BLM' && (b.depend || []).indexOf(de.id) >= 0) return { ok: true, motif: 'depend-catalogue' };
   if (a.classe === 'famille' && b.classe === 'famille') return { ok: true, motif: 'phases-S-adjacentes-a-verifier', borne: true };
   if ((a.classe === 'BLM' && b.classe === 'famille' && a.famille === b.nom) || (a.classe === 'famille' && b.classe === 'BLM' && b.famille === a.nom)) return { ok: true, motif: 'appartenance-catalogue' };
@@ -237,6 +319,16 @@ function liensPourEquipe(src, refBlocs, refFamilles, vagues) {
   (refFamilles || []).forEach(function (f) { dansEq['famille:' + f] = true; });
   var executes = [], signales = [];
   doc.liens.forEach(function (ln, idx) {
+    // Les opérandes <script_…> sont des cartes locales du document : on les
+    // enregistre avant résolution, sans les confondre avec les BLM du registre.
+    if (ln.operandes) {
+      ['de', 'vers'].forEach(function (cote) {
+        var op = ln.operandes[cote];
+        if (op && op.script && !doc.cartes[op.id]) {
+          doc.cartes[op.id] = { classe: 'script', nom: op.nom, famille: 'document', etape: [], source: 'script personnalisé <co>' };
+        }
+      });
+    }
     var rDe = resoudreId(ln.donneur, doc.cartes), rVers = resoudreId(ln.receveur, doc.cartes);
     var base = { ordre: idx, de: ln.donneur, vers: ln.receveur, op: ln.op, sens: ln.sens, donneur: ln.donneur, receveur: ln.receveur };
     if (ln.modificateur) { base.statut = 'modificateur-inconnu'; base.detail = '« ' + ln.modificateur + ' » non défini : lien non exécuté'; signales.push(base); return; }
@@ -246,7 +338,11 @@ function liensPourEquipe(src, refBlocs, refFamilles, vagues) {
     if (!c.ok) { base.statut = 'incompatible'; base.detail = c.motif; signales.push(base); return; }
     var cleDe = rDe.def.classe === 'famille' ? 'famille:' + rDe.def.nom : rDe.id;
     var cleVers = rVers.def.classe === 'famille' ? 'famille:' + rVers.def.nom : rVers.id;
-    if (!dansEq[cleDe] || !dansEq[cleVers]) { base.statut = 'hors-equipe'; base.detail = 'extrémités non mobilisées'; signales.push(base); return; }
+    // Script personnalisé (NOUVEAU 2026-11-07, à confirmer) : les opérandes
+    // <script_…> sont locaux au document, donc mobilisés par le document lui-
+    // même ; la liste d'équipe ne s'applique qu'aux nœuds du registre.
+    var local = (rDe.def.classe === 'script' || rVers.def.classe === 'script');
+    if (!local && (!dansEq[cleDe] || !dansEq[cleVers])) { base.statut = 'hors-equipe'; base.detail = 'extrémités non mobilisées'; signales.push(base); return; }
     base.statut = 'candidat'; base.detail = c.motif; base.classes = rDe.def.classe + '→' + rVers.def.classe;
     base.deId = (rDe.def.classe === 'BLM') ? rDe.id : null; base.versId = (rVers.def.classe === 'BLM') ? rVers.id : null;
     base.famDe = (rDe.def.classe === 'famille') ? rDe.def.nom : (rDe.def.famille || null);
@@ -261,6 +357,13 @@ function liensPourEquipe(src, refBlocs, refFamilles, vagues) {
   classes.slice(MAX_LIENS).forEach(function (e, k) {
     signales.push({ statut: 'borne-depassee', ordre: e.lien.ordre, de: e.lien.de, vers: e.lien.vers, op: e.lien.op, sens: e.lien.sens, donneur: e.lien.donneur, receveur: e.lien.receveur, detail: 'rang ' + (MAX_LIENS + k + 1) + ' après classement (' + e.lien.detail + ', ' + e.vagueNom + ') : au-delà de MAX_LIENS=' + MAX_LIENS + ', à confirmer' });
   });
-  return { ok: true, executes: retenus, signales: signales, notes: doc.notes };
+  return { ok: true, executes: retenus, signales: signales, notes: doc.notes, styles: doc.styles, blocs: doc.blocs };
 }
-module.exports = { ID_RE: ID_RE, MAX_LIENS: MAX_LIENS, analyser: analyser, resoudreId: resoudreId, compatible: compatible, liensPourEquipe: liensPourEquipe, PATTERN_BLMS: PATTERN_BLMS, LANGUE_FAMILLES: LANGUE_FAMILLES };
+module.exports = {
+  ID_RE: ID_RE, MAX_LIENS: MAX_LIENS, analyser: analyser, resoudreId: resoudreId,
+  compatible: compatible, liensPourEquipe: liensPourEquipe,
+  normaliserSelecteurCss: normaliserSelecteurCss, analyserDeclarationsCss: analyserDeclarationsCss,
+  analyserCss: analyserCss, extraireCss: extraireCss, analyserStyles: analyserStyles,
+  extraireScripts: extraireScripts, operandeDepuisToken: operandeDepuisToken,
+  PATTERN_BLMS: PATTERN_BLMS, LANGUE_FAMILLES: LANGUE_FAMILLES
+};
