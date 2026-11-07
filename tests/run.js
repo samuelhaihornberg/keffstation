@@ -26,14 +26,14 @@ const swJs = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.json'), 'utf8'));
 
 check('syntaxe app.js / install.js / sw.js', () => {
-  const files = ['app.js', 'install.js', 'refresh.js', 'sw.js', 'kifftech/sw.js', 'tricktrocjob/sw.js', 'viartificial/sw.js', 'cos-editor/sw.js', 'linguistic-motors/sw.js', 'videogames/sw.js'];
+  const files = ['app.js', 'install.js', 'refresh.js', 'sw.js', 'kifftech/sw.js', 'tricktrocjob/sw.js', 'viartificial-labs/sw.js', 'cos-editor/sw.js', 'linguistic-motors/sw.js', 'videogames/sw.js'];
   for (const f of files) {
     execSync(`node --check ${f}`, { cwd: ROOT, stdio: 'pipe' });
   }
 });
 
 check('caches vidés (v2) et adaptatifs', () => {
-  const sws = ['sw.js', 'kifftech/sw.js', 'tricktrocjob/sw.js', 'viartificial/sw.js', 'cos-editor/sw.js', 'linguistic-motors/sw.js', 'videogames/sw.js'];
+  const sws = ['sw.js', 'kifftech/sw.js', 'tricktrocjob/sw.js', 'viartificial-labs/sw.js', 'cos-editor/sw.js', 'linguistic-motors/sw.js', 'videogames/sw.js'];
   for (const f of sws) {
     const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
     assert(/-v\d+'/.test(src), `${f}: version cache absente (vieux cache conservé)`);
