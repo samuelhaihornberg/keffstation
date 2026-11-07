@@ -26,63 +26,83 @@ html { height: 100%; font-size: 16px; -webkit-text-size-adjust: 100%; }
 body {
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--kf-void);
-  color: #f4f6ff;
+  background: linear-gradient(90deg, #040406 0%, #040406 50%, #ffffff 50%, #ffffff 100%);
+  color: #111;
   font: 1rem/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Fond noir profond — halos multicolores très diffus en arrière-plan */
+/* Séparation blanc / noir — moitié moitié, fendue par des éclairs horizontaux */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 44%, rgba(30, 107, 255, .08), transparent 66%),
-    radial-gradient(ellipse 45% 45% at 14% 84%, rgba(255, 61, 154, .08), transparent 62%),
-    radial-gradient(ellipse 45% 45% at 86% 14%, rgba(255, 210, 63, .06), transparent 62%),
-    radial-gradient(ellipse 40% 40% at 88% 88%, rgba(39, 209, 127, .05), transparent 62%);
+  background: linear-gradient(90deg, #040406 0%, #040406 50%, #ffffff 50%, #ffffff 100%);
 }
 
-/* ===== Vitrage translucide multicolore (effet vitre) =====
-   Un voile coloré, flouté, qui recouvre la scène. Le reflet qui glisse
-   (shimmer) donne l'aspect miroitant / verre poli. */
-body::after {
-  content: '';
+/* Éclairs horizontaux qui traversent la séparation au centre */
+.lightning-divider {
   position: fixed;
-  inset: 0;
-  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 3;
+  height: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
-  backdrop-filter: blur(26px) saturate(1.2);
-  -webkit-backdrop-filter: blur(26px) saturate(1.2);
-  background:
-    conic-gradient(from 0deg at 50% 50%,
-      #1e6bff, #8a4dff, #ff3d9a, var(--kf-gold), #27d17f, #1e6bff,
-      #8a4dff, #ff3d9a, var(--kf-gold), #27d17f, #1e6bff);
-  opacity: .28;
-  mask-image: radial-gradient(circle at 50% 50%, #000 42%, #fff 100%);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 42%, #fff 100%);
-  animation: spin var(--spin) linear infinite;
+  transform: translateY(-50%);
+  mix-blend-mode: screen;
 }
-body::after::after { /* reflet qui glisse sur le vitrage */
-  content: '';
+.lightning-divider .bolt {
   position: absolute;
-  inset: -25% -25% -25% -25%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,.35) 48%,
-    rgba(255,210,63,.55) 52%,
-    transparent 100%
-  );
-  background-size: 300% 300%;
-  animation: shimmer 6s linear infinite;
-  opacity: .6;
-  pointer-events: none;
+  height: 1px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent 0%, #ffd23f 40%, #ffffff 50%, #ffd23f 60%, transparent 100%);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: bolt-flash 4s infinite ease-out;
+}
+.lightning-divider .bolt:nth-child(1) { width: 60vw; animation-delay: 0s; }
+.lightning-divider .bolt:nth-child(2) { width: 80vw; animation-delay: 1.3s; }
+.lightning-divider .bolt:nth-child(3) { width: 100vw; animation-delay: 2.6s; }
+.lightning-divider .bolt:nth-child(4) { width: 40vw; animation-delay: 3.3s; }
+
+@keyframes bolt-flash {
+  0%, 88%, 100% { opacity: 0; transform: scaleX(0); }
+  90% { opacity: 1; transform: scaleX(1); }
+  92% { opacity: 0; transform: scaleX(0); }
+}
+
+/* Boule sphère vitrine au centre — renforcée, bordure or, reflet miroitant */
+.core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  overflow: hidden;
+  z-index: 4;
+  background:
+    radial-gradient(circle at 32% 26%, #1a1a24 0%, #0d0d14 40%, #040406 80%);
+  border: 2px solid var(--kf-gold);
+  box-shadow:
+    inset 0 0 40px rgba(255,210,63,.35),
+    inset 0 0 90px rgba(138,77,255,.15),
+    0 0 50px rgba(255,210,63,.25),
+    0 0 120px rgba(255,61,154,.12);
+  animation: breathe 10s ease-in-out infinite;
 }
 
 /* ===== Lecteur / scène ===== */
