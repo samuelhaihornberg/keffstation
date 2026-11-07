@@ -219,8 +219,8 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <span class="agent-badge">AGENT IA</span>
 </div>
 <div class="header-right">
-<button class="sub-btn" id="btn-subscribe-header" type="button" aria-label="S'abonner KiffTech Club"></button>
-<button class="cart-btn" id="btn-cart-header" type="button" aria-label="Ma sélection">
+<button class="sub-btn icon-only" id="btn-subscribe-header" type="button" aria-label="S'abonner KiffTech Club" title="S'abonner KiffTech Club"></button>
+<button class="cart-btn" id="btn-cart-header" type="button" aria-label="La Caisse — passer à la caisse">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
 <span id="cart-count">0</span>
 </button>
@@ -264,16 +264,18 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <!-- Actions -->
 <section class="panel">
 <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Actions</div>
-<button class="action-btn" id="btn-fetch" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg><span>Lancer la veille</span></button>
-<button class="action-btn" id="btn-export" type="button" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Exporter JSON</span></button>
-<button class="action-btn" id="btn-clear" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg><span>Vider le cache</span></button>
+<div class="action-row">
+<button class="action-btn icon-only" id="btn-fetch" type="button" aria-label="Lancer la veille" title="Lancer la veille"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg><span class="sr-only">Lancer la veille</span></button>
+<button class="action-btn icon-only" id="btn-export" type="button" disabled aria-label="Exporter JSON" title="Exporter JSON"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="sr-only">Exporter JSON</span></button>
+<button class="action-btn icon-only" id="btn-clear" type="button" aria-label="Vider le cache" title="Vider le cache"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg><span class="sr-only">Vider le cache</span></button>
+</div>
 </section>
 
 <!-- KiffTech Club -->
 <section class="panel">
 <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>KiffTech Club</div>
 <div id="promo-indicator" style="margin-bottom:12px;padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:.8rem"></div>
-<button class="action-btn" id="btn-subscribe" type="button" style="margin-bottom:12px"></button>
+<button class="action-btn icon-only" id="btn-subscribe" type="button" style="margin-bottom:12px" aria-label="S'abonner KiffTech Club" title="S'abonner KiffTech Club"></button>
 <div class="club-details">
 <strong>1€/jour</strong> (≈30€/mois) • Sans engagement<br>
 • -10% à -21% selon ancienneté<br>
@@ -284,7 +286,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 
 <!-- Ma Sélection -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>Ma Sélection <span class="cart-panel-count">0</span></div>
+<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>La Caisse <span class="cart-panel-count">0</span></div>
 <div id="cart-panel" style="max-height:200px;overflow-y:auto"></div>
 </section>
 </aside>
@@ -332,7 +334,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="paypal-config.js"></script>
-<script src="app.v2.js?v=24"></script>
+<script src="app.v2.js?v=25"></script>
 <script src="../refresh.js"></script>
 </body>
 </html>

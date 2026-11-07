@@ -183,7 +183,7 @@ let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort 
 let activeSources = {official:true, social:true, reviews:true, community:true};
 let searchQuery = '', isFetching = false;
 
-let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], get isPromoEligible() { return this.cartItems.length >= 10; } };
+let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], get isPromoEligible() { return this.cartItems.reduce((n,i)=>n+(Number(i.qty)||1),0) >= 10; } };
 
 // ============ UTILITIES ============
 function $(sel, ctx=document){return ctx.querySelector(sel)}
@@ -191,7 +191,7 @@ function $$(sel, ctx=document){return Array.from(ctx.querySelectorAll(sel))}
 function fmtPrice(price, currency='EUR'){return new Intl.NumberFormat('fr-FR',{style:'currency',currency,minimumFractionDigits:0}).format(price)}
 function fmtPriceCrossed(price, currency='EUR'){return `<span class="price-crossed">${fmtPrice(price,currency)}</span>`}
 function toast(msg,type='info'){const t=$('#toast');t.textContent=msg;t.className='toast '+type+' visible';setTimeout(()=>t.classList.remove('visible'),3000)}
-function calcKiffTechPrice(officialPrice, context={}){const {isSubscriber=false,cartItems=[],isPromoEligible=false,tenureDays=0}=context;let discount=10,freeDelivery=false,reason='Prix KiffTech (-10%)';if(isSubscriber){discount=Math.min(10+Math.floor(tenureDays/30),21);freeDelivery=true;reason=`Abonne KiffTech (${discount}% + livraison offerte)`;}else if(isPromoEligible||cartItems.length>=10){discount=20;reason=`Promo 20% (10+ articles)`;}const final=Math.round(officialPrice*(100-discount)/100);return{official:officialPrice,kifftech:final,discount,savings:officialPrice-final,freeDelivery,reason,currency:'EUR'};}
+function calcKiffTechPrice(officialPrice, context={}){const {isSubscriber=false,cartItems=[],isPromoEligible=false,tenureDays=0}=context;let discount=10,freeDelivery=false,reason='Prix KiffTech (-10%)';const articleCount=(cartItems||[]).reduce((n,i)=>n+(Number(i.qty)||1),0);if(isSubscriber){discount=Math.min(10+Math.floor(tenureDays/30),21);freeDelivery=true;reason=`Abonne KiffTech (${discount}% + livraison offerte)`;}else if(isPromoEligible||articleCount>=10){discount=20;reason=`Promo 20% (10+ articles)`;}const final=Math.round(officialPrice*(100-discount)/100);return{official:officialPrice,kifftech:final,discount,savings:officialPrice-final,freeDelivery,reason,currency:'EUR'};}
 function refreshKiffTechPrices(){products.forEach(p=>{if(!p.partner)p.kifftech=calcKiffTechPrice(p.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});});filteredProducts.forEach(p=>{const o=products.find(x=>x.id===p.id);if(o&&!p.partner)p.kifftech=o.kifftech;});}
 
 // ============ CLICKWISE API ============
@@ -294,56 +294,275 @@ async function loadProducts(){
   }
 }
 
-// ============ CART / SUB ============
-function addToCart(id){const p=products.find(x=>x.id===id);if(!p||userContext.cartItems.some(i=>i.id===id))return;userContext.cartItems.push({...p,qty:1});refreshKiffTechPrices();renderProducts();updateCartPanel();toast(`${p.model} ajoute`,`success`);}
-function removeFromCart(id){userContext.cartItems=userContext.cartItems.filter(i=>i.id!==id);refreshKiffTechPrices();renderProducts();updateCartPanel();}
-function updateCartBadge(){const c=userContext.cartItems.length;const badge=$('#cart-count');if(badge){badge.textContent=c;badge.style.display=c?'flex':'none';}const pc=document.querySelector('.cart-panel-count');if(pc)pc.textContent=c;updatePromoUI();}
-function updatePromoUI(){const el=$('#promo-indicator');if(!el)return;if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne • ${calcKiffTechPrice(100,{isSubscriber:true}).discount}% + Livraison</span>`;else if(userContext.cartItems.length>=10)el.innerHTML=`<span class="promo-active">Promo -20% activee</span>`;else el.innerHTML=`<span class="promo-pending">Ajoutez ${10-userContext.cartItems.length} articles pour -20%</span>`;}
+// ============ LA CAISSE (PANIER + CHECKOUT) ============
+const CART_KEY='kifftech.cart.v1';
+const SUB_ICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l4 4 5-7 5 7 4-4-2 12H5L3 7z"/><path d="M5 19h14"/></svg>';
+const TRASH_ICON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+let caisseDraft={country:'France'};
+let caisseLastOrder=null;
+let caisseOrderRef='';
+
+function escAttr(v){return String(v ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function cartCount(){return userContext.cartItems.reduce((n,i)=>n+(Number(i.qty)||1),0);}
+function saveCart(){try{localStorage.setItem(CART_KEY,JSON.stringify(userContext.cartItems.map(i=>({id:i.id,qty:Number(i.qty)||1}))));}catch(e){}}
+function restoreCart(){
+  try{
+    const raw=localStorage.getItem(CART_KEY);if(!raw)return false;
+    const saved=JSON.parse(raw);if(!Array.isArray(saved))return false;
+    userContext.cartItems=saved.map(s=>{const p=products.find(x=>x.id===s.id);if(!p)return null;return{...p,qty:Math.max(1,Math.min(99,Number(s.qty)||1))};}).filter(Boolean);
+    return userContext.cartItems.length>0;
+  }catch(e){return false;}
+}
+function addToCart(id,qty=1){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  const line=userContext.cartItems.find(i=>i.id===id);
+  if(line)line.qty=Math.min(99,(Number(line.qty)||1)+qty);
+  else userContext.cartItems.push({...p,qty:Math.max(1,Math.min(99,qty))});
+  refreshKiffTechPrices();renderProducts();updateCartPanel();updateCartBadge();saveCart();
+  toast(`${p.model} — ${line?'quantité mise à jour':'ajouté à la caisse'}`,'success');
+}
+function removeFromCart(id){
+  userContext.cartItems=userContext.cartItems.filter(i=>i.id!==id);
+  refreshKiffTechPrices();renderProducts();updateCartPanel();updateCartBadge();saveCart();
+}
+function setCartQty(id,delta){
+  const line=userContext.cartItems.find(i=>i.id===id);if(!line)return;
+  const next=(Number(line.qty)||1)+delta;
+  if(next<1){removeFromCart(id);return;}
+  line.qty=Math.min(99,next);
+  refreshKiffTechPrices();renderProducts();updateCartPanel();updateCartBadge();saveCart();
+}
+function clearCart(){
+  caisseOrderRef='';
+  userContext.cartItems=[];
+  refreshKiffTechPrices();renderProducts();updateCartPanel();updateCartBadge();saveCart();
+}
+function cartTotals(){
+  let official=0,kifftech=0;
+  for(const i of userContext.cartItems){
+    const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
+    const q=Number(i.qty)||1;
+    official+=kt.official*q;kifftech+=kt.kifftech*q;
+  }
+  return{official,kifftech,savings:official-kifftech,count:cartCount()};
+}
+function updateCartBadge(){
+  const c=cartCount();
+  const badge=$('#cart-count');if(badge){badge.textContent=c;badge.style.display=c?'flex':'none';}
+  $$('.cart-panel-count').forEach(el=>{el.textContent=c;});
+  updatePromoUI();
+}
+function updatePromoUI(){
+  const el=$('#promo-indicator');if(!el)return;
+  const n=cartCount();
+  if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne • ${calcKiffTechPrice(100,{isSubscriber:true}).discount}% + Livraison offerte</span>`;
+  else if(n>=10)el.innerHTML=`<span class="promo-active">Promo -20% activee</span>`;
+  else el.innerHTML=`<span class="promo-pending">Ajoutez ${10-n} article${10-n>1?'s':''} pour -20%</span>`;
+}
 function updateCartPanel(){
-  const p=$('#cart-panel');
-  if(!p)return;
+  const p=$('#cart-panel');if(!p)return;
   if(!userContext.cartItems.length){
-    p.innerHTML='<p class="cart-empty">Sélection vide</p>';
+    p.innerHTML='<p class="cart-empty">Caisse vide</p>';
+    updateCaisseIfOpen();
     return;
   }
-  let to=0,tk=0;
+  const t=cartTotals();
   const items=userContext.cartItems.map(i=>{
     const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});
-    to+=kt.official;tk+=kt.kifftech;
+    const q=Number(i.qty)||1;
     return `<div class="cart-item">
-      <img class="cart-item-media" src="${previewImage(i)}" alt="${i.brand} ${i.model}" decoding="async">
+      <img class="cart-item-media" src="${previewImage(i)}" alt="${escAttr(i.brand+' '+i.model)}" decoding="async">
       <div class="cart-item-body">
-        <div class="cart-item-name">${i.model}</div>
-        <div class="cart-item-brand">${i.brand}</div>
+        <div class="cart-item-name">${escAttr(i.model)}</div>
+        <div class="cart-item-brand">${escAttr(i.brand)}</div>
+        <div class="cart-qty" role="group" aria-label="Quantité ${escAttr(i.model)}">
+          <button class="cart-qty-btn" type="button" onclick="setCartQty('${i.id}',-1)" aria-label="Diminuer la quantité">−</button>
+          <span class="cart-qty-value">${q}</span>
+          <button class="cart-qty-btn" type="button" onclick="setCartQty('${i.id}',1)" aria-label="Augmenter la quantité">+</button>
+        </div>
       </div>
       <div class="cart-item-prices">
-        <span class="cart-item-official">${fmtPrice(kt.official)}</span>
-        <span class="cart-item-kifftech">${fmtPrice(kt.kifftech)}</span>
+        <span class="cart-item-official">${fmtPrice(kt.official*q)}</span>
+        <span class="cart-item-kifftech">${fmtPrice(kt.kifftech*q)}</span>
+        ${q>1?`<span class="cart-item-unit">${q} × ${fmtPrice(kt.kifftech)}</span>`:''}
       </div>
-      <button class="cart-item-remove" type="button" onclick="removeFromCart('${i.id}')" aria-label="Retirer ${i.model}">×</button>
+      <button class="cart-item-remove" type="button" onclick="removeFromCart('${i.id}')" aria-label="Retirer ${escAttr(i.model)}">×</button>
     </div>`;
   }).join('');
   p.innerHTML=`<div class="cart-list">${items}</div>
     <div class="cart-totals">
       <div class="cart-total">
         <span class="cart-total-label">Total officiel</span>
-        <span class="cart-total-official">${fmtPrice(to)}</span>
+        <span class="cart-total-official">${fmtPrice(t.official)}</span>
       </div>
       <div class="cart-total is-accent">
         <span class="cart-total-label">Prix KiffTech</span>
-        <span class="cart-total-kifftech">${fmtPrice(tk)}</span>
-        <span class="cart-savings">Économie ${fmtPrice(to-tk)}</span>
+        <span class="cart-total-kifftech">${fmtPrice(t.kifftech)}</span>
+        <span class="cart-savings">Économie ${fmtPrice(t.savings)}</span>
       </div>
     </div>
-    <button class="action-btn primary cart-checkout" type="button" onclick="checkout()">
+    <button class="action-btn primary cart-checkout" type="button" onclick="openCaisse()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>
-      Commander
+      Passer à la caisse
     </button>
-    <div id="paypal-button-container" class="paypal-slot"></div>
-    <div id="paypal-status" class="paypal-status"></div>`;
-  renderPayPalButton(tk);
+    <button class="cart-clear" type="button" onclick="clearCart()" aria-label="Vider la caisse" title="Vider la caisse">${TRASH_ICON}<span class="sr-only">Vider la caisse</span></button>`;
+  updateCaisseIfOpen();
 }
-function checkout(){if(paypalClientId()){const b=$('#paypal-button-container');if(b)b.scrollIntoView({behavior:'smooth',block:'center'});toast('Utilisez le bouton PayPal ci-dessous','info');}else{toast('Paiement PayPal non configuré','info');}}
+function ensureCaisse(){
+  let o=$('#caisse-overlay');
+  if(o)return o;
+  o=document.createElement('div');
+  o.id='caisse-overlay';
+  o.className='caisse-overlay';
+  o.setAttribute('role','dialog');
+  o.setAttribute('aria-modal','true');
+  o.setAttribute('aria-labelledby','caisse-title');
+  o.innerHTML=`<div class="caisse" role="document">
+    <header class="caisse-header">
+      <div>
+        <div class="caisse-kicker">KiffTech — Commande sécurisée</div>
+        <h2 class="caisse-title" id="caisse-title">La Caisse</h2>
+      </div>
+      <button class="caisse-close" id="caisse-close" type="button" aria-label="Fermer la caisse">×</button>
+    </header>
+    <div class="caisse-body" id="caisse-body"></div>
+  </div>`;
+  document.body.appendChild(o);
+  o.addEventListener('click',e=>{if(e.target===o)closeCaisse();});
+  const close=o.querySelector('#caisse-close');
+  if(close)close.addEventListener('click',closeCaisse);
+  return o;
+}
+function openCaisse(){
+  const o=ensureCaisse();
+  caisseLastOrder=null;caisseOrderRef='';
+  o.classList.add('visible');
+  document.body.style.overflow='hidden';
+  renderCaisse();
+  const close=o.querySelector('#caisse-close');
+  if(close)close.focus();
+}
+function closeCaisse(){
+  const o=$('#caisse-overlay');
+  if(o)o.classList.remove('visible');
+  document.body.style.overflow='';
+}
+function updateCaisseIfOpen(){
+  const o=$('#caisse-overlay');
+  if(o&&o.classList.contains('visible'))renderCaisse();
+}
+function newOrderRef(){
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  return 'KT-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+}
+function caisseField(key,label,type='text',half=false,placeholder=''){
+  return `<label class="caisse-field${half?' is-half':''}"><span>${label}</span><input class="caisse-input" type="${type}" data-caisse-field="${key}" value="${escAttr(caisseDraft[key]||'')}" placeholder="${escAttr(placeholder)}"></label>`;
+}
+function validateCaisse(){
+  const required=[['name','nom complet'],['email','adresse email'],['address','adresse'],['zip','code postal'],['city','ville']];
+  for(const [key,label] of required){
+    if(!String(caisseDraft[key]||'').trim()){
+      toast('Renseignez votre '+label+' avant de payer','warning');
+      const el=document.querySelector(`[data-caisse-field="${key}"]`);
+      if(el)el.focus();
+      return false;
+    }
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(caisseDraft.email).trim())){
+    toast('Adresse email invalide','warning');
+    const el=document.querySelector('[data-caisse-field="email"]');
+    if(el)el.focus();
+    return false;
+  }
+  return true;
+}
+function renderCaisse(){
+  const body=$('#caisse-body');if(!body)return;
+  if(caisseLastOrder){body.innerHTML=renderCaisseSuccess();body.scrollTop=0;return;}
+  const t=cartTotals();
+  if(!t.count){
+    body.innerHTML=`<div class="caisse-empty">
+      <div class="caisse-empty-mark">0</div>
+      <h3 class="caisse-empty-title">Votre caisse est vide.</h3>
+      <p class="caisse-empty-text">Ajoutez un objet depuis le catalogue pour ouvrir une commande.</p>
+      <button class="action-btn primary" type="button" onclick="closeCaisse()">Retour au catalogue</button>
+    </div>`;
+    return;
+  }
+  const lines=userContext.cartItems.map(i=>{
+    const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});
+    const q=Number(i.qty)||1;
+    return `<div class="caisse-line">
+      <img class="caisse-line-media" src="${previewImage(i)}" alt="${escAttr(i.brand+' '+i.model)}" decoding="async">
+      <div class="caisse-line-body">
+        <div class="caisse-line-name">${escAttr(i.model)}</div>
+        <div class="caisse-line-brand">${escAttr(i.brand)}${i.year?' · '+i.year:''}</div>
+        <div class="caisse-qty">
+          <button class="caisse-qty-btn" type="button" onclick="setCartQty('${i.id}',-1)" aria-label="Diminuer la quantité">−</button>
+          <span class="caisse-qty-value">${q}</span>
+          <button class="caisse-qty-btn" type="button" onclick="setCartQty('${i.id}',1)" aria-label="Augmenter la quantité">+</button>
+          <span class="caisse-line-unit">${fmtPrice(kt.kifftech)} / unité</span>
+        </div>
+      </div>
+      <div class="caisse-line-prices">
+        <span class="caisse-line-official">${fmtPrice(kt.official*q)}</span>
+        <span class="caisse-line-price">${fmtPrice(kt.kifftech*q)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  body.innerHTML=`<section class="caisse-lines">
+    <div class="caisse-section-head"><span>01 — Sélection</span><span>${t.count} article${t.count>1?'s':''}</span></div>
+    <div class="caisse-line-list">${lines}</div>
+    <button class="caisse-clear" type="button" onclick="clearCart()" aria-label="Vider la caisse" title="Vider la caisse">${TRASH_ICON}<span class="sr-only">Vider la caisse</span></button>
+  </section>
+  <section class="caisse-checkout">
+    <div class="caisse-section-head"><span>02 — Coordonnées</span><span>Livraison</span></div>
+    <form class="caisse-form" id="caisse-form" onsubmit="return false">
+      ${caisseField('name','Nom complet','text',false,'Prénom et nom')}
+      ${caisseField('email','Email','email',false,'vous@exemple.fr')}
+      ${caisseField('phone','Téléphone','tel',true,'Facultatif')}
+      ${caisseField('address','Adresse','text',false,'Numéro et rue')}
+      ${caisseField('zip','Code postal','text',true,'75000')}
+      ${caisseField('city','Ville','text',true,'Paris')}
+      ${caisseField('country','Pays','text',false,'France')}
+      <label class="caisse-field"><span>Note de commande (facultatif)</span><textarea class="caisse-input" data-caisse-field="notes" rows="2" placeholder="Instructions de livraison, variante...">${escAttr(caisseDraft.notes||'')}</textarea></label>
+    </form>
+    <div class="caisse-summary">
+      <div class="caisse-summary-row"><span>Total officiel</span><span>${fmtPrice(t.official)}</span></div>
+      <div class="caisse-summary-row"><span>Remise KiffTech</span><span>− ${fmtPrice(t.savings)}</span></div>
+      <div class="caisse-summary-row"><span>Livraison</span><span>Offerte</span></div>
+      <div class="caisse-summary-row is-total"><span>Total à payer</span><span class="caisse-summary-total">${fmtPrice(t.kifftech)}</span></div>
+      <div class="caisse-savings">Vous économisez ${fmtPrice(t.savings)}</div>
+    </div>
+    <div class="caisse-pay">
+      <div class="caisse-pay-label">03 — Paiement</div>
+      <div id="caisse-paypal-container" class="caisse-paypal-slot"></div>
+      <div id="caisse-paypal-status" class="caisse-paypal-status"></div>
+      <p class="caisse-secure">Paiement traité par PayPal. Aucune donnée bancaire ne transite par KiffTech.</p>
+    </div>
+  </section>`;
+  body.querySelectorAll('[data-caisse-field]').forEach(el=>{
+    el.addEventListener('input',()=>{caisseDraft[el.dataset.caisseField]=el.value;});
+  });
+  renderPayPalButton(t.kifftech,'#caisse-paypal-container','#caisse-paypal-status');
+}
+function renderCaisseSuccess(){
+  const o=caisseLastOrder;
+  return `<div class="caisse-success">
+    <div class="caisse-success-mark">✓</div>
+    <div class="caisse-kicker">Commande confirmée</div>
+    <h3 class="caisse-success-title">Merci${o.name?', '+escAttr(o.name):''}.</h3>
+    <p class="caisse-success-text">Votre commande <strong>${o.ref}</strong> est enregistrée. Un reçu PayPal a été envoyé à ${o.email?escAttr(o.email):'votre adresse email'}.</p>
+    <div class="caisse-success-grid">
+      <div><span>Référence</span><strong>${o.ref}</strong></div>
+      <div><span>Articles</span><strong>${o.count}</strong></div>
+      <div><span>Total payé</span><strong>${fmtPrice(o.total)}</strong></div>
+      <div><span>Statut</span><strong>Payée</strong></div>
+    </div>
+    <button class="action-btn primary caisse-success-btn" type="button" onclick="closeCaisse()">Continuer</button>
+  </div>`;
+}
+function checkout(){openCaisse();}
 
 // ============ PAYPAL ============
 // Le Client ID PayPal est PUBLIC et injecté au build (paypal-config.js).
@@ -365,12 +584,13 @@ function loadPayPalSdk(){
   });
   return paypalSdkPromise;
 }
-function paypalStatus(msg,color){const el=document.getElementById('paypal-status');if(el){el.textContent=msg||'';el.style.color=color||'#8a92b8';}}
-function renderPayPalButton(total){
-  const box=document.getElementById('paypal-button-container');
+function paypalStatus(msg,color,sel='#paypal-status'){const el=$(sel);if(el){el.textContent=msg||'';el.style.color=color||'var(--kf-muted)';}}
+function renderPayPalButton(total,slotSel='#paypal-button-container',statusSel='#paypal-status'){
+  const box=$(slotSel);
   if(!box)return;
+  const setStatus=(msg,color)=>paypalStatus(msg,color,statusSel);
   if(!paypalClientId()){
-    paypalStatus('PayPal : Client ID public non configuré. Le bouton « Commander » reste disponible.');
+    setStatus('PayPal : Client ID public non configuré. Réessayez plus tard.');
     return;
   }
   box.innerHTML='<div class="paypal-loading">Chargement de PayPal…</div>';
@@ -378,32 +598,46 @@ function renderPayPalButton(total){
     if(!document.body.contains(box))return;
     box.innerHTML='';
     paypal.Buttons({
-      style:{shape:'rect',color:'gold',layout:'vertical',label:'paypal',height:42},
-      createOrder:(data,actions)=>actions.order.create({purchase_units:[{description:'KiffTech — '+userContext.cartItems.length+' article(s)',amount:{value:Number(total).toFixed(2),currency_code:'EUR'}}]}),
+      style:{shape:'rect',color:'gold',layout:'vertical',label:'paypal',height:44},
+      onClick:(data,actions)=>{if(!validateCaisse())return actions.reject();},
+      createOrder:(data,actions)=>{
+        caisseOrderRef=caisseOrderRef||newOrderRef();
+        return actions.order.create({purchase_units:[{description:'KiffTech — '+cartCount()+' article(s) — '+caisseOrderRef,amount:{value:Number(total).toFixed(2),currency_code:'EUR'}}]});
+      },
       onApprove:(data,actions)=>actions.order.capture().then(details=>{
-        const name=details&&details.payer&&details.payer.name?details.payer.name.given_name:'';
-        toast('Paiement PayPal confirmé'+(name?' — merci '+name:'')+' !','success');
-        userContext.cartItems=[];
-        refreshKiffTechPrices();
-        renderProducts();
-        updateCartPanel();
+        const payer=details&&details.payer&&details.payer.name?details.payer.name.given_name:'';
+        const t=cartTotals();
+        caisseLastOrder={ref:caisseOrderRef||newOrderRef(),total:t.kifftech,count:t.count,name:payer||caisseDraft.name||'',email:String(caisseDraft.email||'').trim(),date:new Date()};
+        clearCart();
+        toast('Paiement confirmé — commande '+caisseLastOrder.ref,'success');
       }),
       onCancel:()=>toast('Paiement PayPal annulé','info'),
       onError:err=>{console.error('[PayPal]',err);toast('Erreur PayPal — réessayez','error');}
     }).render(box).catch(err=>{
       console.error('[PayPal] render',err);
       box.innerHTML='';
-      paypalStatus('PayPal indisponible pour le moment. Utilisez « Commander ».','#ff9b3d');
+      setStatus('PayPal indisponible pour le moment. Réessayez plus tard.','#ff9b3d');
     });
   }).catch(err=>{
     console.warn('[PayPal]',err.message);
     box.innerHTML='';
-    paypalStatus('PayPal indisponible hors ligne. Utilisez « Commander ».','#ff9b3d');
+    setStatus('PayPal indisponible hors ligne. Réessayez plus tard.','#ff9b3d');
   });
 }
 function toggleSub(){userContext.isSubscriber=!userContext.isSubscriber;userContext.tenureDays=userContext.isSubscriber?30:0;refreshKiffTechPrices();renderProducts();updateCartPanel();updateSubUI();toast(userContext.isSubscriber?'Abonnement active (1eur/jour)':'Desactive',userContext.isSubscriber?'success':'info');}
-function updateSubUI(){const html=userContext.isSubscriber?'Gerer':'S\'abonner 1eur/jour';[$('#btn-subscribe'),$('#btn-subscribe-header')].forEach(el=>{if(el){el.innerHTML=html;el.className='action-btn '+(userContext.isSubscriber?'primary':'');}});updatePromoUI();}
-function updatePromoUI(){const el=$('#promo-indicator');if(!el)return;if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne ${calcKiffTechPrice(100,{isSubscriber:true}).discount}%</span>`;else if(userContext.cartItems.length>=10)el.innerHTML=`<span class="promo-active">Promo -20%</span>`;else el.innerHTML=`<span class="promo-pending">${10-userContext.cartItems.length} pour -20%</span>`;}
+function updateSubUI(){
+  const label=userContext.isSubscriber?'Gérer l’abonnement KiffTech Club':"S'abonner KiffTech Club (1 €/jour)";
+  const html=SUB_ICON+'<span class="sr-only">'+label+'</span>';
+  [$('#btn-subscribe'),$('#btn-subscribe-header')].forEach(el=>{
+    if(!el)return;
+    el.innerHTML=html;
+    el.setAttribute('aria-label',label);
+    el.title=label;
+    const base=el.id==='btn-subscribe-header'?'sub-btn':'action-btn';
+    el.className=base+' icon-only'+(userContext.isSubscriber?' primary':'');
+  });
+  updatePromoUI();
+}
 
 // ============ AGENT IA : référence exacte marque + modèle ============
 function normRef(s){return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim().replace(/\s+/g, ' ');}
@@ -493,11 +727,6 @@ function showMedia(idx){$$('#modal-media img, #modal-media video').forEach((e,i)
 function closeModal(){$('#modal-overlay').classList.remove('visible');document.body.style.overflow='';}
 function showMedia(idx){$$('#modal-media img, #modal-media video').forEach((e,i)=>{e.style.display=i===idx?'block':'none';if(e.tagName==='VIDEO'&&i!==idx&&e.pause)e.pause();});$$('#media-nav button').forEach((d,i)=>{d.classList.toggle('active',i===idx)});}
 
-// ============ SUB ============
-function toggleSub(){userContext.isSubscriber=!userContext.isSubscriber;userContext.tenureDays=userContext.isSubscriber?30:0;refreshKiffTechPrices();renderProducts();updateCartPanel();updateSubUI();toast(userContext.isSubscriber?'Abonnement active (1eur/jour)':'Desactive',userContext.isSubscriber?'success':'info');}
-function updateSubUI(){const html=userContext.isSubscriber?'Gerer':`S'abonner 1eur/jour`;[$('#btn-subscribe'),$('#btn-subscribe-header')].forEach(el=>{if(el){el.innerHTML=html;el.className='action-btn '+(userContext.isSubscriber?'primary':'');}});updatePromoUI();}
-function updatePromoUI(){const el=$('#promo-indicator');if(!el)return;if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne ${calcKiffTechPrice(100,{isSubscriber:true}).discount}%</span>`;else if(userContext.cartItems.length>=10)el.innerHTML=`<span class="promo-active">Promo -20%</span>`;else el.innerHTML=`<span class="promo-pending">${10-userContext.cartItems.length} pour -20%</span>`;}
-
 // ============ EVENTS ============
 function initEvents(){
   const on = (sel, ev, fn) => { const el = $(sel); if (el) el.addEventListener(ev, fn); };
@@ -514,10 +743,10 @@ function initEvents(){
   const toggleSubHandler = () => { userContext.isSubscriber = !userContext.isSubscriber; userContext.tenureDays = userContext.isSubscriber ? 30 : 0; refreshKiffTechPrices(); renderProducts(); updateCartPanel(); updateSubUI(); toast(userContext.isSubscriber ? 'Abonnement active (1eur/jour)' : 'Desactive', userContext.isSubscriber ? 'success' : 'info'); };
   on('#btn-subscribe', 'click', toggleSubHandler);
   on('#btn-subscribe-header', 'click', toggleSubHandler);
-  on('#btn-cart-header', 'click', () => { const p = document.getElementById('cart-panel'); if (p) p.scrollIntoView({ behavior: 'smooth' }); });
+  on('#btn-cart-header', 'click', () => openCaisse());
   on('#modal-close', 'click', closeModal);
   on('#modal-overlay', 'click', e => { if (e.target === e.currentTarget) closeModal(); });
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const c=$('#caisse-overlay');if(c&&c.classList.contains('visible'))closeCaisse();else closeModal();}});
 }
 
 // ============ INIT ============
@@ -539,8 +768,9 @@ function init(){
     console.log('[KiffTech] products assigned, length:', products.length);
     products.forEach(p => { if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official); });
     filteredProducts = [...products];
+    const restoredCart = restoreCart();
     console.log('[KiffTech] filteredProducts assigned, length:', filteredProducts.length);
-    
+
     renderFilters();
     console.log('[KiffTech] renderFilters done');
     refreshKiffTechPrices();
@@ -555,6 +785,9 @@ function init(){
     initParticles();
     console.log('[KiffTech] initParticles done');
     updateSubUI();
+    updateCartPanel();
+    updateCartBadge();
+    if (restoredCart) toast('Caisse restaurée','info');
     console.log('[KiffTech] updateSubUI done');
     console.log('KiffTech initialized, products:', products.length);
     console.log('[KiffTech] init() completed successfully');
