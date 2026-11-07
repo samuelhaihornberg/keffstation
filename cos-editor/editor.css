@@ -545,3 +545,81 @@ code { font-family: var(--mono); }
   margin: 2px;
   border: 1px solid rgba(255, 210, 63, .2);
 }
+/* ---------------------------------------------------------------- CODE IA STYLES */
+.code-ia-badge {
+  display: inline-block;
+  font: 600 .5rem/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(128, 0, 128, .15);
+  color: #a9c4ff;
+  border: 1px solid rgba(128, 0, 128, .3);
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+.code-ia-prompt {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  background: #0a0d20;
+  border: 1px solid rgba(128, 0, 128, .3);
+  border-radius: 8px;
+  color: #cdd6ff;
+  font: 12px/1.5 var(--mono);
+  resize: vertical;
+  margin-bottom: 12px;
+}
+.code-ia-prompt:focus {
+  outline: 2px solid #a9c4ff;
+  border-color: #a9c4ff;
+}
+.code-ia-generation {
+  border: 2px solid rgba(128, 0, 128, .4);
+  border-radius: 8px;
+  padding: 12px;
+  background: #0d1128;
+  margin-top: 12px;
+  min-height: 80px;
+  overflow: auto;
+}
+.code-ia-generation.preview {
+  border-color: #7ce3b0;
+  background: #1a2b3c;
+}
+.code-ia-generation .code {
+  font: 11px/1.5 var(--mono);
+  color: #cdd6ff;
+  white-space: pre;
+  padding: 8px;
+  background: #0a0d20;
+  border-radius: 6px;
+  overflow: auto;
+}
+.code-ia-status {
+  font: 600 .7rem/1 var(--mono);
+  padding: 6px 10px;
+  border-radius: 20px;
+  margin: 8px 0;
+}
+.code-ia-status.ready { background: rgba(39, 209, 127, .1); color: #8cf0bd; border: 1px solid rgba(39, 209, 127, .3); }
+.code-ia-status.loading { background: rgba(255, 210, 63, .1); color: #ffe28a; border: 1px solid rgba(255, 210, 63, .3); }
+.code-ia-status.error { background: rgba(255, 93, 122, .1); color: #ff9fb1; border: 1px solid rgba(255, 93, 122, .3); }
+.code-ia-hint {
+  font: .68rem/1.4 var(--mono);
+  color: #8f98c9;
+  background: rgba(0, 102, 255, .05);
+  padding: 8px;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+.COS-code-hint {
+  font: .65rem/1.5 var(--mono);
+  color: #ffe28a;
+  background: rgba(255, 210, 63, .08);
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin: 4px 0;
+  border: 1px solid rgba(255, 210, 63, .2);
+}

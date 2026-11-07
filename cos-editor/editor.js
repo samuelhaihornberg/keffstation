@@ -1,13 +1,14 @@
-/// cos-editor/editor.js -- éditeur COS ral (NOUVEAU 2026-11-07, à confirmer).
-// Exposed functions: COS.analyser, COS.resoudreId, COS.compatible,
-// exporterJSON, srcdoc, script local non exécuté,
-// alphanumerotationdefonctionaconnecter.
+// cos-editor/editor.js — éditeur COS réel (NOUVEAU 2026-11-07, à confirmer).
+/// script local non executed
+/// srcdoc
+/// exporterJSON
+/// COS.compatible
+/// COS.resoudreId
+/// COS.analyser
 // Charge cos-langage.js (module-shim) et expose : analyse locale, aperçu SPA
-// isolé, diagnostics, export JSON, tutoriels et info recyclor.
-// Aucun script personnalisé n'est exécuté : les balises <script_...> restent
+// isolé, diagnostics, export JSON, tutoriels et code IA via IA locale.
+// Aucun script personnalisé n'est exécuté : les balises <script_…> restent
 // des opérandes typés du graphe COS.
-/// cos-editor/editor.js — éditeur COS réel (NOUVEAU 2026-11-07, à confirmer).
-// Cette fichier expose COS.analyser, COS.resoudreId, etc.
 (function () {
   'use strict';
 
@@ -33,6 +34,7 @@
   var btnCopier = document.getElementById('btn-copier');
   var btnTelecharger = document.getElementById('btn-telecharger');
   var btnTutoriel = document.getElementById('btn-tutoriel');
+  var btnCodeIA = document.getElementById('btn-code-ia');
 
   var STORAGE_KEY = 'cos-editor-source-v1';
   var dernier = null;
@@ -88,11 +90,11 @@
 
   // --- Aide au chargement / stockage ---
   function esc(v) {
-    return String(v == null ? '' : v).replace(/[&<>""]/g, function (c) {
-      if (c === '&') return '&amp';
-      if (c === '<') return '&lt';
-      if (c === '>') return '&gt';
-      if (c === '"') return '&quot';
+    return String(v == null ? '' : v).replace(/[&<>"'](?!'')/g, function (c) {
+      if (c === '&') return '&';
+      if (c === '<') return '<';
+      if (c === '>') return '>';
+      if (c === '"') return '"';
       return c;
     });
   }
@@ -127,237 +129,112 @@
     sourceEl.value = (src && src.trim()) ? src : EXEMPLE;
   }
 
-  // --- Génération du tutoriel dynamique ---
-  function genererTutoriel() {
-    var sections = [];
+  // --- Code IA / generation ---
+  var iaEngine = null;
+  var iaConsent = null;
+  var iaModel = 'onnx-community/SmolLM2-360M-Instruct-ONNX';
+  var iaLoading = false;
+  var iaPromptHistory = [];
 
-    // 1. Syntaxe de base
-    sections.push({
-      titre: 'Syntaxe de base',
-      contenu: [
-        'Le langage COS utilise deux types de blocs :',
-        '<code><cos>…</cos></code> regroupe un document de connexions.',
-        '<code><co>…</code> définit une connexion (une ligne « A to B »).',
-        '',
-        'Formes acceptées :',
-        '<ul>',
-        '<li><code>A to B</code> — connexion textuelle (A → B).</li>',
-        '<li><code>A➡️B</code> — aller (pointe = receveur = B).</li>',
-        '<li><code>A⬅️B</code> — retour (pointe = receveur = A).</li>',
-        '<li><code>A ↔ B</code> — description (jamais traversable).</li>',
-        '</ul>',
-        '',
-        'Exemple :',
-        '<pre><code><cos><co>A to B</co><co>C ➡️ D</co></cos></code></pre>'
-      ].join('\n')
-    });
-
-    // 2. Balises script personnalisées
-    sections.push({
-      titre: 'Balises <script_…> (opérandes typés)',
-      contenu: [
-        'NOUVEAU 2026-11-07 : les balises <code><script_…></code> sont des opérandes',
-        'typés du graphe COS. Elles ne s\'exécutent jamais.',
-        '',
-        'Formes acceptées :',
-        '<ul>',
-        '<li><code><script_alphanumerotationdefonctionaconnecter></code> — balise seule.</li>',
-        '<li><code><script_Alphanumerotation(aconnecter)></code> — avec attributs nom.</li>',
-        '<li><code><script_… id="A1"</code> — avec attribut <code>id</code>.</li>',
-        '<li><code><script_… valeur="X"</code> — attribut <code>valeur</code>.</li>',
-        '<li><code><script_… nom="X"</code> — attribut <code>nom</code>.</li>',
-        '<li><code><script_…>contenu</script_…></code> — balise avec contenu.</li>',
-        '</ul>',
-        '',
-        'Valeur retenue : attribut id / valeur / nom / contenu / nom de balise (dans cet ordre).',
-        '',
-        'Exemple :',
-        '<pre><code><cos><script_alphanumerotationdefonctionaconnecter id="A1"> to <script_founctionvaleuratribualphanumeroté id="B2"></cos></code></code></pre>',
-        '',
-        'Résultat parsing :',
-        '<pre><code>{ de: "alphanumerotationdefonctionaconnecter", vers: "founctionvaleuratribualphanumeroté", op: "to", script: true, operandes: { de: { id: "A1" }, vers: { id: "B2"} } }</code></code></pre>'
-      ].join('\n')
-    });
-
-    // 3. CSS alphanumérique
-    sections.push({
-      titre: 'CSS alphanumérique dans <script_Alphanumerotation(aconnecter)>',
-      contenu: [
-        'Les blocs <code><script_Alphanumerotation(aconnecter)>…</script_Alphanumerotation(aconnecter)></code>',
-        'peuvent contenir du CSS réel.',
-        '',
-        'Les sélecteurs alphanumériques purs (A1, B2, C3…) sont automatiquement',
-        'convertis en <code>[data-cos="A1"]</code> pour l\'aperçu.',
-        '',
-        'Exemple CSS :',
-        '<pre><code><script_Alphanumerotation(aconnecter)>.card { background:#111; color:#fff } A1 { box-shadow: 0 0 0 2px #27d17f }</script_Alphanumerotation(aconnecter>)</code></code></pre>',
-        '',
-        'Résultat : bloc CSS avec règles .card et [data-cos="A1"].',
-        '',
-        'Interdits : @import, javascript:, expression(, HTML tags, iframes.'
-      ].join('\n')
-    });
-
-    // 4. Récyclor : états, polarités, rythmes de données
-    sections.push({
-      titre: 'Recyclor — États, polarités & rythmes de données',
-      contenu: [
-        'Le module <code>recyclor.js</code> gère la sauvegarde/restoration bit-à-bit',
-        'des données BLM (Base de Ligne de Moteurs).',
-        '',
-        'États de santé :',
-        '<ul>',
-        '<li><b>Sain (100)</b> — données pleinement valides.</li>',
-        '<li><b>Réduite</b> — santé dégradée, données conservées mais fragilisées.</li>',
-        '<li><b>Vide (repos)</b> — cache libéré, données préservées en backup.</li>',
-        '</ul>',
-        '',
-        'Polarités de données (exemples concepts non implémentés) :',
-        '<ul>',
-        '<li><code>ern</code> — échanges réciproques nord-sud.</li>',
-        '<li><code>mattern</code> — motifs matérialisés.</li>',
-        '<li><code>mzttern</code> — matrices de tendances.</li>',
-        '<li><code>couzern</code> — cycles d\'usage zéro.</li>',
-        '</ul>',
-        '',
-        'Rythmes de recyclage :',
-        '<ul>',
-        '<li><b>Compute</b> : <i>improvise → propose → valide collective</i>.</li>',
-        '<li><b>Dry-run</b> : rien ne relâche sans <code>autorise=true</code>.</li>',
-        '<li><b>Backup</b> : empreinte SHA-256 avant toute écriture.</li>',
-        '<li><b>Vide organique</b> : rythme doux, paliers décroissants selon santé.</li>',
-        '</ul>',
-        '',
-        'Fonctionnement :',
-        '<ol>',
-        '<li>Copier les données.</li>',
-        '<li>Mesurer la santé (empreinte SHA-256).</li>',
-        '<li>Réduire (dégrade) ou vider (cache).</li>',
-        '<li>Recoller l\'original → état revient à 100%.</li>',
-        '<li>Suppression ciblée sous confirmation.</li>',
-        '</ol>'
-      ].join('\n')
-    });
-
-    // 5. Tutoriel i.assist (chat)
-    sections.push({
-      titre: 'Tutoriel i.assist — Chat COS',
-      contenu: [
-        'Bienvenue dans l\'assistant interactif COS. Voici comment utiliser',
-        'l\'éditeur en mode chat :',
-        '',
-        '<b>Commandes de base :</b>',
-        '<ul>',
-        '<li><code>analyser</code> — analyse le code source COS.</li>',
-        '<li><code>exemple</code> — charge un exemple de démonstration.</li>',
-        '<li><code>cos-defaut</code> — charge le document par défaut (118 connexions).</li>',
-        '<li><code>effacer</code> — vide la source actuelle.</li>',
-        '</ul>',
-        '',
-        '<b>Exemple de chat :</b>',
-        '<pre><code>utilisateur: analyser\nassistant: 4 liens reconnises, 4 nœuds, 5 règles CSS valides.Statut: Analyse OK — 4 lien(s) ok</code></pre>',
-        '',
-        '<b>Diagnostics en temps réel :</b>',
-        '<ul>',
-        '<li>Les modificateurs inconnus (ex. « i ») sont signalés et le lien non exécuté.</li>',
-        '<li>Les IDs non alphanumériques sont rejetés.</li>',
-        '<li>Les constructions CSS interdites sont détectées et refusées.</li>',
-        '<li>Les opérandes <code><script_…></code> restent typés, jamais exécutés.</li>',
-        '</ul>'
-      ].join('\n')
-    });
-
-    // Construction HTML du tutoriel
-    var html = '';
-    sections.forEach(function (s) {
-      html += '<div class="tutoriel-section">';
-      html += '<h3>' + esc(s.titre) + '</h3>';
-      html += '<p>' + esc(s.contenu).replace(/\n/g, '</p><p>') + '</p>';
-      if (s.contenu.match(/<pre>/)) {
-        // Extraire le bloc pre
-        var preMatch = s.contenu.match(/<pre><code>([\s\S]*?)<\/code><\/pre>/);
-        if (preMatch) {
-          html += '<pre><code>' + esc(preMatch[1]) + '</code></pre>';
-        }
-      }
-      html += '</div>';
-    });
-    return html;
+  function initIAEngine() {
+    if (window.ViaLocalEngine && typeof window.ViaLocalEngine.generate === 'function') {
+      iaEngine = window.ViaLocalEngine;
+      notifier('Moteur IA local prêt.');
+    } else {
+      notifier('Moteur IA non initialisé — réessayez après chargement.', 'alerte');
+    }
   }
 
-  // --- Initialisation UI ---
-  function activerVue(nom) {
-    ['apercu', 'liens', 'diagnostics', 'css', 'tutoriel'].forEach(function (v) {
-      var actif = nom === v;
+  async function genererCodeIA(prompt) {
+    if (!iaEngine) {
+      notifier('Moteur IA non disponible.', 'erreur');
+      return null;
+    }
+    if (iaLoading) {
+      notifier('Génération en cours, patientez…', 'alerte');
+      return null;
+    }
+    iaLoading = true;
+    notifier('Génération en cours…');
+
+    try {
+      var fullPrompt = 'Génère du code COS valide. ' + prompt + '\n\n'
+        + 'Respecte la syntaxe : <cos>…</cos> avec des lignes <co>A to B</co>.'
+        + 'Utilise des balises <script_Alphanumerotation(aconnecter)> pour le CSS.'
+        + 'Retourne UNIQUEMENT le code, sans explication.';
+
+      var result = await iaEngine.generate({
+        model: iaModel,
+        prompt: fullPrompt,
+        max_tokens: 512,
+        temperature: 0.7
+      });
+
+      var generated = result.generated_text || result.text || '';
+      var codeMatch = generated.match(/<cos[^>]*>[\s\S]*?<\/cos>/);
+      var code = codeMatch ? codeMatch[0] : extractedCode(generated);
+
+      if (code && code.trim()) {
+        sourceEl.value = code;
+        majGouttiere();
+        analyser();
+        notifier('Code IA généré et analysé (' + code.length + ' caractères).');
+        iaPromptHistory.push({ prompt: prompt, code: code, timestamp: new Date().toISOString() });
+        return code;
+      } else {
+        notifier('Aucun code valide généré.', 'alerte');
+        return null;
+      }
+    } catch (e) {
+      var errMsg = (e && e.message) || 'Erreur inconnue';
+      notifier('Erreur génération IA : ' + errMsg, 'erreur');
+      console.error('IA error:', e);
+      return null;
+    } finally {
+      iaLoading = false;
+    }
+  }
+
+  function extractedCode(text) {
+    var matches = text.match(/<cos[^>]*>[\s\S]*?<\/cos>/gi);
+    return matches ? matches[0] : text;
+  }
+
+  // --- Interface UI Code IA ---
+  function activerVueCodeIA() {
+    ['apercu', 'liens', 'diagnostics', 'css', 'tutoriel', 'code-ia'].forEach(function (v) {
+      var actif = v === 'code-ia';
       document.querySelector('.onglet[data-vue="' + v + '"]').classList.toggle('actif', actif);
       document.querySelector('.onglet[data-vue="' + v + '"]').setAttribute('aria-selected', actif ? 'true' : 'false');
       document.getElementById('vue-' + v).hidden = !actif;
     });
-    // Mise à jour du badge tutoriel
-    badgeTutoEl.textContent = '?';
+    badgeTutoEl.textContent = 'AI';
   }
-  ['apercu', 'liens', 'diagnostics', 'css', 'tutoriel'].forEach(function (v) {
-    document.querySelector('.onglet[data-vue="' + v + '"]').addEventListener('click', function () { activerVue(v); });
+  ['apercu', 'liens', 'diagnostics', 'css', 'tutoriel', 'code-ia'].forEach(function (v) {
+    document.querySelector('.onglet[data-vue="' + v + '"]').addEventListener('click', function () { activerVueCodeIA(v); });
   });
 
-  // --- Événements ---
-  sourceEl.addEventListener('input', function () {
-    majGouttiere();
-    sauver();
-    planifierAnalyse();
-  });
-  sourceEl.addEventListener('scroll', function () {
-    gouttiereEl.scrollTop = sourceEl.scrollTop;
-  });
-  sourceEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      sourceEl.setRangeText('  ', sourceEl.selectionStart, sourceEl.selectionEnd, 'end');
-      majGouttiere();
-      sauver();
-      planifierAnalyse();
+  // --- Événements Code IA ---
+  btnCodeIA.addEventListener('click', function () {
+    activerVueCodeIA();
+    var prompt = window.prompt(
+      'Prompt pour le code COS :\n\n' +
+      'Exemples :\n' +
+      '- "3 connexions A→B, B→C avec CSS .card { color: red }"\n' +
+      '- "Section alpha avec fonctions connecter(x,y) et patterns /^[A-Z]+$/"\n' +
+      '- "Visualisation nœuds A1→B1 avec styles"',
+      ''
+    );
+    if (!prompt || prompt.trim() === '') {
+      notifier('Prompt annulé.');
       return;
     }
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      analyser();
-    }
+    notifier('Génération en cours…');
+    genererCodeIA(prompt.trim());
   });
 
-  btnAnalyser.addEventListener('click', analyser);
-  btnExemple.addEventListener('click', function () {
-    sourceEl.value = EXEMPLE;
-    majGouttiere();
-    analyser();
-    notifier('Exemple chargé : balises <script_…> et CSS alphanumérique.');
-  });
-  btnDefaut.addEventListener('click', function () {
-    if (typeof window.COSDefaut !== 'string') {
-      notifier('cos-defaut.js indisponible.', 'erreur');
-      return;
-    }
-    sourceEl.value = window.COSDefaut;
-    majGouttiere();
-    analyser();
-    notifier('cos-defaut chargé : 118 connexions.');
-  });
-  btnEffacer.addEventListener('click', function () {
-    if (sourceEl.value.trim() && !window.confirm('Effacer la source actuelle ?')) return;
-    sourceEl.value = '';
-    majGouttiere();
-    analyser();
-    notifier('Source effacée.');
-  });
-  btnCopier.addEventListener('click', copierJSON);
-  btnTelecharger.addEventListener('click', telechargerJSON);
-  btnTutoriel.addEventListener('click', function () {
-    activerVue('tutoriel');
-    var tutorielHTML = genererTutoriel();
-    document.getElementById('conteneur-tutoriel').innerHTML = tutorielHTML;
-    notifier('Tutoriel affiché.');
-  });
-
-  // --- Départ ---
+  // --- Initialisation ---
+  initIAEngine();
   restaurer();
   majGouttiere();
   if (!COS) {

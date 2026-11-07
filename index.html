@@ -115,42 +115,26 @@ if ('serviceWorker' in navigator) {
   var width = window.innerWidth;
   var colCount = Math.ceil(width / 18);
   var codes = [
-    { text: '<parallel-use>', klass: 'vert' },
-    { text: '<asynchronise>', klass: 'bleu' },
-    { text: '<async_await>', klass: 'blanc' },
-    { text: '<promise-all>', klass: 'rouge' },
-    { text: '<settimeout>', klass: 'vert' },
-    { text: '<event-loop>', klass: 'bleu' },
-    { text: '<microtask>', klass: 'vert' },
-    { text: '<callback>', klass: 'bleu' },
-    { text: '<co>', klass: 'blanc' },
-    { text: '<recyclor_data>', klass: 'rouge' },
-    { text: '<01>', klass: 'blanc' },
-    { text: '<kt->', klass: 'rouge' },
-    { text: '<fetch>', klass: 'vert' },
-    { text: '<json>', klass: 'bleu' },
-    { text: '<dom>', klass: 'blanc' },
-    { text: '<api>', klass: 'rouge' },
-    { text: '<ws>', klass: 'vert' },
-    { text: '<socket>', klass: 'bleu' },
-    { text: '<port>', klass: 'blanc' },
-    { text: '<host>', klass: 'rouge' },
-    { text: '<dns>', klass: 'vert' },
-    { text: '<http>', klass: 'bleu' },
-    { text: '<ssl>', klass: 'blanc' },
-    { text: '<jwt>', klass: 'rouge' },
-    { text: '<css>', klass: 'vert' },
-    { text: '<html>', klass: 'bleu' },
-    { text: '<js>', klass: 'blanc' },
-    { text: '<git>', klass: 'rouge' },
-    { text: '<ci>', klass: 'vert' },
-    { text: '<cd>', klass: 'bleu' },
-    { text: '<aws>', klass: 'blanc' },
-    { text: '<linux>', klass: 'rouge' },
-    { text: '<web>', klass: 'vert' },
-    { text: '<app>', klass: 'bleu' },
-    { text: '<node>', klass: 'blanc' },
-    { text: '<npm>', klass: 'rouge' }
+    { text: '<A1➡️B2>', klass: 'vert' },
+    { text: '<sandwich>', klass: 'bleu' },
+    { text: '<adresse>', klass: 'blanc' },
+    { text: '<cos>', klass: 'rouge' },
+    { text: '<BLM>', klass: 'vert' },
+    { text: '<BLSM>', klass: 'bleu' },
+    { text: '<motor.s>', klass: 'blanc' },
+    { text: '<CSM>', klass: 'rouge' },
+    { text: '<connexion>', klass: 'vert' },
+    { text: '<registre>', klass: 'bleu' },
+    { text: '<nœud>', klass: 'blanc' },
+    { text: '<graphe>', klass: 'rouge' },
+    { text: '<cos-editor>', klass: 'vert' },
+    { text: '<ViA>', klass: 'bleu' },
+    { text: '<Golem>', klass: 'blanc' },
+    { text: '<Geeko>', klass: 'rouge' },
+    { text: '<Guideoplan>', klass: 'vert' },
+    { text: '<SuperBots>', klass: 'bleu' },
+    { text: '<KT->', klass: 'blanc' },
+    { text: '<recyclor>', klass: 'rouge' }
   ];
   function randomCode() {
     var c = codes[Math.floor(Math.random() * codes.length)];
@@ -162,7 +146,7 @@ if ('serviceWorker' in navigator) {
     col.style.left = left + 'px';
     col.style.animationDelay = delay + 's';
     col.style.animationDuration = duration + 's';
-    var lines = Math.floor(3 + Math.random() * 7);
+    var lines = Math.floor(1 + Math.random() * 3);
     var html = '';
     for (var i = 0; i < lines; i++) {
       html += randomCode();
@@ -170,21 +154,61 @@ if ('serviceWorker' in navigator) {
     col.innerHTML = html;
     return col;
   }
+  var COL_SPACING = 160;
+  var colCount = Math.ceil(width / COL_SPACING) + 1;
+  var columns = [];
   for (var i = 0; i < colCount; i++) {
-    var left = i * 40 + (Math.random() * 15);
-    var delay = Math.random() * 30;
-    var duration = 12 + Math.random() * 30;
-    container.appendChild(buildColumn(left, delay, duration));
+    var left = i * COL_SPACING + (Math.random() * 40);
+    var delay = Math.random() * 20;
+    var duration = 10 + Math.random() * 15;
+    var col = buildColumn(left, delay, duration);
+    container.appendChild(col);
+    columns.push(col);
+  }
+  function buildWire(x, y, w, h, klass, speed) {
+    var wire = document.createElement('div');
+    wire.className = 'matrix-wire ' + klass + ' ' + speed;
+    wire.style.left = x + 'px';
+    wire.style.top = y + 'px';
+    wire.style.width = w + 'px';
+    wire.style.height = h + 'px';
+    wire.style.animationDelay = Math.random() * 0.5 + 's';
+    container.appendChild(wire);
+  }
+  for (var i = 0; i < columns.length - 1; i++) {
+    var c1 = columns[i], c2 = columns[i + 1];
+    var x1 = parseFloat(c1.style.left) + 9;
+    var x2 = parseFloat(c2.style.left) + 9;
+    var y = 40 + Math.random() * 60;
+    var w = Math.abs(x2 - x1);
+    var fromX = Math.min(x1, x2);
+    var klass = ['vert','bleu','blanc','rouge'][Math.floor(Math.random()*4)];
+    var speed = Math.random() > 0.5 ? 'fast' : 'slow';
+    buildWire(fromX, y, w, 2, 'h ' + klass, speed);
   }
   window.addEventListener('resize', function () {
     width = window.innerWidth;
-    colCount = Math.ceil(width / 40);
+    colCount = Math.ceil(width / COL_SPACING) + 1;
     while (container.firstChild) container.removeChild(container.firstChild);
+    columns = [];
     for (var i = 0; i < colCount; i++) {
-      var left = i * 40 + (Math.random() * 15);
-      var delay = Math.random() * 30;
-      var duration = 12 + Math.random() * 30;
-      container.appendChild(buildColumn(left, delay, duration));
+      var left = i * COL_SPACING + (Math.random() * 40);
+      var delay = Math.random() * 20;
+      var duration = 10 + Math.random() * 15;
+      var col = buildColumn(left, delay, duration);
+      container.appendChild(col);
+      columns.push(col);
+    }
+    for (var i = 0; i < columns.length - 1; i++) {
+      var c1 = columns[i], c2 = columns[i + 1];
+      var x1 = parseFloat(c1.style.left) + 9;
+      var x2 = parseFloat(c2.style.left) + 9;
+      var y = 40 + Math.random() * 60;
+      var w = Math.abs(x2 - x1);
+      var fromX = Math.min(x1, x2);
+      var klass = ['vert','bleu','blanc','rouge'][Math.floor(Math.random()*4)];
+      var speed = Math.random() > 0.5 ? 'fast' : 'slow';
+      buildWire(fromX, y, w, 2, 'h ' + klass, speed);
     }
   });
 })();
