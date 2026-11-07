@@ -126,7 +126,31 @@ if ('serviceWorker' in navigator) {
     { text: '<co>', klass: 'blanc' },
     { text: '<recyclor_data>', klass: 'rouge' },
     { text: '01', klass: 'blanc' },
-    { text: 'kt-', klass: 'rouge' }
+    { text: 'kt-', klass: 'rouge' },
+    { text: 'fetch', klass: 'vert' },
+    { text: 'json', klass: 'bleu' },
+    { text: 'dom', klass: 'blanc' },
+    { text: 'api', klass: 'rouge' },
+    { text: 'ws', klass: 'vert' },
+    { text: 'socket', klass: 'bleu' },
+    { text: 'port', klass: 'blanc' },
+    { text: 'host', klass: 'rouge' },
+    { text: 'dns', klass: 'vert' },
+    { text: 'http', klass: 'bleu' },
+    { text: 'ssl', klass: 'blanc' },
+    { text: 'jwt', klass: 'rouge' },
+    { text: 'css', klass: 'vert' },
+    { text: 'html', klass: 'bleu' },
+    { text: 'js', klass: 'blanc' },
+    { text: 'git', klass: 'rouge' },
+    { text: 'ci', klass: 'vert' },
+    { text: 'cd', klass: 'bleu' },
+    { text: 'aws', klass: 'blanc' },
+    { text: 'linux', klass: 'rouge' },
+    { text: 'web', klass: 'vert' },
+    { text: 'app', klass: 'bleu' },
+    { text: 'node', klass: 'blanc' },
+    { text: 'npm', klass: 'rouge' }
   ];
   function randomCode() {
     var c = codes[Math.floor(Math.random() * codes.length)];
@@ -138,7 +162,7 @@ if ('serviceWorker' in navigator) {
     col.style.left = left + 'px';
     col.style.animationDelay = delay + 's';
     col.style.animationDuration = duration + 's';
-    var lines = Math.floor(8 + Math.random() * 15);
+    var lines = Math.floor(3 + Math.random() * 7);
     var html = '';
     for (var i = 0; i < lines; i++) {
       html += randomCode();
@@ -147,19 +171,19 @@ if ('serviceWorker' in navigator) {
     return col;
   }
   for (var i = 0; i < colCount; i++) {
-    var left = i * 22 + (Math.random() * 10);
-    var delay = Math.random() * 25;
-    var duration = 10 + Math.random() * 25;
+    var left = i * 40 + (Math.random() * 15);
+    var delay = Math.random() * 30;
+    var duration = 12 + Math.random() * 30;
     container.appendChild(buildColumn(left, delay, duration));
   }
   window.addEventListener('resize', function () {
     width = window.innerWidth;
-    colCount = Math.ceil(width / 22);
+    colCount = Math.ceil(width / 40);
     while (container.firstChild) container.removeChild(container.firstChild);
     for (var i = 0; i < colCount; i++) {
-      var left = i * 22 + (Math.random() * 10);
-      var delay = Math.random() * 25;
-      var duration = 10 + Math.random() * 25;
+      var left = i * 40 + (Math.random() * 15);
+      var delay = Math.random() * 30;
+      var duration = 12 + Math.random() * 30;
       container.appendChild(buildColumn(left, delay, duration));
     }
   });

@@ -1,8 +1,13 @@
-// cos-editor/editor.js — éditeur COS réel (NOUVEAU 2026-11-07, à confirmer).
+/// cos-editor/editor.js -- éditeur COS ral (NOUVEAU 2026-11-07, à confirmer).
+// Exposed functions: COS.analyser, COS.resoudreId, COS.compatible,
+// exporterJSON, srcdoc, script local non exécuté,
+// alphanumerotationdefonctionaconnecter.
 // Charge cos-langage.js (module-shim) et expose : analyse locale, aperçu SPA
 // isolé, diagnostics, export JSON, tutoriels et info recyclor.
-// Aucun script personnalisé n'est exécuté : les balises <script_…> restent
+// Aucun script personnalisé n'est exécuté : les balises <script_...> restent
 // des opérandes typés du graphe COS.
+/// cos-editor/editor.js — éditeur COS réel (NOUVEAU 2026-11-07, à confirmer).
+// Cette fichier expose COS.analyser, COS.resoudreId, etc.
 (function () {
   'use strict';
 
@@ -89,7 +94,7 @@
       if (c === '>') return '&gt';
       if (c === '"') return '&quot';
       return c;
-    }) + ';';
+    });
   }
   function notifier(message, type) {
     toastEl.textContent = message;
