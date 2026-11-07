@@ -118,15 +118,15 @@ if ('serviceWorker' in navigator) {
     { text: 'paralleluse', klass: 'vert' },
     { text: 'asynchronise', klass: 'bleu' },
     { text: 'async/await', klass: 'blanc' },
-    { text: 'Promise.all', klass: 'rouge' },
-    { text: 'setTimeout', klass: 'vert' },
+    { text: 'promise.all', klass: 'rouge' },
+    { text: 'settimeout', klass: 'vert' },
     { text: 'event loop', klass: 'bleu' },
     { text: 'microtask', klass: 'vert' },
     { text: 'callback', klass: 'bleu' },
     { text: '<co>', klass: 'blanc' },
     { text: '<recyclor_data>', klass: 'rouge' },
     { text: '01', klass: 'blanc' },
-    { text: 'KT-', klass: 'rouge' }
+    { text: 'kt-', klass: 'rouge' }
   ];
   function randomCode() {
     var c = codes[Math.floor(Math.random() * codes.length)];
@@ -138,7 +138,7 @@ if ('serviceWorker' in navigator) {
     col.style.left = left + 'px';
     col.style.animationDelay = delay + 's';
     col.style.animationDuration = duration + 's';
-    var lines = Math.floor(15 + Math.random() * 25);
+    var lines = Math.floor(8 + Math.random() * 15);
     var html = '';
     for (var i = 0; i < lines; i++) {
       html += randomCode();
@@ -147,19 +147,19 @@ if ('serviceWorker' in navigator) {
     return col;
   }
   for (var i = 0; i < colCount; i++) {
-    var left = i * 14 + (Math.random() * 8);
-    var delay = Math.random() * 20;
-    var duration = 8 + Math.random() * 22;
+    var left = i * 22 + (Math.random() * 10);
+    var delay = Math.random() * 25;
+    var duration = 10 + Math.random() * 25;
     container.appendChild(buildColumn(left, delay, duration));
   }
   window.addEventListener('resize', function () {
     width = window.innerWidth;
-    colCount = Math.ceil(width / 14);
+    colCount = Math.ceil(width / 22);
     while (container.firstChild) container.removeChild(container.firstChild);
     for (var i = 0; i < colCount; i++) {
-      var left = i * 14 + (Math.random() * 8);
-      var delay = Math.random() * 20;
-      var duration = 8 + Math.random() * 22;
+      var left = i * 22 + (Math.random() * 10);
+      var delay = Math.random() * 25;
+      var duration = 10 + Math.random() * 25;
       container.appendChild(buildColumn(left, delay, duration));
     }
   });

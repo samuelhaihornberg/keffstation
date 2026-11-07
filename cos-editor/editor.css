@@ -79,15 +79,7 @@ code { font-family: var(--mono); }
 .btn:hover { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .28); }
 .btn:active { transform: translateY(1px); }
 .btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-.btn.primaire {
-  background: linear-gradient(135deg, var(--accent), var(--cyan));
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 6px 20px rgba(0, 102, 255, .28);
-}
-.btn.primaire:hover { box-shadow: 0 8px 26px rgba(0, 102, 255, .42); }
 .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
-
 .statut {
   font: 600 .68rem/1 var(--mono);
   padding: 8px 10px;
@@ -407,6 +399,58 @@ code { font-family: var(--mono); }
   border-bottom: 1px solid rgba(255, 93, 122, .18);
 }
 
+/* ---------------------------------------------------------------- tutoriel */
+.conteneur-tutoriel {
+  flex: 1;
+  min-height: 0;
+  padding: 12px;
+  overflow: auto;
+}
+.tutoriel-section {
+  margin-bottom: 24px;
+}
+.tutoriel-section h3 {
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #a9c4ff;
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 102, 255, .3);
+}
+.tutoriel-section p {
+  font-size: .74rem;
+  line-height: 1.5;
+  color: #c8d2ff;
+  margin: 0 0 12px;
+}
+.tutoriel-section pre {
+  background: #080a18;
+  color: #cdd6ff;
+  font: 11px/1.5 var(--mono);
+  padding: 10px;
+  border-radius: 8px;
+  overflow: auto;
+  margin: 8px 0;
+  tab-size: 2;
+}
+.tutoriel-section code {
+  color: #ffe28a;
+  background: #0a0d20;
+  padding: 2px 4px;
+  border-radius: 6px;
+  font-size: .66rem;
+}
+.tutoriel-section ul {
+  color: #c8d2ff;
+  font-size: .7rem;
+  line-height: 1.6;
+}
+.tutoriel-section li {
+  margin: 4px 0;
+}
+
 /* ---------------------------------------------------------------- pied */
 .pied {
   padding: 8px clamp(12px, 3vw, 24px) max(10px, env(safe-area-inset-bottom));
@@ -440,10 +484,10 @@ code { font-family: var(--mono); }
 .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast[data-type="erreur"] { color: #ff9fb1; border-color: rgba(255, 93, 122, .5); }
 
-/* ------------------------------------------------------------- desktop */
+/* --------------------------------------------------------------- PWA desktop */
 @media (min-width: 901px) {
   .app { height: 100vh; height: 100dvh; overflow: hidden; }
-  .atelier { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); }
+  .atelier { flex: 1; min-height: 0; }
   .panneau { min-height: 0; }
   .zone-editeur { min-height: 0; }
   .vues { min-height: 0; }
@@ -475,4 +519,29 @@ code { font-family: var(--mono); }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* ---------------------------------------------------------------- TUTORIAL STYLES */
+.tutoriel-badge {
+  display: inline-block;
+  font: 600 .5rem/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 102, 255, .15);
+  color: #a9c4ff;
+  border: 1px solid rgba(0, 102, 255, .3);
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+.tutoriel-tag {
+  display: inline-block;
+  font: .62rem/1 var(--mono);
+  color: #ffe28a;
+  background: rgba(255, 210, 63, .1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 2px;
+  border: 1px solid rgba(255, 210, 63, .2);
 }
