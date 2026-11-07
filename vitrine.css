@@ -857,6 +857,33 @@ body::before {
 .matrix-code.bleu { color: #1e6bff; }
 .matrix-code.blanc { color: #ffffff; }
 .matrix-code.rouge { color: #ff3d9a; }
+
+/* Fils matriciels reliant les codes — ultra rapide, clignotement partiel lent */
+.matrix-wire {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: opacity;
+}
+.matrix-wire.vert  { background: #27d17f; box-shadow: 0 0 12px #27d17f; }
+.matrix-wire.bleu  { background: #1e6bff; box-shadow: 0 0 12px #1e6bff; }
+.matrix-wire.blanc { background: #ffffff; box-shadow: 0 0 14px #ffffff; }
+.matrix-wire.rouge { background: #ff3d9a; box-shadow: 0 0 12px #ff3d9a; }
+.matrix-wire.h     { height: 2px; }
+.matrix-wire.v     { width: 2px; }
+
+@keyframes wire-flicker {
+  0%, 12%, 100% { opacity: .15; }
+  14%, 16%      { opacity: .95; }
+  18%           { opacity: .15; }
+  20%, 22%      { opacity: .95; }
+  24%           { opacity: .15; }
+}
+.matrix-wire { animation: wire-flicker infinite; }
+.matrix-wire.fast { animation-duration: 0.15s; }
+.matrix-wire.slow { animation-duration: 0.9s; }
+
 .matrix-col {
   width: 18px;
 }
