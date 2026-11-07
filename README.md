@@ -26,7 +26,7 @@ Les 6 faces renvoient vers :
 - **KiffTech** — https://samuelhaihornberg.github.io/Kiff-Tech/
 - **Tricktrocjob** — https://samuelhaihornberg.github.io/keffjobtrictrocc/
 - **ViArtificial labs** — https://samuelhaihornberg.github.io/ViArtificial/
-- **cos Editor** — https://samuelhaihornberg.github.io/cos-editor/
+- **cos Editor** — https://samuelhaihornberg.github.io/keffstation/cos-editor/
 - **Linguistic Motors** — https://samuelhaihornberg.github.io/linguistic-motors/
 - **Videogames** — https://samuelhaihornberg.github.io/videogames/
 

@@ -1,7 +1,7 @@
 {
-  "name": "Éditeur cos",
-  "short_name": "cos Editor",
-  "description": "Éditeur interactif syntaxe cos",
+  "name": "Éditeur COS",
+  "short_name": "COS Editor",
+  "description": "Éditeur COS : syntaxe <cos>, <co>, balises <script_…> et CSS alphanumérique. Analyse locale, aperçu et export JSON.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#070816",

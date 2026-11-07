@@ -26,7 +26,7 @@ const swJs = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.json'), 'utf8'));
 
 check('syntaxe app.js / install.js / sw.js', () => {
-  const files = ['app.js', 'install.js', 'refresh.js', 'sw.js', 'kifftech/sw.js', 'tricktrocjob/sw.js', 'viartificial-labs/sw.js', 'cos-editor/sw.js', 'linguistic-motors/sw.js', 'videogames/sw.js'];
+  const files = ['app.js', 'install.js', 'refresh.js', 'sw.js', 'kifftech/sw.js', 'tricktrocjob/sw.js', 'viartificial-labs/sw.js', 'cos-editor/sw.js', 'cos-editor/editor.js', 'linguistic-motors/sw.js', 'videogames/sw.js'];
   for (const f of files) {
     execSync(`node --check ${f}`, { cwd: ROOT, stdio: 'pipe' });
   }
@@ -228,6 +228,73 @@ check('PayPal : bouton public, aucun secret côté client', () => {
   const wf = fs.readFileSync(path.join(ROOT, '.github/workflows/deploy.yml'), 'utf8');
   assert(wf.includes('secrets.paypal_secret_ID'), 'injection du Client ID absente');
   assert(wf.includes('kifftech/paypal-config.js'), 'config PayPal non générée au build');
+});
+
+check('COS : syntaxe <script_…>, CSS alphanumérique et garde-fous', () => {
+  const COS = require(path.join(ROOT, 'viartificial-labs/src/cos-langage.js'));
+  const doc = `<cos id="test">
+  <co><script_alphanumerotationdefonctionaconnecter> to <script_founctionvaleuratribualphanumeroté></co>
+</cos>`;
+  const r = COS.analyser(doc);
+  assert(r.ok && r.liens.length === 1, `lien personnalisé non reconnu (${r.liens.length})`);
+  const lien = r.liens[0];
+  assert(lien.script === true, 'lien non marqué script');
+  assert(lien.de === 'alphanumerotationdefonctionaconnecter', `de = ${lien.de}`);
+  assert(lien.vers === 'founctionvaleuratribualphanumeroté', `vers = ${lien.vers}`);
+  assert(lien.op === 'to' && lien.sens === 'textuel', 'opérateur/sens incorrect');
+  assert(r.cartes[lien.de] && r.cartes[lien.de].classe === 'script', 'carte script absente');
+
+  const doc2 = `<cos id="test">
+  <co>
+    <script_Alphanumerotation(aconnecter)>
+      .card { background:#111; color:#fff }
+      A1 { box-shadow: 0 0 0 2px #27d17f }
+      @keyframes pulse { from { opacity: 0 } to { opacity: 1 } }
+    </script_Alphanumerotation(aconnecter)>
+    <script_alphanumerotationdefonctionaconnecter id="A1"> to <script_founctionvaleuratribualphanumeroté id="B2">
+  </co>
+</cos>`;
+  const r2 = COS.analyser(doc2);
+  assert(r2.styles.length === 1 && r2.styles[0].ok, 'bloc CSS non reconnu');
+  const a1 = r2.styles[0].rules.filter((x) => x.selecteur === 'A1')[0];
+  assert(a1 && a1.selecteurApplique === '[data-cos="A1"]', 'sélecteur A1 non normalisé');
+  const kf = r2.styles[0].rules.filter((x) => x.atRule && x.children)[0];
+  assert(kf && kf.children[0].selecteurApplique === 'from', '@keyframes altéré');
+  assert(r2.liens[0].de === 'A1' && r2.liens[0].vers === 'B2', 'IDs de script non appliqués');
+  assert(r2.liens[0].css && r2.liens[0].css.length === 1, 'CSS non attaché au lien');
+
+  const interdit = COS.analyserCss('@import url("x.css");');
+  assert(!interdit.ok && interdit.erreurs.length > 0, '@import non rejeté');
+  const mauvais = COS.analyserCss('A1 { background: javascript:alert(1) }');
+  assert(!mauvais.ok, 'javascript: non rejeté');
+});
+
+check('COS : cos-defaut.js conserve 118 liens', () => {
+  const COS = require(path.join(ROOT, 'viartificial-labs/src/cos-langage.js'));
+  const defaut = require(path.join(ROOT, 'viartificial-labs/src/cos-defaut.js'));
+  const r = COS.analyser(defaut);
+  assert(r.liens.length === 118, `liens = ${r.liens.length} au lieu de 118`);
+  assert(r.styles.length === 0, `styles inattendus : ${r.styles.length}`);
+  assert(r.notes.length === 0, `notes inattendues : ${r.notes.length}`);
+});
+
+check('cos-editor : source, aperçu isolé, diagnostics et export JSON', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'cos-editor/index.html'), 'utf8');
+  for (const token of ['id="source"', 'id="apercu"', 'id="liste-liens"', 'id="liste-diagnostics"', 'id="liste-css"', 'sandbox=""', './editor.js', './editor.css', '../viartificial-labs/src/cos-registre.js', '../viartificial-labs/src/cos-defaut.js', '../viartificial-labs/src/cos-langage.js']) {
+    assert(html.includes(token), `index.html : ${token} absent`);
+  }
+  const js = fs.readFileSync(path.join(ROOT, 'cos-editor/editor.js'), 'utf8');
+  for (const token of ['COS.analyser', 'COS.resoudreId', 'COS.compatible', 'exporterJSON', 'srcdoc', 'script local non exécuté', 'alphanumerotationdefonctionaconnecter']) {
+    assert(js.includes(token), `editor.js : ${token} absent`);
+  }
+  const css = fs.readFileSync(path.join(ROOT, 'cos-editor/editor.css'), 'utf8');
+  for (const token of ['.source', '.apercu', '.lien', '.diag', '.css-bloc', '@media (max-width: 900px)']) {
+    assert(css.includes(token), `editor.css : ${token} absent`);
+  }
+  const sw = fs.readFileSync(path.join(ROOT, 'cos-editor/sw.js'), 'utf8');
+  for (const token of ['editor.js', 'editor.css', 'cos-langage.js', 'cos-registre.js', 'cos-defaut.js']) {
+    assert(sw.includes(token), `cos-editor/sw.js : ${token} non précaché`);
+  }
 });
 
 if (failures > 0) {

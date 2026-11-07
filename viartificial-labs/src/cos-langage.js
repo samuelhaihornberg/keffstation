@@ -7,6 +7,9 @@
 // Règles NOUVELLES (à confirmer, marquées) : modificateur inconnu (ex. « i »
 // de A1→iB2 : aucune classe/propriété ne le définit → signalé, non exécuté),
 // compatibilité par classes, rotation documentaire bornée, pertinence équipe.
+// NOUVEAU 2026-11-07 (à confirmer) : balises <script_…> comme opérandes typés
+// et blocs CSS <script_Alphanumerotation(aconnecter)> analysés/validés, sans
+// exécution de script.
 // Résolution : REGISTRE (cos-registre.js, généré du catalogue) ; inconnu →
 // non-résolu + manque signalé, jamais inventé. L'ID est un alias, jamais un
 // remplacement : la définition complète est préservée (pas de troncature).
@@ -57,9 +60,29 @@ function normaliserSelecteurCss(sel) {
     return t;
   }).join(', ');
 }
+function decouperDeclarationsCss(corps) {
+  var parts = [], courant = '', paren = 0, quote = null;
+  var src = String(corps || '');
+  for (var i = 0; i < src.length; i++) {
+    var ch = src[i];
+    if (quote) {
+      courant += ch;
+      if (ch === '\\' && i + 1 < src.length) courant += src[++i];
+      else if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; courant += ch; continue; }
+    if (ch === '(') paren++;
+    else if (ch === ')') paren = Math.max(0, paren - 1);
+    if (ch === ';' && paren === 0) { parts.push(courant); courant = ''; continue; }
+    courant += ch;
+  }
+  parts.push(courant);
+  return parts;
+}
 function analyserDeclarationsCss(corps) {
   var declarations = [], erreurs = [];
-  String(corps || '').split(';').forEach(function (m) {
+  decouperDeclarationsCss(corps).forEach(function (m) {
     var t = m.trim();
     if (!t) return;
     var idx = t.indexOf(':');
@@ -211,6 +234,9 @@ function operandeDepuisToken(token, operandes) {
   var op = operandes[Number(m[1])] || { nom: token, valeur: token, attrs: {}, contenu: '' };
   return { token: token, id: op.valeur, script: true, nom: op.nom, attrs: op.attrs, contenu: op.contenu };
 }
+function carteScript(op) {
+  return { classe: 'script', nom: op.nom, famille: 'document', etape: [], source: 'script personnalisé <co>', attrs: op.attrs, contenu: op.contenu };
+}
 // Analyse un document <cos> : ordre documentaire conservé (rotation).
 // Sortie : {ok, cartes, liens[{de,vers,op,sens,donneur,receveur,description}], notes[]}.
 function analyser(src) {
@@ -247,6 +273,14 @@ function analyser(src) {
       var donneurOp = (sens === 'retour') ? opVers : opDe;
       var lien = { de: opDe.id, vers: opVers.id, op: m[2], modificateur: m[3] || null, sens: sens, donneur: donneurOp.id, receveur: receveurOp.id };
       if (opDe.script || opVers.script) { lien.script = true; lien.operandes = { de: opDe, vers: opVers }; }
+      // Les opérandes <script_…> deviennent des cartes locales du document :
+      // elles sont déclarées même si un autre lien les référence avant leur
+      // balise (l'ordre documentaire reste celui des liens, pas des cartes).
+      [opDe, opVers].forEach(function (op) {
+        if (!op.script) return;
+        if (r.cartes[op.id] && r.cartes[op.id].classe !== 'script') r.notes.push('ID de script « ' + op.id + ' » remplace une carte locale du même ID');
+        r.cartes[op.id] = carteScript(op);
+      });
       if (css.length) lien.css = css;
       css.forEach(function (x) { r.styles.push(x); });
       r.liens.push(lien);
@@ -324,9 +358,7 @@ function liensPourEquipe(src, refBlocs, refFamilles, vagues) {
     if (ln.operandes) {
       ['de', 'vers'].forEach(function (cote) {
         var op = ln.operandes[cote];
-        if (op && op.script && !doc.cartes[op.id]) {
-          doc.cartes[op.id] = { classe: 'script', nom: op.nom, famille: 'document', etape: [], source: 'script personnalisé <co>' };
-        }
+        if (op && op.script && !doc.cartes[op.id]) doc.cartes[op.id] = carteScript(op);
       });
     }
     var rDe = resoudreId(ln.donneur, doc.cartes), rVers = resoudreId(ln.receveur, doc.cartes);
@@ -363,6 +395,7 @@ module.exports = {
   ID_RE: ID_RE, MAX_LIENS: MAX_LIENS, analyser: analyser, resoudreId: resoudreId,
   compatible: compatible, liensPourEquipe: liensPourEquipe,
   normaliserSelecteurCss: normaliserSelecteurCss, analyserDeclarationsCss: analyserDeclarationsCss,
+  decouperDeclarationsCss: decouperDeclarationsCss,
   analyserCss: analyserCss, extraireCss: extraireCss, analyserStyles: analyserStyles,
   extraireScripts: extraireScripts, operandeDepuisToken: operandeDepuisToken,
   PATTERN_BLMS: PATTERN_BLMS, LANGUE_FAMILLES: LANGUE_FAMILLES
