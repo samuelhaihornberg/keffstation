@@ -35,7 +35,6 @@
 </head>
 <body>
   <div class="matrix-rain" aria-hidden="true"></div>
-  <div class="lightning-divider" aria-hidden="true">
     <span class="bolt"></span>
     <span class="bolt"></span>
     <span class="bolt"></span>
@@ -155,60 +154,63 @@ if ('serviceWorker' in navigator) {
     return col;
   }
   var COL_SPACING = 160;
+  var LINE_SPACING = 120;
   var colCount = Math.ceil(width / COL_SPACING) + 1;
-  var columns = [];
+  var lineCount = Math.ceil(window.innerHeight / LINE_SPACING) + 1;
+
+  function randomLineCode() {
+    var c = codes[Math.floor(Math.random() * codes.length)];
+    return '<span class="matrix-line-code ' + c.klass + '">' + c.text + '</span>';
+  }
+
+  function buildLine(top, delay, duration) {
+    var line = document.createElement('div');
+    line.className = 'matrix-line';
+    line.style.top = top + 'px';
+    line.style.animationDelay = delay + 's';
+    line.style.animationDuration = duration + 's';
+    var count = Math.floor(2 + Math.random() * 5);
+    var html = '';
+    for (var i = 0; i < count; i++) {
+      html += randomLineCode();
+    }
+    line.innerHTML = html;
+    return line;
+  }
+
   for (var i = 0; i < colCount; i++) {
     var left = i * COL_SPACING + (Math.random() * 40);
     var delay = Math.random() * 20;
     var duration = 10 + Math.random() * 15;
     var col = buildColumn(left, delay, duration);
     container.appendChild(col);
-    columns.push(col);
   }
-  function buildWire(x, y, w, h, klass, speed) {
-    var wire = document.createElement('div');
-    wire.className = 'matrix-wire ' + klass + ' ' + speed;
-    wire.style.left = x + 'px';
-    wire.style.top = y + 'px';
-    wire.style.width = w + 'px';
-    wire.style.height = h + 'px';
-    wire.style.animationDelay = Math.random() * 0.5 + 's';
-    container.appendChild(wire);
+  for (var i = 0; i < lineCount; i++) {
+    var top = i * LINE_SPACING + (Math.random() * 30);
+    var delay = Math.random() * 15;
+    var duration = 8 + Math.random() * 12;
+    var line = buildLine(top, delay, duration);
+    container.appendChild(line);
   }
-  for (var i = 0; i < columns.length - 1; i++) {
-    var c1 = columns[i], c2 = columns[i + 1];
-    var x1 = parseFloat(c1.style.left) + 9;
-    var x2 = parseFloat(c2.style.left) + 9;
-    var y = 40 + Math.random() * 60;
-    var w = Math.abs(x2 - x1);
-    var fromX = Math.min(x1, x2);
-    var klass = ['vert','bleu','blanc','rouge'][Math.floor(Math.random()*4)];
-    var speed = Math.random() > 0.5 ? 'fast' : 'slow';
-    buildWire(fromX, y, w, 2, 'h ' + klass, speed);
-  }
+
   window.addEventListener('resize', function () {
     width = window.innerWidth;
     colCount = Math.ceil(width / COL_SPACING) + 1;
+    lineCount = Math.ceil(window.innerHeight / LINE_SPACING) + 1;
     while (container.firstChild) container.removeChild(container.firstChild);
-    columns = [];
     for (var i = 0; i < colCount; i++) {
       var left = i * COL_SPACING + (Math.random() * 40);
       var delay = Math.random() * 20;
       var duration = 10 + Math.random() * 15;
       var col = buildColumn(left, delay, duration);
       container.appendChild(col);
-      columns.push(col);
     }
-    for (var i = 0; i < columns.length - 1; i++) {
-      var c1 = columns[i], c2 = columns[i + 1];
-      var x1 = parseFloat(c1.style.left) + 9;
-      var x2 = parseFloat(c2.style.left) + 9;
-      var y = 40 + Math.random() * 60;
-      var w = Math.abs(x2 - x1);
-      var fromX = Math.min(x1, x2);
-      var klass = ['vert','bleu','blanc','rouge'][Math.floor(Math.random()*4)];
-      var speed = Math.random() > 0.5 ? 'fast' : 'slow';
-      buildWire(fromX, y, w, 2, 'h ' + klass, speed);
+    for (var i = 0; i < lineCount; i++) {
+      var top = i * LINE_SPACING + (Math.random() * 30);
+      var delay = Math.random() * 15;
+      var duration = 8 + Math.random() * 12;
+      var line = buildLine(top, delay, duration);
+      container.appendChild(line);
     }
   });
 })();

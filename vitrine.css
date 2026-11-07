@@ -34,63 +34,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Fond Matrix — colonnes de lumière bleue, rouge, verte, jaune sur fond noir */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(30, 107, 255, .07) 2px, rgba(30, 107, 255, .07) 4px),
-    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(255, 61, 154, .07) 4px, rgba(255, 61, 154, .07) 6px),
-    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(39, 209, 127, .07) 6px, rgba(39, 209, 127, .07) 8px),
-    repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(255, 210, 63, .07) 8px, rgba(255, 210, 63, .07) 10px);
-  background-size: 100% 500%;
-  animation: matrix-scroll 24s linear infinite;
-  opacity: .25;
-}
+/* Fond uniquement noir profond — pas de grille, pas d'éclairs */
 
-/* Éclairs horizontaux dorés qui traversent l'écran au centre */
-.lightning-divider {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 50%;
-  z-index: 3;
-  height: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  transform: translateY(-50%);
-  mix-blend-mode: screen;
-}
-.lightning-divider .bolt {
-  position: absolute;
-  height: 1px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent 0%, #ffe082 35%, #ffd23f 50%, #ffe082 65%, transparent 100%);
-  opacity: 0;
-  transform: scaleX(0);
-  transform-origin: center;
-  animation: bolt-flash 4s infinite ease-out;
-}
-.lightning-divider .bolt:nth-child(1) { width: 60vw; animation-delay: 0s; }
-.lightning-divider .bolt:nth-child(2) { width: 80vw; animation-delay: 1.3s; }
-.lightning-divider .bolt:nth-child(3) { width: 100vw; animation-delay: 2.6s; }
-.lightning-divider .bolt:nth-child(4) { width: 40vw; animation-delay: 3.3s; }
-
-@keyframes bolt-flash {
-  0%, 88%, 100% { opacity: 0; transform: scaleX(0); }
-  90% { opacity: 1; transform: scaleX(1); }
-  92% { opacity: 0; transform: scaleX(0); }
-}
-
-@keyframes matrix-scroll {
-  0%   { background-position: 0 0; }
-  100% { background-position: 0 100%; }
-}
 
 /* Boule sphère vitrine au centre — renforcée, bordure or, reflet miroitant */
 .core {
@@ -858,31 +803,36 @@ body::before {
 .matrix-code.blanc { color: #ffffff; }
 .matrix-code.rouge { color: #ff3d9a; }
 
-/* Fils matriciels reliant les codes — ultra rapide, clignotement partiel lent */
-.matrix-wire {
+/* Lignes horizontales de codes — défilement horizontal */
+.matrix-line {
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
-  mix-blend-mode: screen;
-  will-change: opacity;
+  white-space: nowrap;
+  animation: matrix-slide linear infinite;
+  will-change: transform;
 }
-.matrix-wire.vert  { background: #27d17f; box-shadow: 0 0 12px #27d17f; }
-.matrix-wire.bleu  { background: #1e6bff; box-shadow: 0 0 12px #1e6bff; }
-.matrix-wire.blanc { background: #ffffff; box-shadow: 0 0 14px #ffffff; }
-.matrix-wire.rouge { background: #ff3d9a; box-shadow: 0 0 12px #ff3d9a; }
-.matrix-wire.h     { height: 2px; }
-.matrix-wire.v     { width: 2px; }
+.matrix-line-code {
+  display: inline-block;
+  margin-right: 24px;
+  font-family: var(--kf-mono), monospace;
+  font-weight: 700;
+  font-size: clamp(9px, 1.6vw, 12px);
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  opacity: .85;
+}
+.matrix-line-code.vert { color: #27d17f; }
+.matrix-line-code.bleu { color: #1e6bff; }
+.matrix-line-code.blanc { color: #ffffff; }
+.matrix-line-code.rouge { color: #ff3d9a; }
 
-@keyframes wire-flicker {
-  0%, 12%, 100% { opacity: .15; }
-  14%, 16%      { opacity: .95; }
-  18%           { opacity: .15; }
-  20%, 22%      { opacity: .95; }
-  24%           { opacity: .15; }
+@keyframes matrix-slide {
+  0%   { transform: translateX(-100vw); opacity: 0; }
+  10%  { opacity: .9; }
+  90%  { opacity: .9; }
+  100% { transform: translateX(100vw); opacity: 0; }
 }
-.matrix-wire { animation: wire-flicker infinite; }
-.matrix-wire.fast { animation-duration: 0.15s; }
-.matrix-wire.slow { animation-duration: 0.9s; }
 
 .matrix-col {
   width: 18px;
