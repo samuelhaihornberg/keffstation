@@ -83,9 +83,13 @@
 
   // --- Aide au chargement / stockage ---
   function esc(v) {
-    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
-      return { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[c];
-    });
+    return String(v == null ? '' : v).replace(/[&<>""]/g, function (c) {
+      if (c === '&') return '&amp';
+      if (c === '<') return '&lt';
+      if (c === '>') return '&gt';
+      if (c === '"') return '&quot';
+      return c;
+    }) + ';';
   }
   function notifier(message, type) {
     toastEl.textContent = message;
