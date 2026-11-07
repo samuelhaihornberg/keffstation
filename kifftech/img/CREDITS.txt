@@ -158,3 +158,20 @@ Visuels redimensionnés (500 px) pour le catalogue. Auteurs : voir pages Commons
 - pi-zero-2-w.jpg (Raspberry Pi Zero 2 W) : File:Raspberry Pi Zero 2 W.jpg — CC BY-SA 4.0
 - apple-tv-4k.jpg (Apple TV 4K (2022)) : File:Apple TV 4K (3rd Generation, 2022) with Siri Remote (cropped).jpg — CC BY-SA 4.0
 - echo-dot-5-clock.jpg (Amazon Echo Dot 5 with Clock) : File:Amazon Echo Dot 5 mit Uhr.jpg — CC BY-SA 4.0
+- iphone-17-pro-max.jpg (Apple iPhone 17 Pro Max) : File:IPhone 17 Pro Max (Cosmic Orange) - Backside.jpg — CC0
+- iphone-17-pro.jpg (Apple iPhone 17 Pro) : File:IPhone 17 Pro (2025-12-28).jpg — CC0
+- iphone-air.jpg (Apple iPhone Air) : File:IPhone Air (Cloud White) - Backside.jpg — CC0
+- iphone-16e.jpg (Apple iPhone 16e) : File:IPhone 16e Black.jpg — CC BY 4.0
+- macbook-pro-14-m5.jpg (Apple MacBook Pro 14 M5) : File:MacBook Pro (14-inch, M5, Space Black).jpg — CC0
+- ipad-pro-11-m5.jpg (Apple iPad Pro 11 M5) : File:IPad Pro (11-inch, M5, Silver) - Backside.jpg — CC0
+- mac-mini-m4.jpg (Apple Mac mini M4) : File:Mac mini 2024 M4.jpg — CC BY 4.0
+- apple-watch-ultra-3.jpg (Apple Watch Ultra 3) : File:Apple Watch Ultra 3 Ti Ocean Band (2026) 03.jpg — CC BY-SA 4.0
+- airpods-pro-3.jpg (Apple AirPods Pro 3) : File:AirPods Pro 3 in weiß.jpg — CC BY-SA 4.0
+- galaxy-s26-ultra.jpg (Samsung Galaxy S26 Ultra) : File:Galaxy S26 Ultra lavender.jpg — CC BY 4.0
+- galaxy-z-fold-8.jpg (Samsung Galaxy Z Fold 8) : File:Samsung Galaxy Z Fold8 rear.jpg — CC BY-SA 4.0
+- galaxy-s25-edge.jpg (Samsung Galaxy S25 Edge) : File:Samsung Galaxy S25 Edge.jpg — CC BY-SA 4.0
+- galaxy-watch-ultra-3.jpg (Samsung Galaxy Watch Ultra 3) : File:Samsung Galaxy Watch 2026-08-11 Ultra 3.jpg — CC BY 4.0
+- surface-pro-11.jpg (Microsoft Surface Pro 11) : File:Microsoft Surface Pro.jpg — Public domain
+- steam-machine.jpg (Valve Steam Machine) : File:Steam machine front.jpg — CC BY-SA 4.0
+- steam-frame.jpg (Valve Steam Frame) : File:Steam Frame with controllers.jpg — CC BY 4.0
+- steam-controller.jpg (Valve Steam Controller (2026)) : File:Steam Controller with Puck.jpg — CC BY-SA 4.0

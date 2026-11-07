@@ -36,6 +36,24 @@ jobs:
             echo "impact-products.json absent : catalogue local uniquement (normal avant la 1re synchro)."
           fi
 
+      - name: Inject PayPal public client ID
+        env:
+          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID || secrets.paypal_secret_ID }}
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const id = String(process.env.PAYPAL_CLIENT_ID || '').trim();
+          const safe = /^[A-Za-z0-9_-]{10,200}$/.test(id);
+          fs.writeFileSync(
+            'kifftech/paypal-config.js',
+            '// Généré au déploiement — Client ID public uniquement.\n' +
+            'window.KIFFTECH_PAYPAL_CLIENT_ID=' + JSON.stringify(safe ? id : '') + ';\n'
+          );
+          console.log(safe
+            ? 'PayPal : Client ID public injecté (' + id.length + ' caractères).'
+            : 'PayPal : Client ID absent ou invalide — bouton désactivé.');
+          NODE
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

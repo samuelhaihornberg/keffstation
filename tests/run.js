@@ -147,7 +147,7 @@ check('catalogue filtré : uniquement produits illustrés', () => {
   const start = kapp.indexOf('const LOCAL_DB = [');
   const end = kapp.indexOf('\n];', start);
   const DB = new Function('return ' + kapp.slice(start + 'const LOCAL_DB = '.length, end + 2))();
-  assert(DB.length === 156, `produits: ${DB.length} != 156`);
+  assert(DB.length === 173, `produits: ${DB.length} != 173`);
   assert(DB.every(p => p.images && p.images.length), 'produit sans image restant');
   for (const p of DB) {
     for (const img of p.images) {
@@ -157,7 +157,7 @@ check('catalogue filtré : uniquement produits illustrés', () => {
     }
   }
   const kcat = fs.readFileSync(path.join(ROOT, 'kifftech/catalog.html'), 'utf8');
-  assert(kcat.includes('156 produits illustrés'), 'meta description non mise à jour');
+  assert(kcat.includes('173 produits illustrés'), 'meta description non mise à jour');
   const modern = DB.filter(p => p.year >= 2020 && p.year <= 2026).length;
   assert(modern >= 100, `gadgets 2020-2026: ${modern} < 100`);
   const cats = new Set(DB.map(p => p.category));
@@ -208,6 +208,26 @@ check('impact.com : connecteur sans secrets exposés', () => {
   assert(kapp.includes('if(!p.partner)'), 'prix partenaires non protégés');
   const ray = fs.readFileSync(path.join(ROOT, 'kifftech/rayons.html'), 'utf8');
   assert(ray.includes('impact-products.json'), 'carte Partenaires absente des rayons');
+});
+
+check('PayPal : bouton public, aucun secret côté client', () => {
+  const cfg = fs.readFileSync(path.join(ROOT, 'kifftech/paypal-config.js'), 'utf8');
+  assert(cfg.includes('KIFFTECH_PAYPAL_CLIENT_ID'), 'config PayPal absente');
+  const kapp = fs.readFileSync(path.join(ROOT, 'kifftech/app.v2.js'), 'utf8');
+  assert(kapp.includes('renderPayPalButton') && kapp.includes('paypal.Buttons'), 'bouton PayPal absent');
+  assert(kapp.includes("currency_code:'EUR'"), 'devise EUR absente');
+  for (const f of ['kifftech/app.v2.js', 'kifftech/index.html', 'kifftech/catalog.html', 'kifftech/sw.js', '.github/workflows/deploy.yml']) {
+    assert(!fs.readFileSync(path.join(ROOT, f), 'utf8').includes('paypal_key'), `${f}: paypal_key ne doit jamais être exposé`);
+  }
+  const sw = fs.readFileSync(path.join(ROOT, 'kifftech/sw.js'), 'utf8');
+  assert(sw.includes('paypal-config'), 'sw.js: config PayPal non gérée');
+  assert(!sw.includes("'./paypal-config.js'"), 'sw.js: config PayPal ne doit pas être précachée');
+  const idx = fs.readFileSync(path.join(ROOT, 'kifftech/index.html'), 'utf8');
+  const cat = fs.readFileSync(path.join(ROOT, 'kifftech/catalog.html'), 'utf8');
+  assert(idx.includes('paypal-config.js') && cat.includes('paypal-config.js'), 'paypal-config.js non chargé');
+  const wf = fs.readFileSync(path.join(ROOT, '.github/workflows/deploy.yml'), 'utf8');
+  assert(wf.includes('secrets.paypal_secret_ID'), 'injection du Client ID absente');
+  assert(wf.includes('kifftech/paypal-config.js'), 'config PayPal non générée au build');
 });
 
 if (failures > 0) {

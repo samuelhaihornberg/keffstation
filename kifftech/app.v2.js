@@ -1,4 +1,4 @@
-// ============ LOCAL_DB (156 produits illustrés) ============
+// ============ LOCAL_DB (173 produits illustrés) ============
 const LOCAL_DB = [
   {id:'sp1',images:['./img/sp1.jpg','./img/sp1b.jpg'],brand:'Samsung',model:'Galaxy S24 Ultra',year:2024,category:'Smartphones',price:{official:1469},specs:{Écran:'6.8" Dynamic AMOLED 2X 120Hz',Processeur:'Snapdragon 8 Gen 3',RAM:'12 Go',Stockage:'256 Go',Appareil:'200+50+12+10 MP',Batterie:'5000 mAh'}},
   {id:'sp2',images:['./img/sp2.png'],brand:'Apple',model:'iPhone 15 Pro Max',year:2023,category:'Smartphones',price:{official:1479},specs:{Écran:'6.7" Super Retina XDR 120Hz',Processeur:'A17 Pro',RAM:'8 Go',Stockage:'256 Go',Appareil:'48+12+12 MP',Batterie:'4441 mAh'}},
@@ -156,8 +156,24 @@ const LOCAL_DB = [
   {id:'i7-12700k',images:['./img/i7-12700k.jpg'],brand:'Intel',model:'Core i7-12700K',year:2021,category:'Composant electronic & informatic',price:{official:409},specs:{'Cœurs':'12 (8P+4E)','Fréquence':'5,0 GHz','L3':'25 Mo'}},
   {id:'pi-zero-2-w',images:['./img/pi-zero-2-w.jpg'],brand:'Raspberry Pi',model:'Zero 2 W',year:2021,category:'Composant electronic & informatic',price:{official:15},specs:{'SoC':'BCM2710A1','CPU':'4× Cortex-A53 1 GHz','RAM':'512 Mo'}},
   {id:'apple-tv-4k',images:['./img/apple-tv-4k.jpg'],brand:'Apple',model:'TV 4K (2022)',year:2022,category:'Smart Home',price:{official:169},specs:{'Puce':'A15 Bionic','Vidéo':'4K HDR10+ Dolby Vision','Audio':'Dolby Atmos','Réseau':'Wi-Fi 6 + Thread'}},
-  {id:'echo-dot-5-clock',images:['./img/echo-dot-5-clock.jpg'],brand:'Amazon',model:'Echo Dot 5 with Clock',year:2022,category:'Smart Home',price:{official:69},specs:{'Enceinte':'1,73"'}}
-
+  {id:'echo-dot-5-clock',images:['./img/echo-dot-5-clock.jpg'],brand:'Amazon',model:'Echo Dot 5 with Clock',year:2022,category:'Smart Home',price:{official:69},specs:{'Enceinte':'1,73"'}},
+  {id:'iphone-17-pro-max',images:['./img/iphone-17-pro-max.jpg'],brand:'Apple',model:'iPhone 17 Pro Max',year:2025,category:'Smartphones',era:'modern',price:{official:1479},specs:{'Écran':'6,9" LTPO 120 Hz','Puce':'A19 Pro','Photo':'48+48+48 MP','Batterie':'5088 mAh'}},
+  {id:'iphone-17-pro',images:['./img/iphone-17-pro.jpg'],brand:'Apple',model:'iPhone 17 Pro',year:2025,category:'Smartphones',era:'modern',price:{official:1329},specs:{'Écran':'6,3" LTPO 120 Hz','Puce':'A19 Pro','Photo':'48+48+48 MP','Batterie':'4252 mAh'}},
+  {id:'iphone-air',images:['./img/iphone-air.jpg'],brand:'Apple',model:'iPhone Air',year:2025,category:'Smartphones',era:'modern',price:{official:1229},specs:{'Écran':'6,5" LTPO 120 Hz','Puce':'A19 Pro','Photo':'48 MP','Épaisseur':'5,6 mm'}},
+  {id:'iphone-16e',images:['./img/iphone-16e.jpg'],brand:'Apple',model:'iPhone 16e',year:2025,category:'Smartphones',era:'modern',price:{official:719},specs:{'Écran':'6,1" OLED 60 Hz','Puce':'A18','Photo':'48 MP','Batterie':'4005 mAh'}},
+  {id:'macbook-pro-14-m5',images:['./img/macbook-pro-14-m5.jpg'],brand:'Apple',model:'MacBook Pro 14 M5',year:2025,category:'Computers',era:'modern',price:{official:1849},specs:{'Écran':'14,2" Liquid Retina XDR','Puce':'M5 10 cœurs','RAM':'16 Go','Stockage':'512 Go'}},
+  {id:'ipad-pro-11-m5',images:['./img/ipad-pro-11-m5.jpg'],brand:'Apple',model:'iPad Pro 11 M5',year:2025,category:'Tablets',era:'modern',price:{official:1199},specs:{'Écran':'11" Ultra Retina XDR','Puce':'M5','Stockage':'256 Go','Accessoire':'Apple Pencil Pro'}},
+  {id:'mac-mini-m4',images:['./img/mac-mini-m4.jpg'],brand:'Apple',model:'Mac mini M4',year:2024,category:'Computers',era:'modern',price:{official:699},specs:{'Puce':'M4 10 cœurs','RAM':'16 Go','Stockage':'256 Go','Réseau':'Wi-Fi 6E'}},
+  {id:'apple-watch-ultra-3',images:['./img/apple-watch-ultra-3.jpg'],brand:'Apple',model:'Watch Ultra 3',year:2025,category:'Audio & Wearables',era:'modern',price:{official:899},specs:{'Boîtier':'49 mm titane','Puce':'S10','Autonomie':'42 h','Fonction':'Satellite'}},
+  {id:'airpods-pro-3',images:['./img/airpods-pro-3.jpg'],brand:'Apple',model:'AirPods Pro 3',year:2025,category:'Audio & Wearables',era:'modern',price:{official:249},specs:{'Réduction de bruit':'ANC','Capteur':'Cardiaque','Autonomie':'8 h','Étanchéité':'IP57'}},
+  {id:'galaxy-s26-ultra',images:['./img/galaxy-s26-ultra.jpg'],brand:'Samsung',model:'Galaxy S26 Ultra',year:2026,category:'Smartphones',era:'modern',price:{official:1469},specs:{'Écran':'6,9" QHD+ 120 Hz','Puce':'Snapdragon 8 Elite Gen 5','Photo':'200 MP','Batterie':'5000 mAh'}},
+  {id:'galaxy-z-fold-8',images:['./img/galaxy-z-fold-8.jpg'],brand:'Samsung',model:'Galaxy Z Fold 8',year:2026,category:'Smartphones',era:'modern',price:{official:2099},specs:{'Écran':'8,2" pliable 120 Hz','Puce':'Snapdragon 8 Elite Gen 5','Photo':'200 MP','Batterie':'4400 mAh'}},
+  {id:'galaxy-s25-edge',images:['./img/galaxy-s25-edge.jpg'],brand:'Samsung',model:'Galaxy S25 Edge',year:2025,category:'Smartphones',era:'modern',price:{official:1269},specs:{'Écran':'6,7" 120 Hz','Puce':'Snapdragon 8 Elite','Photo':'200 MP','Épaisseur':'5,8 mm'}},
+  {id:'galaxy-watch-ultra-3',images:['./img/galaxy-watch-ultra-3.jpg'],brand:'Samsung',model:'Galaxy Watch Ultra 3',year:2026,category:'Audio & Wearables',era:'modern',price:{official:699},specs:{'Écran':'1,52" AMOLED','Puce':'Snapdragon Wear Elite','Autonomie':'60 h','Étanchéité':'40 m'}},
+  {id:'surface-pro-11',images:['./img/surface-pro-11.jpg'],brand:'Microsoft',model:'Surface Pro 11',year:2024,category:'Computers',era:'modern',price:{official:1199},specs:{'Écran':'13" OLED 120 Hz','Puce':'Snapdragon X Elite','RAM':'16 Go','Stockage':'512 Go'}},
+  {id:'steam-machine',images:['./img/steam-machine.jpg'],brand:'Valve',model:'Steam Machine',year:2026,category:'Consoles & Videogames',era:'modern',price:{official:519},specs:{'OS':'SteamOS','CPU':'Zen 4 6 cœurs','GPU':'RDNA 3','Stockage':'512 Go'}},
+  {id:'steam-frame',images:['./img/steam-frame.jpg'],brand:'Valve',model:'Steam Frame',year:2026,category:'VR AR gadgets',era:'modern',price:{official:899},specs:{'Type':'VR autonome','Puce':'Snapdragon 8 Gen 3','Stockage':'256 Go','Streaming':'Wi-Fi 6E'}},
+  {id:'steam-controller',images:['./img/steam-controller.jpg'],brand:'Valve',model:'Steam Controller (2026)',year:2026,category:'Consoles & Videogames',era:'modern',price:{official:99},specs:{'Contrôles':'Trackpads','Retour':'Haptique','Connexion':'Bluetooth','OS':'SteamOS'}},
 ];
 
 // ============ STATE ============
@@ -283,8 +299,65 @@ function addToCart(id){const p=products.find(x=>x.id===id);if(!p||userContext.ca
 function removeFromCart(id){userContext.cartItems=userContext.cartItems.filter(i=>i.id!==id);refreshKiffTechPrices();renderProducts();updateCartPanel();}
 function updateCartBadge(){const c=userContext.cartItems.length;$('#cart-count').textContent=c;$('#cart-count').style.display=c?'flex':'none';updatePromoUI();}
 function updatePromoUI(){const el=$('#promo-indicator');if(!el)return;if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne • ${calcKiffTechPrice(100,{isSubscriber:true}).discount}% + Livraison</span>`;else if(userContext.cartItems.length>=10)el.innerHTML=`<span class="promo-active">Promo -20% activee</span>`;else el.innerHTML=`<span class="promo-pending">Ajoutez ${10-userContext.cartItems.length} articles pour -20%</span>`;}
-function updateCartPanel(){const p=$('#cart-panel');if(!p)return;if(!userContext.cartItems.length){p.innerHTML=`<p style="color:#8a92b8;text-align:center;padding:20px">Selection vide</p>`;return;}let to=0,tk=0;const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";p.innerHTML=userContext.cartItems.map(i=>{const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});to+=kt.official;tk+=kt.kifftech;const imgSrc = previewImage(i);return `<div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06)"><img src="${imgSrc}" decoding="async" style="width:50px;height:50px;object-fit:cover;border-radius:8px"><div style="flex:1"><div style="font-weight:600">${i.model}</div><div style="font-size:.8rem;color:#8a92b8">${i.brand}</div></div><div style="text-align:right"><div style="font-size:.75rem;color:#8a92b8;text-decoration:line-through">${fmtPrice(kt.official)}</div><div style="font-weight:700;color:#27d17f">${fmtPrice(kt.kifftech)}</div></div><button onclick="removeFromCart('${i.id}')" style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,61,154,.3);background:rgba(255,61,154,.1);color:#ff3d9a;cursor:pointer">x</button></div>`;}).join('')+`<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between"><div><div style="font-size:.8rem;color:#8a92b8">Total officiel</div><div style="text-decoration:line-through;color:#b9c0e6">${fmtPrice(to)}</div></div><div style="text-align:right"><div style="font-size:.8rem;color:#8a92b8">Prix KiffTech</div><div style="font-weight:800;color:#27d17f;font-size:1.2rem">${fmtPrice(tk)}</div><div style="font-size:.7rem;color:#27d17f">Economie ${fmtPrice(to-tk)}</div></div></div><button class="action-btn primary" style="margin-top:12px;width:100%" onclick="checkout()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>Commander</button>`;}
-function checkout(){toast('Redirection paiement...','info');}
+function updateCartPanel(){const p=$('#cart-panel');if(!p)return;if(!userContext.cartItems.length){p.innerHTML=`<p style="color:#8a92b8;text-align:center;padding:20px">Selection vide</p>`;return;}let to=0,tk=0;const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";p.innerHTML=userContext.cartItems.map(i=>{const kt=calcKiffTechPrice(i.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems});to+=kt.official;tk+=kt.kifftech;const imgSrc = previewImage(i);return `<div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06)"><img src="${imgSrc}" decoding="async" style="width:50px;height:50px;object-fit:cover;border-radius:8px"><div style="flex:1"><div style="font-weight:600">${i.model}</div><div style="font-size:.8rem;color:#8a92b8">${i.brand}</div></div><div style="text-align:right"><div style="font-size:.75rem;color:#8a92b8;text-decoration:line-through">${fmtPrice(kt.official)}</div><div style="font-weight:700;color:#27d17f">${fmtPrice(kt.kifftech)}</div></div><button onclick="removeFromCart('${i.id}')" style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,61,154,.3);background:rgba(255,61,154,.1);color:#ff3d9a;cursor:pointer">x</button></div>`;}).join('')+`<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between"><div><div style="font-size:.8rem;color:#8a92b8">Total officiel</div><div style="text-decoration:line-through;color:#b9c0e6">${fmtPrice(to)}</div></div><div style="text-align:right"><div style="font-size:.8rem;color:#8a92b8">Prix KiffTech</div><div style="font-weight:800;color:#27d17f;font-size:1.2rem">${fmtPrice(tk)}</div><div style="font-size:.7rem;color:#27d17f">Economie ${fmtPrice(to-tk)}</div></div></div><button class="action-btn primary" style="margin-top:12px;width:100%" onclick="checkout()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>Commander</button><div id="paypal-button-container" style="margin-top:10px"></div><div id="paypal-status" style="margin-top:8px;font-size:.7rem;color:#8a92b8;text-align:center;line-height:1.4"></div>`;renderPayPalButton(tk);}
+function checkout(){if(paypalClientId()){const b=$('#paypal-button-container');if(b)b.scrollIntoView({behavior:'smooth',block:'center'});toast('Utilisez le bouton PayPal ci-dessous','info');}else{toast('Paiement PayPal non configuré','info');}}
+
+// ============ PAYPAL ============
+// Le Client ID PayPal est PUBLIC et injecté au build (paypal-config.js).
+// La clé secrète PayPal ne doit jamais être exposée côté navigateur.
+let paypalSdkPromise=null;
+function paypalClientId(){return String(window.KIFFTECH_PAYPAL_CLIENT_ID||'').trim();}
+function loadPayPalSdk(){
+  const id=paypalClientId();
+  if(!id)return Promise.reject(new Error('Client ID PayPal absent'));
+  if(window.paypal&&window.paypal.Buttons)return Promise.resolve(window.paypal);
+  if(paypalSdkPromise)return paypalSdkPromise;
+  paypalSdkPromise=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(id)+'&currency=EUR&intent=capture&components=buttons';
+    s.async=true;
+    s.onload=()=>window.paypal&&window.paypal.Buttons?resolve(window.paypal):reject(new Error('SDK PayPal incomplet'));
+    s.onerror=()=>reject(new Error('SDK PayPal indisponible'));
+    document.head.appendChild(s);
+  });
+  return paypalSdkPromise;
+}
+function paypalStatus(msg,color){const el=document.getElementById('paypal-status');if(el){el.textContent=msg||'';el.style.color=color||'#8a92b8';}}
+function renderPayPalButton(total){
+  const box=document.getElementById('paypal-button-container');
+  if(!box)return;
+  if(!paypalClientId()){
+    paypalStatus('PayPal : Client ID public non configuré. Le bouton « Commander » reste disponible.');
+    return;
+  }
+  box.innerHTML='<div style="padding:10px;text-align:center;color:#8a92b8;font-size:.8rem">Chargement de PayPal…</div>';
+  loadPayPalSdk().then(paypal=>{
+    if(!document.body.contains(box))return;
+    box.innerHTML='';
+    paypal.Buttons({
+      style:{shape:'pill',color:'gold',layout:'vertical',label:'paypal',height:42},
+      createOrder:(data,actions)=>actions.order.create({purchase_units:[{description:'KiffTech — '+userContext.cartItems.length+' article(s)',amount:{value:Number(total).toFixed(2),currency_code:'EUR'}}]}),
+      onApprove:(data,actions)=>actions.order.capture().then(details=>{
+        const name=details&&details.payer&&details.payer.name?details.payer.name.given_name:'';
+        toast('Paiement PayPal confirmé'+(name?' — merci '+name:'')+' !','success');
+        userContext.cartItems=[];
+        refreshKiffTechPrices();
+        renderProducts();
+        updateCartPanel();
+      }),
+      onCancel:()=>toast('Paiement PayPal annulé','info'),
+      onError:err=>{console.error('[PayPal]',err);toast('Erreur PayPal — réessayez','error');}
+    }).render(box).catch(err=>{
+      console.error('[PayPal] render',err);
+      box.innerHTML='';
+      paypalStatus('PayPal indisponible pour le moment. Utilisez « Commander ».','#ff9b3d');
+    });
+  }).catch(err=>{
+    console.warn('[PayPal]',err.message);
+    box.innerHTML='';
+    paypalStatus('PayPal indisponible hors ligne. Utilisez « Commander ».','#ff9b3d');
+  });
+}
 function toggleSub(){userContext.isSubscriber=!userContext.isSubscriber;userContext.tenureDays=userContext.isSubscriber?30:0;refreshKiffTechPrices();renderProducts();updateCartPanel();updateSubUI();toast(userContext.isSubscriber?'Abonnement active (1eur/jour)':'Desactive',userContext.isSubscriber?'success':'info');}
 function updateSubUI(){const html=userContext.isSubscriber?'Gerer':'S\'abonner 1eur/jour';[$('#btn-subscribe'),$('#btn-subscribe-header')].forEach(el=>{if(el){el.innerHTML=html;el.className='action-btn '+(userContext.isSubscriber?'primary':'');}});updatePromoUI();}
 function updatePromoUI(){const el=$('#promo-indicator');if(!el)return;if(userContext.isSubscriber)el.innerHTML=`<span class="promo-active">Abonne ${calcKiffTechPrice(100,{isSubscriber:true}).discount}%</span>`;else if(userContext.cartItems.length>=10)el.innerHTML=`<span class="promo-active">Promo -20%</span>`;else el.innerHTML=`<span class="promo-pending">${10-userContext.cartItems.length} pour -20%</span>`;}

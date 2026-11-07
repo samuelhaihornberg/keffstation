@@ -1,11 +1,11 @@
 # KiffTech — Catalogue illustré 2020-2026
 
 ## État
-- **156 produits** dans `LOCAL_DB` (`app.v2.js`), tous avec au moins une photo réelle.
-- **100 nouveaux gadgets populaires 2020-2026** ajoutés (smartphones, PC, tablettes, audio, VR, consoles, drones, smart home, accessoires, composants, robots).
-- **11 rayons visibles** : Smartphones 40, Consoles & Videogames 18, Audio & Wearables 18, Tablets 15, Drones & Caméras 14, Computers 13, Composant electronic & informatic 11, Accessories 8, VR AR gadgets 8, Smart Home 6, Company & studying Robots 5.
+- **173 produits** dans `LOCAL_DB` (`app.v2.js`), tous avec au moins une photo réelle.
+- **100 gadgets populaires 2020-2026** ajoutés (smartphones, PC, tablettes, audio, VR, consoles, drones, smart home, accessoires, composants, robots), puis **17 derniers modèles 2024-2026** (Apple, Samsung, Microsoft, Valve).
+- **11 rayons visibles** : Smartphones 47, Audio & Wearables 21, Consoles & Videogames 20, Computers 16, Tablets 16, Drones & Caméras 14, Composant electronic & informatic 11, VR AR gadgets 9, Accessories 8, Smart Home 6, Company & studying Robots 5.
 - Le rayon « Garden & furnitures smart devices » n'a aucune photo libre : il est filtré de `rayons.html` tant qu'il n'est pas illustré.
-- **158 fichiers image** dans `img/`, tous utilisés, tous crédités dans `img/CREDITS.txt`.
+- **175 fichiers image** dans `img/`, tous utilisés, tous crédités dans `img/CREDITS.txt`.
 - Page **`credits.html`** : attribution visible, lien vers chaque fichier Wikimedia Commons.
 
 ## Politique visuelle
@@ -26,7 +26,7 @@
 La base complète comptait 216 fiches, dont 160 sans photo libre (74 %). Plutôt que d'afficher 160 aperçus SVG générés, le catalogue ne conserve que les produits réellement illustrés. Le code de secours `previewImage()` reste présent pour les produits partenaires éventuels, mais aucun produit local n'en dépend.
 
 ## Review et descriptions
-`productReview(p)` génère pour chaque fiche un résumé (marque, modèle, année, catégorie, top specs, prix), une note KiffTech /5 et des points « + » / « à vérifier ». Aucune fiche n'a de description rédigée : la modale affiche ce résumé automatique. Les 156 fiches ont donc un contenu minimum, mais pas encore de texte marketing original.
+`productReview(p)` génère pour chaque fiche un résumé (marque, modèle, année, catégorie, top specs, prix), une note KiffTech /5 et des points « + » / « à vérifier ». Aucune fiche n'a de description rédigée : la modale affiche ce résumé automatique. Les 173 fiches ont donc un contenu minimum, mais pas encore de texte marketing original.
 
 ## Ajouter un produit illustré
 1. Trouver une photo sur Wikimedia Commons (CC0, CC BY ou CC BY-SA).
@@ -38,4 +38,5 @@ La base complète comptait 216 fiches, dont 160 sans photo libre (74 %). Plutôt
 ## Vérif
 - `node --check kifftech/app.v2.js` OK
 - `npm test` : 17/17
-- 156/156 fiches avec photo, 0 produit sans image, 0 fichier orphelin.
+- 173/173 fiches avec photo, 0 produit sans image, 0 fichier orphelin.
+- 175 fichiers image, 175 crédits, 0 orphelin.

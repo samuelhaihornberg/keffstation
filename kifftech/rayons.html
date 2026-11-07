@@ -59,7 +59,7 @@ const RAYONS = [
   { id: 'Accessories', icon: '🧰', desc: 'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
   { id: 'Consoles & Videogames', icon: '🎮', desc: 'Consoles rétro (NES, Mega Drive, PS1…) et modernes (PS5, Switch, Xbox, Steam Deck Linux).' }
 ];
-const COUNTS = {'Smartphones':40,'Computers':13,'Tablets':15,'Audio & Wearables':18,'VR AR gadgets':8,'Drones & Caméras':14,'Smart Home':6,'Garden & furnitures smart devices':0,'Composant electronic & informatic':11,'Company & studying Robots':5,'Accessories':8,'Consoles & Videogames':18}; // synchronisé avec LOCAL_DB (produits illustrés uniquement)
+const COUNTS = {'Smartphones':47,'Computers':16,'Tablets':16,'Audio & Wearables':21,'VR AR gadgets':9,'Drones & Caméras':14,'Smart Home':6,'Garden & furnitures smart devices':0,'Composant electronic & informatic':11,'Company & studying Robots':5,'Accessories':8,'Consoles & Videogames':20}; // synchronisé avec LOCAL_DB (produits illustrés uniquement)
 const VISIBLE = RAYONS.filter(r => (COUNTS[r.id] || 0) > 0);
 const PL = n => n > 1 ? 'produits' : 'produit';
 const grid = document.getElementById('rayons-grid');
@@ -74,8 +74,8 @@ grid.innerHTML = VISIBLE.map(r => `
   <a class="rayon-card all" role="listitem" href="./catalog.html" aria-label="Tous les produits">
     <span class="rayon-icon" aria-hidden="true">🛍️</span>
     <span class="rayon-name">Tous</span>
-    <span class="rayon-count">156 produits</span>
-    <span class="rayon-desc">Tout le catalogue smart devices illustré, tous rayons confondus — 100 nouveaux gadgets 2020-2026.</span>
+    <span class="rayon-count">173 produits</span>
+    <span class="rayon-desc">Tout le catalogue smart devices illustré, tous rayons confondus — derniers gadgets 2024-2026 inclus.</span>
     <span class="rayon-cta">Tout explorer →</span>
   </a>`;
 fetch('./impact-products.json').then(r => r.ok ? r.json() : null).then(d => {
