@@ -443,9 +443,11 @@ code { font-family: var(--mono); }
 /* ------------------------------------------------------------- desktop */
 @media (min-width: 901px) {
   .app { height: 100vh; height: 100dvh; overflow: hidden; }
-  .atelier { flex: 1; min-height: 0; }
+  .atelier { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); }
   .panneau { min-height: 0; }
+  .zone-editeur { min-height: 0; }
   .vues { min-height: 0; }
+  .apercu { min-height: 0; }
 }
 @media (min-width: 1500px) {
   .atelier { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

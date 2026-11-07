@@ -131,6 +131,19 @@
     return !!(cartes && cartes[id] && cartes[id].classe === 'script');
   }
 
+  function cartesLocales(result) {
+    var cartes = {};
+    Object.keys(result.cartes || {}).forEach(function (k) { cartes[k] = result.cartes[k]; });
+    (result.liens || []).forEach(function (lien) {
+      [lien.donneur, lien.receveur].forEach(function (id) {
+        if (cartes[id]) return;
+        var r = COS.resoudreId(id, cartes);
+        if (r.resolu) cartes[r.id] = r.def;
+      });
+    });
+    return cartes;
+  }
+
   function diagnostiquer(result, cartes) {
     var diags = [];
     (result.notes || []).forEach(function (note) {
@@ -240,11 +253,11 @@
   }
 
   // ------------------------------------------------------------------- vues
-  function rendreStats(result, diags) {
+  function rendreStats(result, cartes, diags) {
     var regles = (result.styles || []).reduce(function (n, a) { return n + (a.rules || []).length; }, 0);
     var erreurs = diags.filter(function (d) { return d.niveau === 'erreur'; }).length;
     var alertes = diags.filter(function (d) { return d.niveau === 'alerte'; }).length;
-    var noeuds = Object.keys(result.cartes || {}).length;
+    var noeuds = Object.keys(cartes || {}).length;
     var liens = (result.liens || []).length;
     statsEl.innerHTML = '<span class="pill">' + liens + ' lien' + (liens > 1 ? 's' : '') + '</span>'
       + '<span class="pill vert">' + noeuds + ' nœud' + (noeuds > 1 ? 's' : '') + '</span>'
@@ -345,6 +358,15 @@
   }
 
   function exporterJSON() {
+    if (!COS || typeof COS.analyser !== 'function') {
+      return {
+        format: 'cos-editor-export',
+        version: 1,
+        genere: new Date().toISOString(),
+        erreur: 'runtime COS indisponible',
+        source: sourceEl.value
+      };
+    }
     var base = dernier || { resultat: COS.analyser(sourceEl.value), cartes: {}, diagnostics: [] };
     var result = base.resultat;
     var cartes = base.cartes || result.cartes || {};
@@ -445,10 +467,10 @@
       setStatut('Erreur d’analyse : ' + e.message, 'erreur');
       return;
     }
-    var cartes = result.cartes || {};
+    var cartes = cartesLocales(result);
     var diags = diagnostiquer(result, cartes);
     dernier = { resultat: result, cartes: cartes, diagnostics: diags };
-    rendreStats(result, diags);
+    rendreStats(result, cartes, diags);
     rendreLiens(result, cartes);
     rendreDiagnostics(diags);
     rendreCss(result);
@@ -499,6 +521,7 @@
       e.preventDefault();
       sourceEl.setRangeText('  ', sourceEl.selectionStart, sourceEl.selectionEnd, 'end');
       majGouttiere();
+      sauver();
       planifierAnalyse();
       return;
     }

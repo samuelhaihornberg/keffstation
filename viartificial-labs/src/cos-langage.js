@@ -7,6 +7,9 @@
 // Règles NOUVELLES (à confirmer, marquées) : modificateur inconnu (ex. « i »
 // de A1→iB2 : aucune classe/propriété ne le définit → signalé, non exécuté),
 // compatibilité par classes, rotation documentaire bornée, pertinence équipe.
+// NOUVEAU 2026-11-07 (à confirmer) : balises <script_…> comme opérandes typés
+// et blocs CSS <script_Alphanumerotation(aconnecter)> analysés/validés, sans
+// exécution de script.
 // Résolution : REGISTRE (cos-registre.js, généré du catalogue) ; inconnu →
 // non-résolu + manque signalé, jamais inventé. L'ID est un alias, jamais un
 // remplacement : la définition complète est préservée (pas de troncature).
@@ -57,9 +60,29 @@ function normaliserSelecteurCss(sel) {
     return t;
   }).join(', ');
 }
+function decouperDeclarationsCss(corps) {
+  var parts = [], courant = '', paren = 0, quote = null;
+  var src = String(corps || '');
+  for (var i = 0; i < src.length; i++) {
+    var ch = src[i];
+    if (quote) {
+      courant += ch;
+      if (ch === '\\' && i + 1 < src.length) courant += src[++i];
+      else if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; courant += ch; continue; }
+    if (ch === '(') paren++;
+    else if (ch === ')') paren = Math.max(0, paren - 1);
+    if (ch === ';' && paren === 0) { parts.push(courant); courant = ''; continue; }
+    courant += ch;
+  }
+  parts.push(courant);
+  return parts;
+}
 function analyserDeclarationsCss(corps) {
   var declarations = [], erreurs = [];
-  String(corps || '').split(';').forEach(function (m) {
+  decouperDeclarationsCss(corps).forEach(function (m) {
     var t = m.trim();
     if (!t) return;
     var idx = t.indexOf(':');
@@ -372,6 +395,7 @@ module.exports = {
   ID_RE: ID_RE, MAX_LIENS: MAX_LIENS, analyser: analyser, resoudreId: resoudreId,
   compatible: compatible, liensPourEquipe: liensPourEquipe,
   normaliserSelecteurCss: normaliserSelecteurCss, analyserDeclarationsCss: analyserDeclarationsCss,
+  decouperDeclarationsCss: decouperDeclarationsCss,
   analyserCss: analyserCss, extraireCss: extraireCss, analyserStyles: analyserStyles,
   extraireScripts: extraireScripts, operandeDepuisToken: operandeDepuisToken,
   PATTERN_BLMS: PATTERN_BLMS, LANGUE_FAMILLES: LANGUE_FAMILLES
