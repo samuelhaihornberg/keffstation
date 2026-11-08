@@ -1752,6 +1752,9 @@ section {
   animation: bioluminescent-or 4s ease-in-out infinite alternate, ring-rainbow 12s linear infinite;
   pointer-events: none;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ring-outer::before {
@@ -1993,12 +1996,28 @@ section {
   z-index: 6;
 }
 
+/* Effet widget clignotant sur les apps de l'anneau extérieur */
+.ring-outer .app-ring-button {
+  animation: widget-pulse 3s ease-in-out infinite;
+}
+
+@keyframes widget-pulse {
+  0%, 100% { transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1); opacity: 0.85; border-color: #ffd700; }
+  50% { transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.15); opacity: 1; border-color: #fff200; box-shadow: 0 0 25px #ffd700, 0 0 50px #ffaa00; }
+}
+
+.ring-outer .app-ring-button:hover {
+  animation: none;
+  transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.3);
+  box-shadow: 0 0 30px #ffd700, 0 0 60px #ffaa00;
+}
+
 /* Positionnement selon le cercle d'appartenance */
 .ring-outer .app-ring-button {
-  transform: rotate(var(--a)) translateX(150px) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(160px) rotate(calc(var(--a) * -1));
 }
 .ring-outer .app-ring-button:hover {
-  transform: rotate(var(--a)) translateX(150px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(160px) rotate(calc(var(--a) * -1)) scale(1.3);
 }
 
 .ring-inner .app-ring-button {
@@ -2015,7 +2034,7 @@ section {
   top: 50%;
   left: 50%;
   width: 2px;
-  height: 150px;
+  height: 170px;
   background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
   transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
   transform-origin: top center;
@@ -2025,7 +2044,7 @@ section {
 }
 
 .ring-outer .app-ring-button:hover::before {
-  height: 165px;
+  height: 185px;
   background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
   box-shadow: 0 0 20px rgba(255, 242, 0, 0.7);
 }
