@@ -1788,8 +1788,9 @@
     applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
-    // Traduction automatique Google désactivée par défaut : pas de service externe,
-    // pas de traduction non relue. Utiliser i18n-locales.js pour les fichiers de langue.
+    // Traduction automatique Google comme fallback pour les textes sans traduction humaine.
+    // Les traductions rédigées (fr/en) sont prioritaires. Résultat non relu : marqué auto.
+    applyTranslationsGoogle(lang).catch(function () {});
   }
 
   /* ========================= Devise ========================= */
@@ -2093,7 +2094,8 @@
     (function () {
       var curLang = getLang();
       applyTranslations(curLang);
-      // Traduction automatique Google désactivée par défaut
+      // Traduction automatique Google comme fallback pour les textes sans traduction humaine.
+      applyTranslationsGoogle(curLang).catch(function () {});
     })();
   }
   if (document.readyState === "loading") {

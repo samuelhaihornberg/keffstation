@@ -149,6 +149,7 @@
       loadLang(lang, function () {
         applyTranslations(lang, pwaId);
         refreshSelector(lang, pwaId);
+        autoTranslateMissing(lang, pwaId);
         document.dispatchEvent(new CustomEvent("ks-lang-change", {
           detail: { lang: lang, pwa: pwaId }
         }));
@@ -156,6 +157,7 @@
     } else {
       applyTranslations(lang, pwaId);
       refreshSelector(lang, pwaId);
+      autoTranslateMissing(lang, pwaId);
       document.dispatchEvent(new CustomEvent("ks-lang-change", {
         detail: { lang: lang, pwa: pwaId }
       }));
@@ -309,6 +311,72 @@
     return t(key, lang, "system");
   }
 
+  /* ========================= Traduction automatique fallback (Google) ========================= */
+  // Appelée pour les clés sans traduction humaine (langues autres que fr/en).
+  // Le résultat est marqué data-i18n-auto="true" et n'est PAS relu.
+  var AUTO_TRANSLATE_CACHE = {};
+  async function googleTranslateText(text, targetLang) {
+    if (!text || text.trim().length === 0) return text;
+    var ck = text + '||' + targetLang;
+    if (AUTO_TRANSLATE_CACHE[ck]) return AUTO_TRANSLATE_CACHE[ck];
+    try {
+      var url = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=auto&tl=' +
+        encodeURIComponent(targetLang) + '&q=' + encodeURIComponent(text);
+      var resp = await fetch(url);
+      var data = await resp.json();
+      if (data && data[0] && data[0][0] && data[0][0][0]) {
+        AUTO_TRANSLATE_CACHE[ck] = data[0][0][0];
+        return data[0][0][0];
+      }
+    } catch (e) {}
+    return text;
+  }
+
+  function autoTranslateMissing(lang, pwaId) {
+    // Ne pas traduire automatiquement les langues déjà couvertes (fr, en)
+    if (lang === 'fr' || lang === 'en') return;
+    var elems = document.querySelectorAll("[data-i18n-missing='true']");
+    var index = 0, BATCH = 6, DELAY = 150;
+    function nextBatch() {
+      if (index >= elems.length) return;
+      var batch = Array.prototype.slice.call(elems, index, index + BATCH); index += BATCH;
+      batch.forEach(function (el) {
+        var original = el.getAttribute("data-i18n-original");
+        if (!original || original.trim().length === 0) {
+          original = el.textContent || el.getAttribute("placeholder") || el.getAttribute("aria-label") || "";
+          el.setAttribute("data-i18n-original", original);
+        }
+        if (!original || original.trim().length === 0) return;
+        googleTranslateText(original, lang).then(function (tr) {
+          if (tr && tr !== original) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+              if (!el.value) el.placeholder = tr;
+            } else {
+              el.textContent = tr;
+            }
+            el.setAttribute("data-i18n-auto", "true");
+            el.removeAttribute("data-i18n-missing");
+            // Petit badge visuel de traduction automatique
+            if (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA") {
+              var badge = document.createElement("span");
+              badge.className = "ks-auto-badge";
+              badge.title = "Traduit automatiquement (non relu) — langue d'origine : " + (el.getAttribute("data-i18n-lang") || lang);
+              badge.textContent = " [auto]";
+              badge.style.fontSize = "0.65em";
+              badge.style.opacity = "0.5";
+              badge.style.marginLeft = "4px";
+              badge.style.whiteSpace = "nowrap";
+              // Évite les doublons
+              if (!el.querySelector(".ks-auto-badge")) el.appendChild(badge);
+            }
+          }
+        }).catch(function () {});
+      });
+      setTimeout(nextBatch, DELAY);
+    }
+    nextBatch();
+  }
+
   /* ========================= Sélecteur de langue ========================= */
   var SELECTOR_CSS = "\
     #ks-lang-selector {\
@@ -347,6 +415,7 @@
     #ks-lang-menu .ks-divider { height: 1px; background: rgba(255,255,255,.1); margin: 8px 0; }\
     #ks-lang-menu .ks-complete { font-size: 11px; opacity: .6; margin-left: 8px; }\
     #ks-lang-menu .ks-missing { color: #ff9999; }\
+    .ks-auto-badge { font-size: 0.65em; opacity: 0.5; margin-left: 4px; white-space: nowrap; }\
   ";
 
   function injectStyle() {
@@ -494,10 +563,12 @@
         loadLang(lang, function () {
           applyTranslations(lang, CURRENT_PWA);
           refreshSelector(lang, CURRENT_PWA);
+          autoTranslateMissing(lang, CURRENT_PWA);
         });
       } else {
         applyTranslations(lang, CURRENT_PWA);
         refreshSelector(lang, CURRENT_PWA);
+        autoTranslateMissing(lang, CURRENT_PWA);
       }
       // Écouter les changements de langue globaux (depuis i18n.js legacy ou autre onglet)
       document.addEventListener("ks-lang-change", function (e) {
