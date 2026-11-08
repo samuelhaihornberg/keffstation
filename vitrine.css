@@ -1473,4 +1473,154 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/* ===== Widget 7 Web Apps — clignotement petit/grand/moyen ===== */
+.apps-widget {
+  padding: clamp(20px, 4vh, 40px) 12px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.apps-widget .widget-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 clamp(20px, 4vh, 30px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(92deg,
+    #ffffff 0%,
+    #ffd23f 12%,
+    #ff69b4 26%,
+    #8a4dff 42%,
+    #1e6bff 56%,
+    #27d17f 70%,
+    #ffffff 84%,
+    #ffd23f 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: widget-title-flow 6s ease-in-out infinite alternate;
+}
+
+@keyframes widget-title-flow {
+  from { background-position: 0% center; }
+  to   { background-position: 100% center; }
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: clamp(12px, 2vw, 20px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-widget {
+  position: relative;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  padding: clamp(12px, 3vw, 18px);
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: app-breathe 4s ease-in-out infinite;
+  animation-fill-mode: both;
+}
+
+.app-widget::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 16px;
+  padding: 3px;
+  background: linear-gradient(90deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
+  background-size: 300% 300%;
+  animation: rainbow-move 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-widget-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.app-icon {
+  font-size: clamp(24px, 6vw, 36px);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.app-name {
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-desc {
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  color: #b9c0e6;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.app-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+/* Délais décalés pour que chaque app clignote à son rythme */
+.app-widget-1 { animation-delay: 0s; }
+.app-widget-2 { animation-delay: 0.5s; }
+.app-widget-3 { animation-delay: 1.0s; }
+.app-widget-4 { animation-delay: 1.5s; }
+.app-widget-5 { animation-delay: 2.0s; }
+.app-widget-6 { animation-delay: 2.5s; }
+.app-widget-7 { animation-delay: 3.0s; }
+
+@keyframes app-breathe {
+  0%   { transform: scale(0.85); opacity: 0.7; }
+  25%  { transform: scale(1.15); opacity: 1; }
+  50%  { transform: scale(1.0); opacity: 0.85; }
+  75%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.7; }
+}
+
+@keyframes rainbow-move {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Accessibilité : réduire les animations si demandé */
+@media (prefers-reduced-motion: reduce) {
+  .app-widget {
+    animation: none;
+    transform: scale(1);
+    opacity: 1;
+  }
+  .app-widget::before {
+    animation: none;
+  }
+  .apps-widget .widget-title {
+    animation: none;
+  }
+}
+
 /* cache bust v16 */

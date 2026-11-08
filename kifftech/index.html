@@ -238,6 +238,10 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 </script>
 
 <script defer src="../i18n.js"></script>
+<!-- Configuration Shopify Headless (à remplir : voir shopify-config.example.js) -->
+<script defer src="./shopify-config.js" onerror="console.warn('[Shopify] shopify-config.js absent — copiez shopify-config.example.js et remplissez vos réglages')"></script>
+<!-- Client Storefront API publique (jeton public uniquement, aucun secret) -->
+<script defer src="./shopify-storefront.js"></script>
 </head>
 <body>
 <div class="app">

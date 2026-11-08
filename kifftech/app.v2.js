@@ -179,11 +179,14 @@ const LOCAL_DB = [
 // ============ STATE ============
 let products = [...LOCAL_DB];
 let filteredProducts = [...LOCAL_DB];
+let shopifyProducts = [];
+let shopifyReady = false;
+let shopifyCartId = null;
 let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort = 'relevance', activeEra = 'all';
 let activeSources = {official:true, social:true, reviews:true, community:true};
 let searchQuery = '', isFetching = false;
 
-let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], get isPromoEligible() { return this.cartItems.reduce((n,i)=>n+(Number(i.qty)||1),0) >= 10; } };
+let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], shopifyCartId: null, shopifyCheckoutUrl: null, get isPromoEligible() { return this.cartItems.reduce((n,i)=>n+(Number(i.qty)||1),0) >= 10; } };
 
 // ============ UTILITIES ============
 function $(sel, ctx=document){return ctx.querySelector(sel)}
@@ -437,11 +440,39 @@ function restoreCart(){
 }
 function addToCart(id,qty=1){
   const p=products.find(x=>x.id===id);if(!p)return;
+  // Produit Shopify : panier géré par Shopify Storefront API (checkoutUrl)
+  if(p.shopify && window.KiShopify && window.KiShopify.isConfigured()){
+    addToShopifyCart(p.id, qty);
+    return;
+  }
   const line=userContext.cartItems.find(i=>i.id===id);
   if(line)line.qty=Math.min(99,(Number(line.qty)||1)+qty);
   else userContext.cartItems.push({...p,qty:Math.max(1,Math.min(99,qty))});
   refreshKiffTechPrices();renderProducts();updateCartPanel();updateCartBadge();saveCart();
   toast(`${p.model} — ${line?'quantité mise à jour':'ajouté à la caisse'}`,'success');
+}
+
+async function addToShopifyCart(id,qty=1){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  const v = p.defaultVariant || (p.variants && p.variants[0]);
+  if(!v){ toast('Aucune variante disponible pour ce produit','warning'); return; }
+  try {
+    const line = { variantId: v.shopifyVariantId, quantity: Number(qty)||1, attributes: [{key:'source',value:'KiffTech'},{key:'boutique',value:'KiffTech'}] };
+    let res;
+    if(userContext.shopifyCartId){
+      res = await window.KiShopify.addLinesToCart(userContext.shopifyCartId, [line]);
+    } else {
+      res = await window.KiShopify.createCart([line]);
+      userContext.shopifyCartId = res.cartId;
+    }
+    userContext.shopifyCheckoutUrl = res.checkoutUrl;
+    // Ne pas ajouter au panier local KiffTech pour les produits Shopify (panier séparé)
+    toast(`${p.model} ajouté au panier Shopify`,'success');
+    updateCartBadge();
+  } catch(e){
+    console.warn('[Shopify] Échec ajout panier:', e.message);
+    toast('Impossible d\'ajouter au panier Shopify — réessayez','error');
+  }
 }
 function removeFromCart(id){
   userContext.cartItems=userContext.cartItems.filter(i=>i.id!==id);
@@ -860,6 +891,42 @@ async function loadPartnerProducts(){
   } catch (e) { console.log('Catalogue partenaire indisponible, local uniquement'); }
 }
 
+// ============ SHOPIFY HEADLESS (Storefront API publique) ============
+async function loadShopifyProducts() {
+  if (!window.KiShopify || !window.KiShopify.isConfigured()) {
+    console.log('[Shopify] Non configuré — produits locaux uniquement');
+    return;
+  }
+  try {
+    toast('Chargement des produits Shopify…', 'info');
+    const nodes = await window.KiShopify.loadAllProducts();
+    const existingIds = new Set(products.map(p => p.id));
+    let added = 0;
+    for (const node of nodes) {
+      const kp = window.KiShopify.toKifftechProduct(node);
+      if (existingIds.has(kp.id)) continue; // évite les doublons
+      // Prix sous contrôle de Shopify : pas de remise KiffTech inventée ici
+      kp.kifftech = { official: kp.price.official, kifftech: kp.price.official, discount: 0, savings: 0, freeDelivery: false, reason: 'Prix Shopify', currency: kp.price.currency || 'EUR' };
+      products.push(kp);
+      existingIds.add(kp.id);
+      added++;
+    }
+    shopifyProducts = nodes;
+    shopifyReady = true;
+    filteredProducts = [...products];
+    if (added) {
+      renderFilters();
+      applyFilters();
+      toast(`${added} produits Shopify importés`, 'success');
+    } else {
+      toast('Shopify connecté — aucun nouveau produit', 'info');
+    }
+  } catch (e) {
+    console.warn('[Shopify] Échec chargement produits:', e.message);
+    toast('Shopify indisponible, produits locaux utilisés', 'warning');
+  }
+}
+
 // ============ FILTERS ============
 function applyFilters(){filteredProducts=products.filter(p=>{if(!(p.images&&p.images.length))return false;if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
 function renderFilters(){const cats=['all',...new Set(products.map(p=>p.category))];$('#filter-category').innerHTML=cats.map(c=>`<button class="filter-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c==='all'?'Toutes':c}</button>`).join('');const ss=$('#sort-select');if(ss)ss.value=activeSort;const years=['all',...[...new Set(products.map(p=>p.year))].sort((a,b)=>b-a)];$('#filter-year').innerHTML=years.map(y=>`<button class="filter-btn ${y===activeYear?'active':''}" data-year="${y}">${y==='all'?'Toutes':y}</button>`).join('');const brands=['all',...[...new Set(products.map(p=>p.brand))].sort()];$('#filter-brand').innerHTML=brands.map(b=>`<button class="filter-btn ${b===activeBrand?'active':''}" data-brand="${b}">${b==='all'?'Toutes':b}</button>`).join('');const eras=[['all','Tous'],['retro','🕹️ Rétro'],['modern','🚀 Modernes']];const fe=$('#filter-era');if(fe)fe.innerHTML=eras.map(([v,l])=>`<button class="filter-btn ${v===activeEra?'active':''}" data-era="${v}">${l}</button>`).join('');}
@@ -952,6 +1019,7 @@ function init(){
     loadProducts();
     console.log('[KiffTech] loadProducts called');
     loadPartnerProducts();
+    loadShopifyProducts();
     initEvents();
     console.log('[KiffTech] initEvents done');
     initParticles();
