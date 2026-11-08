@@ -1800,6 +1800,29 @@ section {
   animation: bioluminescent-or 3s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 2;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, #070816 70%);
+}
+
+/* Pointe centrale des aiguilles d'horloge */
+.ring-core::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  margin-left: -7px;
+  background: #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00;
+  z-index: 3;
+  animation: pulse-center 2s ease-in-out infinite;
+}
+
+@keyframes pulse-center {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
 }
 
 .app-ring-button {
@@ -1827,6 +1850,28 @@ section {
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
+/* Aiguille d'horloge — ligne radiale reliant le centre à chaque app */
+.app-ring-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 100px; /* longueur de l'aiguille depuis le centre jusqu'à l'app */
+  background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
+  transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
+  transform-origin: top center;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.app-ring-button:hover::before {
+  height: 115px;
+  background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
+  box-shadow: 0 0 20px rgba(255, 242, 0, 0.7);
+}
+
 .app-ring-button:hover {
   background: rgba(255, 215, 0, 0.25);
   border-color: #fff200;
@@ -1840,6 +1885,8 @@ section {
   display: block;
   line-height: 1;
   filter: drop-shadow(0 0 8px #ffd700);
+  position: relative;
+  z-index: 2;
 }
 
 .app-ring-title {
@@ -1852,6 +1899,8 @@ section {
   letter-spacing: 0.02em;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   white-space: normal;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes clock-rainbow {
