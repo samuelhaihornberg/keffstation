@@ -930,64 +930,62 @@ html { scroll-behavior: smooth; }
   justify-content: center;
   width: 100vw;
   max-width: 100vw;
-  height: 70dvh;
-  min-height: 500px;
-  padding: clamp(16px, 4vh, 40px) 0;
+  height: 80dvh;
+  min-height: 600px;
+  padding: clamp(20px, 5vh, 50px) 0;
   overflow: visible;
-  isolation: isolate;
   text-align: center;
+  background: #070816;
 }
 
 .hero-video .hero-title {
   margin: 0 0 12px 0;
-  font-size: clamp(2rem, 6vw, 4rem);
+  font-size: clamp(2.5rem, 8vw, 5rem);
   font-weight: 900;
-  z-index: 3;
   position: relative;
+  z-index: 4;
 }
 
 .hero-video .video-title {
-  margin: 0 0 16px 0;
-  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  margin: 0 0 20px 0;
+  font-size: clamp(1.3rem, 4vw, 2.2rem);
   font-weight: 600;
   color: #c9d1f2;
-  z-index: 3;
   position: relative;
+  z-index: 4;
 }
 
 .hero-video .video-frame {
   position: relative;
-  width: 85vw;
-  max-width: 900px;
+  width: 92vw;
+  max-width: 1200px;
   height: auto;
   aspect-ratio: 16 / 9;
-  max-height: 45dvh;
-  overflow: hidden;
-  border-radius: clamp(14px, 2.4vw, 24px);
+  max-height: 55dvh;
+  overflow: visible;
+  border-radius: clamp(16px, 3vw, 32px);
   background: #000;
-  border: 4px solid #ffd700;
+  border: 6px solid #ffd700;
   box-shadow:
-    0 0 30px #ffd700,
-    0 0 65px #ffaa00,
-    0 0 100px #ffd700,
-    inset 0 0 35px #ffd700,
-    0 24px 70px -30px #000;
+    0 0 40px #ffd700,
+    0 0 80px #ffaa00,
+    0 0 120px #ffd700,
+    inset 0 0 40px #ffd700;
   animation: bioluminescent-or 4s ease-in-out infinite alternate;
-  isolation: isolate;
 }
 
 .hero-video .video-frame::after {
   content: "";
   position: absolute;
-  inset: -8px;
+  inset: -10px;
   border-radius: inherit;
-  border: 3px solid transparent;
+  border: 4px solid transparent;
   background: linear-gradient(45deg, #ffd700, #fff200, #ffd700, #ffaa00, #ffd700) border-box;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
-  z-index: 10;
-  animation: or-miroitement-carre 2.5s linear infinite;
+  z-index: 12;
+  animation: or-miroitement-carre 2s linear infinite;
   pointer-events: none;
 }
 
@@ -996,7 +994,7 @@ html { scroll-behavior: smooth; }
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, .12) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, .15) 0%, transparent 75%);
   z-index: 1;
   pointer-events: none;
 }
@@ -1004,7 +1002,7 @@ html { scroll-behavior: smooth; }
 .hero-video .video-frame-media {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
   display: block;
   width: 100%;
   height: 100%;
@@ -1014,24 +1012,24 @@ html { scroll-behavior: smooth; }
 }
 
 .hero-video .hero-tagline {
-  margin: 18px 0 0 0;
-  font-size: clamp(1.3rem, 4vw, 2.2rem);
+  margin: 24px 0 0 0;
+  font-size: clamp(1.5rem, 5vw, 2.8rem);
   font-weight: 700;
   background: linear-gradient(90deg,#1e6bff,#00d4ff,#27d17f);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  z-index: 3;
   position: relative;
+  z-index: 4;
 }
 
 .hero-video .scroll-cue {
-  margin-top: 24px;
+  margin-top: 30px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  z-index: 3;
   position: relative;
+  z-index: 4;
 }
 
 @keyframes bioluminescent-or {
