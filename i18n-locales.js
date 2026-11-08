@@ -1,17 +1,11 @@
 /*!
- * KeffStation i18n Orchestrateur — Agent unique de traduction multi-PWA
- *
- * Rôles :
- *  - Charge les fichiers de langue locales/XX.json (versionnés pour le cache hors ligne)
- *  - Scanne le DOM ([data-i18n, data-i18n-html, data-i18n-title, …]) et applique les traductions
- *  - Fallback : fichier JSON par domaine → DICT_LEGACY (ancien dictionnaire) → clé originale
- *  - Traduction auto Google pour les langues non couvertes (marquée visuellement [auto], langue d'origine indiquée)
- *  - Mémorise le choix de langue par PWA (localStorage) + conserve à la navigation/réouverture
- *  - Gère l'affichage droite-à-gauche (arabe, hébreu) via dir="rtl" + CSS dédié
- *  - Un seul sélecteur de langue accessible, réutilisé par toutes les PWA liées
- *
- * Aucun service externe payant n'est appelé. La traduction automatique Google est un fallback
- * gratuit et est clairement signalée comme non relue.
+ * KeffStation i18n Orchestrateur — Traduction humaine uniquement
+ * - Un seul sélecteur de langue (fr / en) pour toute la plateforme et toutes les PWA liées
+ * - Choix mémorisé (localStorage), conservé à la navigation, au rafraîchissement et à la réouverture
+ * - Traduction immédiate au clic sur toutes les pages
+ * - Pas de traduction automatique : seules fr et en sont proposées (traduites humainement)
+ * - Fallback : si une clé manque, la clé originale s'affiche (jamais de page vide)
+ * - Toutes les PWA gardent leur identité, aucun merge
  */
 
 (function () {
@@ -22,23 +16,31 @@
   var STORAGE_KEY_PWA = "keffstation_lang_"; // préfixé par l'id de la PWA
   var CACHE_BUST = "?v=1.0.0";
   var DEFAULT_LANG = "fr";
-  var FALLBACK = ["fr", "en"];
-  var RTL_LANGS = ["ar", "he"];
+  var SUPPORTED = ["fr", "en"]; // seules les langues traduites humainement
+  var RTL_LANGS = []; // aucune RTL pour l'instant (fr/en uniquement)
 
-  var BASE_PATH = (typeof window !== "undefined" && window.__I18N_BASE_PATH)
-    ? window.__I18N_BASE_PATH
-    : "./";
+  /* Chemin de la racine du site : détecté depuis l'URL du script i18n.js */
+  var BASE_PATH = "./";
+  (function () {
+    var scriptEl = document.querySelector('script[src*="i18n.js"]');
+    if (scriptEl && scriptEl.src) {
+      // ex: https://samuelhaihornberg.github.io/keffstation/i18n.js
+      // ou depuis sous-dossier: .../kifftech/../i18n.js -> résolu par le navigateur en .../keffstation/i18n.js
+      BASE_PATH = scriptEl.src.replace(/\/[^\/]*$/, '/');
+    }
+  })();
+
   var LOCALES_URL = BASE_PATH + "locales/";
 
   /* ========================= État ========================= */
   var DICT = {};        // { lang: { domain: { key: value } } }
-  var LANG_META = {};   // { code: {name, native, dir, flag, complete, reviewed} }
-  var LOADED = {};      // { lang: boolean }
+  var LANG_META = {
+    fr: { name: "Français", native: "Français", dir: "ltr", flag: "🇫🇷", complete: true, reviewed: true },
+    en: { name: "English", native: "English", dir: "ltr", flag: "🇺🇸", complete: true, reviewed: true }
+  };
+  var LOADED = { fr: false, en: false };
   var CURRENT_LANG = DEFAULT_LANG;
   var CURRENT_PWA = "keffstation";
-  var AUTO_TRANSLATE_CACHE = {};
-  var RTLCSS_INJECTED = false;
-  var RTL_CSS_URL = LOCALES_URL + "rtl.css" + CACHE_BUST;
 
   /* ========================= Détection PWA ========================= */
   function detectPWA() {
@@ -59,36 +61,7 @@
     return "keffstation";
   }
 
-  /* ========================= Chargement métadonnées ========================= */
-  function loadLocalesMeta(callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", LOCALES_URL + "locales.json" + CACHE_BUST, true);
-    xhr.onload = function () {
-      if (xhr.status === 200 || xhr.status === 0) {
-        try {
-          var meta = JSON.parse(xhr.responseText);
-          LANG_META = meta.locales || {};
-          RTL_LANGS = meta.rtl || RTL_LANGS;
-        } catch (e) {}
-      }
-      SUPPORTED = Object.keys(LANG_META);
-      if (SUPPORTED.length === 0) {
-        SUPPORTED = [DEFAULT_LANG, "en"];
-      }
-      CURRENT_PWA = detectPWA();
-      if (callback) callback();
-    };
-    xhr.onerror = function () {
-      SUPPORTED = [DEFAULT_LANG, "en"];
-      CURRENT_PWA = detectPWA();
-      if (callback) callback();
-    };
-    xhr.send();
-  }
-
-  var SUPPORTED = [DEFAULT_LANG, "en"];
-
-  /* ========================= Chargement fichier de langue ========================= */
+  /* ========================= Chargement des fichiers de langue ========================= */
   function loadLang(lang, callback) {
     if (LOADED[lang]) {
       if (callback) callback(lang);
@@ -118,28 +91,31 @@
     xhr.send();
   }
 
+  /* Pré-charger fr et en dès le départ */
+  loadLang("fr");
+  loadLang("en");
+
   /* ========================= Sélection de langue ========================= */
   function getLang(pwaId) {
     pwaId = pwaId || CURRENT_PWA || "keffstation";
     var key = STORAGE_KEY_PWA + pwaId;
     try {
       var saved = localStorage.getItem(key);
-      if (saved && SUPPORTED.indexOf(saved.slice(0, 2).toLowerCase()) !== -1) {
-        return saved.slice(0, 2).toLowerCase();
+      if (saved && SUPPORTED.indexOf(saved) !== -1) {
+        return saved;
       }
       var global = localStorage.getItem(STORAGE_KEY);
-      if (global && SUPPORTED.indexOf(global.slice(0, 2).toLowerCase()) !== -1) {
-        return global.slice(0, 2).toLowerCase();
+      if (global && SUPPORTED.indexOf(global) !== -1) {
+        return global;
       }
     } catch (e) {}
     var nav = (navigator.language || navigator.userLanguage || "").slice(0, 2).toLowerCase();
-    if (nav && SUPPORTED.indexOf(nav) !== -1) return nav;
+    if (SUPPORTED.indexOf(nav) !== -1) return nav;
     return DEFAULT_LANG;
   }
 
   function setLang(lang, pwaId) {
     pwaId = pwaId || CURRENT_PWA || "keffstation";
-    lang = lang.slice(0, 2).toLowerCase();
     if (SUPPORTED.indexOf(lang) === -1) lang = DEFAULT_LANG;
 
     var key = STORAGE_KEY_PWA + pwaId;
@@ -149,11 +125,11 @@
     CURRENT_LANG = lang;
     applyDirection(lang);
 
+    // Charger la langue si nécessaire, puis appliquer immédiatement
     if (!LOADED[lang]) {
       loadLang(lang, function () {
         applyTranslations(lang, pwaId);
         refreshSelector(lang, pwaId);
-        autoTranslateMissing(lang, pwaId);
         document.dispatchEvent(new CustomEvent("ks-lang-change", {
           detail: { lang: lang, pwa: pwaId }
         }));
@@ -161,7 +137,6 @@
     } else {
       applyTranslations(lang, pwaId);
       refreshSelector(lang, pwaId);
-      autoTranslateMissing(lang, pwaId);
       document.dispatchEvent(new CustomEvent("ks-lang-change", {
         detail: { lang: lang, pwa: pwaId }
       }));
@@ -170,29 +145,17 @@
 
   /* ========================= Direction RTL / LTR ========================= */
   function applyDirection(lang) {
-    var isRTL = RTL_LANGS.indexOf(lang) !== -1;
     var html = document.documentElement;
     html.lang = lang;
-    if (isRTL) {
+    if (RTL_LANGS.indexOf(lang) !== -1) {
       html.setAttribute("dir", "rtl");
+      document.body.classList.add("dir-rtl");
+      document.body.classList.remove("dir-ltr");
     } else {
       html.removeAttribute("dir");
+      document.body.classList.add("dir-ltr");
+      document.body.classList.remove("dir-rtl");
     }
-    document.body.classList.remove("dir-rtl", "dir-ltr");
-    document.body.classList.add(isRTL ? "dir-rtl" : "dir-ltr");
-    if (isRTL && !RTLCSS_INJECTED) {
-      injectRTLCSS();
-      RTLCSS_INJECTED = true;
-    }
-  }
-
-  function injectRTLCSS() {
-    if (document.getElementById("ks-rtl-style")) return;
-    var link = document.createElement("link");
-    link.id = "ks-rtl-style";
-    link.rel = "stylesheet";
-    link.href = RTL_CSS_URL;
-    (document.head || document.documentElement).appendChild(link);
   }
 
   /* ========================= Fonction de traduction t() ========================= */
@@ -200,7 +163,7 @@
     lang = lang || CURRENT_LANG || DEFAULT_LANG;
     domain = domain || "system";
 
-    // 1. Fichier de langue chargé (domaine courant)
+    // 1. Nouveau fichier de langue (domaine courant)
     var langDict = DICT[lang];
     if (langDict && langDict[domain] && langDict[domain][key] !== undefined) {
       return langDict[domain][key];
@@ -212,32 +175,27 @@
         return sysDict.system[key];
       }
     }
-    // 3. Langues de repli (fichiers JSON)
-    for (var i = 0; i < FALLBACK.length; i++) {
-      var fb = FALLBACK[i];
-      if (fb === lang) continue;
-      var fbDict = DICT[fb];
-      if (fbDict && fbDict[domain] && fbDict[domain][key] !== undefined) {
-        return fbDict[domain][key];
-      }
-      if (domain !== "system") {
-        var fbSys = DICT[fb];
-        if (fbSys && fbSys.system && fbSys.system[key] !== undefined) {
-          return fbSys.system[key];
-        }
+    // 3. Fallback sur l'autre langue supportée (fr <-> en)
+    var other = (lang === "fr") ? "en" : "fr";
+    var otherDict = DICT[other];
+    if (otherDict && otherDict[domain] && otherDict[domain][key] !== undefined) {
+      return otherDict[domain][key];
+    }
+    if (domain !== "system") {
+      var otherSys = DICT[other];
+      if (otherSys && otherSys.system && otherSys.system[key] !== undefined) {
+        return otherSys.system[key];
       }
     }
-    // 4. Ancien dictionnaire i18n.js (DICT_LEGACY) — toutes les clés, toutes les langues
+    // 4. Ancien dictionnaire i18n.js (DICT_LEGACY) — toutes les clés
     if (window.DICT_LEGACY) {
       var legacy = window.DICT_LEGACY[key];
       if (legacy) {
         if (legacy[lang] !== undefined) return legacy[lang];
-        for (var j = 0; j < FALLBACK.length; j++) {
-          if (legacy[FALLBACK[j]] !== undefined) return legacy[FALLBACK[j]];
-        }
+        if (legacy[other] !== undefined) return legacy[other];
       }
     }
-    // 5. Clé elle-même (pas de page vide ; autoTranslateMissing complète pour les autres langues)
+    // 5. Clé elle-même (jamais de page vide)
     return key;
   }
 
@@ -280,10 +238,6 @@
         }
       }
       el.setAttribute("data-i18n-lang", lang);
-      el.removeAttribute("data-i18n-missing");
-      if (val === key) {
-        el.setAttribute("data-i18n-missing", "true");
-      }
     });
 
     document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
@@ -302,76 +256,6 @@
     document.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
       el.setAttribute("aria-label", resolveValue(el.getAttribute("data-i18n-aria"), lang, domains));
     });
-  }
-
-  /* ========================= Traduction auto fallback (Google) ========================= */
-  function googleTranslateText(text, targetLang) {
-    if (!text || text.trim().length === 0) return text;
-    var ck = text + '||' + targetLang;
-    if (AUTO_TRANSLATE_CACHE[ck]) return AUTO_TRANSLATE_CACHE[ck];
-    try {
-      var url = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=auto&tl=' +
-        encodeURIComponent(targetLang) + '&q=' + encodeURIComponent(text);
-      // fetch est utilisé ici ; pas de clé API, service gratuit, résultat marqué non relu
-      return fetch(url).then(function (resp) {
-        return resp.json();
-      }).then(function (data) {
-        if (data && data[0] && data[0][0] && data[0][0][0]) {
-          AUTO_TRANSLATE_CACHE[ck] = data[0][0][0];
-          return data[0][0][0];
-        }
-        return text;
-      }).catch(function () {
-        return text;
-      });
-    } catch (e) {
-      return Promise.resolve(text);
-    }
-  }
-
-  function autoTranslateMissing(lang, pwaId) {
-    if (lang === 'fr' || lang === 'en') return; // traductions rédigées prioritaires
-    var elems = document.querySelectorAll("[data-i18n-missing='true']");
-    var index = 0, BATCH = 6, DELAY = 200;
-    function nextBatch() {
-      if (index >= elems.length) return;
-      var batch = Array.prototype.slice.call(elems, index, index + BATCH); index += BATCH;
-      batch.forEach(function (el) {
-        var original = el.getAttribute("data-i18n-original");
-        if (!original) {
-          original = el.textContent || el.getAttribute("placeholder") || el.getAttribute("aria-label") || "";
-          el.setAttribute("data-i18n-original", original);
-        }
-        if (!original || original.trim().length === 0) return;
-        googleTranslateText(original, lang).then(function (tr) {
-          if (tr && tr !== original) {
-            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-              if (!el.value) el.placeholder = tr;
-            } else {
-              el.textContent = tr;
-            }
-            el.setAttribute("data-i18n-auto", "true");
-            el.removeAttribute("data-i18n-missing");
-            if (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA") {
-              if (!el.querySelector(".ks-auto-badge")) {
-                var badge = document.createElement("span");
-                badge.className = "ks-auto-badge";
-                badge.title = "Traduit automatiquement (non relu) — langue d'origine : " +
-                  (el.getAttribute("data-i18n-lang") || lang);
-                badge.textContent = " [auto]";
-                badge.style.fontSize = "0.65em";
-                badge.style.opacity = "0.5";
-                badge.style.marginLeft = "4px";
-                badge.style.whiteSpace = "nowrap";
-                el.appendChild(badge);
-              }
-            }
-          }
-        });
-      });
-      setTimeout(nextBatch, DELAY);
-    }
-    nextBatch();
   }
 
   /* ========================= Sélecteur de langue (unique) ========================= */
@@ -408,8 +292,8 @@
     #ks-lang-menu {\
       position: absolute; top: 100%; right: 0; margin-top: 8px;\
       background: rgba(8,9,22,.96); border: 1px solid rgba(255,255,255,.22);\
-      border-radius: 16px; padding: 10px; min-width: 300px; z-index: 10001;\
-      display: none; box-shadow: 0 12px 48px rgba(0,0,0,.55); overflow-y: auto; max-height: 70vh;\
+      border-radius: 16px; padding: 10px; min-width: 260px; z-index: 10001;\
+      display: none; box-shadow: 0 12px 48px rgba(0,0,0,.55); overflow-y: auto; max-height: 60vh;\
       direction: ltr;\
     }\
     [dir=rtl] #ks-lang-menu { left: 0; right: auto; }\
@@ -425,10 +309,6 @@
     #ks-lang-menu .ks-option.ks-active { background: rgba(255,210,63,.18); color: #ffd23f; border: 1px solid #ffd23f; }\
     #ks-lang-menu .ks-option .ks-flag { font-size: 20px; min-width: 28px; text-align: center; }\
     #ks-lang-menu .ks-option .ks-name { flex: 1; font-weight: 600; }\
-    #ks-lang-menu .ks-divider { height: 1px; background: rgba(255,255,255,.1); margin: 8px 0; }\
-    #ks-lang-menu .ks-complete { font-size: 11px; opacity: .6; margin-left: 8px; }\
-    #ks-lang-menu .ks-missing { color: #ff9999; }\
-    .ks-auto-badge { font-size: 0.65em; opacity: 0.5; margin-left: 4px; white-space: nowrap; }\
   ";
 
   function injectStyle() {
@@ -483,13 +363,6 @@
       var n = document.createElement("span");
       n.className = "ks-name";
       n.textContent = (LANG_META[code] && LANG_META[code].native) || code;
-      if (LANG_META[code] && !LANG_META[code].complete) {
-        var badge = document.createElement("span");
-        badge.className = "ks-complete ks-missing";
-        badge.title = "Traduction incomplète — fallback / auto-traduction";
-        badge.textContent = "⚠";
-        n.appendChild(badge);
-      }
       item.appendChild(f);
       item.appendChild(n);
       item.addEventListener("click", function (e) {
@@ -548,23 +421,21 @@
 
   /* ========================= Init ========================= */
   function init() {
-    loadLocalesMeta(function () {
-      CURRENT_PWA = detectPWA();
-      var lang = getLang(CURRENT_PWA);
-      applyDirection(lang);
-      injectSelector(lang, CURRENT_PWA);
-      if (!LOADED[lang]) {
-        loadLang(lang, function () {
-          applyTranslations(lang, CURRENT_PWA);
-          refreshSelector(lang, CURRENT_PWA);
-          autoTranslateMissing(lang, CURRENT_PWA);
-        });
-      } else {
+    CURRENT_PWA = detectPWA();
+    var lang = getLang(CURRENT_PWA);
+    applyDirection(lang);
+    injectSelector(lang, CURRENT_PWA);
+
+    // Appliquer immédiatement la langue sauvegardée ou par défaut
+    if (!LOADED[lang]) {
+      loadLang(lang, function () {
         applyTranslations(lang, CURRENT_PWA);
         refreshSelector(lang, CURRENT_PWA);
-        autoTranslateMissing(lang, CURRENT_PWA);
-      }
-    });
+      });
+    } else {
+      applyTranslations(lang, CURRENT_PWA);
+      refreshSelector(lang, CURRENT_PWA);
+    }
   }
 
   if (document.readyState === "loading") {
@@ -579,11 +450,13 @@
     getLang: getLang,
     t: t,
     apply: applyTranslations,
-    getPWA: function () { return CURRENT_PWA; },
-    isRTL: function (lang) { return RTL_LANGS.indexOf(lang !== undefined ? lang : CURRENT_LANG) !== -1; }
+    getPWA: function () { return CURRENT_PWA; }
   };
 
-  // Compatibilité si un autre script appelle window.ksI18nLocales
+  // Compatibilité avec d'éventuels anciens appels
   window.ksI18nLocales = window.ksI18n;
+
+  // Log de débogage visible dans la console
+  console.log("[KeffStation i18n] Orchestrateur chargé — PWA: " + CURRENT_PWA + ", Langue: " + CURRENT_LANG);
 
 })();
