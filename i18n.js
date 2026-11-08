@@ -5032,10 +5032,14 @@
     document.documentElement.lang = lang;
     translationCache = {};
     translating = {};
-    await applyTranslations(lang);
-    await applyTranslationsGoogle(lang);
+    // Traduction statique d'abord (synchrone, immédiate)
+    applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
+    // Traduction Google en arrière-plan, non-bloquante
+    applyTranslationsGoogle(lang).catch(function (e) {
+      console.warn("[i18n] Google translate background failed:", e.message);
+    });
   }
 
   function getCurrency() {
@@ -5136,54 +5140,73 @@
     var SELECTOR_CSS = "\    #ks-lang-selector {\
       position: fixed; top: 10px; right: 10px; z-index: 2100;\
       font: 700 13px/1.2 system-ui,sans-serif;\
+      user-select: none;\
+      -webkit-user-select: none;\
     }\    #ks-lang-toggle {\
       position: relative;\
       background: rgba(10,12,34,.92);\
       border: 1px solid rgba(255,255,255,.2);\
-      border-radius: 12px;\
-      padding: 8px 12px;\
+      border-radius: 14px;\
+      padding: 10px 14px;\
       color: #f4f6ff;\
       cursor: pointer;\
-      backdrop-filter: blur(6px);\
+      backdrop-filter: blur(8px);\
+      -webkit-backdrop-filter: blur(8px);\
       display: inline-flex;\
       align-items: center;\
-      gap: 8px;\
-      min-width: 44px;\
+      gap: 10px;\
+      min-width: 52px;\
+      min-height: 52px;\
+      touch-action: manipulation;\
+      -webkit-tap-highlight-color: transparent;\
     }\    #ks-lang-toggle .ks-flag {\
-      font-size: 20px; line-height: 1;\
+      font-size: 22px; line-height: 1;\
     }\    #ks-lang-toggle .ks-arrow {\
-      font-size: 12px; color: #b9c0e6; transition: transform .2s;\
+      font-size: 11px; color: #b9c0e6; transition: transform .2s ease;\
+      margin-left: 4px;\
     }\    #ks-lang-toggle.open .ks-arrow {\
       transform: rotate(180deg);\
     }\    #ks-lang-toggle.open {\
-      border-color: #ffd23f; box-shadow: 0 0 16px rgba(255,210,63,.3);\
+      border-color: #ffd23f; box-shadow: 0 0 20px rgba(255,210,63,.35);\
+    }\    #ks-lang-toggle:active {\
+      background: rgba(255,255,255,.08);\
     }\    #ks-lang-menu {\
-      position: absolute; top: 100%; right: 0; margin-top: 6px;\
-      background: rgba(10,12,34,.95);\
-      border: 1px solid rgba(255,255,255,.2);\
-      border-radius: 12px; padding: 6px;\
-      backdrop-filter: blur(8px);\
-      min-width: 260px; z-index: 2101; display: none;\
-      box-shadow: 0 8px 32px rgba(0,0,0,.6);\
+      position: absolute; top: 100%; right: 0; margin-top: 8px;\
+      background: rgba(8,9,22,.96);\
+      border: 1px solid rgba(255,255,255,.22);\
+      border-radius: 16px; padding: 10px;\
+      backdrop-filter: blur(10px);\
+      -webkit-backdrop-filter: blur(10px);\
+      min-width: 300px; z-index: 2101; display: none;\
+      box-shadow: 0 12px 48px rgba(0,0,0,.55);\
+      overflow-y: auto; max-height: 70vh;\
+      overscroll-behavior: contain;\
     }\    #ks-lang-toggle.open + #ks-lang-menu, #ks-lang-menu.visible { display: block; }\
     #ks-lang-menu .ks-section-title {\
       font: 700 11px/1.2 system-ui,sans-serif; color: #ffd23f;\
-      padding: 6px 8px 2px 8px; text-transform: uppercase; letter-spacing: .08em;\
+      padding: 8px 12px 4px 12px; text-transform: uppercase; letter-spacing: .1em;\
+      color: #ffd23f; opacity: .9;\
     }\    #ks-lang-menu .ks-option {\
-      display: flex; align-items: center; gap: 10px;\
-      padding: 8px 10px; border-radius: 8px;\
-      color: #f4f6ff; cursor: pointer; font: 500 13px/1.2 system-ui,sans-serif;\
-      white-space: nowrap;\
-    }\    #ks-lang-menu .ks-option:hover {\
-      background: rgba(255,255,255,.1);\
+      display: flex; align-items: center; gap: 12px;\
+      padding: 12px 14px; border-radius: 12px;\
+      color: #f4f6ff; cursor: pointer; font: 500 14px/1.3 system-ui,sans-serif;\
+      white-space: nowrap; touch-action: manipulation;\
+      -webkit-tap-highlight-color: transparent;\
+      transition: background .15s ease, border-color .15s ease;\
+    }\    #ks-lang-menu .ks-option:hover,\
+    #ks-lang-menu .ks-option:focus-visible {\
+      background: rgba(255,255,255,.08); outline: 2px solid #ffd23f; outline-offset: -2px;\
     }\    #ks-lang-menu .ks-option.ks-active {\
-      background: rgba(255,210,63,.15); color: #ffd23f; border: 1px solid rgba(255,210,63,.3);\
+      background: rgba(255,210,63,.16); color: #ffd23f; border: 1px solid rgba(255,210,63,.35);\
     }\    #ks-lang-menu .ks-option .ks-flag {\
-      font-size: 18px; line-height: 1; min-width: 24px;\
+      font-size: 20px; line-height: 1; min-width: 28px; text-align: center;\
     }\    #ks-lang-menu .ks-option .ks-name {\
-      flex: 1;\
+      flex: 1; font-weight: 600;\
     }\    #ks-lang-menu .ks-divider {\
-      height: 1px; background: rgba(255,255,255,.1); margin: 6px 0;\
+      height: 1px; background: rgba(255,255,255,.1); margin: 8px 0;\
+    }\    #ks-lang-menu .ks-loading {\
+      font: 400 12px/1.4 system-ui,sans-serif; color: #b9c0e6;\
+      padding: 10px 12px; text-align: center; opacity: .7;\
     }\  ";
 
   function injectStyle() {
@@ -5377,7 +5400,7 @@
           if (n.nodeType === 1 && (n.hasAttribute && n.hasAttribute("data-i18n"))) need = true;
         });
       });
-      if (need) { var curLang = getLang(); await applyTranslations(curLang); await applyTranslationsGoogle(curLang); }
+      if (need) { var curLang = getLang(); applyTranslations(curLang); applyTranslationsGoogle(curLang).catch(function(){}); }
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
@@ -5421,6 +5444,7 @@
     var cacheTraduction = {};
     try { cacheTraduction = JSON.parse(localStorage.getItem(STORAGE_TRADUCTION) || "{}"); } catch (e) {}
     var dirty = false;
+    var pending = [];
     for (var i = 0; i < fallbackElems.length; i++) {
       (function (el) {
         var key = el.getAttribute("data-i18n");
@@ -5436,26 +5460,40 @@
             if (cacheTraduction[cacheKey]) {
               el.textContent = cacheTraduction[cacheKey];
             } else {
-              dirty = true;
-              googleTranslate(original, lang).then(function (translated, elRef, ck) {
-                return function () {
-                  elRef.textContent = translated;
-                  cacheTraduction[ck] = translated;
-                  try { localStorage.setItem(STORAGE_TRADUCTION, JSON.stringify(cacheTraduction)); } catch (e) {}
-                };
-              }(translated, el, cacheKey));
+              pending.push({ el: el, original: original, cacheKey: cacheKey });
             }
           }
         }
       })(fallbackElems[i]);
     }
-    if (dirty) {
-      setTimeout(function () {
-        try { localStorage.setItem(STORAGE_TRADUCTION, JSON.stringify(cacheTraduction)); } catch (e) {}
-      }, 500);
+    // Traduction par lots avec petit délai pour ne pas bloquer le navigateur
+    var index = 0;
+    var BATCH = 5;
+    var DELAY = 250;
+    function nextBatch() {
+      if (index >= pending.length) {
+        if (dirty) {
+          setTimeout(function () {
+            try { localStorage.setItem(STORAGE_TRADUCTION, JSON.stringify(cacheTraduction)); } catch (e) {}
+          }, 400);
+        }
+        return;
+      }
+      var batch = pending.slice(index, index + BATCH);
+      index += BATCH;
+      Promise.all(batch.map(function (item) {
+        return googleTranslate(item.original, lang).then(function (translated) {
+          item.el.textContent = translated;
+          cacheTraduction[item.cacheKey] = translated;
+          dirty = true;
+        }).catch(function () {
+          // silencieux en cas d'erreur réseau
+        });
+      })).then(function () {
+        setTimeout(nextBatch, DELAY);
+      });
     }
-  }
-
-  // API exposée
+    nextBatch();
+  }  // API exposée
   window.ksI18n = { setLang: setLang, getLang: getLang, t: t, apply: applyTranslations };
 })();
