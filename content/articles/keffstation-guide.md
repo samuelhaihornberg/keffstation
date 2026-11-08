@@ -1,3 +1,11 @@
+---
+lang: fr
+original_lang: fr
+title: KeffStation: Guide complet de la vitrine smart tech
+slug: keffstation-guide
+reviewed: true
+---
+
 # KeffStation: Guide complet de la vitrine smart tech
 
 ## Introduction

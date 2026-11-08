@@ -1,3 +1,11 @@
+---
+lang: fr
+original_lang: fr
+title: SEO Technique pour les PWA: Guide KeffStation
+slug: pwa-seo-guide
+reviewed: true
+---
+
 # SEO Technique pour les PWA: Guide KeffStation
 
 ## Introduction

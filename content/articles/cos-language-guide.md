@@ -1,3 +1,11 @@
+---
+lang: fr
+original_lang: fr
+title: COS Language: Guide complet des balises `<script_...>`
+slug: cos-language-guide
+reviewed: true
+---
+
 # COS Language: Guide complet des balises `<script_...>`
 
 ## Introduction
@@ -15,6 +23,7 @@ Les balises `<script_...>` peuvent prendre plusieurs formes :
 ## Règle de valorisation
 
 La valeur retenue suit cet ordre de priorité :
+
 1. Attribut `id`
 2. Attribut `valeur`
 3. Attribut `nom`
@@ -22,24 +31,29 @@ La valeur retenue suit cet ordre de priorité :
 5. Nom de la balise elle-même
 
 **Exemple** :
+
 ```html
 <script_alphanumerotationdefonctionaconnecter id="A1">
 ```
+
 Résultat : `id` = "A1"
 
 ## Utilisation dans les connexions
 
 Les balises `<script_...>` apparaissent dans les connexions COS :
+
 ```html
 <script_alphanumerotationdefonctionaconnecter> to <script_founctionvaleuratribualphanumeroté>
 ```
+
 Ce qui génère le lien :
+
 - `de: "alphanumerotationdefonctionaconnecter"`
 - `vers: "founctionvaleuratribualphanumeroté"`
 - `op: "to"`
 - `script: true` (indicateur, pas exécution)
 
-## Cas particulaires
+## Cas particuliers
 
 - **Attributs `A1`, `B2`** : deviennent `de: "A1"`, `vers: "B2"` avec `script: true`
 - **CSS dans `<script_Alphanumerotation(aconnecter)>`** : le contenu est du CSS réel, les sélecteurs alphanumériques (`A1`) sont normalisés en `[data-cos="A1"]`
