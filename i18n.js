@@ -1,14 +1,12 @@
 /*!
  * KeffStation i18n — Traducteur universel toutes langues
- * Sélecteur de langue avec bouton icône + menu drapeaux
- * Choix mémorisé (localStorage), synchronisation inter-onglets
- * Traduction immédiate, AUCUNE animation, AUCUN écran noir
+ * Sélecteur de langue simple en haut à droite
+ * Pas d'écran noir, pas de texte vertical, pas de blocage
  */
 
 (function () {
   "use strict";
 
-  /* ========================= Dictionnaire ========================= */
   var DICT = {
     langNames: {
       fr: "Français", en: "English", es: "Español", de: "Deutsch", it: "Italiano",
@@ -32,16 +30,10 @@
       hi: "एनीमेशन", tr: "Animasyon" }
   };
 
-  /* Stockage */
   var STORAGE_KEY = "keffstation_lang";
-  var STORAGE_CURRENCY = "keffstation_currency";
-  var STORAGE_ANIM = "keffstation_anim";
-  var STORAGE_TRADUCTION = "keffstation_trad";
   var DEFAULT_LANG = "fr";
-  var DEFAULT_CURRENCY = "EUR";
   var SUPPORTED = Object.keys(DICT.langNames);
 
-  /* ========================= Langue ========================= */
   function getLang() {
     try {
       var saved = localStorage.getItem(STORAGE_KEY);
@@ -63,7 +55,6 @@
     applyTranslationsGoogle(lang).catch(function () {});
   }
 
-  /* ========================= Devise ========================= */
   function getCurrency() {
     try {
       var saved = localStorage.getItem(STORAGE_CURRENCY);
@@ -86,8 +77,6 @@
     } catch (e) { return value + " " + c; }
   }
 
-  /* ========================= Traduction ========================= */
-  var FALLBACK = ["en", "fr"];
   function t(key, lang) {
     var entry = DICT[key];
     if (!entry) return key;
@@ -128,7 +117,6 @@
     });
   }
 
-  /* Google Translate fallback */
   var translationCache = {};
   async function googleTranslate(text, targetLang) {
     if (!text || text.length === 0) return text;
@@ -184,41 +172,39 @@
     }, 500);
   }
 
-  /* ========================= Sélecteur ========================= */
   var SELECTOR_CSS = "\
     #ks-lang-selector {\
-      position: fixed; top: 10px; right: 10px; z-index: 9999;\
+      position: fixed; top: 10px; right: 10px; z-index: 1000;\
       font: 700 13px/1.2 system-ui,sans-serif; user-select: none; -webkit-user-select: none;\
     }\
     #ks-lang-toggle {\
-      position: relative; background: rgba(10,12,34,.92); border: 1px solid rgba(255,255,255,.2);\
-      border-radius: 14px; padding: 10px 14px; color: #f4f6ff; cursor: pointer;\
-      display: inline-flex; align-items: center; gap: 8px; min-width: 52px; min-height: 52px;\
+      position: relative; background: rgba(10,12,34,.9); border: 1px solid rgba(255,255,255,.3);\
+      border-radius: 12px; padding: 8px 12px; color: #f4f6ff; cursor: pointer;\
+      display: inline-flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px;\
       touch-action: manipulation; -webkit-tap-highlight-color: transparent;\
     }\
-    #ks-lang-toggle .ks-flag { font-size: 22px; line-height: 1; }\
+    #ks-lang-toggle .ks-flag { font-size: 20px; line-height: 1; }\
     #ks-lang-toggle .ks-arrow { font-size: 11px; color: #b9c0e6; margin-left: 4px; }\
     #ks-lang-menu {\
       position: absolute; top: 100%; right: 0; margin-top: 8px;\
-      background: rgba(8,9,22,.96); border: 1px solid rgba(255,255,255,.22);\
-      border-radius: 16px; padding: 10px; min-width: 300px; z-index: 10001;\
-      display: none; box-shadow: 0 12px 48px rgba(0,0,0,.55); overflow-y: auto; max-height: 70vh;\
+      background: rgba(8,9,22,.96); border: 1px solid rgba(255,255,255,.2);\
+      border-radius: 12px; padding: 8px; min-width: 200px; z-index: 10001;\
+      display: none; box-shadow: 0 8px 32px rgba(0,0,0,.4); overflow-y: auto; max-height: 60vh;\
     }\
     #ks-lang-toggle.open + #ks-lang-menu, #ks-lang-menu.visible { display: block; }\
     #ks-lang-menu .ks-section-title {\
       font: 700 11px/1.2 system-ui,sans-serif; color: #ffd23f; padding: 8px 12px 4px 12px;\
       text-transform: uppercase; letter-spacing: .08em; opacity: .9; }\
     #ks-lang-menu .ks-option {\
-      display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;\
-      color: #f4f6ff; cursor: pointer; font: 500 14px/1.3 system-ui,sans-serif;\
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px;\
+      color: #f4f6ff; cursor: pointer; font: 500 13px/1.3 system-ui,sans-serif;\
       white-space: nowrap; touch-action: manipulation; -webkit-tap-highlight-color: transparent;\
     }\
     #ks-lang-menu .ks-option:hover { background: rgba(255,255,255,.08); }\
     #ks-lang-menu .ks-option.ks-active { background: rgba(255,210,63,.18); color: #ffd23f; border: 1px solid #ffd23f; }\
-    #ks-lang-menu .ks-option .ks-flag { font-size: 20px; min-width: 28px; text-align: center; }\
+    #ks-lang-menu .ks-option .ks-flag { font-size: 18px; min-width: 26px; text-align: center; }\
     #ks-lang-menu .ks-option .ks-name { flex: 1; font-weight: 600; }\
     #ks-lang-menu .ks-divider { height: 1px; background: rgba(255,255,255,.1); margin: 8px 0; }\
-    #ks-lang-menu .ks-loading { font: 400 12px/1.4 system-ui,sans-serif; color: #b9c0e6; padding: 10px 12px; text-align: center; opacity: .7; }\
   \";\n"
 
   function injectStyle() {
@@ -331,7 +317,28 @@
     document.body.appendChild(box);
   }
 
-  /* ========================= Init ========================= */
+  function setAnimationMode(mode) {
+    document.body.classList.remove("anim-sync", "anim-async", "anim-desync");
+    if (mode === "sync" || mode === "async" || mode === "desync") {
+      document.body.classList.add("anim-" + mode);
+      document.documentElement.setAttribute("data-anim", mode);
+    } else {
+      document.documentElement.removeAttribute("data-anim");
+    }
+    try { localStorage.setItem(STORAGE_ANIM, mode); } catch (e) {}
+  }
+  function getAnimationMode() {
+    try {
+      var saved = localStorage.getItem(STORAGE_ANIM);
+      if (saved === "sync" || saved === "async" || saved === "desync") return saved;
+    } catch (e) {}
+    return null;
+  }
+  (function () {
+    var savedMode = getAnimationMode();
+    if (savedMode) setAnimationMode(savedMode);
+  })();
+
   function init() {
     var lang = getLang();
     document.documentElement.lang = lang;
