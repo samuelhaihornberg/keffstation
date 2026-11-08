@@ -1082,4 +1082,163 @@ html { scroll-behavior: smooth; }
   .scroll-cue-arrow { animation: none; }
 }
 
+/* ============================================================================
+   Section plateforme multi-PWA KiffStation
+   ============================================================================ */
+
+.platform-section {
+  padding: clamp(20px, 3vh, 40px) 12px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.section-title {
+  margin: 0 0 clamp(16px, 3vh, 32px);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: linear-gradient(92deg,
+    #ffffff 0%,
+    #ffd23f 12%,
+    #ff3d9a 26%,
+    #8a4dff 42%,
+    #1e6bff 56%,
+    #27d17f 70%,
+    #ffffff 84%,
+    #ffd23f 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 0 12px rgba(255, 255, 255, .42))
+    drop-shadow(0 0 28px rgba(255, 210, 63, .32))
+    drop-shadow(0 0 58px rgba(255, 61, 154, .28));
+}
+
+.section-description {
+  margin: 0 0 clamp(24px, 4vw, 48px);
+  font-size: clamp(.9rem, 1.8vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--kf-champagne);
+  text-align: center;
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: clamp(16px, 3vw, 24px);
+  margin: 0 0 clamp(24px, 4vw, 48px);
+  padding: 0;
+  list-style: none;
+}
+
+.app-card {
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 210, 63, .2);
+  border-radius: clamp(12px, 2vw, 16px);
+  padding: clamp(16px, 3vw, 20px);
+  text-align: center;
+  transition: transform .2s, background .2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.app-card:hover,
+.app-card:focus-visible {
+  transform: translateY(-4px);
+  background: rgba(255, 210, 63, .1);
+}
+
+.app-icon {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 clamp(8px, 1vw, 12px);
+}
+
+.app-card h3 {
+  margin: 0 0 clamp(8px, 1vw, 12px);
+  font-size: clamp(.9rem, 1.5vw, 1.1rem);
+  font-weight: 700;
+  color: #fff;
+}
+
+.app-card p {
+  margin: 0;
+  font-size: .78rem;
+  color: var(--kf-champagne);
+  opacity: .8;
+}
+
+.install-actions {
+  margin: 0 0 clamp(32px, 5vw, 48px);
+  text-align: center;
+}
+
+.install-actions h3 {
+  margin: 0 0 clamp(12px, 2vh, 16px);
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.install-buttons {
+  display: flex;
+  gap: clamp(8px, 2vw, 16px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.install-btn {
+  padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 22px);
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+  color: #000;
+}
+
+.install-btn.android {
+  background: #3ddc84;
+}
+
+.install-btn.ios {
+  background: #000000;
+}
+
+.install-btn.windows {
+  background: #0078d4;
+}
+
+.install-btn:hover {
+  filter: brightness(1.1);
+}
+
+.install-btn:focus-visible {
+  outline: 2px solid var(--kf-gold);
+  outline-offset: 4px;
+}
+
+.install-note {
+  margin: clamp(12px, 2vh, 16px) 0 0;
+  font-size: .75rem;
+  color: var(--kf-champagne);
+  opacity: .7;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 380px) {
+  .app-card {
+    padding: clamp(12px, 3vw, 16px);
+  }
+}
+
 
