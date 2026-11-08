@@ -247,6 +247,309 @@
         <div class="core-name" data-i18n="./index.html_keffstation_82">KEFFSTATION</div>
         <div class="core-count" data-i18n="./index.html_7_apps_83"><span id="app-count">7</span> <span data-i18n="app_count">apps</span></div>
       </div>
+<!-- Boule sphérique facettée KeffStation : applications réparties sur la surface -->
+<div class="boule-wrapper" aria-label="Boule d'applications KeffStation">
+
+  <!-- Boule principale avec divisions en demi-cercles -->
+  <div class="boule" aria-label="Boule KeffStation">
+
+    <!-- Lignes de division en demi-cercle -->
+    <div class="division division-1"></div>
+    <div class="division division-2"></div>
+    <div class="division division-3"></div>
+    <div class="division division-4"></div>
+    <div class="division division-5"></div>
+    <div class="division division-6"></div>
+
+    <!-- Facettes d'applications -->
+    <div class="facette" data-page="0" data-url="./viartificial-labs/" onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
+      <div class="app-icon">🧠</div>
+      <h3 data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</h3>
+    </div>
+
+    <div class="facette" data-page="4" data-url="./kifftech/" onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
+      <div class="app-icon">🤖</div>
+      <h3 data-i18n="./index.html_kifftech_16">KiffTech</h3>
+    </div>
+
+    <div class="facette" data-page="1" data-url="./cos-editor/" onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
+      <div class="app-icon">🧩</div>
+      <h3 data-i18n="./index.html_cos_editor_68">cos Editor</h3>
+    </div>
+
+    <div class="facette" data-page="5" data-url="./tricktrocjob/" onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
+      <div class="app-icon">🔧</div>
+      <h3 data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</h3>
+    </div>
+
+    <div class="facette" data-page="2" data-url="./linguistic-motors/" onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
+      <div class="app-icon">🗣️</div>
+      <h3 data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</h3>
+    </div>
+
+    <div class="facette" data-page="6" data-url="./videogames/" onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
+      <div class="app-icon">🎮</div>
+      <h3 data-i18n="./index.html_videogames_67">Videogames</h3>
+    </div>
+
+    <div class="facette" data-page="3" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
+      <div class="app-icon">📝</div>
+      <h3 data-i18n="./index.html_critiques_services_65">Critiques-Services</h3>
+    </div>
+
+    <!-- Nom de la boule -->
+    <div class="boule-label">KEFFSTATION</div>
+
+  </div>
+</div><!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"> <!-- cache bust -->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070816">
+<meta name="description" content="KeffStation est une plateforme qui rassemble plusieurs applications web (PWA) indépendantes : KiffTech, ViArtificial Labs, Critiques-Services, Tricktrocjob et Videogames. Chaque espace a sa propre vocation et ses propres services.">
+<link rel="canonical" href="https://samuelhaihornberg.github.io/keffstation/">
+<!-- Référencement social -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://samuelhaihornberg.github.io/keffstation/">
+<meta property="og:title" content="KeffStation — plateforme d'applications web indépendantes">
+<meta property="og:description" content="KeffStation rassemble plusieurs applications web indépendantes : KiffTech, ViArtificial Labs, Critiques-Services, Tricktrocjob et Videogames. Chacune propose ses propres services.">
+<meta property="og:site_name" content="KeffStation">
+<meta property="og:image" content="https://samuelhaihornberg.github.io/keffstation/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<link rel="alternate" hreflang="fr" href="https://samuelhaihornberg.github.io/keffstation/">
+<link rel="alternate" hreflang="en" href="https://samuelhaihornberg.github.io/keffstation/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://samuelhaihornberg.github.io/keffstation/">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KeffStation — plateforme d'applications web indépendantes">
+<meta name="twitter:description" content="KeffStation rassemble plusieurs applications web indépendantes : KiffTech, ViArtificial Labs, Critiques-Services, Tricktrocjob et Videogames.">
+<meta name="twitter:image" content="https://samuelhaihornberg.github.io/keffstation/og-image.jpg">
+<meta name="twitter:creator" content="@samuelhaihornberg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KeffStation">
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./vitrine.css">
+<!-- Favicon : placez un fichier favicon.svg (carré, net, reconnaissable) à la racine du dépôt -->
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<title>KeffStation — plateforme d'applications web indépendantes</title>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "KeffStation",
+  "url": "https://samuelhaihornberg.github.io/keffstation/",
+  "description": "KeffStation est une plateforme qui rassemble plusieurs applications web (PWA) indépendantes : KiffTech, ViArtificial Labs, Critiques-Services, Tricktrocjob et Videogames. Chaque espace a sa propre vocation et ses propres services.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "KeffStation",
+    "url": "https://samuelhaihornberg.github.io/keffstation/",
+    "sameAs": [
+      "https://github.com/samuelhaihornberg/keffstation"
+    ]
+  }
+}
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WP6HC0CM9E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WP6HC0CM9E');
+</script>
+<script defer src="./analytics-events.js"></script>
+<script defer src="./i18n.js"></script>
+
+</head>
+<body>
+  <div class="matrix-rain" aria-hidden="true"></div>
+  <div class="loading" id="loading" data-i18n="./index.html_initialisation_keffstation_72">
+  <div class="loading-text">🔄 Initialisation KeffStation…</div>
+  <div class="loading-bar" aria-hidden="true"><div class="loading-bar-inner" id="loading-bar-inner"></div></div>
+</div>
+
+<main class="reader" role="region" aria-roledescription="vitrine ronde" aria-label="Vitrine des applications KeffStation">
+  <!-- ===== SECTION VIDÉO DÉDIÉE — bien visible, totalement affichée ===== -->
+  <section class="hero-video" aria-label="Vidéo de présentation KeffStation">
+    <h1 class="hero-title" data-i18n="app_name">KeffStation</h1>
+    <h2 class="video-title" data-i18n="./index.html_keffstation_plateforme_dapplications_web_0">KeffStation — plateforme d'applications web indépendantes</h2>
+    <div class="video-frame">
+      <video class="video-frame-media" src="./header.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+    </div>
+    <h3 class="hero-tagline" data-i18n="tagline">Become.What.Ever.You.Want...Kw;)Nk...!</h3>
+    <a class="scroll-cue" href="#vitrine" aria-label="Défiler vers la vitrine" data-i18n="./index.html_défiler_45">
+      <span class="scroll-cue-text" data-i18n="scroll_down">Défiler</span>
+      <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+    </a>
+  </section>
+
+  <!-- ===== SECTION PRÉSENTATION (article de présentation, visible dès l'arrivée) ===== -->
+  <section id="presentation" aria-label="Présentation de KeffStation">
+    <h4 data-i18n="./index.html_keffstation_est_une_vitrine_qui_rassembl_20">KeffStation est une vitrine qui rassemble plusieurs applications web (PWA) indépendantes. Chaque espace a sa propre vocation et ses propres services. Ils ne forment pas une seule boutique et ne proposent pas tous la même chose.</h4>
+
+    <h2 data-i18n="./index.html_découvrez_les_espaces_de_keffstation_1">Découvrez les espaces de KeffStation</h2>
+
+    <h3 data-i18n="./index.html_kifftech_objets_connectés_et_gadgets_hig_4">KiffTech — objets connectés et gadgets high-tech</h3>
+    <p data-i18n="./index.html_kifftech_est_une_vitrine_dédiée_aux_obje_21"><span class="accent-bleu" data-i18n="./index.html_kifftech_51">KiffTech</span> est une vitrine dédiée aux <span class="accent-or" data-i18n="./index.html_objets_connectés_52">objets connectés</span>, aux <span class="accent-vert" data-i18n="./index.html_gadgets_électroniques_53">gadgets électroniques</span> et aux accessoires high-tech. Vous y trouverez un catalogue de produits, des fiches détaillées et des liens vers les boutiques officielles.</p>
+    <p data-i18n="./index.html_découvrir_kifftech_22"><a href="./kifftech/" class="btn-presentation" data-i18n="./index.html_découvrir_kifftech_46">Découvrir KiffTech</a></p>
+
+    <h3 data-i18n="./index.html_viartificial_labs_moteurs_ia_et_conversa_5">ViArtificial Labs — moteurs IA et conversation</h3>
+    <p data-i18n="./index.html_viartificial_labs_propose_des_outils_aut_23"><span class="accent-rose" data-i18n="./index.html_viartificial_labs_54">ViArtificial Labs</span> propose des outils autour de l'<span class="accent-bleu" data-i18n="./index.html_intelligence_artificielle_55">intelligence artificielle</span> : moteurs de conversation, assistants et expérimentations NLP/LLM fonctionnant en partie localement.</p>
+    <p data-i18n="./index.html_découvrir_viartificial_labs_24"><a href="./viartificial-labs/" class="btn-presentation" data-i18n="./index.html_découvrir_viartificial_labs_47">Découvrir ViArtificial Labs</a></p>
+
+    <h3 data-i18n="./index.html_critiques_services_avis_et_critiques_de__6">Critiques-Services — avis et critiques de services</h3>
+    <p data-i18n="./index.html_critiques_services_est_un_espace_consacr_25"><span class="accent-or" data-i18n="./index.html_critiques_services_56">Critiques-Services</span> est un espace consacré aux <span class="accent-vert" data-i18n="./index.html_critiques_57">critiques</span> et aux avis sur des services en ligne et des outils numériques. C'est un lieu d'information, pas une boutique.</p>
+    <p data-i18n="./index.html_découvrir_critiques_services_26"><a href="https://samuelhaihornberg.github.io/critiques-services.com/" class="btn-presentation" data-i18n="./index.html_découvrir_critiques_services_48">Découvrir Critiques-Services</a></p>
+
+    <h3 data-i18n="./index.html_tricktrocjob_utilitaires_et_outils_techn_7">Tricktrocjob — utilitaires et outils techniques</h3>
+    <p data-i18n="./index.html_tricktrocjob_rassemble_des_utilitaires_d_27"><span class="accent-vert" data-i18n="./index.html_tricktrocjob_58">Tricktrocjob</span> rassemble des <span class="accent-bleu" data-i18n="./index.html_utilitaires_59">utilitaires</span>, des scripts et des outils techniques pour le dépannage et la productivité.</p>
+    <p data-i18n="./index.html_découvrir_tricktrocjob_28"><a href="./tricktrocjob/" class="btn-presentation" data-i18n="./index.html_découvrir_tricktrocjob_49">Découvrir Tricktrocjob</a></p>
+
+    <h3 data-i18n="./index.html_videogames_jeux_et_émulation_8">Videogames — jeux et émulation</h3>
+    <p data-i18n="./index.html_videogames_propose_des_jeux_de_lémulatio_29"><span class="accent-rose" data-i18n="./index.html_videogames_60">Videogames</span> propose des jeux, de l'<span class="accent-or" data-i18n="./index.html_émulation_61">émulation</span> et du contenu autour du retrogaming et du gaming.</p>
+    <p data-i18n="./index.html_découvrir_videogames_30"><a href="./videogames/" class="btn-presentation" data-i18n="./index.html_découvrir_videogames_50">Découvrir Videogames</a></p>
+
+    <h2 data-i18n="./index.html_installer_les_applications_2">Installer les applications</h2>
+    <p data-i18n="./index.html_chaque_espace_est_une_application_web_pw_31">Chaque espace est une <span class="accent-vert" data-i18n="./index.html_application_web_pwa_62">application web (PWA)</span> que vous pouvez installer sur votre appareil pour l'utiliser hors ligne.</p>
+  </section>
+
+  <!-- ===== WIDGET 7 WEB APPS — clignotement petit/grand/moyen ===== -->
+  <section class="apps-widget" aria-label="7 web apps KeffStation">
+    <h2 class="widget-title" data-i18n="widget_apps_title">7 Web Apps KeffStation</h2>
+    <div class="apps-grid" data-i18n="index_kifftech_objets_connect_s_gadgets_15">
+      <article class="app-widget app-widget-1" data-i18n="widget_kifftech" data-i18n-html="widget_kifftech_desc">
+        <div class="app-widget-content">
+          <span class="app-icon">🤖</span>
+          <h3 class="app-name" data-i18n="./index.html_kifftech_9">KiffTech</h3>
+          <p class="app-desc" data-i18n="./index.html_objets_connectés_gadgets_32">Objets connectés & gadgets</p>
+        </div>
+        <a href="./kifftech/" class="app-link" aria-label="Ouvrir KiffTech"></a>
+      </article>
+      <article class="app-widget app-widget-2" data-i18n="widget_via" data-i18n-html="widget_via_desc">
+        <div class="app-widget-content" data-i18n="index_viartificial_labs_moteurs_ia_conver_14">
+          <span class="app-icon">🧠</span>
+          <h3 class="app-name" data-i18n="./index.html_viartificial_labs_10">ViArtificial Labs</h3>
+          <p class="app-desc" data-i18n="./index.html_moteurs_ia_conversation_33">Moteurs IA & conversation</p>
+        </div>
+        <a href="./viartificial-labs/" class="app-link" aria-label="Ouvrir ViArtificial Labs"></a>
+      </article>
+      <article class="app-widget app-widget-3" data-i18n="widget_critiques" data-i18n-html="widget_critiques_desc">
+        <div class="app-widget-content" data-i18n="index_critiques_services_avis_critiques_s_13">
+          <span class="app-icon">📝</span>
+          <h3 class="app-name" data-i18n="./index.html_critiques_services_11">Critiques-Services</h3>
+          <p class="app-desc" data-i18n="./index.html_avis_critiques_services_34">Avis & critiques services</p>
+        </div>
+        <a href="https://samuelhaihornberg.github.io/critiques-services.com/" class="app-link" aria-label="Ouvrir Critiques-Services"></a>
+      </article>
+      <article class="app-widget app-widget-4" data-i18n="widget_tricktrocjob" data-i18n-html="widget_tricktrocjob_desc">
+        <div class="app-widget-content" data-i18n="index_tricktrocjob_utilitaires_outils_tec_12">
+          <span class="app-icon">🔧</span>
+          <h3 class="app-name" data-i18n="./index.html_tricktrocjob_12">Tricktrocjob</h3>
+          <p class="app-desc" data-i18n="./index.html_utilitaires_outils_tech_35">Utilitaires & outils tech</p>
+        </div>
+        <a href="./tricktrocjob/" class="app-link" aria-label="Ouvrir Tricktrocjob"></a>
+      </article>
+      <article class="app-widget app-widget-5" data-i18n="widget_videogames" data-i18n-html="widget_videogames_desc">
+        <div class="app-widget-content" data-i18n="index_videogames_jeux__mulation_11">
+          <span class="app-icon">🎮</span>
+          <h3 class="app-name" data-i18n="./index.html_videogames_13">Videogames</h3>
+          <p class="app-desc" data-i18n="./index.html_jeux_émulation_36">Jeux & émulation</p>
+        </div>
+        <a href="./videogames/" class="app-link" aria-label="Ouvrir Videogames"></a>
+      </article>
+      <article class="app-widget app-widget-6" data-i18n="widget_cos" data-i18n-html="widget_cos_desc">
+        <div class="app-widget-content" data-i18n="index_cos_editor__diteur_syntaxe_cos_10">
+          <span class="app-icon">🧩</span>
+          <h3 class="app-name" data-i18n="./index.html_cos_editor_14">cos Editor</h3>
+          <p class="app-desc" data-i18n="./index.html_éditeur_syntaxe_cos_37">Éditeur syntaxe COS</p>
+        </div>
+        <a href="./cos-editor/" class="app-link" aria-label="Ouvrir cos Editor"></a>
+      </article>
+      <article class="app-widget app-widget-7" data-i18n="widget_linguistic" data-i18n-html="widget_linguistic_desc">
+        <div class="app-widget-content" data-i18n="index_linguistic_motors_nlp_llm_local_9">
+          <span class="app-icon">🗣️</span>
+          <h3 class="app-name" data-i18n="./index.html_linguistic_motors_15">Linguistic Motors</h3>
+          <p class="app-desc" data-i18n="./index.html_nlp_llm_local_38">NLP / LLM local</p>
+        </div>
+        <a href="./linguistic-motors/" class="app-link" aria-label="Ouvrir Linguistic Motors"></a>
+      </article>
+    </div>
+  </section>
+
+  <!-- Divider bioluminescent avant la section articles -->
+  <div class="section-divider divider-before" aria-hidden="true"></div>
+
+  <!-- Espace tabulé entre le header et la section -->
+  <div class="section-space space-before" aria-hidden="true"></div>
+
+  <!-- ===== SECTION ARTICLES (statiques, entre la vidéo et la vitrine) ===== -->
+  <article class="platform-section" aria-label="Plateforme multi-PWA KiffStation">
+    <h2 class="section-title" data-i18n="platform_title">KiffStation : Votre plateforme multi-PWA</h2>
+    <p class="section-description" data-i18n="platform_desc">
+      KeffStation est une plateforme regroupant plusieurs applications web (PWA) dédiées
+      à la technologie, aux gadgets high‑tech et aux objets connectés. Toutes les apps
+      sont conçues pour offrir une expérience native sur Android, iOS et Windows.
+    </p>
+    <div class="apps-grid">
+      <div class="app-card" aria-label="KiffTech">
+        <div class="app-icon">🤖</div>
+        <h3 data-i18n="./index.html_kifftech_16">KiffTech</h3>
+        <p data-i18n="./index.html_boutique_et_gestion_dobjets_connectés_39">Boutique et gestion d'objets connectés</p>
+      </div>
+      <div class="app-card" aria-label="ViArtificial Labs">
+        <div class="app-icon">🧠</div>
+        <h3 data-i18n="./index.html_viartificial_17">ViArtificial</h3>
+        <p data-i18n="./index.html_moteurs_ia_et_conversation_directe_40">Moteurs IA et conversation directe</p>
+      </div>
+      <div class="app-card" aria-label="Tricktrocjob">
+        <div class="app-icon">🔧</div>
+        <h3 data-i18n="./index.html_tricktrocjob_18">Tricktrocjob</h3>
+        <p data-i18n="./index.html_utilitaires_et_outils_techniques_41">Utilitaires et outils techniques</p>
+      </div>
+      <div class="app-card" aria-label="Videogames">
+        <div class="app-icon">🎮</div>
+        <h3 data-i18n="./index.html_videogames_19">Videogames</h3>
+        <p data-i18n="./index.html_retro_et_jeuxrétro_42">Retro et jeuxrétro</p>
+      </div>
+    </div>
+    <div class="install-actions" data-i18n="./index.html_installez_vos_apps_préférées_android_apk_81">
+      <h3 data-i18n="install_title">Installez vos apps préférées</h3>
+      <div class="install-buttons">
+        <button class="install-btn android" aria-label="Installer sur Android" data-i18n="install_android">⟶ Android APK</button>
+        <button class="install-btn ios" aria-label="Installer sur iOS" data-i18n="install_ios">⟶ iOS IPA</button>
+        <button class="install-btn windows" aria-label="Installer sur Windows" data-i18n="install_windows">⟶ Windows EXE</button>
+      </div>
+      <p class="install-note" data-i18n="install_note">
+        Ces applications fonctionnent hors ligne et sont mises à jour automatiquement.
+      </p>
+    </div>
+  </article>
+
+  <!-- Divider bioluminescent avant la vitrine -->
+  <div class="section-divider divider-after" aria-hidden="true"></div>
+
+  <!-- ===== VITRINE MULTI-PWA (cercle central, sans rotation) ===== -->
+  <div class="vitrine" id="vitrine">
+    <div class="halo" aria-hidden="true"></div>
+    <div class="floor-glow" aria-hidden="true"></div>
+
+    <div class="waves" aria-hidden="true">
+      <span class="wave"></span>
+      <span class="wave"></span>
+      <span class="wave"></span>
+    </div>
+
+    <div class="core" id="core" aria-hidden="true">
+      <div class="core-inner">
+        <div class="core-k">K</div>
+        <div class="core-name" data-i18n="./index.html_keffstation_82">KEFFSTATION</div>
+        <div class="core-count" data-i18n="./index.html_7_apps_83"><span id="app-count">7</span> <span data-i18n="app_count">apps</span></div>
+      </div>
       <!-- Sphère 3D KeffStation : applications réparties sur la surface d'une sphère -->
       <div class="sphere-wrapper" aria-label="Sphère d'applications KeffStation">
 
