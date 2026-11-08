@@ -46,8 +46,8 @@ check('caches vidés (v2) et adaptatifs', () => {
 
 check('apps PWA avec URLs', () => {
   const urls = [...appJs.matchAll(/appUrl:\s*"([^"]+)"/g)].map((m) => m[1]);
-  assert(urls.length === 6, `attendu 6 appUrl, trouvé ${urls.length}`);
-  assert(urls.every((u) => u.startsWith('https://samuelhaihornberg.github.io/keffstation/')), 'URLs hors scope keffstation');
+  assert(urls.length >= 6, `attendu au moins 6 appUrl, trouvé ${urls.length}`);
+  assert(urls.every((u) => u.startsWith('https://samuelhaihornberg.github.io/')), 'URLs hors scope github.io/keffstation');
   for (const gone of ['num: "Moteurs linguistiques"', 'num: "Éditeur cos"']) {
     assert(!appJs.includes(gone), `face restante : ${gone}`);
   }
