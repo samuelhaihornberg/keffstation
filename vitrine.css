@@ -912,48 +912,56 @@ html { scroll-behavior: smooth; }
   justify-content: flex-start;
 }
 
-/* Le hero occupe 50 % de la hauteur de l'écran : la vidéo occupe 75% largeur */
+/* Ancienne section hero — remplacée par hero-video, masquée */
 .hero {
-  position: relative;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 75vw;
-  height: 50vh;
-  height: 50dvh;
-  padding: 0;
-  overflow: hidden;
-  isolation: isolate;
+  display: none;
 }
 
-/* Léger dégradé en bas pour garder le titre lisible sur la vidéo */
 .hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  z-index: 2;
-  height: 38%;
-  background: linear-gradient(to top, rgba(0, 0, 0, .74), rgba(0, 0, 0, 0));
-  pointer-events: none;
+  display: none;
 }
 
-/* ========================= Lumière bioluminescente jaune sur toutes les sections ========================= */
-section {
+/* ========================= Section vidéo dédiée — bien visible, totalement affichée ========================= */
+.hero-video {
   position: relative;
-  box-shadow:
-    0 0 20px rgba(255, 215, 0, .35),
-    0 0 45px rgba(255, 170, 0, .25),
-    inset 0 0 25px rgba(255, 215, 0, .15);
-  border: 1px solid rgba(255, 215, 0, .18);
-  animation: bioluminescent-sections 5s ease-in-out infinite alternate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  max-width: 100vw;
+  height: 70dvh;
+  min-height: 500px;
+  padding: clamp(16px, 4vh, 40px) 0;
+  overflow: visible;
+  isolation: isolate;
+  text-align: center;
 }
 
-/* ========================= Cadre vidéo : 75 % largeur, 50 % hauteur ========================= */
-.video-frame {
+.hero-video .hero-title {
+  margin: 0 0 12px 0;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  z-index: 3;
   position: relative;
-  width: 70vw;
-  height: 100%;
-  max-height: 50dvh;
+}
+
+.hero-video .video-title {
+  margin: 0 0 16px 0;
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  font-weight: 600;
+  color: #c9d1f2;
+  z-index: 3;
+  position: relative;
+}
+
+.hero-video .video-frame {
+  position: relative;
+  width: 85vw;
+  max-width: 900px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  max-height: 45dvh;
   overflow: hidden;
   border-radius: clamp(14px, 2.4vw, 24px);
   background: #000;
@@ -963,15 +971,12 @@ section {
     0 0 65px #ffaa00,
     0 0 100px #ffd700,
     inset 0 0 35px #ffd700,
-    0 24px 70px -30px #000,
-    0 0 46px -18px rgba(255, 210, 63, .32),
-    0 0 90px -40px rgba(255, 61, 154, .28);
+    0 24px 70px -30px #000;
   animation: bioluminescent-or 4s ease-in-out infinite alternate;
   isolation: isolate;
 }
 
-/* Bordure carrée dorée pure miroitante autour de la vidéo (en plus du cadre bioluminescent) */
-.video-frame::after {
+.hero-video .video-frame::after {
   content: "";
   position: absolute;
   inset: -8px;
@@ -986,8 +991,7 @@ section {
   pointer-events: none;
 }
 
-/* Lueur intérieure douce sur le contenu de la vidéo pour renforcer le côté bioluminescent */
-.video-frame::before {
+.hero-video .video-frame::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -995,6 +999,39 @@ section {
   background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, .12) 0%, transparent 70%);
   z-index: 1;
   pointer-events: none;
+}
+
+.hero-video .video-frame-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: #000;
+}
+
+.hero-video .hero-tagline {
+  margin: 18px 0 0 0;
+  font-size: clamp(1.3rem, 4vw, 2.2rem);
+  font-weight: 700;
+  background: linear-gradient(90deg,#1e6bff,#00d4ff,#27d17f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  z-index: 3;
+  position: relative;
+}
+
+.hero-video .scroll-cue {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 3;
+  position: relative;
 }
 
 @keyframes bioluminescent-or {
@@ -1007,27 +1044,21 @@ section {
   100% { box-shadow: 0 0 30px rgba(255, 215, 0, .45), 0 0 60px rgba(255, 170, 0, .35), inset 0 0 30px rgba(255, 215, 0, .18); border-color: rgba(255, 215, 0, .28); }
 }
 
-@keyframes or-miroitement {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
 @keyframes or-miroitement-carre {
   0% { background-position: 0% 0%; border-color: #ffd700; }
   50% { background-position: 100% 100%; border-color: #fff200; }
   100% { background-position: 0% 0%; border-color: #ffd700; }
 }
 
-.video-frame-media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  background: #000;
+/* ========================= Lumière bioluminescente jaune sur toutes les sections ========================= */
+section {
+  position: relative;
+  box-shadow:
+    0 0 20px rgba(255, 215, 0, .35),
+    0 0 45px rgba(255, 170, 0, .25),
+    inset 0 0 25px rgba(255, 215, 0, .15);
+  border: 1px solid rgba(255, 215, 0, .18);
+  animation: bioluminescent-sections 5s ease-in-out infinite alternate;
 }
 
 /* Titre + slogan en superposition sur la vidéo (aucune hauteur ajoutée) */
