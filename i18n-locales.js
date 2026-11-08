@@ -226,8 +226,9 @@
         }
       }
     }
-    // 4. Fallback sur l'ancien dictionnaire i18n.js (legacy) si disponible
-    if (window.DICT_LEGACY) {
+    // 4. Fallback sur l'ancien dictionnaire i18n.js (legacy) — uniquement fr/en,
+    // les autres langues passent par la traduction auto Google (autoTranslateMissing)
+    if ((lang === 'fr' || lang === 'en') && window.DICT_LEGACY) {
       var legacy = window.DICT_LEGACY[key];
       if (legacy) {
         if (legacy[lang] !== undefined) return legacy[lang];
