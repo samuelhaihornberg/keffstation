@@ -65,6 +65,14 @@
 </div>
 
 <main class="reader" role="region" aria-roledescription="vitrine ronde" aria-label="Vitrine des applications KeffStation">
+  <header class="video-header" aria-label="KiffStation — bienvenue">
+    <video class="video-header-media" src="./header.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+    <div class="video-header-content">
+      <h1 class="video-header-title">KIFFSTATION</h1>
+      <p class="video-header-tagline">b.what.u.want.kW;)Nk</p>
+    </div>
+  </header>
+
   <div class="vitrine" id="vitrine">
     <div class="halo" aria-hidden="true"></div>
     <div class="floor-glow" aria-hidden="true"></div>
@@ -88,6 +96,26 @@
 
   <nav class="nav" id="nav" aria-label="Navigation des applications"></nav>
 </main>
+
+<script>
+(function () {
+  var headerVideo = document.querySelector('.video-header-media');
+  if (!headerVideo) return;
+  headerVideo.muted = true;
+  headerVideo.defaultMuted = true;
+  function tryPlay() {
+    var p = headerVideo.play();
+    if (p && typeof p.catch === 'function') p.catch(function () {});
+  }
+  tryPlay();
+  headerVideo.addEventListener('canplay', tryPlay, { once: true });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') tryPlay();
+  });
+  document.addEventListener('touchstart', tryPlay, { once: true, passive: true });
+  document.addEventListener('click', tryPlay, { once: true });
+})();
+</script>
 
 <!-- Panneau détail application (injecté par app.js) -->
 <div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Détail de l'application">
