@@ -15,11 +15,11 @@
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">K</div>
         <div>
-          <p class="eyebrow" data-i18n="app_name">Keffstation</p>
-          <h1 data-i18n="admin_title">Administration</h1>
+          <p data-i18n="prototype_keffstation" class="eyebrow" data-i18n="app_name">Keffstation</p>
+          <h1 data-i18n="prototype_administration">Administration</h1>
         </div>
       </div>
-      <span class="badge badge-private" data-i18n="prive">Privé</span>
+      <span data-i18n="prototype_priv" class="badge badge-private" data-i18n="prive">Privé</span>
     </header>
 
     <div class="notice" role="note">
@@ -28,28 +28,28 @@
 
     <section class="period-bar" aria-label="Sélection de la période">
       <div class="period-buttons" role="group" aria-label="Périodes">
-        <button type="button" class="period is-active" data-period="7" aria-pressed="true" data-i18n="periode_7">7 jours</button>
-        <button type="button" class="period" data-period="10" aria-pressed="false" data-i18n="periode_10">10 jours</button>
-        <button type="button" class="period" data-period="30" aria-pressed="false" data-i18n="periode_30">30 jours</button>
-        <button type="button" class="period" data-period="custom" aria-pressed="false" data-i18n="periode_custom">Personnalisé</button>
+        <button data-i18n="prototype_7_jours" type="button" class="period is-active" data-period="7" aria-pressed="true" data-i18n="periode_7">7 jours</button>
+        <button data-i18n="prototype_10_jours" type="button" class="period" data-period="10" aria-pressed="false" data-i18n="periode_10">10 jours</button>
+        <button data-i18n="prototype_30_jours" type="button" class="period" data-period="30" aria-pressed="false" data-i18n="periode_30">30 jours</button>
+        <button data-i18n="prototype_personnalis" type="button" class="period" data-period="custom" aria-pressed="false" data-i18n="periode_custom">Personnalisé</button>
       </div>
       <div class="custom-range" id="custom-range" hidden>
-        <label>Du <input type="date" id="start-date"></label>
-        <label>Au <input type="date" id="end-date"></label>
-        <button type="button" id="apply-range" class="apply" data-i18n="appliquer">Appliquer</button>
+        <label data-i18n="prototype_du">Du <input type="date" id="start-date"></label>
+        <label data-i18n="prototype_au">Au <input type="date" id="end-date"></label>
+        <button data-i18n="prototype_appliquer" type="button" id="apply-range" class="apply" data-i18n="appliquer">Appliquer</button>
       </div>
     </section>
 
     <section class="hero card" aria-labelledby="hero-title">
       <div class="hero-head">
         <div>
-          <p class="label" id="hero-title">Fiabilité du projet</p>
-          <p class="score"><span id="score-value">91</span><span class="score-max">/100</span></p>
-          <p class="delta" id="score-delta">+2,4 pts vs période précédente</p>
+          <p data-i18n="prototype_fiabilit_du_projet" class="label" id="hero-title">Fiabilité du projet</p>
+          <p data-i18n="prototype_91100" class="score"><span data-i18n="prototype_91" id="score-value">91</span><span data-i18n="prototype_100" class="score-max">/100</span></p>
+          <p data-i18n="prototype_24_pts_vs_priode_prcdente" class="delta" id="score-delta">+2,4 pts vs période précédente</p>
         </div>
         <div class="hero-meta">
-          <span class="pill" id="period-label">7 derniers jours</span>
-          <span class="muted" id="updated-label">Mis à jour à 14:32</span>
+          <span data-i18n="prototype_7_derniers_jours" class="pill" id="period-label">7 derniers jours</span>
+          <span data-i18n="prototype_mis_jour_1432" class="muted" id="updated-label">Mis à jour à 14:32</span>
         </div>
       </div>
 
@@ -60,11 +60,11 @@
 
       <div class="chart-footer">
         <div class="legend" aria-hidden="true">
-          <span>Faible</span>
+          <span data-i18n="prototype_faible">Faible</span>
           <span class="legend-bar"></span>
-          <span>Élevé</span>
+          <span data-i18n="prototype_lev">Élevé</span>
         </div>
-        <p class="chart-note">Sommet central = fiabilité · crêtes = activité</p>
+        <p data-i18n="prototype_sommet_central_fiabilit_crtes_activit" class="chart-note">Sommet central = fiabilité · crêtes = activité</p>
       </div>
 
       <details class="data-fallback">
@@ -83,46 +83,46 @@
 
     <section class="metrics" aria-label="Indicateurs clés">
       <article class="metric card">
-        <p class="metric-label">Visites</p>
-        <p class="metric-value" id="metric-visits">1 842</p>
-        <p class="metric-delta up" id="delta-visits">+12,4 %</p>
+        <p data-i18n="prototype_visites" class="metric-label">Visites</p>
+        <p data-i18n="prototype_1_842" class="metric-value" id="metric-visits">1 842</p>
+        <p data-i18n="prototype_124_" class="metric-delta up" id="delta-visits">+12,4 %</p>
       </article>
       <article class="metric card">
-        <p class="metric-label">Clics</p>
-        <p class="metric-value" id="metric-clicks">3 271</p>
-        <p class="metric-delta up" id="delta-clicks">+8,1 %</p>
+        <p data-i18n="prototype_clics" class="metric-label">Clics</p>
+        <p data-i18n="prototype_3_271" class="metric-value" id="metric-clicks">3 271</p>
+        <p data-i18n="prototype_81_" class="metric-delta up" id="delta-clicks">+8,1 %</p>
       </article>
       <article class="metric card">
-        <p class="metric-label">Formulaires envoyés</p>
-        <p class="metric-value" id="metric-forms">96</p>
-        <p class="metric-delta up" id="delta-forms">+4,2 %</p>
+        <p data-i18n="prototype_formulaires_envoys" class="metric-label">Formulaires envoyés</p>
+        <p data-i18n="prototype_96" class="metric-value" id="metric-forms">96</p>
+        <p data-i18n="prototype_42_" class="metric-delta up" id="delta-forms">+4,2 %</p>
       </article>
       <article class="metric card">
-        <p class="metric-label">Recherches internes</p>
-        <p class="metric-value" id="metric-searches">412</p>
-        <p class="metric-delta down" id="delta-searches">−2,3 %</p>
+        <p data-i18n="prototype_recherches_internes" class="metric-label">Recherches internes</p>
+        <p data-i18n="prototype_412" class="metric-value" id="metric-searches">412</p>
+        <p data-i18n="prototype_23_" class="metric-delta down" id="delta-searches">−2,3 %</p>
       </article>
     </section>
 
     <nav class="tabs" role="tablist" aria-label="Détails">
-      <button type="button" class="tab is-active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Vue d'ensemble</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-clicks" id="tab-clicks" data-tab="clicks" tabindex="-1">Clics</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-forms" id="tab-forms" data-tab="forms" tabindex="-1">Formulaires</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-searches" id="tab-searches" data-tab="searches" tabindex="-1">Recherches</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-gsc" id="tab-gsc" data-tab="gsc" tabindex="-1">GSC</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-reliability" id="tab-reliability" data-tab="reliability" tabindex="-1">Fiabilité</button>
+      <button data-i18n="prototype_vue_densemble" type="button" class="tab is-active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Vue d'ensemble</button>
+      <button data-i18n="prototype_clics" type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-clicks" id="tab-clicks" data-tab="clicks" tabindex="-1">Clics</button>
+      <button data-i18n="prototype_formulaires" type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-forms" id="tab-forms" data-tab="forms" tabindex="-1">Formulaires</button>
+      <button data-i18n="prototype_recherches" type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-searches" id="tab-searches" data-tab="searches" tabindex="-1">Recherches</button>
+      <button data-i18n="prototype_gsc" type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-gsc" id="tab-gsc" data-tab="gsc" tabindex="-1">GSC</button>
+      <button data-i18n="prototype_fiabilit" type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-reliability" id="tab-reliability" data-tab="reliability" tabindex="-1">Fiabilité</button>
     </nav>
 
     <section class="tab-panel card is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
       <div class="section-head">
         <div>
-          <h2>Vue d'ensemble</h2>
-          <p class="muted">Synthèse de la période sélectionnée.</p>
+          <h2 data-i18n="prototype_vue_densemble">Vue d'ensemble</h2>
+          <p data-i18n="prototype_synthse_de_la_priode_slectionne" class="muted">Synthèse de la période sélectionnée.</p>
         </div>
       </div>
       <div class="grid-2">
         <div>
-          <h3>Top clics</h3>
+          <h3 data-i18n="prototype_top_clics">Top clics</h3>
           <div class="table-wrap">
             <table>
               <thead>
@@ -133,7 +133,7 @@
           </div>
         </div>
         <div>
-          <h3>Alertes récentes</h3>
+          <h3 data-i18n="prototype_alertes_rcentes">Alertes récentes</h3>
           <ul class="alerts" id="alerts-list"></ul>
         </div>
       </div>
@@ -142,15 +142,15 @@
     <section class="tab-panel card" id="panel-clicks" role="tabpanel" aria-labelledby="tab-clicks" hidden>
       <div class="section-head">
         <div>
-          <h2>Clics</h2>
-          <p class="muted">Liens, boutons, onglets et menus.</p>
+          <h2 data-i18n="prototype_clics">Clics</h2>
+          <p data-i18n="prototype_liens_boutons_onglets_et_menus" class="muted">Liens, boutons, onglets et menus.</p>
         </div>
       </div>
       <div class="chips">
-        <span class="chip">Liens <strong id="click-type-links">0</strong></span>
-        <span class="chip">Boutons <strong id="click-type-buttons">0</strong></span>
-        <span class="chip">Onglets <strong id="click-type-tabs">0</strong></span>
-        <span class="chip">Menus <strong id="click-type-menus">0</strong></span>
+        <span data-i18n="prototype_liens_0" class="chip">Liens <strong id="click-type-links">0</strong></span>
+        <span data-i18n="prototype_boutons_0" class="chip">Boutons <strong id="click-type-buttons">0</strong></span>
+        <span data-i18n="prototype_onglets_0" class="chip">Onglets <strong id="click-type-tabs">0</strong></span>
+        <span data-i18n="prototype_menus_0" class="chip">Menus <strong id="click-type-menus">0</strong></span>
       </div>
       <div class="table-wrap">
         <table>
@@ -160,14 +160,14 @@
           <tbody id="clicks-table-body"></tbody>
         </table>
       </div>
-      <p class="note">Chaque clic est rattaché à un identifiant stable, sans donnée personnelle.</p>
+      <p data-i18n="prototype_chaque_clic_est_rattach_un_identifiant_s" class="note">Chaque clic est rattaché à un identifiant stable, sans donnée personnelle.</p>
     </section>
 
     <section class="tab-panel card" id="panel-forms" role="tabpanel" aria-labelledby="tab-forms" hidden>
       <div class="section-head">
         <div>
-          <h2>Formulaires</h2>
-          <p class="muted">Démarrages, envois, succès et erreurs.</p>
+          <h2 data-i18n="prototype_formulaires">Formulaires</h2>
+          <p data-i18n="prototype_dmarrages_envois_succs_et_erreurs" class="muted">Démarrages, envois, succès et erreurs.</p>
         </div>
       </div>
       <div class="table-wrap">
@@ -178,14 +178,14 @@
           <tbody id="forms-table-body"></tbody>
         </table>
       </div>
-      <p class="note">Aucune valeur saisie n'est affichée ici. Les soumissions complètes restent dans une table protégée côté serveur.</p>
+      <p data-i18n="prototype_aucune_valeur_saisie_nest_affiche_ici_le" class="note">Aucune valeur saisie n'est affichée ici. Les soumissions complètes restent dans une table protégée côté serveur.</p>
     </section>
 
     <section class="tab-panel card" id="panel-searches" role="tabpanel" aria-labelledby="tab-searches" hidden>
       <div class="section-head">
         <div>
-          <h2>Recherches internes</h2>
-          <p class="muted">Recherches effectuées sur Keffstation — temps réel.</p>
+          <h2 data-i18n="prototype_recherches_internes">Recherches internes</h2>
+          <p data-i18n="prototype_recherches_effectues_sur_keffstation_tem" class="muted">Recherches effectuées sur Keffstation — temps réel.</p>
         </div>
       </div>
       <div class="table-wrap">
@@ -196,22 +196,22 @@
           <tbody id="searches-table-body"></tbody>
         </table>
       </div>
-      <p class="note">Ces données sont séparées des requêtes Google Search Console.</p>
+      <p data-i18n="prototype_ces_donnes_sont_spares_des_requtes_googl" class="note">Ces données sont séparées des requêtes Google Search Console.</p>
     </section>
 
     <section class="tab-panel card" id="panel-gsc" role="tabpanel" aria-labelledby="tab-gsc" hidden>
       <div class="section-head">
         <div>
-          <h2>Google Search Console</h2>
-          <p class="muted">Données Google, distinctes des recherches internes.</p>
+          <h2 data-i18n="prototype_google_search_console">Google Search Console</h2>
+          <p data-i18n="prototype_donnes_google_distinctes_des_recherches_" class="muted">Données Google, distinctes des recherches internes.</p>
         </div>
-        <span class="badge badge-delayed">Différé 2–3 jours</span>
+        <span data-i18n="prototype_diffr_23_jours" class="badge badge-delayed">Différé 2–3 jours</span>
       </div>
       <div class="gsc-metrics">
-        <div class="mini-card"><span>Clics</span><strong id="gsc-clicks">1 280</strong></div>
-        <div class="mini-card"><span>Impressions</span><strong id="gsc-impressions">48 200</strong></div>
-        <div class="mini-card"><span>CTR</span><strong id="gsc-ctr">2,65 %</strong></div>
-        <div class="mini-card"><span>Position</span><strong id="gsc-position">12,4</strong></div>
+        <div class="mini-card"><span data-i18n="prototype_clics">Clics</span><strong id="gsc-clicks">1 280</strong></div>
+        <div class="mini-card"><span data-i18n="prototype_impressions">Impressions</span><strong id="gsc-impressions">48 200</strong></div>
+        <div class="mini-card"><span data-i18n="prototype_ctr">CTR</span><strong id="gsc-ctr">2,65 %</strong></div>
+        <div class="mini-card"><span data-i18n="prototype_position">Position</span><strong id="gsc-position">12,4</strong></div>
       </div>
       <div class="table-wrap">
         <table>
@@ -221,53 +221,53 @@
           <tbody id="gsc-table-body"></tbody>
         </table>
       </div>
-      <p class="note">Google ne fournit pas ces données en temps réel et masque certaines requêtes. Ne pas les additionner aux recherches internes.</p>
+      <p data-i18n="prototype_google_ne_fournit_pas_ces_donnes_en_temp" class="note">Google ne fournit pas ces données en temps réel et masque certaines requêtes. Ne pas les additionner aux recherches internes.</p>
     </section>
 
     <section class="tab-panel card" id="panel-reliability" role="tabpanel" aria-labelledby="tab-reliability" hidden>
       <div class="section-head">
         <div>
-          <h2>Fiabilité</h2>
-          <p class="muted">Composantes du score affiché au sommet de la montagne.</p>
+          <h2 data-i18n="prototype_fiabilit">Fiabilité</h2>
+          <p data-i18n="prototype_composantes_du_score_affich_au_sommet_de" class="muted">Composantes du score affiché au sommet de la montagne.</p>
         </div>
-        <span class="badge badge-score" id="rel-score-badge">91/100</span>
+        <span data-i18n="prototype_91100" class="badge badge-score" id="rel-score-badge">91/100</span>
       </div>
       <div class="reliability-list">
         <div class="rel-row">
-          <div class="rel-label"><span>Disponibilité</span><span id="rel-uptime-value">99,9 %</span></div>
+          <div class="rel-label"><span data-i18n="prototype_disponibilit">Disponibilité</span><span data-i18n="prototype_999_" id="rel-uptime-value">99,9 %</span></div>
           <div class="bar"><span id="rel-uptime-bar" style="width:99.9%"></span></div>
-          <p class="rel-weight">Poids 30 %</p>
+          <p data-i18n="prototype_poids_30_" class="rel-weight">Poids 30 %</p>
         </div>
         <div class="rel-row">
-          <div class="rel-label"><span>Succès formulaires</span><span id="rel-form-value">85 %</span></div>
+          <div class="rel-label"><span data-i18n="prototype_succs_formulaires">Succès formulaires</span><span data-i18n="prototype_85_" id="rel-form-value">85 %</span></div>
           <div class="bar"><span id="rel-form-bar" style="width:85%"></span></div>
-          <p class="rel-weight">Poids 20 %</p>
+          <p data-i18n="prototype_poids_20_" class="rel-weight">Poids 20 %</p>
         </div>
         <div class="rel-row">
-          <div class="rel-label"><span>Succès paiements</span><span id="rel-payment-value">90 %</span></div>
+          <div class="rel-label"><span data-i18n="prototype_succs_paiements">Succès paiements</span><span data-i18n="prototype_90_" id="rel-payment-value">90 %</span></div>
           <div class="bar"><span id="rel-payment-bar" style="width:90%"></span></div>
-          <p class="rel-weight">Poids 20 %</p>
+          <p data-i18n="prototype_poids_20_" class="rel-weight">Poids 20 %</p>
         </div>
         <div class="rel-row">
-          <div class="rel-label"><span>Qualité technique</span><span id="rel-error-value">93 %</span></div>
+          <div class="rel-label"><span data-i18n="prototype_qualit_technique">Qualité technique</span><span data-i18n="prototype_93_" id="rel-error-value">93 %</span></div>
           <div class="bar"><span id="rel-error-bar" style="width:93%"></span></div>
-          <p class="rel-weight">Poids 15 %</p>
+          <p data-i18n="prototype_poids_15_" class="rel-weight">Poids 15 %</p>
         </div>
         <div class="rel-row">
-          <div class="rel-label"><span>Fraîcheur des données</span><span id="rel-fresh-value">80 %</span></div>
+          <div class="rel-label"><span data-i18n="prototype_fracheur_des_donnes">Fraîcheur des données</span><span data-i18n="prototype_80_" id="rel-fresh-value">80 %</span></div>
           <div class="bar"><span id="rel-fresh-bar" style="width:80%"></span></div>
-          <p class="rel-weight">Poids 15 %</p>
+          <p data-i18n="prototype_poids_15_" class="rel-weight">Poids 15 %</p>
         </div>
       </div>
       <div class="sandbox-note">
         <strong>PayPal Sandbox</strong>
-        <p>Les tests de refus de carte se font uniquement en Sandbox. Aucune commande réelle n'est créée.</p>
+        <p data-i18n="prototype_les_tests_de_refus_de_carte_se_font_uniq">Les tests de refus de carte se font uniquement en Sandbox. Aucune commande réelle n'est créée.</p>
       </div>
     </section>
 
     <footer class="footer">
-      <p>Prototype local · Données fictives · Aucune donnée personnelle</p>
-      <p>Ne pas déployer tel quel. La 2FA sera ajoutée avant la mise en ligne.</p>
+      <p data-i18n="prototype_prototype_local_donnes_fictives_aucune_d">Prototype local · Données fictives · Aucune donnée personnelle</p>
+      <p data-i18n="prototype_ne_pas_dployer_tel_quel_la_2fa_sera_ajou">Ne pas déployer tel quel. La 2FA sera ajoutée avant la mise en ligne.</p>
     </footer>
   </div>
   <script src="app.js"></script>

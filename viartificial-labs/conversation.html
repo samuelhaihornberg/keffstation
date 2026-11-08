@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#b84dff">
 <meta name="description" content="Conversation directe avec ViA ou un SuperBot — ViArtificial Labs">
-<link rel="manifest" href="./manifest.json">
+<li data-i18n="viartificial-labs_conversation_directe_via_superbots_box-s"nk rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="./responsive.css">
 <title>Conversation directe — ViA & SuperBots</title>
 <style>
@@ -105,103 +105,103 @@ body[data-min="1"] .msn{display:none}
 </head>
 <body data-mode="fullscreen" data-min="0">
 <div class="app">
-<header class="top"><a href="./">← Bots</a><h1 id="title">Conversation</h1><button id="gearBtn" type="button" aria-label="Réglages">⚙️</button><a href="../">Hub</a></header>
+<header class="top"><a data-i18n="viartificial-labs__bots" href="./">← Bots</a><h1 data-i18n="viartificial-labs_conversation" id="title">Conversation</h1><button id="gearBtn" type="button" aria-label="Réglages">⚙️</button><a data-i18n="viartificial-labs_hub" href="../">Hub</a></header>
 <div class="toolbar" role="toolbar" aria-label="Modes d'affichage" style="padding:10px 16px 0">
-<button id="bFull" aria-pressed="true">⛶ Plein écran</button>
-<button id="bSide" aria-pressed="false">◧ Panneau latéral</button>
-<button id="bMin" aria-pressed="false">_ Réduire</button>
+<button data-i18n="viartificial-labs__plein_cran" id="bFull" aria-pressed="true">⛶ Plein écran</button>
+<button data-i18n="viartificial-labs__panneau_latral" id="bSide" aria-pressed="false">◧ Panneau latéral</button>
+<button data-i18n="viartificial-labs___rduire" id="bMin" aria-pressed="false">_ Réduire</button>
 </div>
-<p class="statusline" id="engineBanner" role="status">Moteur : en attente d’autorisation…</p>
+<p data-i18n="viartificial-labs_moteur_en_attente_dautorisation" class="statusline" id="engineBanner" role="status">Moteur : en attente d’autorisation…</p>
 <div id="viaControls" aria-label="Conversation directe">
-  <label>Bot <select id="botPick" aria-label="Choisir ViA ou un SuperBot"></select></label>
-  <label>Mode <select id="modePick" aria-label="Mode du moteur">
+  <label data-i18n="viartificial-labs_bot">Bot <select id="botPick" aria-label="Choisir ViA ou un SuperBot"></select></label>
+  <label data-i18n="viartificial-labs_mode_local_sur_cet_appareil_hybride_blm_">Mode <select id="modePick" aria-label="Mode du moteur">
     <option value="local">Local — sur cet appareil</option>
     <option value="hybride">Hybride — BLM locaux + en ligne</option>
     <option value="online">En ligne — serveur configuré</option>
   </select></label>
-  <button id="quickConsent" type="button" hidden>Autoriser le moteur local</button>
-  <span id="engineUsed" role="status">Moteur utilisé : —</span>
-  <span id="blmUsed">BLM : auto-test en cours…</span>
+  <button data-i18n="viartificial-labs_autoriser_le_moteur_local" id="quickConsent" type="button" hidden>Autoriser le moteur local</button>
+  <span data-i18n="viartificial-labs_moteur_utilis_" id="engineUsed" role="status">Moteur utilisé : —</span>
+  <span data-i18n="viartificial-labs_blm_auto-test_en_cours" id="blmUsed">BLM : auto-test en cours…</span>
 </div>
 <section id="consentBar" hidden aria-label="Accord modèle IA">
-<p><strong>Autoriser le téléchargement du modèle IA et son stockage sur cet appareil pour discuter avec les SuperBots ?</strong></p>
-<p id="consentSize">Modèle <span id="consentModel">…</span> — ≈ <span id="consentMB">…</span> Mo à télécharger une seule fois (Wi-Fi conseillé). La progression réelle s’affiche pendant le téléchargement.</p>
-<p class="consentBtns"><button id="consentGo" type="button">Autoriser</button><button id="consentLater" type="button">Plus tard</button><button id="consentDetails" type="button">Détails</button></p>
+<p data-i18n="viartificial-labs_autoriser_le_tlchargement_du_modle_ia_et"><strong>Autoriser le téléchargement du modèle IA et son stockage sur cet appareil pour discuter avec les SuperBots ?</strong></p>
+<p data-i18n="viartificial-labs_modle_mo_tlcharger_une_seule_fois_wi-fi_" id="consentSize">Modèle <span id="consentModel">…</span> — ≈ <span id="consentMB">…</span> Mo à télécharger une seule fois (Wi-Fi conseillé). La progression réelle s’affiche pendant le téléchargement.</p>
+<p data-i18n="viartificial-labs_autoriserplus_tarddtails" class="consentBtns"><button data-i18n="viartificial-labs_autoriser" id="consentGo" type="button">Autoriser</button><button data-i18n="viartificial-labs_plus_tard" id="consentLater" type="button">Plus tard</button><button data-i18n="viartificial-labs_dtails" id="consentDetails" type="button">Détails</button></p>
 <p id="consentNoLocal" hidden style="font-size:.85rem;color:#ff9db1"></p>
 <div id="consentDetailText" hidden>
-<p>Le modèle est partagé par tous les SuperBots : chacun garde sa personnalité, sa mémoire et ses conversations. Licence : <span id="consentLicense"></span>. Fichiers stockés dans le cache du navigateur, réutilisés sans re-téléchargement ; une fois cet accord donné, le moteur local se charge automatiquement en arrière-plan. Aucun téléchargement sans cet accord.</p>
-<h4 style="font-size:.85rem;color:#fff">Autorisations de la plateforme KeffStation (KiffTech, Tricktrocjob, ViArtificial, Videogames)</h4>
+<p data-i18n="viartificial-labs_le_modle_est_partag_par_tous_les_superbo">Le modèle est partagé par tous les SuperBots : chacun garde sa personnalité, sa mémoire et ses conversations. Licence : <span id="consentLicense"></span>. Fichiers stockés dans le cache du navigateur, réutilisés sans re-téléchargement ; une fois cet accord donné, le moteur local se charge automatiquement en arrière-plan. Aucun téléchargement sans cet accord.</p>
+<h4 data-i18n="viartificial-labs_autorisations_de_la_plateforme_keffstati" style="font-size:.85rem;color:#fff">Autorisations de la plateforme KeffStation (KiffTech, Tricktrocjob, ViArtificial, Videogames)</h4>
 <ul id="permList">
 <li>🧠 Modèle IA local (≈ <span id="pmMB">…</span> Mo) : <strong id="psModel">—</strong></li>
-<li>💾 Stockage persistant (évite la purge par le navigateur) : <strong id="psPersist">—</strong></li>
-<li>🔔 Notifications (fin de réponse, actions) : <strong id="psNotify">—</strong></li>
-<li>🎙️ Micro · 📷 Caméra · 🖥️ Partage d’écran · 📍 Position : <strong>à l’usage uniquement</strong> <span id="psMediaState"></span></li>
-<li>📴 Hors-ligne (service workers des 4 PWA) : <strong id="psSW">—</strong></li>
-<li>🍪 Cookies / traceurs : <strong>aucun</strong></li>
+<li data-i18n="viartificial-labs__stockage_persistant_vite_la_purge_par_l">💾 Stockage persistant (évite la purge par le navigateur) : <strong id="psPersist">—</strong></li>
+<li data-i18n="viartificial-labs__notifications_fin_de_rponse_actions_">🔔 Notifications (fin de réponse, actions) : <strong id="psNotify">—</strong></li>
+<li data-i18n="viartificial-labs__micro_camra_partage_dcran_position_lusa">🎙️ Micro · 📷 Caméra · 🖥️ Partage d’écran · 📍 Position : <strong>à l’usage uniquement</strong> <span id="psMediaState"></span></li>
+<li data-i18n="viartificial-labs__hors-ligne_service_workers_des_4_pwa_">📴 Hors-ligne (service workers des 4 PWA) : <strong id="psSW">—</strong></li>
+<li data-i18n="viartificial-labs__cookies_traceurs_aucun">🍪 Cookies / traceurs : <strong>aucun</strong></li>
 </ul>
-<p>Ceci n’est pas un bandeau cookies : aucun traceur, aucun cookie facultatif. Le bouton « Autoriser » accorde le modèle + stockage persistant + notifications ; micro, caméra, partage d’écran et position restent demandés séparément par le navigateur, uniquement par la fonction qui en a besoin. Accord retirable à tout moment dans ⚙️ Réglages (avec suppression des fichiers).</p>
-<p style="font-size:.82rem;color:#8f96bd">WASM réduit le risque de fermeture par manque de mémoire mais ne le garantit pas : si le navigateur ferme l’onglet, relance la page — le cache évite de tout retélécharger.</p>
+<p data-i18n="viartificial-labs_ceci_nest_pas_un_bandeau_cookies_aucun_t">Ceci n’est pas un bandeau cookies : aucun traceur, aucun cookie facultatif. Le bouton « Autoriser » accorde le modèle + stockage persistant + notifications ; micro, caméra, partage d’écran et position restent demandés séparément par le navigateur, uniquement par la fonction qui en a besoin. Accord retirable à tout moment dans ⚙️ Réglages (avec suppression des fichiers).</p>
+<p data-i18n="viartificial-labs_wasm_rduit_le_risque_de_fermeture_par_ma" style="font-size:.82rem;color:#8f96bd">WASM réduit le risque de fermeture par manque de mémoire mais ne le garantit pas : si le navigateur ferme l’onglet, relance la page — le cache évite de tout retélécharger.</p>
 </div>
 <div id="progWrap" hidden><div class="term" id="termLog" aria-hidden="true"></div><div id="progBar"><div id="progFill"></div></div><p id="progText" class="term" role="status"></p></div>
 </section>
 <div id="chips" role="group" aria-label="SuperBots qui répondent"></div>
 <section id="seances" aria-label="Séances de discussion" style="margin:10px 16px 0;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;max-width:720px">
-<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong style="font-size:.9rem">💬 Séances</strong><select id="sessBot" aria-label="Bot" style="min-height:44px;border-radius:10px;background:#12142e;color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 10px"></select><button id="sessNew" type="button" style="min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;padding:8px 16px">＋ Nouvelle séance</button></div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><strong style="font-size:.9rem">💬 Séances</strong><select id="sessBot" aria-label="Bot" style="min-height:44px;border-radius:10px;background:#12142e;color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 10px"></select><button data-i18n="viartificial-labs__nouvelle_sance" id="sessNew" type="button" style="min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;padding:8px 16px">＋ Nouvelle séance</button></div>
 <div id="sessList" style="margin-top:8px"></div>
-<p style="font-size:.78rem;color:#8f96bd">Chaque séance garde son contexte séparé. Les anciennes séances restent consultables mais ne rejoignent jamais le contexte sans reprise explicite.</p>
+<p data-i18n="viartificial-labs_chaque_sance_garde_son_contexte_spar_les" style="font-size:.78rem;color:#8f96bd">Chaque séance garde son contexte séparé. Les anciennes séances restent consultables mais ne rejoignent jamais le contexte sans reprise explicite.</p>
 </section>
-<div id="llmBlmBar"><button id="llmBlmBtn" type="button">⚡ Charger le LLM + BLM</button><p id="llmBlmMsg" role="status"></p></div>
-<div id="loadBar" hidden style="margin:10px 16px 0;max-width:720px"><button id="loadBtn" type="button" style="min-height:56px;width:100%;padding:12px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#27d17f,#1e6bff);color:#fff;font-weight:700;font-size:1rem">📥 Charger le modèle local (≈390 Mo, Wi-Fi recommandé)</button><p style="font-size:.8rem;color:#8f96bd;margin-top:6px">Un seul moteur CPU/WASM partagé en Web Worker, conservé en cache. Aucun téléchargement sans ton appui.</p></div>
+<div id="llmBlmBar"><button data-i18n="viartificial-labs__charger_le_llm_blm" id="llmBlmBtn" type="button">⚡ Charger le LLM + BLM</button><p id="llmBlmMsg" role="status"></p></div>
+<div id="loadBar" hidden style="margin:10px 16px 0;max-width:720px"><button data-i18n="viartificial-labs__charger_le_modle_local_390_mo_wi-fi_rec" id="loadBtn" type="button" style="min-height:56px;width:100%;padding:12px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#27d17f,#1e6bff);color:#fff;font-weight:700;font-size:1rem">📥 Charger le modèle local (≈390 Mo, Wi-Fi recommandé)</button><p data-i18n="viartificial-labs_un_seul_moteur_cpuwasm_partag_en_web_wor" style="font-size:.8rem;color:#8f96bd;margin-top:6px">Un seul moteur CPU/WASM partagé en Web Worker, conservé en cache. Aucun téléchargement sans ton appui.</p></div>
 <section id="settings" hidden aria-label="Réglages">
-<h2>⚙️ Réglages</h2>
+<h2 data-i18n="viartificial-labs__rglages">⚙️ Réglages</h2>
 <p id="pMsg" role="status" style="font-size:.85rem;color:#b9c0e6"></p>
 <div id="engineStatus" role="status" aria-live="polite" style="margin:8px 0;border:1px solid rgba(39,209,127,.45);border-radius:12px;padding:10px 12px;background:rgba(39,209,127,.06);font-size:.82rem">
-<h4 style="font-size:.88rem;color:#fff;margin-bottom:6px">État réel du moteur et des BLM</h4>
-<p>Moteur actif : <strong id="stEngine">—</strong></p>
-<p>Modèle utilisé : <span id="stModel">—</span></p>
-<p>BLM : <strong id="stBLM">non testés</strong></p>
-<p id="stBLMDetail" style="color:#b9c0e6">Auto-test non lancé.</p>
-<p id="stLLM" style="color:#b9c0e6">Test LLM : aucun test effectué.</p>
-<p id="stPath" style="color:#8f96bd">Dernier parcours : aucune requête depuis le chargement.</p>
-<p><button id="blmTestBtn" type="button">Relancer l’auto-test BLM</button></p>
+<h4 data-i18n="viartificial-labs_tat_rel_du_moteur_et_des_blm" style="font-size:.88rem;color:#fff;margin-bottom:6px">État réel du moteur et des BLM</h4>
+<p data-i18n="viartificial-labs_moteur_actif_">Moteur actif : <strong id="stEngine">—</strong></p>
+<p data-i18n="viartificial-labs_modle_utilis_">Modèle utilisé : <span id="stModel">—</span></p>
+<p data-i18n="viartificial-labs_blm_non_tests">BLM : <strong id="stBLM">non testés</strong></p>
+<p data-i18n="viartificial-labs_auto-test_non_lanc" id="stBLMDetail" style="color:#b9c0e6">Auto-test non lancé.</p>
+<p data-i18n="viartificial-labs_test_llm_aucun_test_effectu" id="stLLM" style="color:#b9c0e6">Test LLM : aucun test effectué.</p>
+<p data-i18n="viartificial-labs_dernier_parcours_aucune_requte_depuis_le" id="stPath" style="color:#8f96bd">Dernier parcours : aucune requête depuis le chargement.</p>
+<p data-i18n="viartificial-labs_relancer_lauto-test_blm"><button data-i18n="viartificial-labs_relancer_lauto-test_blm" id="blmTestBtn" type="button">Relancer l’auto-test BLM</button></p>
 </div>
-<p style="font-size:.85rem">Accord modèle IA : <strong id="consentState">—</strong></p>
-<p style="font-size:.85rem"><label style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="pulseChk" type="checkbox" checked style="width:44px;min-height:44px"> Pulsation des réponses (mot à mot)</label></p>
-<p style="font-size:.85rem"><label style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="xreadChk" type="checkbox" checked style="width:44px;min-height:44px"> Relecture croisée Geeko ↔ Geekette (une phrase max)</label></p>
+<p data-i18n="viartificial-labs_accord_modle_ia_" style="font-size:.85rem">Accord modèle IA : <strong id="consentState">—</strong></p>
+<p data-i18n="viartificial-labs_pulsation_des_rponses_mot_mot" style="font-size:.85rem"><label data-i18n="viartificial-labs_pulsation_des_rponses_mot_mot" style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="pulseChk" type="checkbox" checked style="width:44px;min-height:44px"> Pulsation des réponses (mot à mot)</label></p>
+<p data-i18n="viartificial-labs_relecture_croise_geeko_geekette_une_phra" style="font-size:.85rem"><label data-i18n="viartificial-labs_relecture_croise_geeko_geekette_une_phra" style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="xreadChk" type="checkbox" checked style="width:44px;min-height:44px"> Relecture croisée Geeko ↔ Geekette (une phrase max)</label></p>
 <div id="idcard" style="margin-top:8px;border:1px dashed rgba(255,255,255,.25);border-radius:12px;padding:10px 12px;font-size:.82rem">
-<h4 style="font-size:.85rem;color:#fff">Carte d’identité locale (token automatique, sur cet appareil uniquement)</h4>
-<p>Token : <strong id="idcToken">—</strong> · Modèle : <span id="idcModel">—</span></p>
-<p>Chargée : <span id="idcLoaded">—</span> · Accord : <span id="idcConsent">—</span></p>
+<h4 data-i18n="viartificial-labs_carte_didentit_locale_token_automatique_" style="font-size:.85rem;color:#fff">Carte d’identité locale (token automatique, sur cet appareil uniquement)</h4>
+<p data-i18n="viartificial-labs_token_modle_">Token : <strong id="idcToken">—</strong> · Modèle : <span id="idcModel">—</span></p>
+<p data-i18n="viartificial-labs_charge_accord_">Chargée : <span id="idcLoaded">—</span> · Accord : <span id="idcConsent">—</span></p>
 </div>
-<p style="font-size:.8rem;color:#8f96bd">Stockage navigateur : <span id="storageInfo">—</span></p>
-<p><button id="withdrawBtn" type="button">Retirer l’accord</button> <button id="deleteModelsBtn" type="button">Supprimer les modèles téléchargés</button></p>
+<p data-i18n="viartificial-labs_stockage_navigateur_" style="font-size:.8rem;color:#8f96bd">Stockage navigateur : <span id="storageInfo">—</span></p>
+<p data-i18n="viartificial-labs_retirer_laccord_supprimer_les_modles_tlc"><button data-i18n="viartificial-labs_retirer_laccord" id="withdrawBtn" type="button">Retirer l’accord</button> <button data-i18n="viartificial-labs_supprimer_les_modles_tlchargs" id="deleteModelsBtn" type="button">Supprimer les modèles téléchargés</button></p>
 <details><summary style="min-height:44px;color:#ffd23f">Avancé (autre moteur, actions)</summary>
-<label>Fournisseur <select id="pProvider"><option value="local">Modèle local automatique (partagé)</option><option value="ollama">Ollama local (gratuit, sans clé)</option><option value="custom">Endpoint compatible OpenAI (saisi par toi)</option><option value="none">Aucun (désactivé)</option></select></label>
-<label>Adresse (Ollama/endpoint) <input id="pUrl" inputmode="url" placeholder="http://localhost:11434"></label>
-<label>Modèle (Ollama/endpoint) <input id="pModel" placeholder="llama3.2"></label>
-<p style="font-size:.8rem;color:#8f96bd">Champ Adresse : à remplir seulement si tu disposes d’un serveur Ollama joignable depuis cet appareil (sinon, utilise le moteur local). Sans moteur joignable, aucune réponse n’est simulée.</p>
-<label>Clé éventuelle (session seule, jamais sauvegardée) <input id="pKey" type="password" autocomplete="off" placeholder="optionnel, mémoire vive uniquement"></label>
-<span><button id="pTest" type="button">Tester</button></span>
-<span><button id="pReload" type="button">Charger / recharger le moteur local</button></span>
-<span><button id="pUnload" type="button">Décharger le moteur (libère la mémoire)</button></span>
+<label data-i18n="viartificial-labs_fournisseur_modle_local_automatique_part">Fournisseur <select id="pProvider"><option value="local">Modèle local automatique (partagé)</option><option value="ollama">Ollama local (gratuit, sans clé)</option><option value="custom">Endpoint compatible OpenAI (saisi par toi)</option><option value="none">Aucun (désactivé)</option></select></label>
+<label data-i18n="viartificial-labs_adresse_ollamaendpoint">Adresse (Ollama/endpoint) <input id="pUrl" inputmode="url" placeholder="http://localhost:11434"></label>
+<label data-i18n="viartificial-labs_modle_ollamaendpoint">Modèle (Ollama/endpoint) <input id="pModel" placeholder="llama3.2"></label>
+<p data-i18n="viartificial-labs_champ_adresse_remplir_seulement_si_tu_di" style="font-size:.8rem;color:#8f96bd">Champ Adresse : à remplir seulement si tu disposes d’un serveur Ollama joignable depuis cet appareil (sinon, utilise le moteur local). Sans moteur joignable, aucune réponse n’est simulée.</p>
+<label data-i18n="viartificial-labs_cl_ventuelle_session_seule_jamais_sauveg">Clé éventuelle (session seule, jamais sauvegardée) <input id="pKey" type="password" autocomplete="off" placeholder="optionnel, mémoire vive uniquement"></label>
+<span data-i18n="viartificial-labs_tester"><button data-i18n="viartificial-labs_tester" id="pTest" type="button">Tester</button></span>
+<span data-i18n="viartificial-labs_charger_recharger_le_moteur_local"><button data-i18n="viartificial-labs_charger_recharger_le_moteur_local" id="pReload" type="button">Charger / recharger le moteur local</button></span>
+<span data-i18n="viartificial-labs_dcharger_le_moteur_libre_la_mmoire"><button data-i18n="viartificial-labs_dcharger_le_moteur_libre_la_mmoire" id="pUnload" type="button">Décharger le moteur (libère la mémoire)</button></span>
 <span id="pProg" role="status" style="font-size:.8rem"></span>
-<h3 style="font-size:.9rem;color:#fff;margin-top:8px">⚒️ Actions (outils explicitement connectés)</h3>
+<h3 data-i18n="viartificial-labs__actions_outils_explicitement_connects" style="font-size:.9rem;color:#fff;margin-top:8px">⚒️ Actions (outils explicitement connectés)</h3>
 <span id="actList" style="font-size:.8rem"></span>
-<span id="actState" role="status" style="font-size:.8rem">Aucune action en cours.</span>
+<span data-i18n="viartificial-labs_aucune_action_en_cours" id="actState" role="status" style="font-size:.8rem">Aucune action en cours.</span>
 <span id="actResult" style="font-size:.8rem"></span>
-<span><button id="actStop" type="button" hidden>■ Arrêter</button> <button id="actTake" type="button" hidden>Reprendre la main</button></span>
+<span data-i18n="viartificial-labs__arrter_reprendre_la_main"><button data-i18n="viartificial-labs__arrter" id="actStop" type="button" hidden>■ Arrêter</button> <button data-i18n="viartificial-labs_reprendre_la_main" id="actTake" type="button" hidden>Reprendre la main</button></span>
 <span id="capsLine" style="font-size:.78rem;color:#8f96bd"></span>
-<h3 style="font-size:.9rem;color:#fff;margin-top:8px">🔍 Diagnostics appareil (pas de conclusion hâtive)</h3>
-<pre id="diagDetail" style="font-size:.75rem;color:#8f96bd;white-space:pre-wrap;background:rgba(0,0,0,.3);border-radius:8px;padding:8px">détection en cours…</pre>
+<h3 data-i18n="viartificial-labs__diagnostics_appareil_pas_de_conclusion_" style="font-size:.9rem;color:#fff;margin-top:8px">🔍 Diagnostics appareil (pas de conclusion hâtive)</h3>
+<p data-i18n="viartificial-labs_dtection_en_cours_activit_en_courspasse_"re id="diagDetail" style="font-size:.75rem;color:#8f96bd;white-space:pre-wrap;background:rgba(0,0,0,.3);border-radius:8px;padding:8px">détection en cours…</pre>
 </details>
 </section>
 <div class="stage">
-<section class="activity" aria-label="Activité à côté du chat"><h2>📝 Activité en cours</h2><p id="actHint">Passe en « Panneau latéral » pour utiliser ce panneau à côté de la conversation (ex. notes, plan GuideoPlan). Tout reste dans la PWA.</p><ul><li>Note 1 : …</li><li>Note 2 : …</li></ul></section>
+<section class="activity" aria-label="Activité à côté du chat"><h2 data-i18n="viartificial-labs__activit_en_cours">📝 Activité en cours</h2><p id="actHint">Passe en « Panneau latéral » pour utiliser ce panneau à côté de la conversation (ex. notes, plan GuideoPlan). Tout reste dans la PWA.</p><ul><li data-i18n="viartificial-labs_note_1_">Note 1 : …</li><li data-i18n="viartificial-labs_note_2_">Note 2 : …</li></ul></section>
 <section class="msn" id="msn" aria-label="Fenêtre de conversation style MSN">
-<div class="msn-title"><span class="avatar" id="avatar">🤖</span><span class="who"><strong id="who">…</strong><span class="status"><span class="dot" aria-hidden="true"></span><span id="status">Hors ligne — en attente</span></span></span><span class="winbtns"><button id="wMin" aria-label="Réduire la fenêtre">_</button><button id="wFull" aria-label="Bascule plein écran">⛶</button></span></div>
+<div class="msn-title"><span data-i18n="viartificial-labs_" class="avatar" id="avatar">🤖</span><span class="who"><strong id="who">…</strong><span class="status"><span class="dot" aria-hidden="true"></span><span data-i18n="viartificial-labs_hors_ligne_en_attente" id="status">Hors ligne — en attente</span></span></span><span data-i18n="viartificial-labs__" class="winbtns"><button id="wMin" aria-label="Réduire la fenêtre">_</button><button id="wFull" aria-label="Bascule plein écran">⛶</button></span></div>
 <div id="thread" role="log" aria-live="polite" aria-label="Historique"></div>
 <form class="composer" id="form"><textarea id="input" rows="1" placeholder="Écris ton message… (Entrée = envoyer, Maj+Entrée = ligne)" aria-label="Message"></textarea><button type="submit" aria-label="Envoyer">➤</button></form>
-<div class="enginebar"><span id="engineLine">Moteur : en attente d’autorisation…</span><button id="cancel" type="button" hidden>✕ Annuler</button><button id="retryBtn" type="button" hidden>↻ Réessayer</button></div>
+<div class="enginebar"><span data-i18n="viartificial-labs_moteur_en_attente_dautorisation" id="engineLine">Moteur : en attente d’autorisation…</span><button data-i18n="viartificial-labs__annuler" id="cancel" type="button" hidden>✕ Annuler</button><button data-i18n="viartificial-labs__ressayer" id="retryBtn" type="button" hidden>↻ Réessayer</button></div>
 </section>
 </div>
 </div>
@@ -980,7 +980,7 @@ function renderSeances(){try{
   var cur=sel.value;if(!(typeof botsById!=='undefined'&&botsById[cur])){cur=(typeof q!=='undefined'&&botsById[q])?q:((cfg.bots[0]||{}).id||'geeko');try{sel.value=cur;}catch(e){}}
   var L=lireSeances(cur),actif=sessionActiveId(cur),htm='';
   if(!L.length)htm='<div style="color:#8f96bd">Aucune séance pour ce bot. Écris un message ou crée une séance.</div>';
-  L.forEach(function(s){if(!s)return;var nb=(s.messages||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant');}).length;var d='';try{d=new Date(s.updatedAt||s.createdAt||Date.now()).toLocaleString();}catch(e){}var estAct=(s.id===actif);htm+='<div style="display:flex;gap:8px;align-items:center;margin:6px 0;padding:8px 10px;border:1px solid '+(estAct?'#27d17f':'rgba(255,255,255,.12)')+';border-radius:10px"><div style="flex:1;min-width:0"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(s.titre||'Séance')+(estAct?' · active':'')+'</div><div style="font-size:.78rem;color:#8f96bd">'+nb+' message(s) · '+escH(d)+' · '+(s.langue||'?')+'</div></div>'+(estAct?'':'<button type="button" data-sess-bot="'+escH(cur)+'" data-sess-id="'+escH(s.id)+'" style="min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;padding:8px 14px">Reprendre</button>')+'</div>';});
+  L.forEach(function(s){if(!s)return;var nb=(s.messages||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant');}).length;var d='';try{d=new Date(s.updatedAt||s.createdAt||Date.now()).toLocaleString();}catch(e){}var estAct=(s.id===actif);htm+='<div style="display:flex;gap:8px;align-items:center;margin:6px 0;padding:8px 10px;border:1px solid '+(estAct?'#27d17f':'rgba(255,255,255,.12)')+';border-radius:10px"><div style="flex:1;min-width:0"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(s.titre||'Séance')+(estAct?' · active':'')+'</div><div style="font-size:.78rem;color:#8f96bd">'+nb+' message(s) · '+escH(d)+' · '+(s.langue||'?')+'</div></div>'+(estAct?'':'<button data-i18n="viartificial-labs_reprendre" type="button" data-sess-bot="'+escH(cur)+'" data-sess-id="'+escH(s.id)+'" style="min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f;padding:8px 14px">Reprendre</button>')+'</div>';});
   box.innerHTML=htm;
   var btns=box.querySelectorAll('[data-sess-id]');for(var i=0;i<btns.length;i++)(function(el){el.onclick=function(){reprendreSeance(el.getAttribute('data-sess-bot'),el.getAttribute('data-sess-id'));};})(btns[i]);
 }catch(e){}}

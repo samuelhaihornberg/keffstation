@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b84dff">
 <meta name="description" content="xsStream — Geeko & Geekette à côté de la partie">
-<link rel="manifest" href="./manifest.json">
+<li data-i18n="viartificial-labs_xsstream_geeko_geekette_box-sizingborder"nk rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="./responsive.css">
 <title>xsStream — Geeko & Geekette</title>
 <style>
@@ -43,39 +43,39 @@ footer a{color:#ffd23f}
 </head>
 <body>
 <div class="app">
-<header><a href="./">← Bots</a><h1>🎮 xsStream — Geeko & Geekette</h1><a href="../">Hub</a></header>
+<header><a data-i18n="viartificial-labs__bots" href="./">← Bots</a><h1 data-i18n="viartificial-labs__xsstream_geeko_geekette">🎮 xsStream — Geeko & Geekette</h1><a data-i18n="viartificial-labs_hub" href="../">Hub</a></header>
 <div class="badges" role="status">
-<span class="badge">🔴 Battle.net : non connecté (aucune connexion annoncée)</span>
-<span class="badge" id="bScreen">🔴 Écran : non partagé</span>
-<span class="badge" id="bCam">🔴 Caméra : coupée</span>
-<span class="badge" id="bMic">🔴 Micro : coupé</span>
-<span class="badge">🔴 Voix en direct : non intégrée</span>
+<span data-i18n="viartificial-labs__battlenet_non_connect_aucune_connexion_" class="badge">🔴 Battle.net : non connecté (aucune connexion annoncée)</span>
+<span data-i18n="viartificial-labs__cran_non_partag" class="badge" id="bScreen">🔴 Écran : non partagé</span>
+<span data-i18n="viartificial-labs__camra_coupe" class="badge" id="bCam">🔴 Caméra : coupée</span>
+<span data-i18n="viartificial-labs__micro_coup" class="badge" id="bMic">🔴 Micro : coupé</span>
+<span data-i18n="viartificial-labs__voix_en_direct_non_intgre" class="badge">🔴 Voix en direct : non intégrée</span>
 </div>
 <div class="grid">
-<section class="cap" aria-label="Discuter"><h2>1 · Discuter</h2>
-<p>Compagnon de partie. La discussion utilise le moteur configuré, sinon elle reste impossible (aucune simulation).</p>
-<label>Compagnon <select id="xBot"><option value="geeko">Geeko 🧑‍💻</option><option value="geekette">Geekette 👩‍💻</option></select></label>
-<label>Compétence (1–5) <select id="xSkill"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
-<label>Initiative (1–5) <select id="xInit"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
-<button id="xSave" type="button">Enregistrer réglages</button>
-<button id="xChat" type="button" class="ghost">Ouvrir la conversation →</button>
+<section class="cap" aria-label="Discuter"><h2 data-i18n="viartificial-labs_1_discuter">1 · Discuter</h2>
+<p data-i18n="viartificial-labs_compagnon_de_partie_la_discussion_utilis">Compagnon de partie. La discussion utilise le moteur configuré, sinon elle reste impossible (aucune simulation).</p>
+<label data-i18n="viartificial-labs_compagnon_geeko_geekette_">Compagnon <select id="xBot"><option value="geeko">Geeko 🧑‍💻</option><option value="geekette">Geekette 👩‍💻</option></select></label>
+<label data-i18n="viartificial-labs_comptence_15_12345">Compétence (1–5) <select id="xSkill"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label data-i18n="viartificial-labs_initiative_15_12345">Initiative (1–5) <select id="xInit"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<button data-i18n="viartificial-labs_enregistrer_rglages" id="xSave" type="button">Enregistrer réglages</button>
+<button data-i18n="viartificial-labs_ouvrir_la_conversation_" id="xChat" type="button" class="ghost">Ouvrir la conversation →</button>
 <span class="note" id="xProg"></span></section>
-<section class="cap" aria-label="Observer et live"><h2>2 · Observer & live (partagés par toi)</h2>
-<p>Uniquement ce que <strong>tu choisis d’activer</strong>, un flux à la fois ou combinés. Aucune activation automatique, rien d’enregistré, arrêt à tout moment.</p>
+<section class="cap" aria-label="Observer et live"><h2 data-i18n="viartificial-labs_2_observer_live_partags_par_toi">2 · Observer & live (partagés par toi)</h2>
+<p data-i18n="viartificial-labs_uniquement_ce_que_tu_choisis_dactiver_un">Uniquement ce que <strong>tu choisis d’activer</strong>, un flux à la fois ou combinés. Aucune activation automatique, rien d’enregistré, arrêt à tout moment.</p>
 <video id="xVideo" playsinline muted controls></video>
 <video id="xCam" playsinline muted></video>
 <div class="meter" aria-hidden="true"><i id="xMeter"></i></div>
-<div class="live-row"><button id="xShare" type="button">🖥 Écran</button><button id="xShareSnd" type="button">🖥+🔊 Écran + son</button><button id="xCamOn" type="button">🎥 Caméra</button><button id="xMicOn" type="button">🎙 Micro (voix)</button><button id="xLiveOff" type="button" class="ghost">■ Tout arrêter</button></div>
-<span class="note" id="xScreenMsg">Écran : non partagé. Caméra : coupée. Micro : coupé. Prévisualisation locale uniquement — le compagnon n’analyse voix/image que si un service voix/moteur est connecté (aucun pour l’instant).</span></section>
-<section class="cap" aria-label="Agir"><h2>3 · Agir (jeu compatible)</h2>
-<p><strong>Aucun jeu connecté pour l’instant.</strong> Renseigne ton jeu et ton édition (champ libre, aucune liste imposée) : c’est stocké localement, sans connexion.</p>
-<label>Jeu choisi <input id="xGame" placeholder="ex. mon jeu de rôle local…" autocomplete="off"></label>
-<label>Édition choisie <input id="xEdition" placeholder="ex. édition standard…" autocomplete="off"></label>
-<button id="xGameSave" type="button">Enregistrer jeu + édition</button>
+<div class="live-row"><button data-i18n="viartificial-labs__cran" id="xShare" type="button">🖥 Écran</button><button data-i18n="viartificial-labs__cran_son" id="xShareSnd" type="button">🖥+🔊 Écran + son</button><button data-i18n="viartificial-labs__camra" id="xCamOn" type="button">🎥 Caméra</button><button data-i18n="viartificial-labs__micro_voix" id="xMicOn" type="button">🎙 Micro (voix)</button><button data-i18n="viartificial-labs__tout_arrter" id="xLiveOff" type="button" class="ghost">■ Tout arrêter</button></div>
+<span data-i18n="viartificial-labs_cran_non_partag_camra_coupe_micro_coup_p" class="note" id="xScreenMsg">Écran : non partagé. Caméra : coupée. Micro : coupé. Prévisualisation locale uniquement — le compagnon n’analyse voix/image que si un service voix/moteur est connecté (aucun pour l’instant).</span></section>
+<section class="cap" aria-label="Agir"><h2 data-i18n="viartificial-labs_3_agir_jeu_compatible">3 · Agir (jeu compatible)</h2>
+<p data-i18n="viartificial-labs_aucun_jeu_connect_pour_linstant_renseign"><strong>Aucun jeu connecté pour l’instant.</strong> Renseigne ton jeu et ton édition (champ libre, aucune liste imposée) : c’est stocké localement, sans connexion.</p>
+<label data-i18n="viartificial-labs_jeu_choisi">Jeu choisi <input id="xGame" placeholder="ex. mon jeu de rôle local…" autocomplete="off"></label>
+<label data-i18n="viartificial-labs_dition_choisie">Édition choisie <input id="xEdition" placeholder="ex. édition standard…" autocomplete="off"></label>
+<button data-i18n="viartificial-labs_enregistrer_jeu_dition" id="xGameSave" type="button">Enregistrer jeu + édition</button>
 <span class="note" id="xGameMsg"></span>
-<ul><li>⛔ Pas de contrôle automatisé de WoW (EULA Blizzard l’interdit — veto documenté) ni de GeForce NOW sans intégration autorisée.</li><li>Agir n’existe que dans un jeu explicitement compatible et connecté. En attendant : discuter et observer seulement.</li></ul></section>
+<ul><li>⛔ Pas de contrôle automatisé de WoW (EULA Blizzard l’interdit — veto documenté) ni de GeForce NOW sans intégration autorisée.</li><li data-i18n="viartificial-labs_agir_nexiste_que_dans_un_jeu_expliciteme">Agir n’existe que dans un jeu explicitement compatible et connecté. En attendant : discuter et observer seulement.</li></ul></section>
 </div>
-<footer><a href="./">← SuperBots Familliya</a> · xsStream : espace expérimental, capacités marquées en clair.<br><span id="capsLine"></span><br><span>Testé : conteneur Linux (HTTP 200, contrôles statiques). Non testé sur appareils physiques.</span></footer>
+<footer><a data-i18n="viartificial-labs__superbots_familliya" href="./">← SuperBots Familliya</a> · xsStream : espace expérimental, capacités marquées en clair.<br><span id="capsLine"></span><br><span data-i18n="viartificial-labs_test_conteneur_linux_http_200_contrles_s">Testé : conteneur Linux (HTTP 200, contrôles statiques). Non testé sur appareils physiques.</span></footer>
 </div>
 <script src="./memory.js"></script>
 <script src="./capabilities.js"></script>
