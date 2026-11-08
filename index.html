@@ -247,43 +247,63 @@
         <div class="core-name" data-i18n="./index.html_keffstation_82">KEFFSTATION</div>
         <div class="core-count" data-i18n="./index.html_7_apps_83"><span id="app-count">7</span> <span data-i18n="app_count">apps</span></div>
       </div>
-      <!-- Trois anneaux concentriques — vitrine KeffStation -->
+      <!-- Trois cercles concentriques — vitrine KeffStation -->
       <div class="rings-wrapper" aria-label="Sous-applications KeffStation">
-        <!-- Anneau extérieur : horloge avec reflets multicolores -->
-        <div class="ring-clock" id="ring-clock"></div>
-        <!-- Anneau moyen : apps sur fond noir uni, éléments blancs -->
-        <div class="ring-apps" id="ring-apps" data-i18n="index_kifftech_8">
-          <div class="app-ring-button" style="--a: 0deg;" data-url="./kifftech/" data-desc="Objets connectés, gadgets high-tech et accessoires électroniques." onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
-            <span class="app-ring-icon">🤖</span>
-            <span class="app-ring-title" data-i18n="./index.html_kifftech_63">KiffTech</span>
-          </div>
-          <div class="app-ring-button" style="--a: 51.4deg;" data-url="./viartificial-labs/" data-desc="Moteurs IA et conversation directe." onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs" data-i18n="index_viartificial_labs_7">
+
+        <!-- Cercle EXTÉRIEUR : IA & Codes / Informatique -->
+        <div class="ring-outer" aria-label="IA et codes informatiques">
+          <div class="app-ring-button" style="--a: 0deg;" data-url="./viartificial-labs/" data-desc="Moteurs IA, assistants et expérimentations NLP/LLM." onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
             <span class="app-ring-icon">🧠</span>
             <span class="app-ring-title" data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</span>
           </div>
-          <div class="app-ring-button" style="--a: 102.8deg;" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" data-desc="Avis et critiques de services en ligne." onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services" data-i18n="index_critiques_services_6">
-            <span class="app-ring-icon">📝</span>
-            <span class="app-ring-title" data-i18n="./index.html_critiques_services_65">Critiques-Services</span>
-          </div>
-          <div class="app-ring-button" style="--a: 154.2deg;" data-url="./tricktrocjob/" data-desc="Utilitaires et outils techniques." onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob" data-i18n="index_tricktrocjob_5">
-            <span class="app-ring-icon">🔧</span>
-            <span class="app-ring-title" data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</span>
-          </div>
-          <div class="app-ring-button" style="--a: 205.6deg;" data-url="./videogames/" data-desc="Jeux et émulation." onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames" data-i18n="index_videogames_4">
-            <span class="app-ring-icon">🎮</span>
-            <span class="app-ring-title" data-i18n="./index.html_videogames_67">Videogames</span>
-          </div>
-          <div class="app-ring-button" style="--a: 257deg;" data-url="./cos-editor/" data-desc="Éditeur de syntaxe COS." onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor" data-i18n="index_cos_editor_3">
+          <div class="app-ring-button" style="--a: 90deg;" data-url="./cos-editor/" data-desc="Éditeur de syntaxe COS, analyse locale, export JSON." onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
             <span class="app-ring-icon">🧩</span>
             <span class="app-ring-title" data-i18n="./index.html_cos_editor_68">cos Editor</span>
           </div>
-          <div class="app-ring-button" style="--a: 308.4deg;" data-url="./linguistic-motors/" data-desc="Moteurs linguistiques NLP/LLM local." onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors" data-i18n="index_linguistic_motors_2">
+          <div class="app-ring-button" style="--a: 180deg;" data-url="./linguistic-motors/" data-desc="Moteurs linguistiques NLP/LLM local." onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
             <span class="app-ring-icon">🗣️</span>
             <span class="app-ring-title" data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</span>
           </div>
+          <div class="app-ring-button" style="--a: 270deg;" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" data-desc="Avis et critiques de services en ligne." onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
+            <span class="app-ring-icon">📝</span>
+            <span class="app-ring-title" data-i18n="./index.html_critiques_services_65">Critiques-Services</span>
+          </div>
         </div>
-        <!-- Anneau PETIT — centre, autour du core -->
-        <div class="ring-core" aria-hidden="true"></div>
+
+        <!-- Cercle MOYEN : Logo KeffStation (laptop avec puce et circuit) -->
+        <div class="ring-middle" aria-label="KeffStation">
+          <div class="logo-keffstation" aria-label="Logo KeffStation">
+            <div class="laptop">
+              <div class="screen"></div>
+              <div class="keyboard"></div>
+            </div>
+            <div class="chip">
+              <div class="pin p1"></div><div class="pin p2"></div><div class="pin p3"></div><div class="pin p4"></div>
+              <div class="circuit"></div>
+            </div>
+            <div class="label">KEFFSTATION</div>
+          </div>
+        </div>
+
+        <!-- Cercle INTÉRIEUR : Utilitaires, Commerce & Futures apps -->
+        <div class="ring-inner" aria-label="Utilitaires et commerce">
+          <div class="app-ring-button" style="--a: 45deg;" data-url="./kifftech/" data-desc="Objets connectés, gadgets high-tech et accessoires électroniques." onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
+            <span class="app-ring-icon">🤖</span>
+            <span class="app-ring-title" data-i18n="./index.html_kifftech_63">KiffTech</span>
+          </div>
+          <div class="app-ring-button" style="--a: 135deg;" data-url="./tricktrocjob/" data-desc="Utilitaires, scripts et outils techniques." onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
+            <span class="app-ring-icon">🔧</span>
+            <span class="app-ring-title" data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</span>
+          </div>
+          <div class="app-ring-button" style="--a: 225deg;" data-url="./videogames/" data-desc="Jeux et émulation." onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
+            <span class="app-ring-icon">🎮</span>
+            <span class="app-ring-title" data-i18n="./index.html_videogames_67">Videogames</span>
+          </div>
+          <div class="app-ring-button" style="--a: 315deg;" data-url="#" data-desc="Nouvelle application bientôt disponible." onclick="event.preventDefault(); alert('Bientôt disponible !');" aria-label="Application à venir">
+            <span class="app-ring-icon">✨</span>
+            <span class="app-ring-title">Bientôt</span>
+          </div>
+        </div>
       </div>
     </div>
 
