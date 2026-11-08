@@ -174,8 +174,17 @@
 
   var SELECTOR_CSS = "\
     #ks-lang-selector {\
-      position: fixed; top: 10px; right: 10px; z-index: 1000;\
+      position: fixed; top: 10px; right: 10px; z-index: 9999;\
       font: 700 13px/1.2 system-ui,sans-serif; user-select: none; -webkit-user-select: none;\
+    }\
+    /* Désactiver TOUTES les animations sur la page entière */\
+    * {\
+      animation: none !important;\
+      transition: none !important;\
+    }\
+    *::before, *::after {\
+      animation: none !important;\
+      transition: none !important;\
     }\
     #ks-lang-toggle {\
       position: relative; background: rgba(10,12,34,.9); border: 1px solid rgba(255,255,255,.3);\
