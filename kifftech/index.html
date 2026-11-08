@@ -49,12 +49,17 @@ h1{font-size:clamp(1.3rem,3.5vw,2rem);font-weight:800;background:linear-gradient
 .sub-btn.active{background:linear-gradient(135deg,#27d17f,#1e6bff);border-color:transparent;color:#fff}
 @keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(30,107,255,.5)}50%{box-shadow:0 0 20px rgba(0,212,255,.8)}}
 
-main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px);grid-template-columns:1fr}
-@media (min-width:900px){main{grid-template-columns:320px 1fr}}
-@media (min-width:1400px){main{grid-template-columns:360px 1fr}}
+main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr 3in;gap:clamp(16px,3vw,24px)}
+@media (max-width: 900px){main{grid-template-columns: 1fr;}}
 
 /* Sidebar - Agent Panel */
-.sidebar{display:flex;flex-direction:column;gap:clamp(16px,2.5vw,20px);height:fit-content;position:sticky;top:calc(100px + 2vh);max-height:calc(100vh - 120px);overflow-y:auto}
+.sidebar{display:flex;flex-direction:column;gap:clamp(16px,2.5vw,20px);height:fit-content;position:sticky;top:calc(100px + 2vh);max-height:calc(100vh - 120px);overflow-y:auto;width:3in;max-width:3in;flex-shrink:0;grid-row:1 / -1}
+
+/* Rayons dans la sidebar — liste verticale sur 3 pouces */
+#rayon-selector{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:8px}
+.rayon-btn{width:100%;text-align:left;justify-content:flex-start;padding:8px 10px;border-radius:8px;white-space:normal;font-size:clamp(0.75rem,2vw,0.85rem)}
+.rayon-btn.active{background:linear-gradient(135deg,#1e6bff,#00d4ff);border-color:transparent;color:#fff}
+
 .panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:clamp(16px,3vw,20px);transition:border-color .2s,box-shadow .2s}
 .panel:hover{border-color:rgba(30,107,255,.3);box-shadow:0 8px 30px rgba(30,107,255,.1)}
 .panel-title{display:flex;align-items:center;gap:10px;font-size:clamp(.9rem,2vw,1.1rem);font-weight:700;color:#ffd23f;margin-bottom:clamp(12px,2vw,16px)}
@@ -294,13 +299,13 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
   </div>
 </section>
 
+<aside class="sidebar">
 <section class="rayons" id="rayons" aria-label="Rayons de la boutique">
   <h3 class="rayons-title" id="rayons-title">Rayons</h3>
   <nav class="rayon-selector" id="rayon-selector" role="radiogroup" aria-label="Choisir un rayon de produits">
   </nav>
 </section>
 
-<aside class="sidebar">
 <!-- Agent Status Panel -->
 <section class="panel">
 <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Agent de Veille</div>
