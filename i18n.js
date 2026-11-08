@@ -2106,10 +2106,12 @@
 
   // Exposer l'ancien dictionnaire pour compatibilité avec i18n-locales.js
   window.DICT_LEGACY = DICT;
-  // Charger le module de fichiers de langue (chemin relatif résolu depuis la page courante)
+  // Chemin de base depuis la racine du site (pour les fichiers locales/)
+  var baseScript = document.querySelector('script[src*="i18n.js"]');
+  var basePath = baseScript ? baseScript.src.replace(/\/[^\/]*$/, '/') : './';
+  window.__I18N_BASE_PATH = basePath;
+  // Charger le module de fichiers de langue
   (function(){
-    var baseScript = document.querySelector('script[src*="i18n.js"]');
-    var basePath = baseScript ? baseScript.src.replace(/\/[^\/]*$/, '/') : './';
     var s = document.createElement('script');
     s.defer = true;
     s.src = basePath + 'i18n-locales.js';

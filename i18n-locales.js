@@ -17,7 +17,8 @@
   var STORAGE_KEY = "keffstation_lang";
   var STORAGE_KEY_PWA = "keffstation_lang_"; // préfixé par l'id de la PWA
   var STORAGE_TRADUCTION = "keffstation_trad";
-  var LOCALES_URL = "./locales/";
+  var BASE_PATH = (typeof window !== "undefined" && window.__I18N_BASE_PATH) ? window.__I18N_BASE_PATH : "./";
+  var LOCALES_URL = BASE_PATH + "locales/";
   var LOCALES_META = LOCALES_URL + "locales.json";
   var CACHE_BUST = "?v=1.0.0"; // version des fichiers de langue (cache busting)
 
@@ -226,7 +227,7 @@
       }
     }
     // 4. Fallback sur l'ancien dictionnaire i18n.js (legacy) si disponible
-    if (typeof DICT !== "undefined" && window.DICT_LEGACY) {
+    if (window.DICT_LEGACY) {
       var legacy = window.DICT_LEGACY[key];
       if (legacy) {
         if (legacy[lang] !== undefined) return legacy[lang];
