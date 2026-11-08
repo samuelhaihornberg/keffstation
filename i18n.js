@@ -2110,6 +2110,13 @@
     s.src = basePath + 'i18n-locales.js';
     document.head.appendChild(s);
   })();
+  // Charger l'adaptateur de traduction de page
+  (function(){
+    var s = document.createElement('script');
+    s.defer = true;
+    s.src = basePath + 'page-translate-adapter.js';
+    document.head.appendChild(s);
+  })();
 
   window.ksI18n = { setLang: setLang, getLang: getLang, t: t, apply: applyTranslations };
 })();
