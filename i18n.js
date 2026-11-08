@@ -4850,6 +4850,7 @@
 
   var STORAGE_KEY = "keffstation_lang";
   var STORAGE_CURRENCY = "keffstation_currency";
+  var STORAGE_TRADUCTION = "keffstation_traduction";
   var DEFAULT_LANG = "fr";
   var DEFAULT_CURRENCY = "EUR";
   var SUPPORTED = Object.keys(DICT.langNames);
@@ -5127,7 +5128,7 @@
           if (n.nodeType === 1 && (n.hasAttribute && n.hasAttribute("data-i18n"))) need = true;
         });
       });
-      if (need) { await applyTranslations(lang); await applyTranslationsGoogle(lang); }
+      if (need) { var curLang = getLang(); await applyTranslations(curLang); await applyTranslationsGoogle(curLang); }
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
@@ -5168,6 +5169,9 @@
 
   async function applyTranslationsGoogle(lang) {
     var fallbackElems = document.querySelectorAll("[data-i18n]");
+    var cacheTraduction = {};
+    try { cacheTraduction = JSON.parse(localStorage.getItem(STORAGE_TRADUCTION) || "{}"); } catch (e) {}
+    var dirty = false;
     for (var i = 0; i < fallbackElems.length; i++) {
       (function (el) {
         var key = el.getAttribute("data-i18n");
@@ -5179,12 +5183,27 @@
             el.setAttribute("data-i18n-original", original);
           }
           if (original && original !== key && original.trim().length > 0) {
-            googleTranslate(original, lang).then(function (translated) {
-              el.textContent = translated;
-            });
+            var cacheKey = original + '||' + lang;
+            if (cacheTraduction[cacheKey]) {
+              el.textContent = cacheTraduction[cacheKey];
+            } else {
+              dirty = true;
+              googleTranslate(original, lang).then(function (translated, elRef, ck) {
+                return function () {
+                  elRef.textContent = translated;
+                  cacheTraduction[ck] = translated;
+                  try { localStorage.setItem(STORAGE_TRADUCTION, JSON.stringify(cacheTraduction)); } catch (e) {}
+                };
+              }(translated, el, cacheKey));
+            }
           }
         }
       })(fallbackElems[i]);
+    }
+    if (dirty) {
+      setTimeout(function () {
+        try { localStorage.setItem(STORAGE_TRADUCTION, JSON.stringify(cacheTraduction)); } catch (e) {}
+      }, 500);
     }
   }
 
