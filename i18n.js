@@ -5120,15 +5120,20 @@
   async function setLang(lang) {
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     document.documentElement.lang = lang;
+    // VIDER TOUT : cache Google, traductions en cours, attributs anciens
     translationCache = {};
     translating = {};
-    // Traduction statique d'abord (synchrone, immédiate)
+    // Supprimer tous les data-i18n-original pour forcer re-détection
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      el.removeAttribute("data-i18n-original");
+    });
+    // Traduction statique IMMÉDIATE et synchrone
     applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
-    // Traduction Google en arrière-plan, non-bloquante
+    // Traduction Google en arrière-plan, NON BLOQUANTE
     applyTranslationsGoogle(lang).catch(function (e) {
-      console.warn("[i18n] Google translate background failed:", e.message);
+      // silencieux
     });
   }
 
@@ -5571,10 +5576,10 @@
         }
       })(fallbackElems[i]);
     }
-    // Traduction par lots avec petit délai pour ne pas bloquer le navigateur
+    // Traduction par lots, rapide, non bloquante
     var index = 0;
-    var BATCH = 5;
-    var DELAY = 250;
+    var BATCH = 8;
+    var DELAY = 150;
     function nextBatch() {
       if (index >= pending.length) {
         if (dirty) {
