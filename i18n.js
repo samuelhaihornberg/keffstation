@@ -677,6 +677,24 @@
       tr: "Yükleniyor…"
     },
 
+    about_link: {
+      fr: "À propos",
+      en: "About",
+      es: "Acerca de",
+      de: "Über uns",
+      it: "Informazioni",
+      pt: "Sobre",
+      nl: "Over",
+      pl: "O nas",
+      ru: "О нас",
+      zh: "关于",
+      ja: "について",
+      ko: "소개",
+      ar: "من نحن",
+      hi: "बारे में",
+      tr: "Hakkında"
+    },
+
     /* ---------- Widget 7 Web Apps ---------- */
     widget_apps_title: {
       fr: "7 Web Apps KeffStation",

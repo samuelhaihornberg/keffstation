@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070708">
+<meta name="description" content="À propos de KiffTech — plateforme de l'organisation KeffStation. Modèle d'achat en file d'attente pour négocier des promotions auprès des fournisseurs officiels grossistes, avec remboursement partiel en cas de retard de livraison.">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🤖%3C/text%3E%3C/svg%3E">
+<title>À propos — KiffTech | Organisation KeffStation</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}@media (max-width:360px){html{font-size:14px}}@media (min-width:768px){html{font-size:18px}}@media (min-width:1200px){html{font-size:20px}}
+body{min-height:100vh;min-height:100dvh;background:#070816;color:#f4f6ff;font:1rem/1.7 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+header{position:sticky;top:0;z-index:50;padding:clamp(12px,3vh,20px) clamp(12px,3vw,20px);background:rgba(10,12,34,.95);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;flex-shrink:0}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{font-size:clamp(28px,5vw,36px)}
+h1{font-size:clamp(1.3rem,3.5vw,2rem);font-weight:800;background:linear-gradient(90deg,#1e6bff,#00d4ff,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.header-right{display:flex;align-items:center;gap:10px}
+.nav-link{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid rgba(30,107,255,.4);background:linear-gradient(135deg,rgba(30,107,255,.15),rgba(0,212,255,.1));color:#8ab4ff;font-weight:700;font-size:clamp(.75rem,1.6vw,.85rem);cursor:pointer;text-decoration:none;transition:all .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);white-space:nowrap}
+.nav-link:hover{border-color:#1e6bff;box-shadow:0 6px 20px rgba(30,107,255,.3)}
+main{flex:1;padding:clamp(24px,4vh,48px) clamp(12px,3vw,24px);display:flex;flex-direction:column;gap:clamp(16px,3vh,32px)}
+.max-width{max-width:880px;margin:0 auto;width:100%}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:clamp(20px,4vw,28px);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.card h2{font-size:clamp(1.4rem,4vw,1.9rem);color:#fff;margin-bottom:clamp(12px,2vh,18px)}
+.card h3{font-size:clamp(1.1rem,3vw,1.4rem);color:#ffd23f;margin:clamp(16px,3vh,22px) 0 clamp(8px,1.5vh,12px)}
+.card p{font-size:clamp(0.95rem,2vw,1.08rem);line-height:1.75;color:#f4f6ff;margin-bottom:clamp(10px,2vh,16px)}
+.card a{color:#8ab4ff;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.card a:hover{color:#1e6bff}
+.accent-bleu{color:#1e6bff;font-weight:600}
+.accent-or{color:#ffd23f;font-weight:600}
+.accent-vert{color:#27d17f;font-weight:600}
+.accent-rose{color:#ff69b4;font-weight:600}
+.note{background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.3);border-radius:10px;padding:clamp(12px,3vw,16px);margin-top:clamp(16px,3vh,22px)}
+.note p{margin:0}
+.small{font-size:clamp(0.8rem,1.8vw,0.9rem);color:#b9c0e6}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="header-left">
+    <span class="logo">🤖</span>
+    <div><h1>KiffTech</h1></div>
+  </div>
+  <div class="header-right">
+    <a href="./" class="nav-link">Accueil</a>
+    <a href="./rayons.html" class="nav-link nav-link--accent">Rayons</a>
+  </div>
+</header>
+<main>
+  <div class="max-width">
+    <article class="card">
+      <h2>À propos de KiffTech</h2>
+      <p>KiffTech est une plateforme de l'<span class="accent-bleu">organisation KeffStation</span>. Elle rassemble des objets connectés, des gadgets high-tech et des accessoires électroniques, avec un fonctionnement différent des boutiques classiques.</p>
+
+      <h3>Des prix officiels faciles à trouver ailleurs</h3>
+      <p>Les prix officiels des constructeurs et les promotions ponctuelles se retrouvent facilement dans une multitude de boutiques en ligne. Chez KiffTech, nous ne cherchons pas à aligner ces prix visibles partout.</p>
+
+      <h3>Notre modèle : achat en file d'attente</h3>
+      <p>Quand vous passez commande sur KiffTech, votre article entre dans une <span class="accent-or">file d'attente de 1 jour à 1 semaine avant envoi du colis</span>. Ce délai nous permet de regrouper plusieurs demandes par produit ou par lot de produits, puis de négocier avec nos <span class="accent-vert">fournisseurs officiels grossistes</span> un pourcentage de promotion plus élevé que sur le prix public.</p>
+
+      <h3>Délais et compensation</h3>
+      <p>Le délai de livraison estimé est de <span class="accent-rose">1 semaine à 5 semaines</span> selon le produit et le volume du colis. Si le délai de livraison annoncé est dépassé, un <span class="accent-vert">remboursement partiel</span> est appliqué.</p>
+
+      <div class="note">
+        <p><strong>Transparence :</strong> nous n'inventons aucun prix, aucune remise et aucune garantie. Les promotions dépendent des accords conclus avec les fournisseurs et peuvent varier d'un produit à l'autre. Les délais sont des estimations, pas des engagements contractuels.</p>
+      </div>
+
+      <h3>Découvrir le catalogue</h3>
+      <p>Retournez aux <a href="./rayons.html">rayons KiffTech</a> pour parcourir les produits disponibles.</p>
+    </article>
+  </div>
+</main>
+</div>
+</body>
+</html>
