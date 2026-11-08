@@ -1,4 +1,4 @@
-const CACHE = 'keffstation-vitrine-v8';
+const CACHE = 'keffstation-vitrine-v11';
 const ASSETS = ['./', './index.html', './vitrine.css', './manifest.json', './app.js', './refresh.js'];
 
 self.addEventListener('install', e => {

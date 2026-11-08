@@ -74,7 +74,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: clamp(10px, 2.2vh, 22px);
-  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px calc(env(safe-area-inset-bottom, 0px) + 8px);
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 0 calc(env(safe-area-inset-bottom, 0px) + 8px);
 }
 
 .vitrine {
@@ -900,7 +900,7 @@ body {
 }
 
 /* ============================================================================
-   Hero vidéo — cadre quasi plein écran (89 %), puis la roue
+   Hero vidéo — plein écran (95 %), puis la roue au scroll
    ============================================================================ */
 
 /* Défilement doux vers la roue */
@@ -912,25 +912,37 @@ html { scroll-behavior: smooth; }
   justify-content: flex-start;
 }
 
+/* Le hero occupe 50 % de la hauteur de l'écran : la vidéo occupe 75% largeur */
 .hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: clamp(14px, 2.4vh, 26px);
+  position: relative;
+  display: grid;
+  place-items: center;
   flex: none;
-  width: 100%;
-  padding-bottom: clamp(10px, 2vh, 20px);
+  width: 75vw;
+  height: 50vh;
+  height: 50dvh;
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-/* Cadre vidéo quasi plein écran (89 %), format portrait 9:16 respecté */
+/* Léger dégradé en bas pour garder le titre lisible sur la vidéo */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  height: 38%;
+  background: linear-gradient(to top, rgba(0, 0, 0, .74), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+/* Cadre vidéo : 75 % largeur, 50 % hauteur */
 .video-frame {
   position: relative;
-  flex: none;
-  /* 89 % de la largeur, sans jamais dépasser 89 % de la hauteur */
-  width: min(89vw, calc(89dvh * 0.5625), 680px);
-  aspect-ratio: 9 / 16;
-  max-height: 89dvh;
+  width: 75vw;
+  height: 100%;
+  max-height: 50dvh;
   overflow: hidden;
   border-radius: clamp(14px, 2.4vw, 24px);
   background: #000;
@@ -949,22 +961,28 @@ html { scroll-behavior: smooth; }
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   background: #000;
 }
 
-/* Titre + slogan sur fond noir */
+/* Titre + slogan en superposition sur la vidéo (aucune hauteur ajoutée) */
 .hero-titles {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  left: 50%;
+  top: clamp(8px, 1svh, 16px);
+  translate: -50% 0;
+  z-index: 3;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(6px, 1.2vh, 12px);
-  width: min(96%, 1100px);
-  padding: clamp(14px, 2.6vh, 28px) 10px 0;
+  justify-content: space-between;
+  width: min(90%, max(10vw, 96%));
+  max-height: 20dvh;
+  padding: 0 10px;
   text-align: center;
-  background: #000;
+  background: transparent;
+  pointer-events: none;
+  gap: clamp(6px, 1.2vh, 12px);
 }
 
 .hero-title {
@@ -1012,13 +1030,18 @@ html { scroll-behavior: smooth; }
   overflow-wrap: anywhere;
 }
 
-/* Indicateur de scroll */
+/* Indicateur de scroll superposé en bas de la vidéo */
 .scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  translate: -50% 0;
+  z-index: 4;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   gap: 7px;
-  margin-top: clamp(8px, 1.6vh, 16px);
+  margin: 0;
   padding: 6px 12px;
   color: var(--kf-champagne);
   text-decoration: none;
