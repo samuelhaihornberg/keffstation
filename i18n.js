@@ -1,9 +1,10 @@
 /*!
- * KeffStation i18n — Traducteur universel toutes langues + contrôles d'animation
+ * KeffStation i18n — Traducteur universel toutes langues
  * Traduit tous les éléments marqués data-i18n="cle" ou data-i18n-html="cle"
- * Sélecteur de langue/dispositif/animation injecté automatiquement, choix mémorisé (localStorage)
+ * Sélecteur de langue/dispositif injecté automatiquement, choix mémorisé (localStorage)
  * Synchronisation inter-onglets via événement storage
  * Traduction de page entière d'un coup (synchrone) + Google Translate en arrière-plan (non bloquant)
+ * Pas d'animations qui bloquent les boutons
  */
 
 (function () {
@@ -290,8 +291,8 @@
       ko: "7 개의 KeffStation 웹 앱", ar: "تطبيقات ويب KeffStation", hi: "7 KeffStation वेब ऐप",
       tr: "7 KeffStation Web Uygulaması" },
     widget_kifftech: { fr: "KiffTech", en: "KiffTech", es: "KiffTech", de: "KiffTech",
-      it: "KiffTech", pt: "KiffTech", nl: "KiffTech", pl: "KiffTech", ru: "KiffTech", zh: "KiffTech",
-      ja: "KiffTech", ko: "키프테크", ar: "كيفيتك", hi: "किफटेक", tr: "KiffTech" },
+      it: "KiffTech", pt: "KiffTech", nl: "KiffTech", pl: "KiffTech", ru: "KiffTech",
+      zh: "KiffTech", ja: "KiffTech", ko: "키프테크", ar: "كيفيتك", hi: "किफटेक", tr: "KiffTech" },
     widget_kifftech_desc: { fr: "Objets connectés & gadgets", en: "Connected objects & gadgets",
       es: "Objetos conectados y gadgets", de: "Vernetzte Objekte & Gadgets",
       it: "Oggetti connessi e gadget", pt: "Objetos conectados e gadgets",
@@ -302,17 +303,19 @@
     widget_via: { fr: "ViArtificial Labs", en: "ViArtificial Labs", es: "ViArtificial Labs",
       de: "ViArtificial Labs", it: "ViArtificial Labs", pt: "ViArtificial Labs", nl: "ViArtificial Labs",
       pl: "ViArtificial Labs", ru: "ViArtificial Labs", zh: "ViArtificial Labs", ja: "ViArtificial Labs",
-      ko: "비아아티피셜 랩스", ar: "مختبرات فيأرتيفيشيل", hi: "विआआर्टिफिशियल लैब्स", tr: "ViArtificial Laboratuvarları" },
+      ko: "비아아티피셜 랩스", ar: "مختبرات فيأرتيفيشيل", hi: "विआआर्टिफिशियल लैब्स",
+      tr: "ViArtificial Laboratuvarları" },
     widget_via_desc: { fr: "Moteurs IA & conversation", en: "AI engines & conversation",
       es: "Motores IA y conversación", de: "KI-Engines & Konversation", it: "Motori IA e conversazione",
       pt: "Motores IA e conversação", nl: "AI-engines & gesprek", pl: "Silniki AI i rozmowa",
-      ru: "ИИ-движки и беседа", zh: "AI 引擎和对话", ja: "AI エンジンと会話",
-      ko: "AI 엔진과 대화", ar: "محركات ذكاء اصطناعي ومحادثة", hi: "AI इंजन और बातचीत",
-      tr: "AI motorları ve sohbet" },
+      ru: "ИИ-движки и беседа", zh: "AI 引擎和直接对话", ja: "AI エンジンと直接の会話",
+      ko: "AI 엔진과 대화", ar: "محركات ذكاء اصطناعي ومحادثة مباشرة",
+      hi: "AI इंजन और सीधी बातचीत", tr: "AI motorları ve doğrudan sohbet" },
     widget_critiques: { fr: "Critiques-Services", en: "Critiques-Services", es: "Críticas-Servicios",
       de: "Kritiken-Dienste", it: "Recensioni-Servizi", pt: "Críticas-Serviços",
       nl: "Recensies-Diensten", pl: "Recenzje-Usługi", ru: "Критические услуги", zh: "批评-服务",
-      ja: "批評-サービス", ko: "비판-서비스", ar: "نقد-خدمات", hi: "आलोचना-सेवाएं", tr: "Eleştiri-Hizmetler" },
+      ja: "批評-サービス", ko: "비판-서비스", ar: "نقد-خدمات", hi: "आलोचना-सेवाएं",
+      tr: "Eleştiri-Hizmetler" },
     widget_critiques_desc: { fr: "Avis & critiques services", en: "Reviews & service critiques",
       es: "Reseñas y críticas de servicios", de: "Bewertungen & Dienstleistungskritiken",
       it: "Recensioni e critiche di servizi", pt: "Avaliações e críticas de serviços",
@@ -325,11 +328,11 @@
       zh: "Tricktrocjob", ja: "Tricktrocjob", ko: "트릭트로크ジョブ", ar: "تريكتروكجوب",
       hi: "ट्रिकट्रोकजॉब", tr: "Tricktrocjob" },
     widget_tricktrocjob_desc: { fr: "Utilitaires & outils tech", en: "Utilities & tech tools",
-      es: "Utilidades y herramientas tecnológicas", de: "Dienstprogramme & technische Tools",
+      es: "Utilidades y herramientas técnicas", de: "Dienstprogramme und technische Werkzeuge",
       it: "Utilità e strumenti tecnici", pt: "Utilitários e ferramentas de tecnologia",
-      nl: "Hulpprogramma's & tech-tools", pl: "Narzędzia i narzędzia technologiczne",
+      nl: "Hulpprogramma's en technische gereedschappen", pl: "Narzędzia i narzędzia techniczne",
       ru: "Утилиты и технические инструменты", zh: "实用工具和技术工具",
-      ja: "ユーティリティとテックツール", ko: "유틸리티 및 기술 도구",
+      ja: "ユーティリティと技術ツール", ko: "유틸리티 및 기술 도구",
       ar: "برامج مساعدة وأدوات تقنية", hi: "यूटिलिटी और तकनीकी उपकरण",
       tr: "Araçlar ve teknik araçlar" },
     widget_videogames: { fr: "Videogames", en: "Videogames", es: "Videojuegos", de: "Videospiele",
@@ -579,20 +582,15 @@
   function setLang(lang) {
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     document.documentElement.lang = lang;
-    // VIDER TOUT pour traduction de page entière d'un coup
     translationCache = {};
     translating = {};
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       el.removeAttribute("data-i18n-original");
     });
-    // Traduction statique IMMÉDIATE sur toute la page d'un coup
     applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
-    // Traduction Google en arrière-plan rapide pour les textes non dans le dictionnaire
-    applyTranslationsGoogle(lang).catch(function (e) {
-      // silencieux
-    });
+    applyTranslationsGoogle(lang).catch(function (e) {});
   }
 
   function getCurrency() {
@@ -631,7 +629,6 @@
     return key;
   }
 
-  /* Traduction de page entière d'un coup (synchrone, immédiate) */
   function applyTranslations(lang) {
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       var key = el.getAttribute("data-i18n");
@@ -718,7 +715,7 @@
       Promise.all(batch.map(function (item) {
         return googleTranslate(item.original, lang).then(function (translated) {
           item.el.textContent = translated; cacheTraduction[item.cacheKey] = translated; dirty = true;
-        }).catch(function () { /* silencieux */ });
+        }).catch(function () { });
       })).then(function () { setTimeout(nextBatch, DELAY); });
     }
     nextBatch();
@@ -729,7 +726,7 @@
   /* ========================= Sélecteur de langue/dévis/animation ========================= */
   var SELECTOR_CSS = "\
     #ks-lang-selector {\
-      position: fixed; top: 10px; right: 10px; z-index: 2100;\
+      position: fixed; top: 10px; right: 10px; z-index: 100;\
       font: 700 13px/1.2 system-ui,sans-serif; user-select: none; -webkit-user-select: none;\
     }\
     #ks-lang-toggle {\
@@ -746,7 +743,7 @@
     #ks-lang-menu {\
       position: absolute; top: 100%; right: 0; margin-top: 8px; background: rgba(8,9,22,.96);\
       border: 1px solid rgba(255,255,255,.22); border-radius: 16px; padding: 10px;\
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 300px; z-index: 2101;\
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 300px; z-index: 101;\
       display: none; box-shadow: 0 12px 48px rgba(0,0,0,.55); overflow-y: auto; max-height: 70vh; overscroll-behavior: contain;\
     }\
     #ks-lang-toggle.open + #ks-lang-menu, #ks-lang-menu.visible { display: block; }\
@@ -797,7 +794,6 @@
 
     var menu = document.createElement("div"); menu.id = "ks-lang-menu"; menu.setAttribute("role", "menu");
 
-    // Section langue
     var secLang = document.createElement("div"); secLang.className = "ks-section-title"; secLang.textContent = t("language", lang); menu.appendChild(secLang);
     SUPPORTED.forEach(function (code) {
       var item = document.createElement("div"); var isActive = (code === lang);
@@ -810,7 +806,6 @@
     });
     var div = document.createElement("div"); div.className = "ks-divider"; menu.appendChild(div);
 
-    // Section devise
     var secCurr = document.createElement("div"); secCurr.className = "ks-section-title"; secCurr.textContent = t("currency", lang); menu.appendChild(secCurr);
     SUPPORTED_CURRENCIES.forEach(function (code) {
       var item = document.createElement("div"); var isActive = (code === getCurrency());
@@ -822,13 +817,15 @@
       menu.appendChild(item);
     });
 
-    // Section animation
     var animField = document.createElement("div"); animField.className = "ks-field";
     var animLabel = document.createElement("label"); animLabel.textContent = t("animation", lang); animLabel.style.marginRight = "6px"; animLabel.style.color = "#b9c0e6"; animLabel.style.fontSize = "11px";
     animField.appendChild(animLabel);
     var animModes = [ { code: "sync", label: "Synchronisé", flag: "⚡" }, { code: "async", label: "Asynchronisé", flag: "🌊" }, { code: "desync", label: "Désynchronisé", flag: "🎲" } ];
     animModes.forEach(function (m) { var item = document.createElement("div"); var isActive = (document.documentElement.getAttribute("data-anim") === m.code); item.className = "ks-anim-btn" + (isActive ? " ks-active" : ""); item.setAttribute("role", "button"); item.setAttribute("aria-pressed", isActive); var f = document.createElement("span"); f.className = "ks-flag"; f.textContent = m.flag; var n = document.createElement("span"); n.className = "ks-name"; n.textContent = m.label; item.appendChild(f); item.appendChild(n); item.addEventListener("click", function (e) { e.stopPropagation(); setAnimationMode(m.code); document.querySelectorAll("#ks-anim-controls .ks-anim-btn").forEach(function (it) { it.classList.remove("ks-active"); it.setAttribute("aria-pressed", "false"); }); item.classList.add("ks-active"); item.setAttribute("aria-pressed", "true"); }); animField.appendChild(item); });
     box.appendChild(animField);
+
+    box.appendChild(toggle);
+    box.appendChild(menu);
 
     document.addEventListener("click", function (e) { if (!box.contains(e.target)) { toggle.classList.remove("open"); toggle.setAttribute("aria-expanded", "false"); menu.classList.remove("visible"); } });
     return box;
@@ -840,15 +837,12 @@
 
   function injectSelector(lang) { if (document.getElementById("ks-lang-selector")) return; injectStyle(); var box = buildSelector(lang); document.body.appendChild(box); }
 
-  /* ========================= Contrôle des animations ========================= */
   function setAnimationMode(mode) { document.body.classList.remove("anim-sync", "anim-async", "anim-desync"); if (mode === "sync" || mode === "async" || mode === "desync") { document.body.classList.add("anim-" + mode); document.documentElement.setAttribute("data-anim", mode); } else { document.documentElement.removeAttribute("data-anim"); } try { localStorage.setItem(STORAGE_ANIM, mode); } catch (e) {} document.dispatchEvent(new CustomEvent("ks-anim-change", { detail: { mode: mode } })); }
-  function getAnimationMode() { try { var saved = localStorage.getItem(STORAGE_ANIM); if (saved === "sync" || saved === "async" || saved === "desync") return saved; } catch (e) {} return "sync"; }
+  function getAnimationMode() { try { var saved = localStorage.getItem(STORAGE_ANIM); if (saved === "sync" || saved === "async" || saved === "desync") return saved; } catch (e) {} return "none"; }
   (function () { var savedMode = getAnimationMode(); if (savedMode) setAnimationMode(savedMode); })();
 
-  /* ========================= Init ========================= */
-  function init() { var lang = getLang(); document.documentElement.lang = lang; injectSelector(lang); applyTranslations(lang); updateCurrencyDisplay(); (function () { var curLang = getLang(); applyTranslations(curLang); applyTranslationsGoogle(curLang).catch(function(){}); })(); }
+  async function init() { var lang = getLang(); document.documentElement.lang = lang; injectSelector(lang); applyTranslations(lang); updateCurrencyDisplay(); (function () { var curLang = getLang(); applyTranslations(curLang); applyTranslationsGoogle(curLang).catch(function(){}); })(); }
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", init); } else { init(); }
 
-  // API exposée
   window.ksI18n = { setLang: setLang, getLang: getLang, t: t, apply: applyTranslations };
 })();
