@@ -2184,11 +2184,11 @@ section {
 /* ===== Sélecteur d'articles avec petits ronds en bas de la vitrine ===== */
 .article-selector {
   position: fixed;
-  bottom: 20px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(90vw, 700px);
-  max-height: 60vh;
+  width: min(90vw, 600px);
+  max-height: 70vh;
   background: rgba(7, 8, 22, 0.95);
   border: 3px solid #ffd700;
   border-radius: 20px;
@@ -2319,22 +2319,7 @@ section {
 }
 
 .article-open-btn {
-  background: linear-gradient(135deg, #ffd700, #fff200);
-  border: none;
-  border-radius: 8px;
-  color: #000;
-  font-weight: 700;
-  padding: 10px 16px;
-  cursor: pointer;
-  align-self: flex-start;
-  transition: all 0.3s ease;
-  text-shadow: none;
-}
-
-.article-open-btn:hover {
-  background: #fff200;
-  box-shadow: 0 0 20px #ffd700;
-  transform: scale(1.05);
+  display: none;
 }
 
 .selector-footer {
