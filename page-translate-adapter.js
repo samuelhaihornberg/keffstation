@@ -13,7 +13,7 @@
   "use strict";
 
   var ADAPTER_ID = "ks-page-translate";
-  var BTN_LABEL_FR = "Traduire cette page";
+  var BTN_LABEL_FR = "Translate this page";
   var BTN_LABEL_EN = "Translate this page";
   var GOOGLE_TRANSLATE_URL =
     "https://translate.google.com/translate?sl=auto&tl={lang}&u=" +
