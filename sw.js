@@ -1,9 +1,18 @@
-const CACHE = 'keffstation-vitrine-v18';
-const ASSETS = ['./', './index.html', './vitrine.css', './manifest.json', './app.js', './refresh.js'];
+const CACHE = 'keffstation-vitrine-v19';
+const ASSETS = [
+  './', './index.html', './vitrine.css', './manifest.json',
+  './app.js', './refresh.js', './i18n.js', './i18n-locales.js',
+  './locales/locales.json', './locales/fr.json', './locales/en.json',
+  './locales/glossary.json', './locales/rtl.css'
+];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE).then(c => {
+      const add = (url) => c.add(url).catch(() => {}); // ignore les absents (ex: langues non créées)
+      return Promise.all(ASSETS.map(add));
+    }).then(() => self.skipWaiting())
+  );
 });
 
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :
