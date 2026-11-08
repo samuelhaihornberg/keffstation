@@ -2086,17 +2086,10 @@
   })();
 
   /* ========================= Init ========================= */
+  // L'orchestrateur i18n-locales.js gère toute la traduction (sélecteur, DOM, fallback, auto-traduction, RTL).
+  // i18n.js expose uniquement DICT_LEGACY pour compatibilité et charge i18n-locales.js ci-dessous.
   function init() {
-    var lang = getLang();
-    document.documentElement.lang = lang;
-    injectSelector(lang);
-    applyTranslations(lang);
-    (function () {
-      var curLang = getLang();
-      applyTranslations(curLang);
-      // Traduction automatique Google comme fallback pour les textes sans traduction humaine.
-      applyTranslationsGoogle(curLang).catch(function () {});
-    })();
+    // Aucun sélecteur ni traduction ici : éviter le doublon avec l'orchestrateur.
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

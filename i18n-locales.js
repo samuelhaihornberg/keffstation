@@ -1,36 +1,42 @@
 /*!
- * KeffStation i18n-locales — Module de traduction basé sur fichiers de langue
- * Complément de i18n.js (système legacy conservé pour compatibilité)
+ * KeffStation i18n Orchestrateur — Agent unique de traduction multi-PWA
  *
- * - Charge les fichiers locales/XX.json (versionnés pour le cache hors ligne)
- * - Gère le fallback : langue demandée → fr → en → clé originale
- * - Gère l'affichage RTL (arabe, hébreu) via dir="rtl" sur <html>
- * - Sélecteur de langue persistant (localStorage) + événement inter-onglets
- * - Choix global (KeffStation) repris par les PWA liées, sauf override par PWA
- * - Pas de traduction automatique par défaut (aucune API externe appelée)
- * - Contenus non traduits : affiche la langue d'origine, pas de page vide
+ * Rôles :
+ *  - Charge les fichiers de langue locales/XX.json (versionnés pour le cache hors ligne)
+ *  - Scanne le DOM ([data-i18n, data-i18n-html, data-i18n-title, …]) et applique les traductions
+ *  - Fallback : fichier JSON par domaine → DICT_LEGACY (ancien dictionnaire) → clé originale
+ *  - Traduction auto Google pour les langues non couvertes (marquée visuellement [auto], langue d'origine indiquée)
+ *  - Mémorise le choix de langue par PWA (localStorage) + conserve à la navigation/réouverture
+ *  - Gère l'affichage droite-à-gauche (arabe, hébreu) via dir="rtl" + CSS dédié
+ *  - Un seul sélecteur de langue accessible, réutilisé par toutes les PWA liées
+ *
+ * Aucun service externe payant n'est appelé. La traduction automatique Google est un fallback
+ * gratuit et est clairement signalée comme non relue.
  */
 
 (function () {
   "use strict";
 
+  /* ========================= Configuration ========================= */
   var STORAGE_KEY = "keffstation_lang";
   var STORAGE_KEY_PWA = "keffstation_lang_"; // préfixé par l'id de la PWA
-  var STORAGE_TRADUCTION = "keffstation_trad";
-  var BASE_PATH = (typeof window !== "undefined" && window.__I18N_BASE_PATH) ? window.__I18N_BASE_PATH : "./";
-  var LOCALES_URL = BASE_PATH + "locales/";
-  var LOCALES_META = LOCALES_URL + "locales.json";
-  var CACHE_BUST = "?v=1.0.0"; // version des fichiers de langue (cache busting)
-
+  var CACHE_BUST = "?v=1.0.0";
   var DEFAULT_LANG = "fr";
   var FALLBACK = ["fr", "en"];
-  var SUPPORTED = [];
-  var LANG_META = {}; // { code: {name, native, dir, flag, complete, reviewed} }
-  var RTL_LANGS = [];
-  var DICT = {}; // { lang: { domain: { key: value } } }
-  var LOADED = {}; // { lang: boolean }
+  var RTL_LANGS = ["ar", "he"];
+
+  var BASE_PATH = (typeof window !== "undefined" && window.__I18N_BASE_PATH)
+    ? window.__I18N_BASE_PATH
+    : "./";
+  var LOCALES_URL = BASE_PATH + "locales/";
+
+  /* ========================= État ========================= */
+  var DICT = {};        // { lang: { domain: { key: value } } }
+  var LANG_META = {};   // { code: {name, native, dir, flag, complete, reviewed} }
+  var LOADED = {};      // { lang: boolean }
   var CURRENT_LANG = DEFAULT_LANG;
-  var CURRENT_PWA = null; // id de la PWA courante, détecté depuis le chemin
+  var CURRENT_PWA = "keffstation";
+  var AUTO_TRANSLATE_CACHE = {};
   var RTLCSS_INJECTED = false;
   var RTL_CSS_URL = LOCALES_URL + "rtl.css" + CACHE_BUST;
 
@@ -47,41 +53,42 @@
         return pwaList[i];
       }
     }
-    // Racine = KeffStation
-    if (path === "/" || path === "/index.html" || path === "") {
+    if (path === "/" || path === "/index.html" || path === "" || path === "/articles.html") {
       return "keffstation";
     }
     return "keffstation";
   }
 
-  /* ========================= Chargement des métadonnées ========================= */
+  /* ========================= Chargement métadonnées ========================= */
   function loadLocalesMeta(callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", LOCALES_META + CACHE_BUST, true);
+    xhr.open("GET", LOCALES_URL + "locales.json" + CACHE_BUST, true);
     xhr.onload = function () {
       if (xhr.status === 200 || xhr.status === 0) {
         try {
           var meta = JSON.parse(xhr.responseText);
           LANG_META = meta.locales || {};
-          RTL_LANGS = meta.rtl || [];
-          SUPPORTED = Object.keys(LANG_META);
-          if (SUPPORTED.length === 0) {
-            SUPPORTED = [DEFAULT_LANG, "en"];
-          }
-          CURRENT_PWA = detectPWA();
-          if (callback) callback();
-        } catch (e) {
-          if (callback) callback();
-        }
-      } else {
-        if (callback) callback();
+          RTL_LANGS = meta.rtl || RTL_LANGS;
+        } catch (e) {}
       }
+      SUPPORTED = Object.keys(LANG_META);
+      if (SUPPORTED.length === 0) {
+        SUPPORTED = [DEFAULT_LANG, "en"];
+      }
+      CURRENT_PWA = detectPWA();
+      if (callback) callback();
     };
-    xhr.onerror = function () { if (callback) callback(); };
+    xhr.onerror = function () {
+      SUPPORTED = [DEFAULT_LANG, "en"];
+      CURRENT_PWA = detectPWA();
+      if (callback) callback();
+    };
     xhr.send();
   }
 
-  /* ========================= Chargement d'un fichier de langue ========================= */
+  var SUPPORTED = [DEFAULT_LANG, "en"];
+
+  /* ========================= Chargement fichier de langue ========================= */
   function loadLang(lang, callback) {
     if (LOADED[lang]) {
       if (callback) callback(lang);
@@ -94,24 +101,24 @@
       if (xhr.status === 200 || xhr.status === 0) {
         try {
           var data = JSON.parse(xhr.responseText);
-          // On stocke chaque domaine séparément pour un accès rapide
           DICT[lang] = data;
           LOADED[lang] = true;
-          if (callback) callback(lang);
         } catch (e) {
           LOADED[lang] = false;
-          if (callback) callback(lang);
         }
       } else {
         LOADED[lang] = false;
-        if (callback) callback(lang);
       }
+      if (callback) callback(lang);
     };
-    xhr.onerror = function () { LOADED[lang] = false; if (callback) callback(lang); };
+    xhr.onerror = function () {
+      LOADED[lang] = false;
+      if (callback) callback(lang);
+    };
     xhr.send();
   }
 
-  /* ========================= Sélection de la langue ========================= */
+  /* ========================= Sélection de langue ========================= */
   function getLang(pwaId) {
     pwaId = pwaId || CURRENT_PWA || "keffstation";
     var key = STORAGE_KEY_PWA + pwaId;
@@ -120,7 +127,6 @@
       if (saved && SUPPORTED.indexOf(saved.slice(0, 2).toLowerCase()) !== -1) {
         return saved.slice(0, 2).toLowerCase();
       }
-      // Fallback sur la langue globale si pas de choix spécifique à la PWA
       var global = localStorage.getItem(STORAGE_KEY);
       if (global && SUPPORTED.indexOf(global.slice(0, 2).toLowerCase()) !== -1) {
         return global.slice(0, 2).toLowerCase();
@@ -138,14 +144,11 @@
 
     var key = STORAGE_KEY_PWA + pwaId;
     try { localStorage.setItem(key, lang); } catch (e) {}
-
-    // Aussi sauver en globale pour cohérence
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
 
     CURRENT_LANG = lang;
     applyDirection(lang);
 
-    // Charger la langue si nécessaire, puis appliquer
     if (!LOADED[lang]) {
       loadLang(lang, function () {
         applyTranslations(lang, pwaId);
@@ -165,7 +168,7 @@
     }
   }
 
-  /* ========================= Direction RTL/LTR ========================= */
+  /* ========================= Direction RTL / LTR ========================= */
   function applyDirection(lang) {
     var isRTL = RTL_LANGS.indexOf(lang) !== -1;
     var html = document.documentElement;
@@ -175,10 +178,8 @@
     } else {
       html.removeAttribute("dir");
     }
-    // Classe CSS pour ciblage fin
     document.body.classList.remove("dir-rtl", "dir-ltr");
     document.body.classList.add(isRTL ? "dir-rtl" : "dir-ltr");
-    // Injecter les règles CSS RTL si nécessaire
     if (isRTL && !RTLCSS_INJECTED) {
       injectRTLCSS();
       RTLCSS_INJECTED = true;
@@ -199,34 +200,19 @@
     lang = lang || CURRENT_LANG || DEFAULT_LANG;
     domain = domain || "system";
 
-    // Détecter les clés au format ancien (./page.html_xxx) du dictionnaire legacy i18n.js
-    var isLegacyKey = (typeof key === "string" && (key.indexOf("./") === 0 || key.indexOf("_html") !== -1 || key.indexOf("index.html") !== -1));
-
-    // 1. Pour les clés legacy, consulter DICT_LEGACY en priorité (toutes les langues)
-    if (isLegacyKey && window.DICT_LEGACY) {
-      var legacy = window.DICT_LEGACY[key];
-      if (legacy) {
-        if (legacy[lang] !== undefined) return legacy[lang];
-        // Fallback fr → en dans le legacy
-        for (var f = 0; f < FALLBACK.length; f++) {
-          if (legacy[FALLBACK[f]] !== undefined) return legacy[FALLBACK[f]];
-        }
-      }
-    }
-
-    // 2. Chercher dans le fichier de langue chargé
+    // 1. Fichier de langue chargé (domaine courant)
     var langDict = DICT[lang];
     if (langDict && langDict[domain] && langDict[domain][key] !== undefined) {
       return langDict[domain][key];
     }
-    // 3. Chercher dans le domaine "system" (commun)
+    // 2. Domaine commun "system"
     if (domain !== "system") {
       var sysDict = DICT[lang];
       if (sysDict && sysDict.system && sysDict.system[key] !== undefined) {
         return sysDict.system[key];
       }
     }
-    // 4. Fallback vers les langues de repli
+    // 3. Langues de repli (fichiers JSON)
     for (var i = 0; i < FALLBACK.length; i++) {
       var fb = FALLBACK[i];
       if (fb === lang) continue;
@@ -241,26 +227,46 @@
         }
       }
     }
-    // 5. Fallback sur l'ancien dictionnaire i18n.js (legacy) pour les clés non-legacy
-    if ((lang === 'fr' || lang === 'en') && window.DICT_LEGACY && !isLegacyKey) {
-      var legacy2 = window.DICT_LEGACY[key];
-      if (legacy2) {
-        if (legacy2[lang] !== undefined) return legacy2[lang];
+    // 4. Ancien dictionnaire i18n.js (DICT_LEGACY) — toutes les clés, toutes les langues
+    if (window.DICT_LEGACY) {
+      var legacy = window.DICT_LEGACY[key];
+      if (legacy) {
+        if (legacy[lang] !== undefined) return legacy[lang];
         for (var j = 0; j < FALLBACK.length; j++) {
-          if (legacy2[FALLBACK[j]] !== undefined) return legacy2[FALLBACK[j]];
+          if (legacy[FALLBACK[j]] !== undefined) return legacy[FALLBACK[j]];
         }
       }
     }
-    // 6. Retourner la clé elle-même (pas de page vide — autoTranslateMissing s'en charge pour les autres langues)
+    // 5. Clé elle-même (pas de page vide ; autoTranslateMissing complète pour les autres langues)
     return key;
   }
 
-  /* ========================= Application des traductions sur le DOM ========================= */
+  /* ========================= Application DOM ========================= */
+  function getDomainsForPWA(pwaId) {
+    var domains = ["system"];
+    if (pwaId && pwaId !== "system") {
+      domains.push(pwaId);
+    }
+    if (pwaId === "kiffstationadmin" || pwaId === "docs" || pwaId === "prototype") {
+      domains.push("kiffstationadmin");
+    }
+    if (pwaId === "keffstation") {
+      domains.push("keffstation");
+    }
+    return domains;
+  }
+
+  function resolveValue(key, lang, domains) {
+    for (var i = 0; i < domains.length; i++) {
+      var val = t(key, lang, domains[i]);
+      if (val !== key) return val;
+    }
+    return t(key, lang, "system");
+  }
+
   function applyTranslations(lang, pwaId) {
     lang = lang || CURRENT_LANG || DEFAULT_LANG;
     pwaId = pwaId || CURRENT_PWA || "keffstation";
-
-    // Déterminer les domaines pertinents pour cette PWA
     var domains = getDomainsForPWA(pwaId);
 
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
@@ -274,11 +280,9 @@
         }
       }
       el.setAttribute("data-i18n-lang", lang);
-      // Marquer si la traduction manque (pour debug / affichage langue d'origine)
+      el.removeAttribute("data-i18n-missing");
       if (val === key) {
         el.setAttribute("data-i18n-missing", "true");
-      } else {
-        el.removeAttribute("data-i18n-missing");
       }
     });
 
@@ -300,65 +304,41 @@
     });
   }
 
-  function getDomainsForPWA(pwaId) {
-    // Chaque PWA a son propre domaine + le domaine system (commun)
-    var domains = ["system"];
-    if (pwaId && pwaId !== "system") {
-      domains.push(pwaId);
-    }
-    // Domains additionnels selon le contexte
-    if (pwaId === "kiffstationadmin" || pwaId === "docs" || pwaId === "prototype") {
-      domains.push("kiffstationadmin");
-    }
-    if (pwaId === "keffstation") {
-      domains.push("keffstation");
-    }
-    return domains;
-  }
-
-  function resolveValue(key, lang, domains) {
-    // Essayer chaque domaine dans l'ordre
-    for (var i = 0; i < domains.length; i++) {
-      var domain = domains[i];
-      var val = t(key, lang, domain);
-      if (val !== key) return val;
-    }
-    // Dernier recours : t() avec le domaine par défaut
-    return t(key, lang, "system");
-  }
-
-  /* ========================= Traduction automatique fallback (Google) ========================= */
-  // Appelée pour les clés sans traduction humaine (langues autres que fr/en).
-  // Le résultat est marqué data-i18n-auto="true" et n'est PAS relu.
-  var AUTO_TRANSLATE_CACHE = {};
-  async function googleTranslateText(text, targetLang) {
+  /* ========================= Traduction auto fallback (Google) ========================= */
+  function googleTranslateText(text, targetLang) {
     if (!text || text.trim().length === 0) return text;
     var ck = text + '||' + targetLang;
     if (AUTO_TRANSLATE_CACHE[ck]) return AUTO_TRANSLATE_CACHE[ck];
     try {
       var url = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=auto&tl=' +
         encodeURIComponent(targetLang) + '&q=' + encodeURIComponent(text);
-      var resp = await fetch(url);
-      var data = await resp.json();
-      if (data && data[0] && data[0][0] && data[0][0][0]) {
-        AUTO_TRANSLATE_CACHE[ck] = data[0][0][0];
-        return data[0][0][0];
-      }
-    } catch (e) {}
-    return text;
+      // fetch est utilisé ici ; pas de clé API, service gratuit, résultat marqué non relu
+      return fetch(url).then(function (resp) {
+        return resp.json();
+      }).then(function (data) {
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          AUTO_TRANSLATE_CACHE[ck] = data[0][0][0];
+          return data[0][0][0];
+        }
+        return text;
+      }).catch(function () {
+        return text;
+      });
+    } catch (e) {
+      return Promise.resolve(text);
+    }
   }
 
   function autoTranslateMissing(lang, pwaId) {
-    // Ne pas traduire automatiquement les langues déjà couvertes (fr, en)
-    if (lang === 'fr' || lang === 'en') return;
+    if (lang === 'fr' || lang === 'en') return; // traductions rédigées prioritaires
     var elems = document.querySelectorAll("[data-i18n-missing='true']");
-    var index = 0, BATCH = 6, DELAY = 150;
+    var index = 0, BATCH = 6, DELAY = 200;
     function nextBatch() {
       if (index >= elems.length) return;
       var batch = Array.prototype.slice.call(elems, index, index + BATCH); index += BATCH;
       batch.forEach(function (el) {
         var original = el.getAttribute("data-i18n-original");
-        if (!original || original.trim().length === 0) {
+        if (!original) {
           original = el.textContent || el.getAttribute("placeholder") || el.getAttribute("aria-label") || "";
           el.setAttribute("data-i18n-original", original);
         }
@@ -372,28 +352,45 @@
             }
             el.setAttribute("data-i18n-auto", "true");
             el.removeAttribute("data-i18n-missing");
-            // Petit badge visuel de traduction automatique
             if (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA") {
-              var badge = document.createElement("span");
-              badge.className = "ks-auto-badge";
-              badge.title = "Traduit automatiquement (non relu) — langue d'origine : " + (el.getAttribute("data-i18n-lang") || lang);
-              badge.textContent = " [auto]";
-              badge.style.fontSize = "0.65em";
-              badge.style.opacity = "0.5";
-              badge.style.marginLeft = "4px";
-              badge.style.whiteSpace = "nowrap";
-              // Évite les doublons
-              if (!el.querySelector(".ks-auto-badge")) el.appendChild(badge);
+              if (!el.querySelector(".ks-auto-badge")) {
+                var badge = document.createElement("span");
+                badge.className = "ks-auto-badge";
+                badge.title = "Traduit automatiquement (non relu) — langue d'origine : " +
+                  (el.getAttribute("data-i18n-lang") || lang);
+                badge.textContent = " [auto]";
+                badge.style.fontSize = "0.65em";
+                badge.style.opacity = "0.5";
+                badge.style.marginLeft = "4px";
+                badge.style.whiteSpace = "nowrap";
+                el.appendChild(badge);
+              }
             }
           }
-        }).catch(function () {});
+        });
       });
       setTimeout(nextBatch, DELAY);
     }
     nextBatch();
   }
 
-  /* ========================= Sélecteur de langue ========================= */
+  /* ========================= Sélecteur de langue (unique) ========================= */
+  var PWA_NAMES = {
+    "keffstation": "KeffStation",
+    "kifftech": "KiffTech",
+    "viartificial-labs": "ViArtificial Labs",
+    "critiques-services": "Critiques-Services",
+    "tricktrocjob": "Tricktrocjob",
+    "videogames": "Videogames",
+    "cos-editor": "cos Editor",
+    "linguistic-motors": "Linguistic Motors",
+    "kiffstationadmin": "Keffstation Admin",
+    "blm": "BLM Orchestrateur",
+    "content": "Content",
+    "docs": "Docs",
+    "prototype": "Prototype"
+  };
+
   var SELECTOR_CSS = "\
     #ks-lang-selector {\
       position: fixed; top: 10px; right: 10px; z-index: 10000;\
@@ -435,9 +432,9 @@
   ";
 
   function injectStyle() {
-    if (document.getElementById("ks-i18n-locales-style")) return;
+    if (document.getElementById("ks-i18n-orchestrator-style")) return;
     var s = document.createElement("style");
-    s.id = "ks-i18n-locales-style";
+    s.id = "ks-i18n-orchestrator-style";
     s.textContent = SELECTOR_CSS;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -470,7 +467,6 @@
     secTitle.textContent = t("language", lang, "system");
     menu.appendChild(secTitle);
 
-    // Indication de la PWA courante
     var pwaLabel = document.createElement("div");
     pwaLabel.className = "ks-section-title";
     pwaLabel.textContent = PWA_NAMES[pwaId] || pwaId;
@@ -487,11 +483,10 @@
       var n = document.createElement("span");
       n.className = "ks-name";
       n.textContent = (LANG_META[code] && LANG_META[code].native) || code;
-      // Marque les langues non complètes
       if (LANG_META[code] && !LANG_META[code].complete) {
         var badge = document.createElement("span");
         badge.className = "ks-complete ks-missing";
-        badge.title = "Traduction incomplète — fallback vers le français/anglais";
+        badge.title = "Traduction incomplète — fallback / auto-traduction";
         badge.textContent = "⚠";
         n.appendChild(badge);
       }
@@ -551,23 +546,6 @@
     document.body.appendChild(box);
   }
 
-  /* ========================= Noms PWA pour l'affichage ========================= */
-  var PWA_NAMES = {
-    "keffstation": "KeffStation",
-    "kifftech": "KiffTech",
-    "viartificial-labs": "ViArtificial Labs",
-    "critiques-services": "Critiques-Services",
-    "tricktrocjob": "Tricktrocjob",
-    "videogames": "Videogames",
-    "cos-editor": "cos Editor",
-    "linguistic-motors": "Linguistic Motors",
-    "kiffstationadmin": "Keffstation Admin",
-    "blm": "BLM Orchestrateur",
-    "content": "Content",
-    "docs": "Docs",
-    "prototype": "Prototype"
-  };
-
   /* ========================= Init ========================= */
   function init() {
     loadLocalesMeta(function () {
@@ -586,16 +564,6 @@
         refreshSelector(lang, CURRENT_PWA);
         autoTranslateMissing(lang, CURRENT_PWA);
       }
-      // Écouter les changements de langue globaux (depuis i18n.js legacy ou autre onglet)
-      document.addEventListener("ks-lang-change", function (e) {
-        if (e.detail && e.detail.pwa !== CURRENT_PWA) {
-          // Une autre PWA a changé de langue : on garde notre choix sauf si c'est le global
-          var globalLang = localStorage.getItem(STORAGE_KEY);
-          if (globalLang && SUPPORTED.indexOf(globalLang.slice(0,2).toLowerCase()) !== -1) {
-            setLang(globalLang.slice(0,2).toLowerCase(), CURRENT_PWA);
-          }
-        }
-      });
     });
   }
 
@@ -605,8 +573,8 @@
     init();
   }
 
-  /* API publique */
-  window.ksI18nLocales = {
+  /* ========================= API publique ========================= */
+  window.ksI18n = {
     setLang: setLang,
     getLang: getLang,
     t: t,
@@ -615,9 +583,7 @@
     isRTL: function (lang) { return RTL_LANGS.indexOf(lang !== undefined ? lang : CURRENT_LANG) !== -1; }
   };
 
-  // Compatibilité : exposer aussi sous ksI18n si l'ancien n'existe pas
-  if (!window.ksI18n) {
-    window.ksI18n = { setLang: setLang, getLang: getLang, t: t, apply: applyTranslations };
-  }
+  // Compatibilité si un autre script appelle window.ksI18nLocales
+  window.ksI18nLocales = window.ksI18n;
 
 })();
