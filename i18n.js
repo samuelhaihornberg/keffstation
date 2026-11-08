@@ -4887,18 +4887,25 @@
   function getLang() {
     try {
       var saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && SUPPORTED.indexOf(saved) !== -1) {
-        return saved;
+      if (saved) {
+        // accepte la valeur stockée telle quelle, ou tronquée à 2 lettres
+        if (SUPPORTED.indexOf(saved) !== -1) return saved;
+        var saved2 = saved.slice(0, 2).toLowerCase();
+        if (SUPPORTED.indexOf(saved2) !== -1) return saved2;
       }
     } catch (e) {}
-    // détecte la langue navigateur (fr/en/etc.)
-    var nav = (navigator.language || navigator.userLanguage || "fr").slice(0, 2).toLowerCase();
-    return SUPPORTED.indexOf(nav) !== -1 ? nav : DEFAULT_LANG;
+    // détecte la langue navigateur (fr/en/etc.) — priorité absolue avant DEFAULT_LANG
+    var nav = (navigator.language || navigator.userLanguage || "").slice(0, 2).toLowerCase();
+    if (nav && SUPPORTED.indexOf(nav) !== -1) return nav;
+    // dernier recours : DEFAULT_LANG
+    return DEFAULT_LANG;
   }
 
   async function setLang(lang) {
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     document.documentElement.lang = lang;
+    translationCache = {};
+    translating = {};
     await applyTranslations(lang);
     await applyTranslationsGoogle(lang);
     refreshSelector(lang);
