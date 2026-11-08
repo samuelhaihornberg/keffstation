@@ -106,32 +106,13 @@
     </a>
   </section>
 
-  <!-- Divider bioluminescent avant la section plateforme -->
+  <!-- Divider bioluminescent avant la section articles -->
   <div class="section-divider divider-before" aria-hidden="true"></div>
 
   <!-- Espace tabulé entre le header et la section -->
   <div class="section-space space-before" aria-hidden="true"></div>
 
-  <div class="vitrine" id="vitrine">
-    <div class="halo" aria-hidden="true"></div>
-    <div class="floor-glow" aria-hidden="true"></div>
-
-    <div class="waves" aria-hidden="true">
-      <span class="wave"></span>
-      <span class="wave"></span>
-      <span class="wave"></span>
-    </div>
-
-    <div class="core" id="core" aria-hidden="true">
-      <div class="core-inner">
-        <div class="core-k">K</div>
-        <div class="core-name">KEFFSTATION</div>
-        <div class="core-count"><span id="app-count">6</span> <span data-i18n="app_count">apps</span></div>
-      </div>
-    </div>
-
-    <div class="orbit" id="orbit">
-  <!-- Section articles en bas de la vitrine -->
+  <!-- ===== SECTION ARTICLES (statiques, entre la vidéo et la vitrine) ===== -->
   <article class="platform-section" aria-label="Plateforme multi-PWA KiffStation">
     <h2 class="section-title" data-i18n="platform_title">KiffStation : Votre plateforme multi-PWA</h2>
     <p class="section-description" data-i18n="platform_desc">
@@ -173,7 +154,31 @@
       </p>
     </div>
   </article>
-  <!-- Fin section articles --></div>
+
+  <!-- Divider bioluminescent avant la vitrine -->
+  <div class="section-divider divider-after" aria-hidden="true"></div>
+
+  <!-- ===== VITRINE MULTI-PWA (cercle central, sans rotation) ===== -->
+  <div class="vitrine" id="vitrine">
+    <div class="halo" aria-hidden="true"></div>
+    <div class="floor-glow" aria-hidden="true"></div>
+
+    <div class="waves" aria-hidden="true">
+      <span class="wave"></span>
+      <span class="wave"></span>
+      <span class="wave"></span>
+    </div>
+
+    <div class="core" id="core" aria-hidden="true">
+      <div class="core-inner">
+        <div class="core-k">K</div>
+        <div class="core-name">KEFFSTATION</div>
+        <div class="core-count"><span id="app-count">6</span> <span data-i18n="app_count">apps</span></div>
+      </div>
+    </div>
+
+    <!-- Orbite vide : plus de nodes qui tournent -->
+    <div class="orbit" id="orbit"></div>
   </div>
 
   <nav class="nav" id="nav" aria-label="Navigation des applications"></nav>

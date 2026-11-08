@@ -290,26 +290,12 @@ class KeffStation {
     this.vitrine.style.setProperty('--count', total);
     if (this.appCount) this.appCount.textContent = total;
 
+    // L'orbite reste vide : plus de nodes qui tournent autour du cercle.
+    // Les cartes d'apps sont affichées statiquement dans la section plateforme.
+    this.orbit.innerHTML = '';
+    this.nodes = [];
+
     this.apps.forEach((app, i) => {
-      const pos = orbitPosition(i, total);
-
-      const node = document.createElement('button');
-      node.type = 'button';
-      node.className = 'node';
-      node.dataset.index = i;
-      node.style.setProperty('--x', pos.x.toFixed(2) + '%');
-      node.style.setProperty('--y', pos.y.toFixed(2) + '%');
-      node.style.setProperty('--accent', app.color || '#1e6bff');
-      node.style.setProperty('--i', i);
-      node.setAttribute('aria-label', `Ouvrir ${app.title}`);
-      node.innerHTML = `
-        <span class="node-pulse" aria-hidden="true"></span>
-        <span class="node-disc" aria-hidden="true">${sanitizeHTML(APP_ICONS[app.num] || app.title.slice(0, 1))}</span>
-        <span class="node-label">${sanitizeHTML(app.title)}</span>
-      `;
-      node.addEventListener('click', () => this.openApp(i));
-      this.orbit.appendChild(node);
-
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.dataset.index = i;
@@ -318,7 +304,6 @@ class KeffStation {
       this.nav.appendChild(dot);
     });
 
-    this.nodes = Array.from(this.orbit.querySelectorAll('.node'));
     this.dots = Array.from(this.nav.querySelectorAll('button'));
     this.setFocus(0, false);
   }
