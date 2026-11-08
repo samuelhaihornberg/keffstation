@@ -4855,6 +4855,131 @@
   var DEFAULT_CURRENCY = "EUR";
   var SUPPORTED = Object.keys(DICT.langNames);
 
+  /* Drapeaux par langue */
+  var FLAGS_LANG = {
+  "af": "🇿🇦",
+  "am": "🇪🇹",
+  "ar": "🇸🇦",
+  "as": "🇮🇳",
+  "az": "🇦🇿",
+  "bg": "🇧🇬",
+  "bn": "🇧🇩",
+  "bo": "🇧🇹",
+  "ca": "🇪🇸",
+  "cs": "🇨🇿",
+  "cy": "🏴󠁧󠁢󠁷󠁬󠁳󠁴",
+  "da": "🇩🇰",
+  "de": "🇩🇪",
+  "dz": "🇧🇹",
+  "el": "🇬🇷",
+  "en": "🇺🇸",
+  "eo": "🏳️‍🌈",
+  "es": "🇪🇸",
+  "et": "🇪🇪",
+  "eu": "🇪🇸",
+  "fa": "🇮🇷",
+  "fi": "🇫🇮",
+  "fr": "🇫🇷",
+  "ga": "🇮🇪",
+  "gl": "🇪🇸",
+  "gu": "🇮🇳",
+  "ha": "🇳🇬",
+  "he": "🇮🇱",
+  "hi": "🇮🇳",
+  "hr": "🇭🇷",
+  "hu": "🇭🇺",
+  "hy": "🇦🇲",
+  "id": "🇮🇩",
+  "ig": "🇳🇬",
+  "is": "🇮🇸",
+  "it": "🇮🇹",
+  "ja": "🇯🇵",
+  "jv": "🇮🇩",
+  "ka": "🇬🇪",
+  "kk": "🇰🇿",
+  "km": "🇰🇭",
+  "kn": "🇮🇳",
+  "ko": "🇰🇷",
+  "ku": "🇮🇶",
+  "ky": "🇰🇬",
+  "la": "🇻🇦",
+  "lb": "🇱🇺",
+  "lo": "🇱🇦",
+  "lt": "🇱🇹",
+  "lv": "🇱🇻",
+  "mg": "🇲🇬",
+  "mk": "🇲🇰",
+  "ml": "🇮🇳",
+  "mn": "🇲🇳",
+  "mr": "🇮🇳",
+  "ms": "🇲🇾",
+  "my": "🇲🇲",
+  "ne": "🇳🇵",
+  "nl": "🇳🇱",
+  "no": "🇳🇴",
+  "ny": "🇲🇼",
+  "or": "🇮🇳",
+  "pa": "🇮🇳",
+  "pl": "🇵🇱",
+  "ps": "🇦🇫",
+  "pt": "🇵🇹",
+  "ro": "🇷🇴",
+  "ru": "🇷🇺",
+  "rw": "🇷🇼",
+  "sd": "🇵🇰",
+  "si": "🇱🇰",
+  "sk": "🇸🇰",
+  "sl": "🇸🇮",
+  "sm": "🇼🇸",
+  "sn": "🇿🇼",
+  "so": "🇸🇴",
+  "sq": "🇦🇱",
+  "sr": "🇷🇸",
+  "st": "🇱🇸",
+  "su": "🇮🇩",
+  "sv": "🇸🇪",
+  "sw": "🇸🇿",
+  "ta": "🇮🇳",
+  "te": "🇮🇳",
+  "tg": "🇹🇯",
+  "th": "🇹🇭",
+  "tl": "🇵🇭",
+  "tr": "🇹🇷",
+  "uk": "🇺🇦",
+  "ur": "🇵🇰",
+  "uz": "🇺🇿",
+  "vi": "🇻🇳",
+  "xh": "🇿🇦",
+  "yi": "🇮🇱",
+  "yo": "🇳🇬",
+  "zh": "🇨🇳",
+  "zu": "🇿🇦"
+};
+
+  /* Drapeaux par devise */
+  var FLAGS_CURRENCY = {
+  "EUR": "🇪🇺",
+  "USD": "🇺🇸",
+  "GBP": "🇬🇧",
+  "JPY": "🇯🇵",
+  "CAD": "🇨🇦",
+  "AUD": "🇦🇺",
+  "CHF": "🇨🇭",
+  "CNY": "🇨🇳",
+  "KRW": "🇰🇷",
+  "INR": "🇮🇳",
+  "BRL": "🇧🇷",
+  "MXN": "🇲🇽",
+  "PLN": "🇵🇱",
+  "RUB": "🇷🇺",
+  "SAR": "🇸🇦",
+  "TRY": "🇹🇷",
+  "SEK": "🇸🇪",
+  "NOK": "🇳🇴",
+  "DKK": "🇩🇰",
+  "ZAR": "🇿🇦"
+};
+
   /* Devises par région/pays (détection automatique depuis IP/navigateur) */
   var REGION_CURRENCY = {
     "fr": "EUR", "de": "EUR", "es": "EUR", "it": "EUR", "pt": "EUR", "nl": "EUR",
@@ -5008,27 +5133,58 @@
   });
 
   /* ========================= Sélecteur de langue ========================= */
-  var SELECTOR_CSS = "\
-    #ks-lang-selector {\
-      position: fixed; top: 10px; right: 10px; z-index: 2000;\
-      background: rgba(10,12,34,.92); border: 1px solid rgba(255,255,255,.2);\
-      border-radius: 12px; padding: 10px; color: #f4f6ff;\
-      font: 700 13px/1.2 system-ui,sans-serif; cursor: pointer; backdrop-filter: blur(6px);\
-      display: flex; flex-direction: column; gap: 8px; align-items: flex-start;\
-    }\
-    #ks-lang-selector .ks-field {\
-      display: flex; flex-direction: column; gap: 4px; width: 100%;\
-    }\
-    #ks-lang-selector label {\
-      font: 600 11px/1.2 system-ui,sans-serif; color: #b9c0e6; margin: 0;\
-    }\
-    #ks-lang-selector select {\
-      background: transparent; border: 1px solid rgba(255,255,255,.2); color: #ffd23f;\
-      font: inherit; outline: none; cursor: pointer; -webkit-appearance: none;\
-      padding: 4px 8px; border-radius: 6px; width: 100%;\
-    }\
-    #ks-lang-selector option { background: #070816; color: #f4f6ff; }\
-  ";
+    var SELECTOR_CSS = "\    #ks-lang-selector {\
+      position: fixed; top: 10px; right: 10px; z-index: 2100;\
+      font: 700 13px/1.2 system-ui,sans-serif;\
+    }\    #ks-lang-toggle {\
+      position: relative;\
+      background: rgba(10,12,34,.92);\
+      border: 1px solid rgba(255,255,255,.2);\
+      border-radius: 12px;\
+      padding: 8px 12px;\
+      color: #f4f6ff;\
+      cursor: pointer;\
+      backdrop-filter: blur(6px);\
+      display: inline-flex;\
+      align-items: center;\
+      gap: 8px;\
+      min-width: 44px;\
+    }\    #ks-lang-toggle .ks-flag {\
+      font-size: 20px; line-height: 1;\
+    }\    #ks-lang-toggle .ks-arrow {\
+      font-size: 12px; color: #b9c0e6; transition: transform .2s;\
+    }\    #ks-lang-toggle.open .ks-arrow {\
+      transform: rotate(180deg);\
+    }\    #ks-lang-toggle.open {\
+      border-color: #ffd23f; box-shadow: 0 0 16px rgba(255,210,63,.3);\
+    }\    #ks-lang-menu {\
+      position: absolute; top: 100%; right: 0; margin-top: 6px;\
+      background: rgba(10,12,34,.95);\
+      border: 1px solid rgba(255,255,255,.2);\
+      border-radius: 12px; padding: 6px;\
+      backdrop-filter: blur(8px);\
+      min-width: 260px; z-index: 2101; display: none;\
+      box-shadow: 0 8px 32px rgba(0,0,0,.6);\
+    }\    #ks-lang-toggle.open + #ks-lang-menu, #ks-lang-menu.visible { display: block; }\
+    #ks-lang-menu .ks-section-title {\
+      font: 700 11px/1.2 system-ui,sans-serif; color: #ffd23f;\
+      padding: 6px 8px 2px 8px; text-transform: uppercase; letter-spacing: .08em;\
+    }\    #ks-lang-menu .ks-option {\
+      display: flex; align-items: center; gap: 10px;\
+      padding: 8px 10px; border-radius: 8px;\
+      color: #f4f6ff; cursor: pointer; font: 500 13px/1.2 system-ui,sans-serif;\
+      white-space: nowrap;\
+    }\    #ks-lang-menu .ks-option:hover {\
+      background: rgba(255,255,255,.1);\
+    }\    #ks-lang-menu .ks-option.ks-active {\
+      background: rgba(255,210,63,.15); color: #ffd23f; border: 1px solid rgba(255,210,63,.3);\
+    }\    #ks-lang-menu .ks-option .ks-flag {\
+      font-size: 18px; line-height: 1; min-width: 24px;\
+    }\    #ks-lang-menu .ks-option .ks-name {\
+      flex: 1;\
+    }\    #ks-lang-menu .ks-divider {\
+      height: 1px; background: rgba(255,255,255,.1); margin: 6px 0;\
+    }\  ";
 
   function injectStyle() {
     if (document.getElementById("ks-i18n-style")) return;
@@ -5041,68 +5197,161 @@
   function buildSelector(lang) {
     var box = document.createElement("div");
     box.id = "ks-lang-selector";
-    box.setAttribute("role", "combobox");
-    box.setAttribute("aria-label", t("language", lang));
 
-    // --- Champ langue ---
-    var langField = document.createElement("div");
-    langField.className = "ks-field";
-    var langLabel = document.createElement("label");
-    langLabel.textContent = t("language", lang);
-    langLabel.style.marginRight = "6px";
-    langLabel.style.color = "#b9c0e6";
-    langLabel.style.fontSize = "11px";
-    langField.appendChild(langLabel);
-    var langSel = document.createElement("select");
-    langSel.id = "ks-lang-picker";
+    // --- Bouton toggle icône ---
+    var toggle = document.createElement("button");
+    toggle.id = "ks-lang-toggle";
+    toggle.type = "button";
+    toggle.setAttribute("aria-haspopup", "true");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", t("language", lang));
+    var flag = document.createElement("span");
+    flag.className = "ks-flag";
+    flag.textContent = FLAGS_LANG[lang] || "🌐";
+    var arrow = document.createElement("span");
+    arrow.className = "ks-arrow";
+    arrow.textContent = "▼";
+    toggle.appendChild(flag);
+    toggle.appendChild(arrow);
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = toggle.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open);
+      var menu = document.getElementById("ks-lang-menu");
+      if (menu) menu.classList.toggle("visible", open);
+    });
+
+    // --- Menu déroulant ---
+    var menu = document.createElement("div");
+    menu.id = "ks-lang-menu";
+    menu.setAttribute("role", "menu");
+
+    // Section langue
+    var secLang = document.createElement("div");
+    secLang.className = "ks-section-title";
+    secLang.textContent = t("language", lang);
+    menu.appendChild(secLang);
     SUPPORTED.forEach(function (code) {
-      var opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = DICT.langNames[code];
-      if (code === lang) opt.selected = true;
-      langSel.appendChild(opt);
+      var item = document.createElement("div");
+      item.className = "ks-option" + (code === lang ? " ks-active" : "");
+      item.setAttribute("role", "menuitem");
+      var f = document.createElement("span");
+      f.className = "ks-flag";
+      f.textContent = FLAGS_LANG[code] || "🌐";
+      var n = document.createElement("span");
+      n.className = "ks-name";
+      n.textContent = DICT.langNames[code];
+      item.appendChild(f);
+      item.appendChild(n);
+      item.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setLang(code);
+        toggle.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        menu.classList.remove("visible");
+        flag.textContent = FLAGS_LANG[code] || "🌐";
+        document.querySelectorAll("#ks-lang-menu .ks-option").forEach(function (it) {
+          it.classList.remove("ks-active");
+        });
+        item.classList.add("ks-active");
+        toggle.setAttribute("aria-label", t("language", code));
+      });
+      menu.appendChild(item);
     });
-    langSel.addEventListener("change", function () {
-      setLang(langSel.value);
-    });
-    langField.appendChild(langSel);
-    box.appendChild(langField);
 
-    // --- Champ devise ---
-    var currField = document.createElement("div");
-    currField.className = "ks-field";
-    var currLabel = document.createElement("label");
-    currLabel.textContent = t("currency", lang);
-    currLabel.style.marginRight = "6px";
-    currLabel.style.color = "#b9c0e6";
-    currLabel.style.fontSize = "11px";
-    currField.appendChild(currLabel);
-    var currSel = document.createElement("select");
-    currSel.id = "ks-currency-picker";
+    var div = document.createElement("div");
+    div.className = "ks-divider";
+    menu.appendChild(div);
+
+    // Section devise
+    var secCurr = document.createElement("div");
+    secCurr.className = "ks-section-title";
+    secCurr.textContent = t("currency", lang);
+    menu.appendChild(secCurr);
     SUPPORTED_CURRENCIES.forEach(function (code) {
-      var opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = CURRENCY_NAMES[code] || code;
-      if (code === getCurrency()) opt.selected = true;
-      currSel.appendChild(opt);
+      var item = document.createElement("div");
+      var curLang = getLang();
+      var isActive = code === getCurrency();
+      item.className = "ks-option" + (isActive ? " ks-active" : "");
+      item.setAttribute("role", "menuitem");
+      var f = document.createElement("span");
+      f.className = "ks-flag";
+      f.textContent = FLAGS_CURRENCY[code] || "💰";
+      var n = document.createElement("span");
+      n.className = "ks-name";
+      n.textContent = CURRENCY_NAMES[code] || code;
+      item.appendChild(f);
+      item.appendChild(n);
+      item.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setCurrency(code);
+        toggle.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        menu.classList.remove("visible");
+        document.querySelectorAll("#ks-lang-menu .ks-option").forEach(function (it) {
+          it.classList.remove("ks-active");
+        });
+        item.classList.add("ks-active");
+      });
+      menu.appendChild(item);
     });
-    currSel.addEventListener("change", function () {
-      setCurrency(currSel.value);
+
+    box.appendChild(toggle);
+    box.appendChild(menu);
+
+    // Fermer le menu en cliquant dehors
+    document.addEventListener("click", function (e) {
+      if (!box.contains(e.target)) {
+        toggle.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        menu.classList.remove("visible");
+      }
     });
-    currField.appendChild(currSel);
-    box.appendChild(currField);
 
     return box;
   }
 
   function refreshSelector(lang) {
-    var sel = document.getElementById("ks-lang-picker");
-    if (sel) sel.value = lang;
+    var flag = document.querySelector("#ks-lang-toggle .ks-flag");
+    if (flag) flag.textContent = FLAGS_LANG[lang] || "🌐";
+    var toggle = document.getElementById("ks-lang-toggle");
+    if (toggle) toggle.setAttribute("aria-label", t("language", lang));
+    document.querySelectorAll("#ks-lang-menu .ks-option").forEach(function (it) {
+      it.classList.remove("ks-active");
+    });
+    var opts = document.querySelectorAll("#ks-lang-menu .ks-option");
+    var found = false;
+    for (var i = 0; i < opts.length; i++) {
+      var nameEl = opts[i].querySelector(".ks-name");
+      if (nameEl && DICT.langNames[lang] && nameEl.textContent === DICT.langNames[lang]) {
+        opts[i].classList.add("ks-active");
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      for (var i = 0; i < opts.length; i++) {
+        var flagEl = opts[i].querySelector(".ks-flag");
+        if (flagEl && FLAGS_LANG[lang] && flagEl.textContent === FLAGS_LANG[lang]) {
+          opts[i].classList.add("ks-active");
+          break;
+        }
+      }
+    }
   }
 
   function refreshCurrencySelector(currency) {
-    var sel = document.getElementById("ks-currency-picker");
-    if (sel) sel.value = currency;
+    document.querySelectorAll("#ks-lang-menu .ks-option").forEach(function (it) {
+      it.classList.remove("ks-active");
+    });
+    var opts = document.querySelectorAll("#ks-lang-menu .ks-option");
+    for (var i = 0; i < opts.length; i++) {
+      var nameEl = opts[i].querySelector(".ks-name");
+      if (nameEl && CURRENCY_NAMES[currency] && nameEl.textContent === CURRENCY_NAMES[currency]) {
+        opts[i].classList.add("ks-active");
+        break;
+      }
+    }
   }
 
   function injectSelector(lang) {
