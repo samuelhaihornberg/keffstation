@@ -290,14 +290,7 @@
           </div>
           <!-- Logo KeffStation au centre du cercle moyen -->
           <div class="logo-keffstation" aria-label="Logo KeffStation">
-            <div class="laptop">
-              <div class="screen"></div>
-              <div class="keyboard"></div>
-            </div>
-            <div class="chip">
-              <div class="pin p1"></div><div class="pin p2"></div><div class="pin p3"></div><div class="pin p4"></div>
-              <div class="circuit"></div>
-            </div>
+            <img src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/7412756f143b879567f6784f6b5149ceac5c0d9b/Logo-kiffstation.png" alt="KeffStation Logo" class="logo-keffstation-img" />
             <div class="label">KEFFSTATION</div>
           </div>
         </div>
@@ -403,7 +396,7 @@
       </div>
     </div>
     <div class="selector-footer">
-      <p class="selector-hint" data-i18n="selector_hint">Cliquez sur un article pour ouvrir l'application correspondante</p>
+            <button id="selector-open-btn" class="selector-open-btn" type="button">Ouvrir l'app</button>
     </div>
   </div>
 
@@ -454,6 +447,7 @@
   var pages = selector.querySelectorAll('.article-page');
   var closeBtn = selector.querySelector('.selector-close');
   var titleEl = selector.querySelector('#selector-title');
+  var openBtn = selector.querySelector('#selector-open-btn');
 
   // Titres par page (mis à jour selon la langue)
   var pageTitles = [
@@ -466,6 +460,28 @@
     'Videogames — Articles'
   ];
 
+  // URLs des apps par page
+  var pageAppUrls = [
+    './viartificial-labs/',
+    './cos-editor/',
+    './linguistic-motors/',
+    'https://samuelhaihornberg.github.io/critiques-services.com/',
+    './kifftech/',
+    './tricktrocjob/',
+    './videogames/'
+  ];
+
+  // Noms des apps par page
+  var pageAppNames = [
+    'ViArtificial Labs',
+    'cos Editor',
+    'Linguistic Motors',
+    'Critiques-Services',
+    'KiffTech',
+    'Tricktrocjob',
+    'Videogames'
+  ];
+
   function showPage(index) {
     pages.forEach(function (page, i) {
       page.classList.toggle('active', i === index);
@@ -476,6 +492,13 @@
     });
     if (titleEl && pageTitles[index]) {
       titleEl.textContent = pageTitles[index];
+    }
+    // Mettre à jour le bouton ouvrir avec le nom de l'app
+    if (openBtn && pageAppNames[index]) {
+      openBtn.textContent = 'Ouvrir ' + pageAppNames[index];
+      openBtn.onclick = function () {
+        window.location.href = pageAppUrls[index];
+      };
     }
   }
 
