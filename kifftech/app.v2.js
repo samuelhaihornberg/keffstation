@@ -191,6 +191,24 @@ function $$(sel, ctx=document){return Array.from(ctx.querySelectorAll(sel))}
 function fmtPrice(price, currency='EUR'){return new Intl.NumberFormat('fr-FR',{style:'currency',currency,minimumFractionDigits:0}).format(price)}
 function fmtPriceCrossed(price, currency='EUR'){return `<span class="price-crossed">${fmtPrice(price,currency)}</span>`}
 function toast(msg,type='info'){const t=$('#toast');t.textContent=msg;t.className='toast '+type+' visible';setTimeout(()=>t.classList.remove('visible'),3000)}
+function hardRefreshVersion(){
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(regs=>{
+      regs.forEach(reg=>reg.unregister());
+    });
+  }
+  if('caches' in window){
+    caches.keys().then(names=>{names.forEach(n=>caches.delete(n));});
+  }
+  toast('Mise à jour version — rechargement…','info');
+  setTimeout(()=>location.reload(true),600);
+}
+function clearKiffTechCache(){
+  if('caches' in window){
+    caches.keys().then(names=>{names.forEach(n=>caches.delete(n));});
+  }
+  toast('Cache vidé','success');
+}
 function calcKiffTechPrice(officialPrice, context={}){const {isSubscriber=false,cartItems=[],isPromoEligible=false,tenureDays=0}=context;let discount=10,freeDelivery=false,reason='Prix KiffTech (-10%)';const articleCount=(cartItems||[]).reduce((n,i)=>n+(Number(i.qty)||1),0);if(isSubscriber){discount=Math.min(10+Math.floor(tenureDays/30),21);freeDelivery=true;reason=`Abonne KiffTech (${discount}% + livraison offerte)`;}else if(isPromoEligible||articleCount>=10){discount=20;reason=`Promo 20% (10+ articles)`;}const final=Math.round(officialPrice*(100-discount)/100);return{official:officialPrice,kifftech:final,discount,savings:officialPrice-final,freeDelivery,reason,currency:'EUR'};}
 function refreshKiffTechPrices(){products.forEach(p=>{if(!p.partner)p.kifftech=calcKiffTechPrice(p.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});});filteredProducts.forEach(p=>{const o=products.find(x=>x.id===p.id);if(o&&!p.partner)p.kifftech=o.kifftech;});}
 
@@ -889,6 +907,8 @@ function initEvents(){
   }
   on('#btn-fetch', 'click', async () => { toast('Rechargement...', 'info'); await loadProducts(); });
   on('#btn-clear', 'click', () => { products = [...LOCAL_DB]; products.forEach(p => p.kifftech = calcKiffTechPrice(p.price.official)); filteredProducts = [...products]; applyFilters(); toast('Base locale restauree', 'success'); });
+  on('#btn-hard-refresh', 'click', hardRefreshVersion);
+  on('#btn-cache-clear', 'click', clearKiffTechCache);
   const toggleSubHandler = () => { userContext.isSubscriber = !userContext.isSubscriber; userContext.tenureDays = userContext.isSubscriber ? 30 : 0; refreshKiffTechPrices(); renderProducts(); updateCartPanel(); updateSubUI(); toast(userContext.isSubscriber ? 'Abonnement active (1eur/jour)' : 'Desactive', userContext.isSubscriber ? 'success' : 'info'); };
   on('#btn-subscribe', 'click', toggleSubHandler);
   on('#btn-subscribe-header', 'click', toggleSubHandler);

@@ -378,6 +378,23 @@ header{
 }
 .sub-btn.icon-only svg{width:18px;height:18px}
 #btn-subscribe-header.icon-only{width:42px!important;padding:0!important}
+.nav-btn.icon-only{
+  width:42px!important;
+  height:42px!important;
+  padding:0!important;
+  border-radius:0!important;
+  border:1px solid var(--kf-line)!important;
+  background:transparent!important;
+  color:var(--kf-bone)!important;
+  font-size:1.2rem!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  transition:background .18s,color .18s,border-color .18s;
+}
+.nav-btn.icon-only:hover{background:var(--kf-bone)!important;border-color:var(--kf-bone)!important;color:var(--kf-void)!important}
+.nav-btn.icon-only svg{width:20px;height:20px}
+.nav-btn.icon-only:focus-visible{outline:2px solid var(--kf-acid);outline-offset:3px}
 
 #promo-indicator{
   background:transparent!important;
