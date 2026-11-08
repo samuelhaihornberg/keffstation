@@ -900,11 +900,8 @@ body {
 }
 
 /* ============================================================================
-   Hero vidéo — cadre large, titre multicolore sur fond noir, puis la roue
+   Hero vidéo — cadre quasi plein écran (89 %), puis la roue
    ============================================================================ */
-
-/* Moitié de la taille de référence de la roue (.vitrine) */
-:root { --kf-wheel-half: min(47vw, 40dvh, 320px); }
 
 /* Défilement doux vers la roue */
 html { scroll-behavior: smooth; }
@@ -919,21 +916,21 @@ html { scroll-behavior: smooth; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: clamp(14px, 2.4vh, 26px);
   flex: none;
   width: 100%;
-  /* Hauteur calculée pour laisser apparaître ~la moitié de la roue */
-  min-height: calc(100dvh - var(--kf-wheel-half) - 1.2vh);
   padding-bottom: clamp(10px, 2vh, 20px);
 }
 
-/* Cadre vidéo large (paysage), jamais vertical */
+/* Cadre vidéo quasi plein écran (89 %), format portrait 9:16 respecté */
 .video-frame {
   position: relative;
   flex: none;
-  width: min(96%, 1100px);
-  aspect-ratio: 16 / 7;
-  max-height: min(36dvh, 340px);
+  /* 89 % de la largeur, sans jamais dépasser 89 % de la hauteur */
+  width: min(89vw, calc(89dvh * 0.5625), 680px);
+  aspect-ratio: 9 / 16;
+  max-height: 89dvh;
   overflow: hidden;
   border-radius: clamp(14px, 2.4vw, 24px);
   background: #000;
@@ -952,24 +949,8 @@ html { scroll-behavior: smooth; }
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   background: #000;
-}
-
-/* Fondu du bas du cadre vers le noir de la page */
-.video-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(to top,
-      #000 0%,
-      rgba(0, 0, 0, .72) 12%,
-      rgba(0, 0, 0, .18) 34%,
-      rgba(0, 0, 0, 0) 58%),
-    linear-gradient(to bottom, rgba(0, 0, 0, .35) 0%, rgba(0, 0, 0, 0) 26%);
 }
 
 /* Titre + slogan sur fond noir */
@@ -1070,13 +1051,7 @@ html { scroll-behavior: smooth; }
   50%      { transform: translateY(5px); }
 }
 
-/* Grand écran : cadre encore plus panoramique */
-@media (min-width: 900px) {
-  .video-frame {
-    aspect-ratio: 21 / 9;
-    max-height: min(34dvh, 320px);
-  }
-}
+/* Le cadre garde son format portrait sur tous les écrans */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
