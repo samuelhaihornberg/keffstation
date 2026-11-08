@@ -36,7 +36,7 @@ git_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# 2. Git : fusionner toutes les branches locales entre elles (dans main)
+# 2. Git : fusionner toutes les branches (locales + distantes) dans main
 # -----------------------------------------------------------------------------
 git_merge_all() {
     log "Fusion de toutes les branches vers ${BRANCH}"
@@ -44,26 +44,49 @@ git_merge_all() {
     local current
     current="$(git rev-parse --abbrev-ref HEAD)"
 
-    # Récupère toutes les branches locales
-    local branches
-    mapfile -t branches < <(git for-each-ref --format='%(refname:short)' refs/heads/)
+    # Cree des branches locales de suivi pour toutes les branches distantes
+    # (sauf origin/HEAD et la branche principale deja presente)
+    log "Recuperation des branches distantes en local"
+    local remote_branches=""
+    remote_branches="$(git for-each-ref --format='%(refname:short)' refs/remotes/${REMOTE}/)"
 
-    for b in "${branches[@]}"; do
+    local rb
+    while IFS= read -r rb; do
+        [[ -z "$rb" ]] && continue
+        local local_name="${rb#${REMOTE}/}"
+        # Ignore origin/HEAD (alias symbolique)
+        [[ "$local_name" == "HEAD" ]] && continue
+        # Si la branche locale existe deja, on la saute pour la creation
+        if git rev-parse --verify "refs/heads/${local_name}" >/dev/null 2>&1; then
+            continue
+        fi
+        log "Creation de la branche locale '${local_name}' depuis '${rb}'"
+        git branch "${local_name}" "${rb}" 2>/dev/null || warn "Impossible de creer '${local_name}'"
+    done <<< "$remote_branches"
+
+    # Liste toutes les branches locales (y compris celles creees ci-dessus)
+    local branches=""
+    branches="$(git for-each-ref --format='%(refname:short)' refs/heads/)"
+
+    local b
+    while IFS= read -r b; do
+        [[ -z "$b" ]] && continue
         if [[ "$b" == "$BRANCH" ]]; then
             continue
         fi
         log "Merge de la branche '${b}' dans '${BRANCH}'"
-        git checkout "$BRANCH"
+        git checkout "$BRANCH" 2>/dev/null || true
         if git merge --no-ff -m "merge: integration de ${b}" "$b" 2>/dev/null; then
             log "Branche '${b}' fusionnee avec succes"
         else
             warn "Conflit ou echec sur '${b}' -> abandon du merge, etat preserve"
             git merge --abort 2>/dev/null || true
         fi
-    done
+    done <<< "$branches"
 
     git checkout "$current" 2>/dev/null || true
     git push "$REMOTE" "$BRANCH" || true
+    log "Fusion terminee et poussee sur ${REMOTE}/${BRANCH}"
 }
 
 # -----------------------------------------------------------------------------
