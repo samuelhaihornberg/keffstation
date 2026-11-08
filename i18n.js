@@ -4936,11 +4936,116 @@
     "prototype_index_requ_te_googleclicsimpressionsctrpo_0": { fr: "Requête GoogleClicsImpressionsCTRPosition", en: "Requête GoogleClicsImpressionsCTRPosition" },
     "prototype_index_requ_ter_sultatsclicsz_ro_r_sultat_1": { fr: "RequêteRésultatsClicsZéro résultat", en: "RequêteRésultatsClicsZéro résultat" },
     "prototype_index_synth_se_de_la_p_riode_indicateurva_5": { fr: "Synthèse de la période IndicateurValeur", en: "Synthèse de la période IndicateurValeur" },
-    "prototype_index_top_clics_l_menttypeclics_4": { fr: "Top clics ÉlémentTypeClics", en: "Top clics ÉlémentTypeClics" },  };
+    "prototype_index_top_clics_l_menttypeclics_4": { fr: "Top clics ÉlémentTypeClics", en: "Top clics ÉlémentTypeClics" },
+    "language": {
+      fr: "Langue",
+      en: "Language",
+      es: "Idioma",
+      de: "Sprache",
+      it: "Lingua",
+      pt: "Idioma",
+      nl: "Taal",
+      pl: "Język",
+      ru: "Язык",
+      zh: "语言",
+      ja: "言語",
+      ko: "언어",
+      ar: "اللغة",
+      hi: "भाषा",
+      tr: "Dil"
+    },
+    "animation": {
+      fr: "Animation",
+      en: "Animation",
+      es: "Animación",
+      de: "Animation",
+      it: "Animazione",
+      pt: "Animação",
+      nl: "Animatie",
+      pl: "Animacja",
+      ru: "Анимация",
+      zh: "动画",
+      ja: "アニメーション",
+      ko: "애니메이션",
+      ar: "الرسوم المتحركة",
+      hi: "एनीमेशन",
+      tr: "Animasyon"
+    },
+    "currency": {
+      fr: "Devise",
+      en: "Currency",
+      es: "Divisa",
+      de: "Währung",
+      it: "Valuta",
+      pt: "Moeda",
+      nl: "Valuta",
+      pl: "Waluta",
+      ru: "Валюта",
+      zh: "货币",
+      ja: "通貨",
+      ko: "통화",
+      ar: "العملة",
+      hi: "मुद्रा",
+      tr: "Para birimi"
+    },
 
+
+    "language": {
+      fr: "Langue",
+      en: "Language",
+      es: "Idioma",
+      de: "Sprache",
+      it: "Lingua",
+      pt: "Idioma",
+      nl: "Taal",
+      pl: "Język",
+      ru: "Язык",
+      zh: "语言",
+      ja: "言語",
+      ko: "언어",
+      ar: "اللغة",
+      hi: "भाषा",
+      tr: "Dil"
+    },
+    "animation": {
+      fr: "Animation",
+      en: "Animation",
+      es: "Animación",
+      de: "Animation",
+      it: "Animazione",
+      pt: "Animação",
+      nl: "Animatie",
+      pl: "Animacja",
+      ru: "Анимация",
+      zh: "动画",
+      ja: "アニメーション",
+      ko: "애니메이션",
+      ar: "الرسوم المتحركة",
+      hi: "एनीमेशन",
+      tr: "Animasyon"
+    },
+    "currency": {
+      fr: "Devise",
+      en: "Currency",
+      es: "Divisa",
+      de: "Währung",
+      it: "Valuta",
+      pt: "Moeda",
+      nl: "Valuta",
+      pl: "Waluta",
+      ru: "Валюта",
+      zh: "货币",
+      ja: "通貨",
+      ko: "통화",
+      ar: "العملة",
+      hi: "मुद्रा",
+      tr: "Para birimi"
+    },
+  };
   var STORAGE_KEY = "keffstation_lang";
   var STORAGE_CURRENCY = "keffstation_currency";
   var STORAGE_TRADUCTION = "keffstation_traduction";
+  var STORAGE_ANIM = "keffstation_anim";
   var DEFAULT_LANG = "fr";
   var DEFAULT_CURRENCY = "EUR";
   var SUPPORTED = Object.keys(DICT.langNames);
@@ -5120,18 +5225,17 @@
   async function setLang(lang) {
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     document.documentElement.lang = lang;
-    // VIDER TOUT : cache Google, traductions en cours, attributs anciens
+    // VIDER TOUT pour traduction de page entière d'un coup
     translationCache = {};
     translating = {};
-    // Supprimer tous les data-i18n-original pour forcer re-détection
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       el.removeAttribute("data-i18n-original");
     });
-    // Traduction statique IMMÉDIATE et synchrone
+    // Traduction statique IMMÉDIATE sur toute la page d'un coup
     applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
-    // Traduction Google en arrière-plan, NON BLOQUANTE
+    // Traduction Google en arrière-plan rapide pour les textes non dans le dictionnaire
     applyTranslationsGoogle(lang).catch(function (e) {
       // silencieux
     });
@@ -5302,7 +5406,35 @@
     }\    #ks-lang-menu .ks-loading {\
       font: 400 12px/1.4 system-ui,sans-serif; color: #b9c0e6;\
       padding: 10px 12px; text-align: center; opacity: .7;\
-    }\  ";
+    }\    /* === Contrôle des animations : sync / async / desync === */\
+    body.anim-sync * { animation-delay: 0s !important; transition-duration: 0.3s !important; }\
+    body.anim-async * { animation-delay: calc(var(--i, 0) * 0.15s) !important; transition-duration: 0.4s !important; }\
+    body.anim-desync * { animation-delay: calc(var(--i, 0) * 0.05s + var(--j, 0) * 0.3s) !important; animation-duration: calc(1s + var(--i, 0) * 0.5s) !important; transition-duration: 0.5s !important; }\
+    body.anim-desync .sphere, body.anim-desync .ring, body.anim-desync .ring-clock { animation-duration: 150s !important; }\
+    /* Contrôles d'animation dans le sélecteur */\
+    #ks-anim-controls {\
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15);\
+      display: flex; flex-direction: column; gap: 6px;\
+    }\
+    #ks-anim-controls .ks-section-title {\
+      font: 700 10px/1.2 system-ui,sans-serif; color: #ffd23f; text-transform: uppercase; letter-spacing: .08em;\
+    }\
+    #ks-anim-controls .ks-anim-btn {\
+      display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px;\
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15);\
+      color: #f4f6ff; cursor: pointer; font: 500 12px/1.3 system-ui,sans-serif;\
+      transition: all .15s ease;\
+    }\
+    #ks-anim-controls .ks-anim-btn:hover {\
+      background: rgba(255,255,255,.14); border-color: #ffd23f; color: #ffd23f;\
+    }\
+    #ks-anim-controls .ks-anim-btn.ks-active {\
+      background: rgba(255,210,63,.18); color: #ffd23f; border: 1px solid #ffd23f; box-shadow: 0 0 12px rgba(255,210,63,.3);\
+    }\
+    #ks-anim-controls .ks-anim-btn .ks-flag {\
+      font-size: 16px; line-height: 1; min-width: 24px; text-align: center;\
+    }\
+  ";
 
   function injectStyle() {
     if (document.getElementById("ks-i18n-style")) return;
@@ -5416,6 +5548,49 @@
 
     box.appendChild(toggle);
     box.appendChild(menu);
+
+    // --- Contrôles d'animation ---
+    var animField = document.createElement("div");
+    animField.className = "ks-field";
+    var animLabel = document.createElement("label");
+    animLabel.textContent = t("animation", lang);
+    animLabel.style.marginRight = "6px";
+    animLabel.style.color = "#b9c0e6";
+    animLabel.style.fontSize = "11px";
+    animField.appendChild(animLabel);
+
+    var animModes = [
+      { code: "sync", label: "Synchronisé", flag: "⚡" },
+      { code: "async", label: "Asynchronisé", flag: "🌊" },
+      { code: "desync", label: "Désynchronisé", flag: "🎲" }
+    ];
+    animModes.forEach(function (m) {
+      var item = document.createElement("div");
+      var isActive = (document.documentElement.getAttribute("data-anim") === m.code);
+      item.className = "ks-anim-btn" + (isActive ? " ks-active" : "");
+      item.setAttribute("role", "button");
+      item.setAttribute("aria-pressed", isActive);
+      var f = document.createElement("span");
+      f.className = "ks-flag";
+      f.textContent = m.flag;
+      var n = document.createElement("span");
+      n.className = "ks-name";
+      n.textContent = m.label;
+      item.appendChild(f);
+      item.appendChild(n);
+      item.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setAnimationMode(m.code);
+        document.querySelectorAll("#ks-anim-controls .ks-anim-btn").forEach(function (it) {
+          it.classList.remove("ks-active");
+          it.setAttribute("aria-pressed", "false");
+        });
+        item.classList.add("ks-active");
+        item.setAttribute("aria-pressed", "true");
+      });
+      animField.appendChild(item);
+    });
+    box.appendChild(animField);
 
     // Fermer le menu en cliquant dehors
     document.addEventListener("click", function (e) {
@@ -5576,10 +5751,10 @@
         }
       })(fallbackElems[i]);
     }
-    // Traduction par lots, rapide, non bloquante
+    // Traduction plus rapide : lots de 12, délai 80ms
     var index = 0;
-    var BATCH = 8;
-    var DELAY = 150;
+    var BATCH = 12;
+    var DELAY = 80;
     function nextBatch() {
       if (index >= pending.length) {
         if (dirty) {
@@ -5604,6 +5779,34 @@
       });
     }
     nextBatch();
-  }  // API exposée
+  }  // ========================= Contrôle des animations =========================
+  function setAnimationMode(mode) {
+    document.body.classList.remove("anim-sync", "anim-async", "anim-desync");
+    if (mode === "sync" || mode === "async" || mode === "desync") {
+      document.body.classList.add("anim-" + mode);
+      document.documentElement.setAttribute("data-anim", mode);
+    } else {
+      document.documentElement.removeAttribute("data-anim");
+    }
+    try { localStorage.setItem(STORAGE_ANIM, mode); } catch (e) {}
+    document.dispatchEvent(new CustomEvent("ks-anim-change", { detail: { mode: mode } }));
+  }
+
+  function getAnimationMode() {
+    try {
+      var saved = localStorage.getItem(STORAGE_ANIM);
+      if (saved === "sync" || saved === "async" || saved === "desync") return saved;
+    } catch (e) {}
+    return "sync";
+  }
+
+  // Appliquer le mode sauvegardé au chargement
+  (function () {
+    var savedMode = getAnimationMode();
+    if (savedMode) setAnimationMode(savedMode);
+  })();
+
+  // API exposée
+
   window.ksI18n = { setLang: setLang, getLang: getLang, t: t, apply: applyTranslations };
 })();
