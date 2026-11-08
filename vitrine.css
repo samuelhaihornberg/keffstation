@@ -1330,4 +1330,71 @@ html { scroll-behavior: smooth; }
 }
 
 
+/* ===== Articles statiques — plus de rotation orbitale ===== */
+.vitrine .orbit,
+.orbit,
+.node {
+  animation: none !important;
+}
+
+/* Pulsation : plus grand / plus petit + clignotement léger */
+.app-card {
+  position: relative;
+  animation: app-pulse 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Contour cadre multicolore arc-en-ciel animé autour de chaque carte */
+.app-card::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
+  animation: rainbow-border 4s linear infinite;
+  z-index: -1;
+  filter: blur(1px);
+  opacity: 0.9;
+}
+
+/* Fond de carte pour masquer le centre du contour arc-en-ciel */
+.app-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: -1;
+}
+
+@keyframes app-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; border-color: rgba(255, 210, 63, 0.2); }
+  50% { transform: scale(1.07); opacity: 1; border-color: rgba(255, 210, 63, 0.5); }
+}
+
+@keyframes rainbow-border {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Étincelles clignotantes à l'intérieur des cartes */
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #fff, 0 0 16px #ffdd00, 0 0 24px #ff00ff;
+  opacity: 0;
+  animation: sparkle-blink 2.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes sparkle-blink {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  40% { opacity: 1; transform: scale(1.3); }
+  60% { opacity: 1; transform: scale(1); }
+}
+
 /* cache bust v16 */
