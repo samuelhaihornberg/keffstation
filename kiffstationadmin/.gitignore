@@ -1,0 +1,16 @@
+# Secrets et fichiers locaux
+.env
+.env.*
+!.env.example
+supabase/.env
+supabase/.env.*
+!supabase/.env.example
+.supabase/
+
+# Dépendances et journaux
+node_modules/
+*.log
+
+# Systèmes
+.DS_Store
+Thumbs.db

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Keffstation Admin — Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">K</div>
+        <div>
+          <p class="eyebrow">Keffstation</p>
+          <h1>Administration</h1>
+        </div>
+      </div>
+      <span class="badge badge-private">Privé</span>
+    </header>
+
+    <div class="notice" role="note">
+      <strong>Données en temps réel.</strong> Source : PWA Keffstation · Aucune donnée personnelle.
+    </div>
+
+    <section class="period-bar" aria-label="Sélection de la période">
+      <div class="period-buttons" role="group" aria-label="Périodes">
+        <button type="button" class="period is-active" data-period="7" aria-pressed="true">7 jours</button>
+        <button type="button" class="period" data-period="10" aria-pressed="false">10 jours</button>
+        <button type="button" class="period" data-period="30" aria-pressed="false">30 jours</button>
+        <button type="button" class="period" data-period="custom" aria-pressed="false">Personnalisé</button>
+      </div>
+      <div class="custom-range" id="custom-range" hidden>
+        <label>Du <input type="date" id="start-date"></label>
+        <label>Au <input type="date" id="end-date"></label>
+        <button type="button" id="apply-range" class="apply">Appliquer</button>
+      </div>
+    </section>
+
+    <section class="hero card" aria-labelledby="hero-title">
+      <div class="hero-head">
+        <div>
+          <p class="label" id="hero-title">Fiabilité du projet</p>
+          <p class="score"><span id="score-value">91</span><span class="score-max">/100</span></p>
+          <p class="delta" id="score-delta">+2,4 pts vs période précédente</p>
+        </div>
+        <div class="hero-meta">
+          <span class="pill" id="period-label">7 derniers jours</span>
+          <span class="muted" id="updated-label">Mis à jour à 14:32</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap" id="chart-wrap">
+        <canvas id="mountain" aria-label="Graphique en montagne 3D représentant la fiabilité et l'activité" role="img"></canvas>
+        <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+      </div>
+
+      <div class="chart-footer">
+        <div class="legend" aria-hidden="true">
+          <span>Faible</span>
+          <span class="legend-bar"></span>
+          <span>Élevé</span>
+        </div>
+        <p class="chart-note">Sommet central = fiabilité · crêtes = activité</p>
+      </div>
+
+      <details class="data-fallback">
+        <summary>Voir les données de la période</summary>
+        <div class="table-wrap">
+          <table>
+            <caption class="sr-only">Synthèse de la période</caption>
+            <thead>
+              <tr><th scope="col">Indicateur</th><th scope="col">Valeur</th></tr>
+            </thead>
+            <tbody id="fallback-body"></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <section class="metrics" aria-label="Indicateurs clés">
+      <article class="metric card">
+        <p class="metric-label">Visites</p>
+        <p class="metric-value" id="metric-visits">1 842</p>
+        <p class="metric-delta up" id="delta-visits">+12,4 %</p>
+      </article>
+      <article class="metric card">
+        <p class="metric-label">Clics</p>
+        <p class="metric-value" id="metric-clicks">3 271</p>
+        <p class="metric-delta up" id="delta-clicks">+8,1 %</p>
+      </article>
+      <article class="metric card">
+        <p class="metric-label">Formulaires envoyés</p>
+        <p class="metric-value" id="metric-forms">96</p>
+        <p class="metric-delta up" id="delta-forms">+4,2 %</p>
+      </article>
+      <article class="metric card">
+        <p class="metric-label">Recherches internes</p>
+        <p class="metric-value" id="metric-searches">412</p>
+        <p class="metric-delta down" id="delta-searches">−2,3 %</p>
+      </article>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Détails">
+      <button type="button" class="tab is-active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Vue d'ensemble</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-clicks" id="tab-clicks" data-tab="clicks" tabindex="-1">Clics</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-forms" id="tab-forms" data-tab="forms" tabindex="-1">Formulaires</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-searches" id="tab-searches" data-tab="searches" tabindex="-1">Recherches</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-gsc" id="tab-gsc" data-tab="gsc" tabindex="-1">GSC</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-reliability" id="tab-reliability" data-tab="reliability" tabindex="-1">Fiabilité</button>
+    </nav>
+
+    <section class="tab-panel card is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+      <div class="section-head">
+        <div>
+          <h2>Vue d'ensemble</h2>
+          <p class="muted">Synthèse de la période sélectionnée.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <h3>Top clics</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th scope="col">Élément</th><th scope="col">Type</th><th scope="col" class="num">Clics</th></tr>
+              </thead>
+              <tbody id="top-clicks-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h3>Alertes récentes</h3>
+          <ul class="alerts" id="alerts-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel card" id="panel-clicks" role="tabpanel" aria-labelledby="tab-clicks" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Clics</h2>
+          <p class="muted">Liens, boutons, onglets et menus.</p>
+        </div>
+      </div>
+      <div class="chips">
+        <span class="chip">Liens <strong id="click-type-links">0</strong></span>
+        <span class="chip">Boutons <strong id="click-type-buttons">0</strong></span>
+        <span class="chip">Onglets <strong id="click-type-tabs">0</strong></span>
+        <span class="chip">Menus <strong id="click-type-menus">0</strong></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Élément</th><th scope="col">Type</th><th scope="col">Page</th><th scope="col" class="num">Clics</th></tr>
+          </thead>
+          <tbody id="clicks-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Chaque clic est rattaché à un identifiant stable, sans donnée personnelle.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-forms" role="tabpanel" aria-labelledby="tab-forms" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Formulaires</h2>
+          <p class="muted">Démarrages, envois, succès et erreurs.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Formulaire</th><th scope="col" class="num">Démarrés</th><th scope="col" class="num">Envoyés</th><th scope="col" class="num">Taux</th><th scope="col" class="num">Erreurs</th></tr>
+          </thead>
+          <tbody id="forms-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Aucune valeur saisie n'est affichée ici. Les soumissions complètes restent dans une table protégée côté serveur.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-searches" role="tabpanel" aria-labelledby="tab-searches" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Recherches internes</h2>
+          <p class="muted">Recherches effectuées sur Keffstation — temps réel.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Requête</th><th scope="col" class="num">Résultats</th><th scope="col" class="num">Clics</th><th scope="col" class="num">Zéro résultat</th></tr>
+          </thead>
+          <tbody id="searches-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Ces données sont séparées des requêtes Google Search Console.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-gsc" role="tabpanel" aria-labelledby="tab-gsc" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Google Search Console</h2>
+          <p class="muted">Données Google, distinctes des recherches internes.</p>
+        </div>
+        <span class="badge badge-delayed">Différé 2–3 jours</span>
+      </div>
+      <div class="gsc-metrics">
+        <div class="mini-card"><span>Clics</span><strong id="gsc-clicks">1 280</strong></div>
+        <div class="mini-card"><span>Impressions</span><strong id="gsc-impressions">48 200</strong></div>
+        <div class="mini-card"><span>CTR</span><strong id="gsc-ctr">2,65 %</strong></div>
+        <div class="mini-card"><span>Position</span><strong id="gsc-position">12,4</strong></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Requête Google</th><th scope="col" class="num">Clics</th><th scope="col" class="num">Impressions</th><th scope="col" class="num">CTR</th><th scope="col" class="num">Position</th></tr>
+          </thead>
+          <tbody id="gsc-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Google ne fournit pas ces données en temps réel et masque certaines requêtes. Ne pas les additionner aux recherches internes.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-reliability" role="tabpanel" aria-labelledby="tab-reliability" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Fiabilité</h2>
+          <p class="muted">Composantes du score affiché au sommet de la montagne.</p>
+        </div>
+        <span class="badge badge-score" id="rel-score-badge">91/100</span>
+      </div>
+      <div class="reliability-list">
+        <div class="rel-row">
+          <div class="rel-label"><span>Disponibilité</span><span id="rel-uptime-value">99,9 %</span></div>
+          <div class="bar"><span id="rel-uptime-bar" style="width:99.9%"></span></div>
+          <p class="rel-weight">Poids 30 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Succès formulaires</span><span id="rel-form-value">85 %</span></div>
+          <div class="bar"><span id="rel-form-bar" style="width:85%"></span></div>
+          <p class="rel-weight">Poids 20 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Succès paiements</span><span id="rel-payment-value">90 %</span></div>
+          <div class="bar"><span id="rel-payment-bar" style="width:90%"></span></div>
+          <p class="rel-weight">Poids 20 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Qualité technique</span><span id="rel-error-value">93 %</span></div>
+          <div class="bar"><span id="rel-error-bar" style="width:93%"></span></div>
+          <p class="rel-weight">Poids 15 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Fraîcheur des données</span><span id="rel-fresh-value">80 %</span></div>
+          <div class="bar"><span id="rel-fresh-bar" style="width:80%"></span></div>
+          <p class="rel-weight">Poids 15 %</p>
+        </div>
+      </div>
+      <div class="sandbox-note">
+        <strong>PayPal Sandbox</strong>
+        <p>Les tests de refus de carte se font uniquement en Sandbox. Aucune commande réelle n'est créée.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Données en temps réel · Source : PWA Keffstation · Aucune donnée personnelle</p>
+    </footer>
+
+    <button type="button" class="reload-fab" id="btn-reload" aria-label="Actualiser les données" title="Actualiser">↻</button>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
+

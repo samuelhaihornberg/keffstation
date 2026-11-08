@@ -1,393 +1,276 @@
 <!doctype html>
 <html lang="fr">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KiffStation Admin — Leads & Graphique 3D</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#070816;
-    --panel:#0f1226;
-    --text:#e8eef7;
-    --muted:#8a92b8;
-    --acid:#d8ff3e;
-    --green:#27d17f;
-    --danger:#ff4d4d;
-    --border:rgba(255,255,255,.08);
-  }
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;min-height:100vh}
-  a{color:var(--acid);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .container{max-width:1300px;margin:0 auto;padding:20px}
-  header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-  header h1{font-size:1.35rem;letter-spacing:.5px;text-transform:uppercase}
-  header .sub{color:var(--muted);font-size:.9rem}
-  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer;font-size:.85rem}
-  .btn:hover{border-color:var(--acid)}
-  .btn.primary{background:var(--green);color:#05101a;border:none}
-  .btn.danger{border-color:rgba(255,77,77,.35);color:var(--danger)}
-  .btn svg{width:14px;height:14px}
-  .fab{position:fixed;bottom:24px;right:24px;z-index:60;background:var(--green);color:#05101a;border:none;border-radius:50px;padding:10px 18px;box-shadow:0 4px 16px rgba(0,0,0,.4);cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px;font-size:.9rem}
-  .fab:hover{background:#3ee08a}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
-  .stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
-  .stat .v{font-size:1.75rem;font-weight:800;color:var(--green)}
-  .stat .l{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
-  .stat .v.red{color:var(--danger)}
-  .stat .v.acid{color:var(--acid)}
-  .section{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;overflow:auto}
-  .section-title{font-size:1rem;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-  table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.15);border-radius:8px;overflow:hidden;font-size:.85rem}
-  th{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;background:rgba(0,0,0,.25)}
-  td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
-  tr:last-child td{border-bottom:none}
-  tr:hover{background:rgba(255,255,255,.03)}
-  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;font-weight:700;border:1px solid}
-  .badge.nouveau{background:rgba(216,255,62,.15);color:var(--acid);border-color:rgba(216,255,62,.35)}
-  .badge.contacte{background:rgba(39,209,127,.15);color:var(--green);border-color:rgba(39,209,127,.35)}
-  .badge.converti{background:rgba(99,102,241,.15);color:#6366f1;border-color:rgba(99,102,241,.35)}
-  .badge.perdu{background:rgba(255,77,77,.15);color:var(--danger);border-color:rgba(255,77,77,.35)}
-  .lead-ref{font-weight:700;color:var(--acid);letter-spacing:.2px}
-  .date{color:var(--muted);font-size:.8rem}
-  .empty{text-align:center;padding:40px;color:var(--muted)}
-  .chart-wrap{position:relative;height:340px;border-radius:10px;background:#0a0c1a;border:1px solid var(--border);overflow:hidden}
-  #canvas3d{width:100%;height:100%;display:block}
-  .chart-legend{display:flex;gap:14px;margin-top:10px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
-  .legend-item{display:flex;align-items:center;gap:6px}
-  .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-  form.section{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:end}
-  input,select,textarea{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:#050610;color:var(--text)}
-  input:focus{outline:none;border-color:var(--acid)}
-  .row-full{grid-column:1/-1}
-  .csv-wrap{margin-top:10px}
-  .csv-btn{font-size:.8rem;padding:6px 10px}
-  .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111827;border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--green);color:#fff;padding:10px 16px;border-radius:8px;z-index:70;font-size:.85rem;box-shadow:0 8px 24px rgba(0,0,0,.4);display:none}
-  .toast.error{border-left-color:var(--danger)}
-  nav.top{margin-bottom:16px}
-  nav.top a{margin-right:16px;color:var(--acid);font-weight:600}
-  .footer{color:var(--muted);font-size:.75rem;padding:20px 0;border-top:1px solid var(--border);text-align:center}
-  @media (max-width:640px){.container{padding:12px}table{font-size:.75rem}th,td{padding:8px 10px}}
-</style>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Keffstation Admin — Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-<nav class="top">
-  <a href="../">← Accueil KeffStation</a>
-  <a href="../kifftech/admin-caisse.html">Caisse KiffTech</a>
-  <a href="#form">+ Ajouter un lead</a>
-</nav>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">K</div>
+        <div>
+          <p class="eyebrow">Keffstation</p>
+          <h1>Administration</h1>
+        </div>
+      </div>
+      <span class="badge badge-private">Privé</span>
+    </header>
 
-<div class="container">
-  <header>
-    <div>
-      <h1>📊 KiffStation Admin</h1>
-      <div class="sub">Tableau de leads — données réelles saisies par l’utilisateur · Graphique montagne 3D</div>
+    <div class="notice" role="note">
+      <strong>Données en temps réel.</strong> Source : PWA Keffstation · Aucune donnée personnelle.
     </div>
-    <div style="display:flex;gap:8px">
-      <a href="#" class="btn secondary" onclick="location.reload()" title="Actualiser">🔄 Refresh</a>
-      <a href="#export" class="btn secondary" onclick="exporterCSV()">⬇️ CSV</a>
-      <a href="#reset" class="btn danger" onclick="effacerTous()">🗑️ Tout effacer</a>
-    </div>
-  </header>
 
-  <div class="grid">
-    <div class="stat"><div class="v" id="stat-nb">0</div><div class="l">Leads enregistrés</div></div>
-    <div class="stat"><div class="v acid" id="stat-nouveau">0</div><div class="l">Statut Nouveau</div></div>
-    <div class="stat"><div class="v red" id="stat-perdu">0</div><div class="l">Statut Perdu</div></div>
-    <div class="stat"><div class="v" id="stat-converti">0</div><div class="l">Taux converti</div></div>
+    <section class="period-bar" aria-label="Sélection de la période">
+      <div class="period-buttons" role="group" aria-label="Périodes">
+        <button type="button" class="period is-active" data-period="7" aria-pressed="true">7 jours</button>
+        <button type="button" class="period" data-period="10" aria-pressed="false">10 jours</button>
+        <button type="button" class="period" data-period="30" aria-pressed="false">30 jours</button>
+        <button type="button" class="period" data-period="custom" aria-pressed="false">Personnalisé</button>
+      </div>
+      <div class="custom-range" id="custom-range" hidden>
+        <label>Du <input type="date" id="start-date"></label>
+        <label>Au <input type="date" id="end-date"></label>
+        <button type="button" id="apply-range" class="apply">Appliquer</button>
+      </div>
+    </section>
+
+    <section class="hero card" aria-labelledby="hero-title">
+      <div class="hero-head">
+        <div>
+          <p class="label" id="hero-title">Fiabilité du projet</p>
+          <p class="score"><span id="score-value">91</span><span class="score-max">/100</span></p>
+          <p class="delta" id="score-delta">+2,4 pts vs période précédente</p>
+        </div>
+        <div class="hero-meta">
+          <span class="pill" id="period-label">7 derniers jours</span>
+          <span class="muted" id="updated-label">Mis à jour à 14:32</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap" id="chart-wrap">
+        <canvas id="mountain" aria-label="Graphique en montagne 3D représentant la fiabilité et l'activité" role="img"></canvas>
+        <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+      </div>
+
+      <div class="chart-footer">
+        <div class="legend" aria-hidden="true">
+          <span>Faible</span>
+          <span class="legend-bar"></span>
+          <span>Élevé</span>
+        </div>
+        <p class="chart-note">Sommet central = fiabilité · crêtes = activité</p>
+      </div>
+
+      <details class="data-fallback">
+        <summary>Voir les données de la période</summary>
+        <div class="table-wrap">
+          <table>
+            <caption class="sr-only">Synthèse de la période</caption>
+            <thead>
+              <tr><th scope="col">Indicateur</th><th scope="col">Valeur</th></tr>
+            </thead>
+            <tbody id="fallback-body"></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <section class="metrics" aria-label="Indicateurs clés">
+      <article class="metric card">
+        <p class="metric-label">Visites</p>
+        <p class="metric-value" id="metric-visits">1 842</p>
+        <p class="metric-delta up" id="delta-visits">+12,4 %</p>
+      </article>
+      <article class="metric card">
+        <p class="metric-label">Clics</p>
+        <p class="metric-value" id="metric-clicks">3 271</p>
+        <p class="metric-delta up" id="delta-clicks">+8,1 %</p>
+      </article>
+      <article class="metric card">
+        <p class="metric-label">Formulaires envoyés</p>
+        <p class="metric-value" id="metric-forms">96</p>
+        <p class="metric-delta up" id="delta-forms">+4,2 %</p>
+      </article>
+      <article class="metric card">
+        <p class="metric-label">Recherches internes</p>
+        <p class="metric-value" id="metric-searches">412</p>
+        <p class="metric-delta down" id="delta-searches">−2,3 %</p>
+      </article>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Détails">
+      <button type="button" class="tab is-active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Vue d'ensemble</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-clicks" id="tab-clicks" data-tab="clicks" tabindex="-1">Clics</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-forms" id="tab-forms" data-tab="forms" tabindex="-1">Formulaires</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-searches" id="tab-searches" data-tab="searches" tabindex="-1">Recherches</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-gsc" id="tab-gsc" data-tab="gsc" tabindex="-1">GSC</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="panel-reliability" id="tab-reliability" data-tab="reliability" tabindex="-1">Fiabilité</button>
+    </nav>
+
+    <section class="tab-panel card is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+      <div class="section-head">
+        <div>
+          <h2>Vue d'ensemble</h2>
+          <p class="muted">Synthèse de la période sélectionnée.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <h3>Top clics</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th scope="col">Élément</th><th scope="col">Type</th><th scope="col" class="num">Clics</th></tr>
+              </thead>
+              <tbody id="top-clicks-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h3>Alertes récentes</h3>
+          <ul class="alerts" id="alerts-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel card" id="panel-clicks" role="tabpanel" aria-labelledby="tab-clicks" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Clics</h2>
+          <p class="muted">Liens, boutons, onglets et menus.</p>
+        </div>
+      </div>
+      <div class="chips">
+        <span class="chip">Liens <strong id="click-type-links">0</strong></span>
+        <span class="chip">Boutons <strong id="click-type-buttons">0</strong></span>
+        <span class="chip">Onglets <strong id="click-type-tabs">0</strong></span>
+        <span class="chip">Menus <strong id="click-type-menus">0</strong></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Élément</th><th scope="col">Type</th><th scope="col">Page</th><th scope="col" class="num">Clics</th></tr>
+          </thead>
+          <tbody id="clicks-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Chaque clic est rattaché à un identifiant stable, sans donnée personnelle.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-forms" role="tabpanel" aria-labelledby="tab-forms" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Formulaires</h2>
+          <p class="muted">Démarrages, envois, succès et erreurs.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Formulaire</th><th scope="col" class="num">Démarrés</th><th scope="col" class="num">Envoyés</th><th scope="col" class="num">Taux</th><th scope="col" class="num">Erreurs</th></tr>
+          </thead>
+          <tbody id="forms-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Aucune valeur saisie n'est affichée ici. Les soumissions complètes restent dans une table protégée côté serveur.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-searches" role="tabpanel" aria-labelledby="tab-searches" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Recherches internes</h2>
+          <p class="muted">Recherches effectuées sur Keffstation — temps réel.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Requête</th><th scope="col" class="num">Résultats</th><th scope="col" class="num">Clics</th><th scope="col" class="num">Zéro résultat</th></tr>
+          </thead>
+          <tbody id="searches-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Ces données sont séparées des requêtes Google Search Console.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-gsc" role="tabpanel" aria-labelledby="tab-gsc" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Google Search Console</h2>
+          <p class="muted">Données Google, distinctes des recherches internes.</p>
+        </div>
+        <span class="badge badge-delayed">Différé 2–3 jours</span>
+      </div>
+      <div class="gsc-metrics">
+        <div class="mini-card"><span>Clics</span><strong id="gsc-clicks">1 280</strong></div>
+        <div class="mini-card"><span>Impressions</span><strong id="gsc-impressions">48 200</strong></div>
+        <div class="mini-card"><span>CTR</span><strong id="gsc-ctr">2,65 %</strong></div>
+        <div class="mini-card"><span>Position</span><strong id="gsc-position">12,4</strong></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Requête Google</th><th scope="col" class="num">Clics</th><th scope="col" class="num">Impressions</th><th scope="col" class="num">CTR</th><th scope="col" class="num">Position</th></tr>
+          </thead>
+          <tbody id="gsc-table-body"></tbody>
+        </table>
+      </div>
+      <p class="note">Google ne fournit pas ces données en temps réel et masque certaines requêtes. Ne pas les additionner aux recherches internes.</p>
+    </section>
+
+    <section class="tab-panel card" id="panel-reliability" role="tabpanel" aria-labelledby="tab-reliability" hidden>
+      <div class="section-head">
+        <div>
+          <h2>Fiabilité</h2>
+          <p class="muted">Composantes du score affiché au sommet de la montagne.</p>
+        </div>
+        <span class="badge badge-score" id="rel-score-badge">91/100</span>
+      </div>
+      <div class="reliability-list">
+        <div class="rel-row">
+          <div class="rel-label"><span>Disponibilité</span><span id="rel-uptime-value">99,9 %</span></div>
+          <div class="bar"><span id="rel-uptime-bar" style="width:99.9%"></span></div>
+          <p class="rel-weight">Poids 30 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Succès formulaires</span><span id="rel-form-value">85 %</span></div>
+          <div class="bar"><span id="rel-form-bar" style="width:85%"></span></div>
+          <p class="rel-weight">Poids 20 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Succès paiements</span><span id="rel-payment-value">90 %</span></div>
+          <div class="bar"><span id="rel-payment-bar" style="width:90%"></span></div>
+          <p class="rel-weight">Poids 20 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Qualité technique</span><span id="rel-error-value">93 %</span></div>
+          <div class="bar"><span id="rel-error-bar" style="width:93%"></span></div>
+          <p class="rel-weight">Poids 15 %</p>
+        </div>
+        <div class="rel-row">
+          <div class="rel-label"><span>Fraîcheur des données</span><span id="rel-fresh-value">80 %</span></div>
+          <div class="bar"><span id="rel-fresh-bar" style="width:80%"></span></div>
+          <p class="rel-weight">Poids 15 %</p>
+        </div>
+      </div>
+      <div class="sandbox-note">
+        <strong>PayPal Sandbox</strong>
+        <p>Les tests de refus de carte se font uniquement en Sandbox. Aucune commande réelle n'est créée.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Données en temps réel · Source : PWA Keffstation · Aucune donnée personnelle</p>
+    </footer>
+
+    <button type="button" class="reload-fab" id="btn-reload" aria-label="Actualiser les données" title="Actualiser">↻</button>
   </div>
-
-  <div class="section">
-    <div class="section-title">🏔 Graphique montagne 3D (données réelles)</div>
-    <div class="chart-wrap"><canvas id="canvas3d"></canvas></div>
-    <div class="chart-legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#d8ff3e"></span> Pics de leads</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#27d17f"></span> Surface terrain</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#6366f1"></span> Nuage points</div>
-    </div>
-    <p style="color:var(--muted);font-size:.8rem;margin-top:8px">Le relief 3D se génère à partir du nombre de leads enregistrés. Chaque lead ajoute un pic au paysage.</p>
-  </div>
-
-  <div class="section" id="form">
-    <div class="section-title">➕ Ajouter un lead (donnée réelle)</div>
-    <form id="lead-form" class="section" onsubmit="return ajouterLead(event)">
-      <input type="text" id="f-nom" placeholder="Nom complet" required>
-      <input type="email" id="f-email" placeholder="Email" required>
-      <input type="tel" id="f-tel" placeholder="Téléphone" required>
-      <select id="f-source"><option value="site">Site web</option><option value="reseaux">Réseaux sociaux</option><option value="pub">Publicité</option><option value="bouche-oreille">Bouche à oreille</option><option direct="direct">Direct</option></select>
-      <select id="f-statut"><option value="nouveau">Nouveau</option><option value="contacte">Contacté</option><option value="converti">Converti</option><option value="perdu">Perdu</option></select>
-      <textarea id="f-notes" class="row-full" rows="2" placeholder="Notes (facultatif)"></textarea>
-      <button class="btn primary" type="submit">💾 Enregistrer le lead</button>
-    </form>
-  </div>
-
-  <div class="section">
-    <div class="section-title">📋 Tableau des leads</div>
-    <div id="empty-leads" class="empty" style="display:none">Aucun lead enregistré pour le moment. Ajoutez votre premier lead ci-dessus.</div>
-    <table id="table-leads">
-      <thead>
-        <tr>
-          <th style="width:130px">Référence</th>
-          <th>Nom</th>
-          <th style="width:180px">Email</th>
-          <th style="width:140px">Téléphone</th>
-          <th style="width:120px">Source</th>
-          <th style="width:100px">Statut</th>
-          <th style="width:150px">Date</th>
-          <th style="width:130px">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tbody-leads"></tbody>
-    </table>
-  </div>
-
-  <div class="csv-wrap" id="export">
-    <a class="btn csv-btn" id="btn-csv" download="kiffstation-leads.csv">Exporter les leads en CSV</a>
-  </div>
-
-  <div class="footer">KiffStation Admin · Données stockées localement (localStorage) · Aucune donnée n’est envoyée à un serveur tiers</div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-<script>
-// ============ KiffStation Admin — Données réelles ============
-const LEADS_KEY='kiffstation.leads.v1';
-let leads=[];
-
-const $=s=>document.querySelector(s);
-const $$=s=>Array.from(document.querySelectorAll(s));
-
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function fmtDate(iso){if(!iso)return '-';const d=new Date(iso);return d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
-
-function loadLeads(){
-  try{
-    const raw=localStorage.getItem(LEADS_KEY);
-    if(!raw){leads=[];return true;}
-    const arr=JSON.parse(raw);
-    leads=Array.isArray(arr)?arr:[];
-    return true;
-  }catch(e){console.warn('[Admin] lecture leads impossible',e);leads=[];return false;}
-}
-function saveLeads(){localStorage.setItem(LEADS_KEY,JSON.stringify(leads));}
-
-function nouveauRef(){
-  const d=new Date(),p=n=>String(n).padStart(2,'0');
-  return 'LEAD-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-}
-
-function ajouterLead(e){
-  e.preventDefault();
-  const nom=$('#f-nom').value.trim();
-  const email=$('#f-email').value.trim();
-  const tel=$('#f-tel').value.trim();
-  const source=$('#f-source').value;
-  const statut=$('#f-statut').value;
-  const notes=$('#f-notes').value.trim();
-  if(!nom||!email||!tel){afficherToast('Remplissez nom, email et téléphone','error');return false;}
-  const lead={ref:nouveauRef(),nom,email,tel,source,statut,notes,date:new Date().toISOString()};
-  leads.unshift(lead);
-  saveLeads();
-  $('#lead-form').reset();
-  render();
-  afficherToast('Lead enregistré : '+lead.ref);
-  return false;
-}
-
-function supprimerLead(ref){
-  if(!confirm('Supprimer ce lead ?'))return;
-  leads=leads.filter(l=>l.ref!==ref);
-  saveLeads();
-  render();
-  afficherToast('Lead supprimé');
-}
-
-function effacerTous(){
-  if(leads.length===0){afficherToast('Rien à effacer');return;}
-  if(!confirm('Effacer tous les leads ? Irréversible.'))return;
-  localStorage.removeItem(LEADS_KEY);
-  leads=[];
-  render();
-  afficherToast('Tous les leads effacés');
-}
-
-function render(){
-  const tbody=$('#tbody-leads');
-  const empty=$('#empty-leads');
-  const tableau=$('#table-leads');
-  const statNb=$('#stat-nb');
-  const statNouveau=$('#stat-nouveau');
-  const statPerdu=$('#stat-perdu');
-  const statConverti=$('#stat-converti');
-
-  const nb=leads.length;
-  const nouveau=leads.filter(l=>l.statut==='nouveau').length;
-  const perdu=leads.filter(l=>l.statut==='perdu').length;
-  const converti=leads.filter(l=>l.statut==='converti').length;
-  const taux=nb?Math.round(converti/nb*100):0;
-
-  statNb.textContent=nb;
-  statNouveau.textContent=nouveau;
-  statPerdu.textContent=perdu;
-  statConverti.textContent=taux+' %';
-
-  if(nb===0){
-    tableau.style.display='none';
-    empty.style.display='block';
-  }else{
-    empty.style.display='none';
-    tableau.style.display='table';
-    tbody.innerHTML=leads.map(l=>{
-      const badgeClass={'nouveau':'badge nouveau','contacte':'badge contacte','converti':'badge converti','perdu':'badge perdu'}[l.statut]||'badge';
-      return `<tr>
-        <td><span class="lead-ref">${esc(l.ref)}</span></td>
-        <td><span style="color:var(--text)">${esc(l.nom)}</span>${l.notes?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+esc(l.notes)+'</div>':''}</td>
-        <td><a href="mailto:${esc(l.email)}" style="color:var(--muted)">${esc(l.email)}</a></td>
-        <td><a href="tel:${esc(l.tel)}" style="color:var(--muted)">${esc(l.tel)}</a></td>
-        <td><span style="color:var(--muted);font-size:.8rem">${esc(l.source)}</span></td>
-        <td><span class="${badgeClass}">${esc(l.statut)}</span></td>
-        <td><span class="date">${fmtDate(l.date)}</span></td>
-        <td><button class="btn danger" style="padding:4px 8px;font-size:.75rem" onclick="supprimerLead('${esc(l.ref)}')">🗑️</button></td>
-      </tr>`;
-    }).join('');
-  }
-  majBoutonCSV();
-  dessinerMontagne3D();
-}
-
-function majBoutonCSV(){
-  const btn=$('#btn-csv');
-  if(leads.length===0){btn.style.display='none';return;}
-  btn.style.display='inline-flex';
-  const csv=['ref,nom,email,tel,source,statut,notes,date'].concat(leads.map(l=>[
-    l.ref,l.nom,l.email,l.tel,l.source,l.statut,l.notes,l.date
-  ].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(','))).join('\n');
-  btn.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-}
-
-function exporterCSV(){
-  if(leads.length===0){afficherToast('Aucun lead à exporter','error');return;}
-  $('#btn-csv').click();
-  afficherToast('Export CSV lancé');
-}
-
-function afficherToast(msg,type='info'){
-  const t=$('#toast');
-  t.textContent=msg;
-  t.style.display='block';
-  if(type==='error'){t.style.borderLeftColor=varDanger();t.style.background='#2a1a1a';}
-  else{t.style.borderLeftColor='#27d17f';t.style.background='#111827';}
-  setTimeout(()=>t.style.display='none',2500);
-}
-function varDanger(){return '#ff4d4d';}
-
-// ============ Graphique montagne 3D (Three.js) ============
-let scene3d,camera3d,renderer3d,mesh3d,particles3d;
-function dessinerMontagne3D(){
-  const wrap=$('.chart-wrap');
-  const canvas=$('#canvas3d');
-  if(!wrap||!canvas)return;
-  if(!scene3d){
-    scene3d=new THREE.Scene();
-    scene3d.fog=new THREE.FogExp2(0x070816,0.012);
-    camera3d=new THREE.PerspectiveCamera(55,wrap.clientWidth/wrap.clientHeight,0.1,100);
-    camera3d.position.set(8,6,10);
-    renderer3d=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
-    renderer3d.setSize(wrap.clientWidth,wrap.clientHeight);
-    renderer3d.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-    const light=new THREE.DirectionalLight(0xffffff,0.8);light.position.set(5,10,5);scene3d.add(light);
-    const light2=new THREE.AmbientLight(0x222244,0.5);scene3d.add(light2);
-    // grille au sol
-    const grid=new THREE.GridHelper(40,40,0x1a1d3a,0x0f1226);scene3d.add(grid);
-  }
-  // supprimer ancien relief
-  if(mesh3d){scene3d.remove(mesh3d);mesh3d.geometry.dispose();mesh3d.material.dispose();}
-  if(particles3d){scene3d.remove(particles3d);particles3d.geometry.dispose();particles3d.material.dispose();}
-
-  const size=41;
-  const data=new Float32Array(size*size);
-  const cx=size/2,cy=size/2;
-  // générer relief à partir des leads : plus de leads = plus de pics
-  const seed=leads.length;
-  for(let i=0;i<size;i++){
-    for(let j=0;j<size;j++){
-      let h=0;
-      // bruit simple de montagne
-      const x=(i-cx)/6,y=(j-cy)/6;
-      h+=Math.sin(x)*Math.cos(y)*1.2;
-      h+=Math.sin(x*3+y*2)*0.6;
-      h+=Math.sin(x*7)*Math.cos(y*5)*0.4;
-      // pics liés aux leads
-      for(let k=0;k<Math.min(seed,12);k++){
-        const px=(Math.sin(k*2.3)*5)+cx,py=(Math.cos(k*1.7)*5)+cy;
-        const d=Math.sqrt((i-px)*(i-px)+(j-py)*(j-py));
-        h+=Math.exp(-d*d/8)*2.2;
-      }
-      data[i*size+j]=Math.max(0,h);
-    }
-  }
-  const geometry=new THREE.PlaneGeometry(40,40,size-1,size-1);
-  geometry.rotateX(-Math.PI/2);
-  const pos=geometry.attributes.position;
-  for(let i=0;i<size;i++){
-    for(let j=0;j<size;j++){
-      const idx=i*size+j;
-      pos.setY(idx,data[idx]*1.4);
-    }
-  }
-  pos.needsUpdate=true;
-  geometry.computeVertexNormals();
-  const material=new THREE.MeshStandardMaterial({color:0x1a1d3a,emissive:0x27d17f,emissiveIntensity:0.3,flatShading:true,side:THREE.DoubleSide,wireframe:false});
-  mesh3d=new THREE.Mesh(geometry,material);
-  scene3d.add(mesh3d);
-
-  // nuage de points au-dessus des pics
-  const pts=[];
-  for(let i=0;i<size;i++){
-    for(let j=0;j<size;j++){
-      const h=data[i*size+j];
-      if(h>1.2){
-        pts.push((i-cx)/size*40-20, h*1.4+1, (j-cy)/size*40-20);
-      }
-    }
-  }
-  const ptsGeo=new THREE.BufferGeometry();
-  ptsGeo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
-  const ptsMat=new THREE.PointsMaterial({color:0x6366f1,size:0.12,transparent:true,opacity:0.8});
-  particles3d=new THREE.Points(ptsGeo,ptsMat);
-  scene3d.add(particles3d);
-
-  animer3D();
-}
-function animer3D(){
-  if(!scene3d)return;
-  const t=Date.now()*0.001;
-  if(mesh3d){
-    mesh3d.rotation.z=Math.sin(t*0.2)*0.02;
-    mesh3d.material.emissiveIntensity=0.3+Math.sin(t)*0.15;
-  }
-  camera3d.lookAt(0,0,0);
-  renderer3d.render(scene3d,camera3d);
-  requestAnimationFrame(animer3D);
-}
-window.addEventListener('resize',()=>{
-  const wrap=$('.chart-wrap');
-  if(!renderer3d||!wrap)return;
-  camera3d.aspect=wrap.clientWidth/wrap.clientHeight;
-  camera3d.updateProjectionMatrix();
-  renderer3d.setSize(wrap.clientWidth,wrap.clientHeight);
-});
-
-// ============ Initialisation ============
-const ok=loadLeads();
-if(!ok){
-  const err=document.createElement('div');
-  err.style.cssText='padding:16px;background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.25);color:#ff6b6b;border-radius:8px;margin-top:12px;text-align:center';
-  err.innerHTML='<b>⚠ Échec de chargement des données (localStorage indisponible).</b>';
-  document.querySelector('.container').appendChild(err);
-}
-render();
-</script>
+  <script src="app.js"></script>
 </body>
 </html>
+
