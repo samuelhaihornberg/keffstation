@@ -252,19 +252,19 @@
 
         <!-- Cercle EXTÉRIEUR (grand) : Apps IA & Codes -->
         <div class="ring-outer" aria-label="IA et codes informatiques">
-          <div class="app-ring-button" style="--a: 0deg;" data-url="./viartificial-labs/" data-desc="Moteurs IA, assistants et expérimentations NLP/LLM." onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
+          <div class="app-ring-button app-widget" style="--a: 0deg;" data-page="0" data-url="./viartificial-labs/" data-desc="Moteurs IA, assistants et expérimentations NLP/LLM." onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
             <span class="app-ring-icon">🧠</span>
             <span class="app-ring-title" data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</span>
           </div>
-          <div class="app-ring-button" style="--a: 90deg;" data-url="./cos-editor/" data-desc="Éditeur de syntaxe COS, analyse locale, export JSON." onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
+          <div class="app-ring-button app-widget" style="--a: 90deg;" data-page="1" data-url="./cos-editor/" data-desc="Éditeur de syntaxe COS, analyse locale, export JSON." onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
             <span class="app-ring-icon">🧩</span>
             <span class="app-ring-title" data-i18n="./index.html_cos_editor_68">cos Editor</span>
           </div>
-          <div class="app-ring-button" style="--a: 180deg;" data-url="./linguistic-motors/" data-desc="Moteurs linguistiques NLP/LLM local." onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
+          <div class="app-ring-button app-widget" style="--a: 180deg;" data-page="2" data-url="./linguistic-motors/" data-desc="Moteurs linguistiques NLP/LLM local." onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
             <span class="app-ring-icon">🗣️</span>
             <span class="app-ring-title" data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</span>
           </div>
-          <div class="app-ring-button" style="--a: 270deg;" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" data-desc="Avis et critiques de services en ligne." onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
+          <div class="app-ring-button app-widget" style="--a: 270deg;" data-page="3" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" data-desc="Avis et critiques de services en ligne." onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
             <span class="app-ring-icon">📝</span>
             <span class="app-ring-title" data-i18n="./index.html_critiques_services_65">Critiques-Services</span>
           </div>
@@ -272,19 +272,19 @@
 
         <!-- Cercle MOYEN : Apps Utilitaires & Commerce + Logo au centre -->
         <div class="ring-middle" aria-label="Utilitaires et commerce">
-          <div class="app-ring-button" style="--a: 45deg;" data-url="./kifftech/" data-desc="Objets connectés, gadgets high-tech et accessoires électroniques." onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
+          <div class="app-ring-button app-widget" style="--a: 45deg;" data-page="4" data-url="./kifftech/" data-desc="Objets connectés, gadgets high-tech et accessoires électroniques." onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
             <span class="app-ring-icon">🤖</span>
             <span class="app-ring-title" data-i18n="./index.html_kifftech_63">KiffTech</span>
           </div>
-          <div class="app-ring-button" style="--a: 135deg;" data-url="./tricktrocjob/" data-desc="Utilitaires, scripts et outils techniques." onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
+          <div class="app-ring-button app-widget" style="--a: 135deg;" data-page="5" data-url="./tricktrocjob/" data-desc="Utilitaires, scripts et outils techniques." onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
             <span class="app-ring-icon">🔧</span>
             <span class="app-ring-title" data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</span>
           </div>
-          <div class="app-ring-button" style="--a: 225deg;" data-url="./videogames/" data-desc="Jeux et émulation." onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
+          <div class="app-ring-button app-widget" style="--a: 225deg;" data-page="6" data-url="./videogames/" data-desc="Jeux et émulation." onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
             <span class="app-ring-icon">🎮</span>
             <span class="app-ring-title" data-i18n="./index.html_videogames_67">Videogames</span>
           </div>
-          <div class="app-ring-button" style="--a: 315deg;" data-url="#" data-desc="Nouvelle application bientôt disponible." onclick="event.preventDefault(); alert('Bientôt disponible !');" aria-label="Application à venir">
+          <div class="app-ring-button app-widget" style="--a: 315deg;" data-page="6" data-url="#" data-desc="Nouvelle application bientôt disponible." onclick="event.preventDefault(); alert('Bientôt disponible !');" aria-label="Application à venir">
             <span class="app-ring-icon">✨</span>
             <span class="app-ring-title">Bientôt</span>
           </div>
@@ -310,6 +310,103 @@
 
     <!-- Orbite vide : plus de nodes qui tournent -->
     <div class="orbit" id="orbit"></div>
+  </div>
+
+  <!-- Sélecteur d'articles avec petits ronds en bas de la vitrine -->
+  <div class="article-selector" aria-label="Sélecteur d'articles par app" style="display:none;">
+    <div class="article-selector-header">
+      <h3 id="selector-title" data-i18n="selector_articles">Articles liés</h3>
+      <button id="selector-close" class="selector-close" aria-label="Fermer">✕</button>
+    </div>
+    <div class="article-pagination">
+      <span class="page-dot active" data-page="0" aria-label="Page 1"></span>
+      <span class="page-dot" data-page="1" aria-label="Page 2"></span>
+      <span class="page-dot" data-page="2" aria-label="Page 3"></span>
+      <span class="page-dot" data-page="3" aria-label="Page 4"></span>
+      <span class="page-dot" data-page="4" aria-label="Page 5"></span>
+      <span class="page-dot" data-page="5" aria-label="Page 6"></span>
+      <span class="page-dot" data-page="6" aria-label="Page 7"></span>
+    </div>
+    <div class="article-pages">
+      <!-- Page 0 : ViArtificial Labs -->
+      <div class="article-page" data-page="0">
+        <div class="article-card">
+          <div class="article-icon">🧠</div>
+          <h4 data-i18n="article_via_title">ViArtificial Labs — Moteurs IA</h4>
+          <p data-i18n="article_via_desc">SuperBots, conversation, NLP/LLM local, assistants IA.</p>
+          <button class="article-open-btn" onclick="openApp('./viartificial-labs/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+        </div>
+        <div class="article-card">
+          <div class="article-icon">💬</div>
+          <h4 data-i18n="article_conv_title">Conversation IA</h4>
+          <p data-i18n="article_conv_desc">Moteurs de conversation directe et assistants virtuels.</p>
+          <button class="article-open-btn" onclick="openApp('./viartificial-labs/conversation.html')" data-i18n="btn_open_app">Ouvrir →</button>
+        </div>
+      </div>
+      <!-- Page 1 : cos Editor -->
+      <div class="article-page" data-page="1" style="display:none;">
+        <div class="article-card">
+          <div class="article-icon">🧩</div>
+          <h4 data-i18n="article_cos_title">cos Editor — Éditeur de syntaxe COS</h4>
+          <p data-i18n="article_cos_desc">Analyse locale, aperçu SPA, tutoriels et export JSON.</p>
+          <button class="article-open-btn" onclick="openApp('./cos-editor/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+        </div>
+        <div class="article-card">
+          <div class="article-icon">📘</div>
+          <h4 data-i18n="article_cos_tuto_title">Tutoriel COS</h4>
+          <p data-i18n="article_cos_tuto_desc">Balises <cos>, <co>, <script_…> et CSS alphanumérique.</p>
+          <button class="article-open-btn" onclick="openApp('./cos-editor/')" data-i18n="btn_open_app">Ouvrir →</button>
+        </div>
+      </div>
+      <!-- Page 2 : Linguistic Motors -->
+      <div class="article-page" data-page="2" style="display:none;">
+        <div class="article-card">
+          <div class="article-icon">🗣️</div>
+          <h4 data-i18n="article_lm_title">Linguistic Motors — NLP/LLM local</h4>
+          <p data-i18n="article_lm_desc">Moteurs linguistiques expérimentaux, NLP/LLM local.</p>
+          <button class="article-open-btn" onclick="openApp('./linguistic-motors/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+        </div>
+      </div>
+      <!-- Page 3 : Critiques-Services -->
+      <div class="article-page" data-page="3" style="display:none;">
+        <div class="article-card">
+          <div class="article-icon">📝</div>
+          <h4 data-i18n="article_cs_title">Critiques-Services — Avis & critiques</h4>
+          <p data-i18n="article_cs_desc">Espace consacré aux critiques et avis sur des services en ligne.</p>
+          <button class="article-open-btn" onclick="openApp('https://samuelhaihornberg.github.io/critiques-services.com/')" data-i18n="btn_open_app">Ouvrir →</button>
+        </div>
+      </div>
+      <!-- Page 4 : KiffTech -->
+      <div class="article-page" data-page="4" style="display:none;">
+        <div class="article-card">
+          <div class="article-icon">🤖</div>
+          <h4 data-i18n="article_kt_title">KiffTech — Objets connectés & gadgets</h4>
+          <p data-i18n="article_kt_desc">Boutique et gestion d'objets connectés, gadgets high-tech.</p>
+          <button class="article-open-btn" onclick="openApp('./kifftech/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+        </div>
+      </div>
+      <!-- Page 5 : Tricktrocjob -->
+      <div class="article-page" data-page="5" style="display:none;">
+        <div class="article-card">
+          <div class="article-icon">🔧</div>
+          <h4 data-i18n="article_tt_title">Tricktrocjob — Utilitaires & outils</h4>
+          <p data-i18n="article_tt_desc">Utilitaires, scripts et outils techniques pour le dépannage.</p>
+          <button class="article-open-btn" onclick="openApp('./tricktrocjob/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+        </div>
+      </div>
+      <!-- Page 6 : Videogames -->
+      <div class="article-page" data-page="6" style="display:none;">
+        <div class="article-card">
+          <div class="article-icon">🎮</div>
+          <h4 data-i18n="article_vg_title">Videogames — Jeux & émulation</h4>
+          <p data-i18n="article_vg_desc">Jeux rétro, émulation, configurations, roms.</p>
+          <button class="article-open-btn" onclick="openApp('./videogames/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+        </div>
+      </div>
+    </div>
+    <div class="selector-footer">
+      <p class="selector-hint" data-i18n="selector_hint">Cliquez sur un article pour ouvrir l'application correspondante</p>
+    </div>
   </div>
 
   <nav class="nav" id="nav" aria-label="Navigation des applications"></nav>
@@ -349,6 +446,82 @@
   document.addEventListener('touchstart', tryPlay, { once: true, passive: true });
   document.addEventListener('click', tryPlay, { once: true });
 })();
+
+/* ===== Sélecteur d'articles — gestion des pages et ouverture des apps ===== */
+(function () {
+  var selector = document.querySelector('.article-selector');
+  if (!selector) return;
+
+  var pageDots = selector.querySelectorAll('.page-dot');
+  var pages = selector.querySelectorAll('.article-page');
+  var closeBtn = selector.querySelector('.selector-close');
+  var titleEl = selector.querySelector('#selector-title');
+
+  // Titres par page (mis à jour selon la langue)
+  var pageTitles = [
+    'ViArtificial Labs — Articles',
+    'cos Editor — Articles',
+    'Linguistic Motors — Articles',
+    'Critiques-Services — Articles',
+    'KiffTech — Articles',
+    'Tricktrocjob — Articles',
+    'Videogames — Articles'
+  ];
+
+  function showPage(index) {
+    pages.forEach(function (page, i) {
+      page.classList.toggle('active', i === index);
+      page.style.display = i === index ? 'flex' : 'none';
+    });
+    pageDots.forEach(function (dot, i) {
+      dot.classList.toggle('active', i === index);
+    });
+    if (titleEl && pageTitles[index]) {
+      titleEl.textContent = pageTitles[index];
+    }
+  }
+
+  pageDots.forEach(function (dot) {
+    dot.addEventListener('click', function () {
+      var idx = parseInt(dot.getAttribute('data-page'), 10);
+      showPage(idx);
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function () {
+      selector.style.display = 'none';
+    });
+  }
+
+  // Ouvrir le sélecteur quand on clique sur une app dans la vitrine
+  document.querySelectorAll('.app-ring-button').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var pageIndex = btn.getAttribute('data-page');
+      if (pageIndex !== null && pageIndex !== undefined) {
+        showPage(parseInt(pageIndex, 10));
+        selector.style.display = 'flex';
+      } else {
+        // Fallback : ouvrir directement l'URL
+        var url = btn.getAttribute('data-url');
+        if (url && url !== '#') {
+          window.location.href = url;
+        }
+      }
+    });
+  });
+})();
+
+/* Fonction globale pour ouvrir une app */
+window.openApp = function (url) {
+  if (!url || url === '#') {
+    alert('Cette application sera disponible bientôt.');
+    return;
+  }
+  window.location.href = url;
+};
 </script>
 
 <!-- Panneau détail application (injecté par app.js) -->

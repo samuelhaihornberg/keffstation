@@ -1943,55 +1943,75 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 72px;
-  height: 72px;
-  margin-top: -36px;
-  margin-left: -36px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid #ffd700;
-  border-radius: 14px;
+  width: 85px;
+  height: 85px;
+  margin-top: -42.5px;
+  margin-left: -42.5px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 3px solid #ffd700;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1));
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   pointer-events: auto;
   z-index: 5;
   color: #fff;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
-/* Aiguille d'horloge — ligne radiale reliant le centre à chaque app */
+.app-ring-icon {
+  font-size: 32px;
+  display: block;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px #ffd700);
+  margin-bottom: 2px;
+}
+
+.app-ring-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  width: 72px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  white-space: normal;
+}
+
+.app-ring-button:hover {
+  background: rgba(255, 215, 0, 0.3);
+  border-color: #fff200;
+  transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.4);
+  box-shadow: 0 0 35px #ffd700, 0 0 70px #ffaa00;
+  z-index: 6;
+}
+
+/* Ligne radiale plus visible */
 .app-ring-button::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  height: 100px; /* longueur de l'aiguille depuis le centre jusqu'à l'app */
+  width: 3px;
+  height: 100px;
   background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
   transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
   transform-origin: top center;
   z-index: -1;
   pointer-events: none;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
 }
 
 .app-ring-button:hover::before {
   height: 115px;
   background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
-  box-shadow: 0 0 20px rgba(255, 242, 0, 0.7);
-}
-
-.app-ring-button:hover {
-  background: rgba(255, 215, 0, 0.25);
-  border-color: #fff200;
-  transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.3);
-  box-shadow: 0 0 30px #ffd700, 0 0 60px #ffaa00;
-  z-index: 6;
+  box-shadow: 0 0 25px rgba(255, 242, 0, 0.8);
 }
 
 /* Effet widget clignotant sur les apps de l'anneau extérieur */
@@ -2028,17 +2048,17 @@ section {
 
 /* Positionnement selon le cercle d'appartenance */
 .ring-outer .app-ring-button {
-  transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(195px) rotate(calc(var(--a) * -1));
 }
 .ring-outer .app-ring-button:hover {
-  transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(195px) rotate(calc(var(--a) * -1)) scale(1.4);
 }
 
 .ring-middle .app-ring-button {
-  transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1));
 }
 .ring-middle .app-ring-button:hover {
-  transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.4);
 }
 
 .ring-inner .app-ring-button {
@@ -2054,8 +2074,30 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  height: 185px;
+  width: 3px;
+  height: 195px;
+  background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
+  transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
+  transform-origin: top center;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+.ring-outer .app-ring-button:hover::before {
+  height: 210px;
+  background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
+  box-shadow: 0 0 25px rgba(255, 242, 0, 0.8);
+}
+
+/* Lignes radiales sur le cercle moyen */
+.ring-middle .app-ring-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 100px;
   background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
   transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
   transform-origin: top center;
@@ -2064,19 +2106,11 @@ section {
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
-.ring-outer .app-ring-button:hover::before {
-  height: 200px;
+.ring-middle .app-ring-button:hover::before {
+  height: 115px;
   background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
   box-shadow: 0 0 20px rgba(255, 242, 0, 0.7);
 }
-
-/* Lignes radiales sur le cercle intérieur */
-.ring-inner .app-ring-button::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2px;
   height: 50px;
   background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
   transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
@@ -2144,6 +2178,188 @@ section {
   }
   .app-ring-button {
     transform: rotate(var(--a)) translateX(84px) rotate(calc(var(--a) * -1));
+  }
+}
+
+/* ===== Sélecteur d'articles avec petits ronds en bas de la vitrine ===== */
+.article-selector {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(90vw, 700px);
+  max-height: 60vh;
+  background: rgba(7, 8, 22, 0.95);
+  border: 3px solid #ffd700;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 170, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.article-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 2px solid rgba(255, 215, 63, 0.3);
+}
+
+.article-selector-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffd700;
+}
+
+.selector-close {
+  background: transparent;
+  border: none;
+  color: #ffd700;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.selector-close:hover {
+  background: rgba(255, 215, 63, 0.2);
+}
+
+.article-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.page-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 215, 63, 0.2);
+  border: 2px solid #ffd700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-dot:hover {
+  background: #ffd700;
+  transform: scale(1.2);
+}
+
+.page-dot.active {
+  background: #ffd700;
+  box-shadow: 0 0 12px #ffd700;
+}
+
+.article-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.article-page {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.article-page.active {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.article-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.article-card:hover {
+  background: rgba(255, 215, 63, 0.1);
+  border-color: #fff200;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 215, 63, 0.3);
+}
+
+.article-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.article-card h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #fff;
+  text-shadow: 0 0 8px #ffd700;
+}
+
+.article-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #c9d1f2;
+  line-height: 1.5;
+}
+
+.article-open-btn {
+  background: linear-gradient(135deg, #ffd700, #fff200);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 700;
+  padding: 10px 16px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+.article-open-btn:hover {
+  background: #fff200;
+  box-shadow: 0 0 20px #ffd700;
+  transform: scale(1.05);
+}
+
+.selector-footer {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 215, 63, 0.2);
+  text-align: center;
+}
+
+.selector-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #8a92b8;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .article-selector {
+    width: min(95vw, 500px);
+    bottom: 10px;
+  }
+  .article-card {
+    padding: 12px;
+  }
+  .article-card h4 {
+    font-size: 14px;
   }
 }
 
