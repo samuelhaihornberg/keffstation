@@ -900,22 +900,52 @@ body {
 }
 
 /* ============================================================================
-   En-tête vidéo — juste au-dessus de la roue orbitale
+   Hero vidéo — cadre large, titre multicolore sur fond noir, puis la roue
    ============================================================================ */
-.video-header {
+
+/* Moitié de la taille de référence de la roue (.vitrine) */
+:root { --kf-wheel-half: min(47vw, 40dvh, 320px); }
+
+/* Défilement doux vers la roue */
+html { scroll-behavior: smooth; }
+#vitrine { scroll-margin-top: clamp(8px, 2vh, 18px); }
+
+/* La page démarre en haut : le scroll révèle la roue */
+.reader {
+  justify-content: flex-start;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  width: 100%;
+  /* Hauteur calculée pour laisser apparaître ~la moitié de la roue */
+  min-height: calc(100dvh - var(--kf-wheel-half) - 1.2vh);
+  padding-bottom: clamp(10px, 2vh, 20px);
+}
+
+/* Cadre vidéo large (paysage), jamais vertical */
+.video-frame {
   position: relative;
   flex: none;
-  width: calc(100% + 24px);
-  margin-inline: -12px;
-  margin-top: calc(-1 * (env(safe-area-inset-top, 0px) + 8px));
-  aspect-ratio: 16 / 9;
-  max-height: min(44dvh, 440px);
+  width: min(96%, 1100px);
+  aspect-ratio: 16 / 7;
+  max-height: min(36dvh, 340px);
   overflow: hidden;
+  border-radius: clamp(14px, 2.4vw, 24px);
   background: #000;
+  border: 1px solid rgba(255, 210, 63, .28);
+  box-shadow:
+    0 24px 70px -30px #000,
+    0 0 46px -18px rgba(255, 210, 63, .32),
+    0 0 90px -40px rgba(255, 61, 154, .28);
   isolation: isolate;
 }
 
-.video-header-media {
+.video-frame-media {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -926,8 +956,8 @@ body {
   background: #000;
 }
 
-/* Fondu noir en bas : la vidéo se fond dans le fond #000000 de la roue */
-.video-header::after {
+/* Fondu du bas du cadre vers le noir de la page */
+.video-frame::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -936,72 +966,122 @@ body {
   background:
     linear-gradient(to top,
       #000 0%,
-      rgba(0, 0, 0, .9) 16%,
-      rgba(0, 0, 0, .48) 38%,
-      rgba(0, 0, 0, 0) 66%),
-    linear-gradient(to bottom, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, 0) 30%);
+      rgba(0, 0, 0, .72) 12%,
+      rgba(0, 0, 0, .18) 34%,
+      rgba(0, 0, 0, 0) 58%),
+    linear-gradient(to bottom, rgba(0, 0, 0, .35) 0%, rgba(0, 0, 0, 0) 26%);
 }
 
-.video-header-content {
-  position: absolute;
+/* Titre + slogan sur fond noir */
+.hero-titles {
+  position: relative;
   z-index: 2;
-  left: 50%;
-  bottom: clamp(14px, 4vw, 34px);
-  translate: -50% 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(4px, 1vw, 10px);
-  width: min(92vw, 900px);
-  padding-inline: 12px;
+  gap: clamp(6px, 1.2vh, 12px);
+  width: min(96%, 1100px);
+  padding: clamp(14px, 2.6vh, 28px) 10px 0;
   text-align: center;
-  pointer-events: none;
+  background: #000;
 }
 
-.video-header-title {
+.hero-title {
   margin: 0;
-  font-size: clamp(1.6rem, 6.6vw, 3.6rem);
+  font-size: clamp(2rem, 8.2vw, 4.6rem);
   font-weight: 900;
-  line-height: 1;
-  letter-spacing: .2em;
-  text-indent: .2em;
+  line-height: .98;
+  letter-spacing: .14em;
+  text-indent: .14em;
   text-transform: uppercase;
   color: #fff;
-  background: linear-gradient(100deg,
-    #ffffff 0%, #ffe9a6 38%, var(--kf-gold) 62%, #ff9ad0 100%);
+  background: linear-gradient(92deg,
+    #ffffff 0%,
+    #ffd23f 12%,
+    #ff3d9a 26%,
+    #8a4dff 42%,
+    #1e6bff 56%,
+    #27d17f 70%,
+    #ffffff 84%,
+    #ffd23f 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter:
-    drop-shadow(0 0 10px rgba(255, 210, 63, .55))
-    drop-shadow(0 0 26px rgba(255, 210, 63, .35))
-    drop-shadow(0 0 55px rgba(255, 61, 154, .30));
+    drop-shadow(0 0 12px rgba(255, 255, 255, .42))
+    drop-shadow(0 0 28px rgba(255, 210, 63, .32))
+    drop-shadow(0 0 58px rgba(255, 61, 154, .28));
+  animation: hero-title-flow 9s ease-in-out infinite alternate;
 }
 
-.video-header-tagline {
+@keyframes hero-title-flow {
+  from { background-position: 0% center; }
+  to   { background-position: 100% center; }
+}
+
+.hero-tagline {
   margin: 0;
-  max-width: 100%;
-  overflow: hidden;
-  font-size: clamp(.72rem, 2.4vw, 1rem);
+  font-size: clamp(.78rem, 2.6vw, 1.05rem);
   font-weight: 600;
-  letter-spacing: .12em;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: var(--kf-champagne);
-  text-shadow: 0 0 14px rgba(255, 210, 63, .45), 0 2px 14px #000;
+  line-height: 1.45;
+  letter-spacing: .05em;
+  color: #f4f6ff;
+  text-shadow: 0 0 12px rgba(30, 107, 255, .35), 0 2px 12px #000;
+  overflow-wrap: anywhere;
 }
 
-/* En-tête plus bas et plus large sur grand écran */
+/* Indicateur de scroll */
+.scroll-cue {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin-top: clamp(8px, 1.6vh, 16px);
+  padding: 6px 12px;
+  color: var(--kf-champagne);
+  text-decoration: none;
+  font-size: clamp(.58rem, 1.8vw, .7rem);
+  font-weight: 700;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  opacity: .85;
+  transition: opacity .2s, color .2s;
+}
+
+.scroll-cue:hover,
+.scroll-cue:focus-visible { opacity: 1; color: var(--kf-gold); }
+
+.scroll-cue-arrow {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 210, 63, .38);
+  font-size: 15px;
+  line-height: 1;
+  color: var(--kf-gold);
+  animation: cue-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes cue-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(5px); }
+}
+
+/* Grand écran : cadre encore plus panoramique */
 @media (min-width: 900px) {
-  .video-header {
+  .video-frame {
     aspect-ratio: 21 / 9;
-    max-height: min(38dvh, 420px);
+    max-height: min(34dvh, 320px);
   }
 }
 
-/* Sur mobile, priorité à la roue : en-tête un peu plus compact */
-@media (max-width: 560px) {
-  .video-header { max-height: min(40dvh, 320px); }
-  .video-header-content { bottom: clamp(10px, 3.6vw, 22px); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-title { animation: none; }
+  .scroll-cue-arrow { animation: none; }
 }
+
 

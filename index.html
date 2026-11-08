@@ -65,13 +65,19 @@
 </div>
 
 <main class="reader" role="region" aria-roledescription="vitrine ronde" aria-label="Vitrine des applications KeffStation">
-  <header class="video-header" aria-label="KiffStation — bienvenue">
-    <video class="video-header-media" src="./header.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
-    <div class="video-header-content">
-      <h1 class="video-header-title">KIFFSTATION</h1>
-      <p class="video-header-tagline">b.what.u.want.kW;)Nk</p>
+  <section class="hero" aria-label="KiffStation — bienvenue">
+    <div class="video-frame">
+      <video class="video-frame-media" src="./header.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
     </div>
-  </header>
+    <div class="hero-titles">
+      <h1 class="hero-title">KIFFSTATION</h1>
+      <p class="hero-tagline">Become.What.Ever.You.Want...Kw;)Nk...!</p>
+    </div>
+    <a class="scroll-cue" href="#vitrine" aria-label="Défiler vers la vitrine">
+      <span class="scroll-cue-text">Défiler</span>
+      <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+    </a>
+  </section>
 
   <div class="vitrine" id="vitrine">
     <div class="halo" aria-hidden="true"></div>
@@ -99,7 +105,7 @@
 
 <script>
 (function () {
-  var headerVideo = document.querySelector('.video-header-media');
+  var headerVideo = document.querySelector('.video-frame-media');
   if (!headerVideo) return;
   headerVideo.muted = true;
   headerVideo.defaultMuted = true;
