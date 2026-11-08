@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# =============================================================================
+# script_alphanumerotationdefonctionscommandesparams
+# =============================================================================
+# Rôle : fonctions, commandes, patterns et paramètres alphanumériques.
+# Connecté à : script_alphanumerotationdevaleursattributsdefmeta (↔️)
+# =============================================================================
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+META_SCRIPT="${SCRIPT_DIR}/script_alphanumerotationdevaleursattributsdefmeta"
+
+# -----------------------------------------------------------------------------
+# Paramètres par défaut
+# -----------------------------------------------------------------------------
+ALPHA_PARAMS_DEFAULT="azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN0123456789"
+PATTERN_DEFAULT="^[a-zA-Z0-9]+$"
+
+# -----------------------------------------------------------------------------
+# Fonctions alphanumériques
+# -----------------------------------------------------------------------------
+
+# Génère une chaîne alphanumérique aléatoire de longueur donnée
+alpha_gen() {
+    local len="${1:-16}"
+    local chars="${2:-${ALPHA_PARAMS_DEFAULT}}"
+    local out=""
+    local i
+    for ((i=0; i<len; i++)); do
+        out+="${chars:RANDOM%${#chars}:1}"
+    done
+    printf '%s' "$out"
+}
+
+# Vérifie qu'une chaîne est strictement alphanumérique selon un pattern
+alpha_is_valid() {
+    local val="${1:-}"
+    local pattern="${2:-${PATTERN_DEFAULT}}"
+    [[ "$val" =~ $pattern ]]
+}
+
+# Nettoie une chaîne en ne gardant que les caractères alphanumériques
+alpha_clean() {
+    local val="${1:-}"
+    printf '%s' "$val" | tr -cd 'a-zA-Z0-9'
+}
+
+# -----------------------------------------------------------------------------
+# Commandes disponibles
+# -----------------------------------------------------------------------------
+alpha_cmd_help() {
+    cat <<EOF
+Usage: $0 <commande> [args]
+
+Commandes :
+  gen [longueur] [chars]    Génère une chaîne alphanumérique aléatoire
+  valid <valeur> [pattern]  Vérifie si la valeur est alphanumérique
+  clean <valeur>            Garde uniquement les caractères alphanumériques
+  meta                      Appelle le script meta/valeurs/attributs connecté
+  help                      Affiche cette aide
+EOF
+}
+
+# -----------------------------------------------------------------------------
+# Point d'entrée
+# -----------------------------------------------------------------------------
+alpha_main() {
+    local cmd="${1:-help}"
+    shift || true
+
+    case "$cmd" in
+        gen)
+            alpha_gen "$@"
+            ;;
+        valid)
+            if alpha_is_valid "$@"; then
+                echo "valide"
+            else
+                echo "invalide"
+            fi
+            ;;
+        clean)
+            alpha_clean "$@"
+            ;;
+        meta)
+            if [[ -x "$META_SCRIPT" ]]; then
+                "$META_SCRIPT" "$@"
+            else
+                echo "Script meta introuvable : $META_SCRIPT" >&2
+                return 1
+            fi
+            ;;
+        help|*)
+            alpha_cmd_help
+            ;;
+    esac
+}
+
+alpha_main "$@"

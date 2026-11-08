@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+# =============================================================================
+# script_alphanumerotationdevaleursattributsdefmeta
+# =============================================================================
+# Rôle : valeurs, attributs et définitions méta.
+# Connecté à : script_alphanumerotationdefonctionscommandesparams (↔️)
+# =============================================================================
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FUNC_SCRIPT="${SCRIPT_DIR}/script_alphanumerotationdefonctionscommandesparams"
+
+# -----------------------------------------------------------------------------
+# Valeurs par défaut
+# -----------------------------------------------------------------------------
+META_VERSION="1.0.0"
+META_ENV="${META_ENV:-production}"
+META_NAMESPACE="alphanumerotation"
+
+# -----------------------------------------------------------------------------
+# Attributs méta
+# -----------------------------------------------------------------------------
+meta_get_version() {
+    printf '%s' "$META_VERSION"
+}
+
+meta_get_env() {
+    printf '%s' "$META_ENV"
+}
+
+meta_get_namespace() {
+    printf '%s' "$META_NAMESPACE"
+}
+
+# Définit un attribut méta (clé=valeur) dans un fichier de config local
+meta_set_attr() {
+    local key="${1:-}"
+    local val="${2:-}"
+    local meta_file="${SCRIPT_DIR}/.meta.env"
+
+    if [[ -z "$key" || -z "$val" ]]; then
+        echo "Usage: meta_set_attr <cle> <valeur>" >&2
+        return 1
+    fi
+
+    touch "$meta_file"
+    # Supprime l'ancienne entrée si elle existe
+    grep -v "^${key}=" "$meta_file" > "${meta_file}.tmp" 2>/dev/null || true
+    mv "${meta_file}.tmp" "$meta_file"
+    echo "${key}=${val}" >> "$meta_file"
+    echo "Attribut defini : ${key}=${val}"
+}
+
+# Liste tous les attributs méta
+meta_list_attrs() {
+    local meta_file="${SCRIPT_DIR}/.meta.env"
+    if [[ -f "$meta_file" ]]; then
+        cat "$meta_file"
+    else
+        echo "Aucun attribut meta defini."
+    fi
+}
+
+# -----------------------------------------------------------------------------
+# Définitions méta (export d'environnement)
+# -----------------------------------------------------------------------------
+meta_export_env() {
+    export META_VERSION
+    export META_ENV
+    export META_NAMESPACE
+    echo "Environnement meta exporte : ${META_NAMESPACE} / ${META_ENV} / v${META_VERSION}"
+}
+
+# -----------------------------------------------------------------------------
+# Point d'entrée
+# -----------------------------------------------------------------------------
+meta_main() {
+    local cmd="${1:-help}"
+    shift || true
+
+    case "$cmd" in
+        version)
+            meta_get_version
+            ;;
+        env)
+            meta_get_env
+            ;;
+        namespace)
+            meta_get_namespace
+            ;;
+        set-attr|setattr)
+            meta_set_attr "$@"
+            ;;
+        list-attrs|listattrs)
+            meta_list_attrs
+            ;;
+        export-env|exportenv)
+            meta_export_env
+            ;;
+        func)
+            if [[ -x "$FUNC_SCRIPT" ]]; then
+                "$FUNC_SCRIPT" "$@"
+            else
+                echo "Script fonctions introuvable : $FUNC_SCRIPT" >&2
+                return 1
+            fi
+            ;;
+        help|*)
+            cat <<EOF
+Usage: $0 <commande> [args]
+
+Commandes :
+  version                 Affiche la version meta
+  env                     Affiche l'environnement meta
+  namespace               Affiche l'espace de noms meta
+  set-attr <cle> <valeur> Definit un attribut meta
+  list-attrs              Liste les attributs meta
+  export-env              Exporte les variables meta
+  func [args...]          Appelle le script fonctions/commandes/params connecte
+  help                    Affiche cette aide
+EOF
+            ;;
+    esac
+}
+
+meta_main "$@"
