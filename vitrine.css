@@ -1635,112 +1635,121 @@ html { scroll-behavior: smooth; }
   z-index: 3;
 }
 
-.ring {
-  position: relative;
-  width: min(260px, 80vw, 80vh);
-  height: min(260px, 80vw, 80vh);
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
-  background-size: 200% 200%;
-  animation: ring-rainbow 8s linear infinite, ring-rotate 150s linear infinite;
-  box-shadow: 0 0 40px rgba(255, 210, 63, 0.35);
-  pointer-events: auto;
-}
-
-.ring::before {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  background: #040406;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-}
-
-.ring-button {
+.ring-clock {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 76px;
-  height: 76px;
-  margin-top: -38px;
-  margin-left: -38px;
-  background: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 14px;
+  width: min(300px, 88vw, 88vh);
+  height: min(300px, 88vw, 88vh);
+  margin-top: calc(min(300px, 88vw, 88vh) / -2);
+  margin-left: calc(min(300px, 88vw, 88vh) / -2);
+  border-radius: 50%;
+  border: 6px solid transparent;
+  background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
+  background-size: 200% 200%;
+  animation: clock-rainbow 10s linear infinite;
+  box-shadow: 0 0 50px rgba(255, 210, 63, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.ring-clock::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  animation: clock-glint 4s linear infinite;
+  pointer-events: none;
+}
+
+.ring-apps {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(240px, 72vw, 72vh);
+  height: min(240px, 72vw, 72vh);
+  margin-top: calc(min(240px, 72vw, 72vh) / -2);
+  margin-left: calc(min(240px, 72vw, 72vh) / -2);
+  border-radius: 50%;
+  background: #070816;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  animation: apps-ring-rotate 150s linear infinite;
+  pointer-events: auto;
+}
+
+.app-ring-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  margin-top: -36px;
+  margin-left: -36px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  /* Centre du bouton placé exactement sur le bord de l'anneau (rayon 130px - moitié 38px = 92px) */
-  transform: rotate(var(--a)) translateX(92px) rotate(calc(var(--a) * -1));
+  gap: 4px;
+  /* Centré sur le bord de l'anneau (rayon 120px - moitié 36px = 84px) */
+  transform: rotate(var(--a)) translateX(84px) rotate(calc(var(--a) * -1));
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
   pointer-events: auto;
 }
 
-.ring-button:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: var(--kf-gold);
-  transform: rotate(var(--a)) translateX(92px) rotate(calc(var(--a) * -1)) scale(1.18);
-  box-shadow: 0 0 28px rgba(255, 210, 63, 0.4);
+.app-ring-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: #fff;
+  transform: rotate(var(--a)) translateX(84px) rotate(calc(var(--a) * -1)) scale(1.2);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.3);
   z-index: 5;
 }
 
-.ring-icon {
-  font-size: 28px;
+.app-ring-icon {
+  font-size: 26px;
   display: block;
   line-height: 1;
 }
 
-.ring-title {
-  font-size: 8.5px;
+.app-ring-title {
+  font-size: 8px;
   font-weight: 700;
   color: #fff;
   text-align: center;
-  width: 68px;
-  line-height: 1.15;
+  width: 64px;
+  line-height: 1.1;
   letter-spacing: 0.02em;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   white-space: normal;
 }
 
-.ring-icon {
-  font-size: 30px;
-  display: block;
-  line-height: 1;
-}
-
-.ring-title {
-  font-size: 9px;
-  font-weight: 700;
-  color: #fff;
-  text-align: center;
-  width: 72px;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  white-space: normal;
-}
-
-@keyframes ring-rainbow {
+@keyframes clock-rainbow {
   0%   { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-@keyframes ring-rotate {
+@keyframes clock-glint {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes apps-ring-rotate {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
 /* Accessibilité : réduire les animations si demandé */
 @media (prefers-reduced-motion: reduce) {
-  .ring {
+  .ring-clock,
+  .ring-apps {
     animation: none;
-    transform: rotate(0deg);
   }
-  .ring-button {
-    transform: rotate(var(--a)) translateX(94px) rotate(calc(var(--a) * -1));
+  .app-ring-button {
+    transform: rotate(var(--a)) translateX(84px) rotate(calc(var(--a) * -1));
   }
 }
 
