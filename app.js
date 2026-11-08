@@ -142,6 +142,24 @@ const APPS = [
       { title: "Generation Playground", desc: "Sampling top-k/p, température, repetition penalty, seeds reproductibles.", tags: ["Génération", "Sampling", "LLM"] },
       { title: "Quantization Lab", desc: "GGUF q2_k → q8_0, calibration, perplexity, benchmark vitesse/mémoire.", tags: ["Quantization", "GGUF", "Benchmark"] }
     ]
+  },
+  {
+    num: "Critiques Services",
+    title: "Critiques Services",
+    desc: "Plateforme de critiques de services avec preuves vidéo — Expériences personnelles réelles uniquement. Authentification, votes, commentaires, géolocalisation, galerie preuves, PWA hors-ligne.",
+    tags: ["PWA", "Critiques", "Vidéos", "Géolocalisation"],
+    appUrl: "https://samuelhaihornberg.github.io/critiques-services.com/",
+    embedUrl: "https://samuelhaihornberg.github.io/critiques-services.com/",
+    embedLabel: "Ouvrir Critiques Services",
+    color: "#e94560",
+    subArticles: [
+      { title: "Lire les critiques", desc: "Consultez les critiques de services avec preuves vidéo, filtres et recherche.", tags: ["Lecture", "Critiques", "Recherche"] },
+      { title: "Créer une critique", desc: "Publiez votre propre critique avec photos, vidéos, géolocalisation et prix.", tags: ["Création", "Preuves", "Géolocalisation"] },
+      { title: "Voter et commenter", desc: "Système de votes 👍/👎, réactions emoji, commentaires forum.", tags: ["Votes", "Commentaires", "Réactions"] },
+      { title: "Carte des services", desc: "Géolocalisation Leaflet + Nominatim, services en ligne.", tags: ["Carte", "Géolocalisation", "Leaflet"] },
+      { title: "Profil utilisateur", desc: "Infos, stats, onglets critiques et statistiques.", tags: ["Profil", "Stats", "Utilisateur"] },
+      { title: "PWA hors-ligne", desc: "Service Worker, manifest, mode hors-ligne, installation sur écran d'accueil.", tags: ["PWA", "Hors-ligne", "Installable"] }
+    ]
   }
 ];
 
@@ -404,6 +422,97 @@ class KeffStation {
         window.location.href = app.appUrl;
       }
     });
+
+/* Cube3D (blm-orchestrateur) — méthodes désactivées pour syntaxe
+  expandFace(index) {
+    if (index !== this.current) {
+      this.rotateTo(index);
+      // Wait for rotation to complete then expand
+      setTimeout(() => this.doExpandFace(index), 400);
+    } else {
+      this.doExpandFace(index);
+    }
+  }
+
+  doExpandFace(index) {
+    const face = this.faces[index];
+    if (!face) return;
+    
+    this.isExpanded = true;
+    this.cube.classList.add('face-expanded');
+    face.classList.add('expanded');
+    
+    // Scroll to top
+    face.scrollTop = 0;
+    
+    // Focus management
+    setTimeout(() => face.querySelector('.face-close')?.focus(), 100);
+  }
+
+  collapseFace() {
+    if (!this.isExpanded) return;
+    const face = this.faces[this.current];
+    if (!face) return;
+    
+    this.isExpanded = false;
+    this.cube.classList.remove('face-expanded');
+    face.classList.remove('expanded');
+    face.scrollTop = 0;
+  }
+
+  onDragStart(e) {
+    if (this.isExpanded) return;
+    this.isDragging = true;
+    this.startX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+    this.cube.style.transition = 'none';
+    if (e.target?.setPointerCapture) e.target.setPointerCapture(e.pointerId);
+  }
+
+  onDragMove(e) {
+    if (!this.isDragging || this.isExpanded) return;
+    const dx = (e.clientX ?? e.touches?.[0]?.clientX ?? 0) - this.startX;
+    const angle = this.currentRotationY + dx * 0.4;
+    this.cube.style.transform = `rotateY(${angle}deg)`;
+  }
+
+  onDragEnd(e) {
+    if (!this.isDragging || this.isExpanded) return;
+    this.isDragging = false;
+    const dx = (e.clientX ?? e.changedTouches?.[0]?.clientX ?? 0) - this.startX;
+    const threshold = 60;
+    this.cube.style.transition = 'transform .6s cubic-bezier(.2,.8,.2,1)';
+    if (Math.abs(dx) > threshold) {
+      this.rotateBy(dx > 0 ? -1 : 1);
+    } else {
+      this.updateCubeRotation();
+    }
+    if (e.target?.releasePointerCapture) e.target.releasePointerCapture(e.pointerId);
+  }
+
+  initParticles() {
+    try {
+      const container = document.getElementById('particules');
+      if (!container) return;
+      const colors = ['#1e6bff','#ff3d9a','#ffd23f','#27d17f','#8a4dff','#ff6b00','#e94560'];
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'particule';
+        const sx = (Math.random() - .5) * window.innerWidth * .8;
+        const sy = (Math.random() - .5) * window.innerHeight * .8;
+        const ex = (Math.random() - .5) * window.innerWidth * .8;
+        const ey = (Math.random() - .5) * window.innerHeight * .8;
+        const delay = Math.random() * 15;
+        const dur = 12 + Math.random() * 10;
+        const op = .15 + Math.random() * .25;
+        const clr = colors[Math.floor(Math.random() * colors.length)];
+        p.style.cssText = `left:50%;top:50%;--sx:${sx}px;--sy:${sy}px;--ex:${ex}px;--ey:${ey}px;--op:${op};background:${clr};animation-duration:${dur}s;animation-delay:${delay}s`;
+        container.appendChild(p);
+      }
+    });
+    } catch (e) { console.warn(e); }
+  }
+*/
+    /* fin Cube3D désactivé */
 
     this.panel.classList.add('open');
     this.panelCard.scrollTop = 0;
