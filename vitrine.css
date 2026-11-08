@@ -1733,22 +1733,26 @@ section {
 }
 
 /* Cercle EXTÉRIEUR : IA & Codes / Informatique */
+/* Cercle EXTÉRIEUR : multicolore — cadre qui encercle les apps widgets */
 .ring-outer {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(420px, 90vw, 90vh);
-  height: min(420px, 90vw, 90vh);
-  margin-top: calc(min(420px, 90vw, 90vh) / -2);
-  margin-left: calc(min(420px, 90vw, 90vh) / -2);
+  width: min(440px, 90vw, 90vh);
+  height: min(440px, 90vw, 90vh);
+  margin-top: calc(min(440px, 90vw, 90vh) / -2);
+  margin-left: calc(min(440px, 90vw, 90vh) / -2);
   border-radius: 50%;
-  border: 6px solid transparent;
-  background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
-  background-size: 300% 300%;
+  border: 8px solid #ffd700;
   box-shadow:
-    0 0 60px #ffd700,
-    0 0 120px #ffaa00,
-    inset 0 0 40px #ffd700;
+    0 0 70px #ffd700,
+    0 0 140px #ffaa00,
+    inset 0 0 50px #ffd700,
+    0 0 0 4px rgba(255, 215, 0, 0.3);
+  background: rgba(10, 10, 18, 0.6);
+  background-image: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
+  background-size: 300% 300%;
+  background-blend-mode: overlay;
   animation: bioluminescent-or 4s ease-in-out infinite alternate, ring-rainbow 12s linear infinite;
   pointer-events: none;
   z-index: 1;
@@ -1760,9 +1764,9 @@ section {
 .ring-outer::before {
   content: "";
   position: absolute;
-  inset: -8px;
+  inset: -10px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 215, 0, 0.4);
+  border: 4px solid rgba(255, 215, 0, 0.5);
   z-index: 0;
   pointer-events: none;
   animation: ring-glow 6s ease-in-out infinite alternate;
@@ -2014,10 +2018,10 @@ section {
 
 /* Positionnement selon le cercle d'appartenance */
 .ring-outer .app-ring-button {
-  transform: rotate(var(--a)) translateX(160px) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1));
 }
 .ring-outer .app-ring-button:hover {
-  transform: rotate(var(--a)) translateX(160px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1)) scale(1.3);
 }
 
 .ring-inner .app-ring-button {
@@ -2034,7 +2038,7 @@ section {
   top: 50%;
   left: 50%;
   width: 2px;
-  height: 170px;
+  height: 185px;
   background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
   transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
   transform-origin: top center;
@@ -2044,7 +2048,7 @@ section {
 }
 
 .ring-outer .app-ring-button:hover::before {
-  height: 185px;
+  height: 200px;
   background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
   box-shadow: 0 0 20px rgba(255, 242, 0, 0.7);
 }
