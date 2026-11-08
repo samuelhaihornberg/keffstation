@@ -9,23 +9,105 @@
 
   /* ========================= Dictionnaire de traductions ========================= */
   var DICT = {
-    // Codes de langue affichés
+    // Codes de langue affichés — toutes les langues parlées dans le monde
     langNames: {
-      fr: "Français",
-      en: "English",
-      es: "Español",
-      de: "Deutsch",
-      it: "Italiano",
-      pt: "Português",
-      nl: "Nederlands",
-      pl: "Polski",
-      ru: "Русский",
-      zh: "中文",
-      ja: "日本語",
-      ko: "한국어",
+      af: "Afrikaans",
+      am: "አማርኛ",
       ar: "العربية",
+      as: "অসমীয়া",
+      az: "Azərbaycan dili",
+      bg: "Български",
+      bn: "বাংলা",
+      bo: "བོད་སྐད",
+      ca: "Català",
+      cs: "Čeština",
+      cy: "Cymraeg",
+      da: "Dansk",
+      de: "Deutsch",
+      dz: "རྫོང་ཁ",
+      el: "Ελληνικά",
+      en: "English",
+      eo: "Esperanto",
+      es: "Español",
+      et: "Eesti",
+      eu: "Euskara",
+      fa: "فارسى",
+      fi: "Suomi",
+      fr: "Français",
+      ga: "Gaeilge",
+      gl: "Galego",
+      gu: "ગુજરાતી",
+      ha: "Hausa",
+      he: "עברית",
       hi: "हिन्दी",
-      tr: "Türkçe"
+      hr: "Hrvatski",
+      hu: "Magyar",
+      hy: "Հայերեն",
+      id: "Bahasa Indonesia",
+      ig: "Asụsụ Igbo",
+      is: "Íslenska",
+      it: "Italiano",
+      ja: "日本語",
+      jv: "Basa Jawa",
+      ka: "ქართული",
+      kk: "Қазақша",
+      km: "ខ្មែរ",
+      kn: "ಕನ್ನಡ",
+      ko: "한국어",
+      ku: "کوردی",
+      ky: "Кыргызча",
+      la: "Latine",
+      lb: "Lëtzebuergesch",
+      lo: "ລາວ",
+      lt: "Lietuvių",
+      lv: "Latviešu",
+      mg: "Malagasy",
+      mk: "Македонски",
+      ml: "മലയാളം",
+      mn: "ᠮᠣᠩᠭᠣᠯ ᠬᠡᠯᠡ",
+      mr: "मराठी",
+      ms: "Bahasa Melayu",
+      my: "မြန်မာ",
+      ne: "नेपाली",
+      nl: "Nederlands",
+      no: "Norsk",
+      ny: "Chichewa",
+      or: "ଓଡ଼ିଆ",
+      pa: "ਪੰਜਾਬੀ",
+      pl: "Polski",
+      ps: "پښتو",
+      pt: "Português",
+      ro: "Română",
+      ru: "Русский",
+      rw: "Kinyarwanda",
+      sd: "سنڌي",
+      si: "සිංහල",
+      sk: "Slovenčina",
+      sl: "Slovenščina",
+      sm: "Gagana Sāmoa",
+      sn: "chiShona",
+      so: "Soomaaliga",
+      sq: "Shqip",
+      sr: "Српски",
+      st: "Sesotho",
+      su: "Basa Sunda",
+      sv: "Svenska",
+      sw: "Kiswahili",
+      ta: "தமிழ்",
+      te: "తెలుగు",
+      tg: "тоҷикӣ",
+      th: "ภาษาไทย",
+      tl: "Filipino",
+      tr: "Türkçe",
+      uk: "Українська",
+      ur: "اردو",
+      uz: "Oʻzbekcha",
+      vi: "Tiếng Việt",
+      xh: "isiXhosa",
+      yi: "ייִדיש",
+      yo: "Èdè Yorùbá",
+      zh: "中文",
+      zu: "isiZulu"
     },
 
     /* ---------- Racine / index.html ---------- */
@@ -914,7 +996,7 @@
   function getLang() {
     try {
       var saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && DICT[saved] !== undefined && Object.keys(DICT).some(function (k) { return DICT[k] && DICT[k][saved] !== undefined; })) {
+      if (saved && SUPPORTED.indexOf(saved) !== -1) {
         return saved;
       }
     } catch (e) {}
@@ -931,10 +1013,16 @@
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
   }
 
+  // Fallback : langue demandée → anglais → français → clé brute
+  var FALLBACK = ["en", "fr"];
   function t(key, lang) {
     var entry = DICT[key];
-    if (!entry || entry[lang] === undefined) return key;
-    return entry[lang];
+    if (!entry) return key;
+    if (entry[lang] !== undefined) return entry[lang];
+    for (var i = 0; i < FALLBACK.length; i++) {
+      if (entry[FALLBACK[i]] !== undefined) return entry[FALLBACK[i]];
+    }
+    return key;
   }
 
   function applyTranslations(lang) {
