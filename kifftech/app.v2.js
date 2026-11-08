@@ -384,6 +384,7 @@ async function loadProducts(){
           products = [...newProducts, ...products];
           filteredProducts = [...products];
           applyFilters();
+          renderRayons();
           toast(`${newProducts.length} nouveaux produits via ClickWise`,`success`);
         }
       }
@@ -875,6 +876,17 @@ function initEvents(){
   on('#agent-btn', 'click', agentRender);
   on('#agent-input', 'keydown', e => { if (e.key === 'Enter') agentRender(); });
   on('#sort-select', 'change', e => { activeSort = e.target.value; applyFilters(); });
+  const rp = $('#reader-prev');
+  if (rp) rp.addEventListener('click', () => scrollReader(-1));
+  const rn = $('#reader-next');
+  if (rn) rn.addEventListener('click', () => scrollReader(1));
+  const track = $('#reader-track');
+  if (track) {
+    track.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); scrollReader(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); scrollReader(1); }
+    });
+  }
   on('#btn-fetch', 'click', async () => { toast('Rechargement...', 'info'); await loadProducts(); });
   on('#btn-clear', 'click', () => { products = [...LOCAL_DB]; products.forEach(p => p.kifftech = calcKiffTechPrice(p.price.official)); filteredProducts = [...products]; applyFilters(); toast('Base locale restauree', 'success'); });
   const toggleSubHandler = () => { userContext.isSubscriber = !userContext.isSubscriber; userContext.tenureDays = userContext.isSubscriber ? 30 : 0; refreshKiffTechPrices(); renderProducts(); updateCartPanel(); updateSubUI(); toast(userContext.isSubscriber ? 'Abonnement active (1eur/jour)' : 'Desactive', userContext.isSubscriber ? 'success' : 'info'); };
@@ -910,8 +922,11 @@ function init(){
 
     renderFilters();
     console.log('[KiffTech] renderFilters done');
+    renderRayons();
+    console.log('[KiffTech] renderRayons done');
     refreshKiffTechPrices();
     console.log('[KiffTech] refreshKiffTechPrices done');
+    renderHero();
     applyFilters();
     console.log('[KiffTech] applyFilters done');
     loadProducts();
