@@ -1624,82 +1624,105 @@ html { scroll-behavior: smooth; }
   }
 }
 
-/* ===== Sphère 3D — boutons des 7 sous-PWA ===== */
-.sphere-wrapper {
+/* ===== Anneau rotatif multicolor — boutons des 7 sous-PWA à plat ===== */
+.ring-wrapper {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 900px;
   pointer-events: none;
   z-index: 3;
 }
 
-.sphere {
+.ring {
   position: relative;
-  width: min(220px, 70vw, 70vh);
-  height: min(220px, 70vw, 70vh);
-  transform-style: preserve-3d;
-  animation: sphere-rotate 24s linear infinite;
+  width: min(260px, 80vw, 80vh);
+  height: min(260px, 80vw, 80vh);
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
+  background-size: 200% 200%;
+  animation: ring-rainbow 8s linear infinite, ring-rotate 150s linear infinite;
+  box-shadow: 0 0 40px rgba(255, 210, 63, 0.35);
   pointer-events: auto;
 }
 
-.sphere-face {
+.ring::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #040406;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+.ring-button {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 88px;
-  height: 88px;
-  margin-top: -44px;
-  margin-left: -44px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  width: 80px;
+  height: 80px;
+  margin-top: -40px;
+  margin-left: -40px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transform-origin: center center;
-  transform: rotateY(var(--ry)) translateZ(var(--tz)) rotateY(calc(var(--ry) * -1));
+  transform: rotate(var(--a)) translateX(94px) rotate(calc(var(--a) * -1));
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
   pointer-events: auto;
 }
 
-.sphere-face:hover {
+.ring-button:hover {
   background: rgba(255, 255, 255, 0.16);
   border-color: var(--kf-gold);
-  transform: rotateY(var(--ry)) translateZ(var(--tz)) rotateY(calc(var(--ry) * -1)) scale(1.12);
+  transform: rotate(var(--a)) translateX(94px) rotate(calc(var(--a) * -1)) scale(1.15);
   box-shadow: 0 0 24px rgba(255, 210, 63, 0.35);
+  z-index: 5;
 }
 
-.sphere-icon {
-  font-size: 34px;
+.ring-icon {
+  font-size: 30px;
   display: block;
   line-height: 1;
 }
 
-.sphere-title {
-  font-size: 10px;
+.ring-title {
+  font-size: 9px;
   font-weight: 700;
   color: #fff;
   text-align: center;
-  width: 80px;
-  line-height: 1.25;
+  width: 72px;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  white-space: normal;
 }
 
-@keyframes sphere-rotate {
-  from { transform: rotateY(0deg) rotateX(12deg); }
-  to   { transform: rotateY(360deg) rotateX(12deg); }
+@keyframes ring-rainbow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
-/* Ralentissement ultra-lent : rotation comme aiguille d'une montre */
-.sphere {
-  animation: sphere-rotate 150s linear infinite;
+@keyframes ring-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Accessibilité : réduire les animations si demandé */
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+    transform: rotate(0deg);
+  }
+  .ring-button {
+    transform: rotate(var(--a)) translateX(94px) rotate(calc(var(--a) * -1));
+  }
 }
 
 /* ===== Minifenetre découverte app (overlay) ===== */
