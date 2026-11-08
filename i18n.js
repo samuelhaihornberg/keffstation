@@ -1788,7 +1788,8 @@
     applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
-    applyTranslationsGoogle(lang).catch(function () {});
+    // Traduction automatique Google désactivée par défaut : pas de service externe,
+    // pas de traduction non relue. Utiliser i18n-locales.js pour les fichiers de langue.
   }
 
   /* ========================= Devise ========================= */
@@ -2092,7 +2093,7 @@
     (function () {
       var curLang = getLang();
       applyTranslations(curLang);
-      applyTranslationsGoogle(curLang).catch(function () {});
+      // Traduction automatique Google désactivée par défaut
     })();
   }
   if (document.readyState === "loading") {
@@ -2100,6 +2101,18 @@
   } else {
     init();
   }
+
+  // Exposer l'ancien dictionnaire pour compatibilité avec i18n-locales.js
+  window.DICT_LEGACY = DICT;
+  // Charger le module de fichiers de langue (chemin relatif résolu depuis la page courante)
+  (function(){
+    var baseScript = document.querySelector('script[src*="i18n.js"]');
+    var basePath = baseScript ? baseScript.src.replace(/\/[^\/]*$/, '/') : './';
+    var s = document.createElement('script');
+    s.defer = true;
+    s.src = basePath + 'i18n-locales.js';
+    document.head.appendChild(s);
+  })();
 
   window.ksI18n = { setLang: setLang, getLang: getLang, t: t, apply: applyTranslations };
 })();
