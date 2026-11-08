@@ -71,43 +71,43 @@
 </style>
 <body>
 <nav class="top">
-  <a href="../">← Accueil KeffStation</a>
-  <a href="../kifftech/admin-caisse.html">Caisse KiffTech</a>
-  <a href="#form">+ Ajouter un lead</a>
+  <a href="../" data-i18n="./kiffstationadmin/index-legacy.html_accueil_keffstation_3">← Accueil KeffStation</a>
+  <a href="../kifftech/admin-caisse.html" data-i18n="./kiffstationadmin/index-legacy.html_caisse_kifftech_4">Caisse KiffTech</a>
+  <a href="#form" data-i18n="./kiffstationadmin/index-legacy.html_ajouter_un_lead_5">+ Ajouter un lead</a>
 </nav>
 
-<div class="container">
+<div class="container" data-i18n="kiffstationadmin_index_legacy_kiffstation_admin_tableau_de_leads__2">
   <header>
     <div>
-      <h1>📊 KiffStation Admin</h1>
+      <h1 data-i18n="./kiffstationadmin/index-legacy.html_kiffstation_admin_0">📊 KiffStation Admin</h1>
       <div class="sub">Tableau de leads — données réelles saisies par l’utilisateur · Graphique montagne 3D</div>
     </div>
-    <div style="display:flex;gap:8px">
-      <a href="#" class="btn secondary" onclick="location.reload()" title="Actualiser">🔄 Refresh</a>
-      <a href="#export" class="btn secondary" onclick="exporterCSV()">⬇️ CSV</a>
-      <a href="#reset" class="btn danger" onclick="effacerTous()">🗑️ Tout effacer</a>
+    <div style="display:flex;gap:8px" data-i18n="kiffstationadmin_index_legacy_refresh_csv_tout_effacer_1">
+      <a href="#" class="btn secondary" onclick="location.reload()" title="Actualiser" data-i18n="./kiffstationadmin/index-legacy.html_refresh_6">🔄 Refresh</a>
+      <a href="#export" class="btn secondary" onclick="exporterCSV()" data-i18n="./kiffstationadmin/index-legacy.html_csv_7">⬇️ CSV</a>
+      <a href="#reset" class="btn danger" onclick="effacerTous()" data-i18n="./kiffstationadmin/index-legacy.html_tout_effacer_8">🗑️ Tout effacer</a>
     </div>
   </header>
 
   <div class="grid">
-    <div class="stat"><div class="v" id="stat-nb">0</div><div class="l">Leads enregistrés</div></div>
-    <div class="stat"><div class="v acid" id="stat-nouveau">0</div><div class="l">Statut Nouveau</div></div>
-    <div class="stat"><div class="v red" id="stat-perdu">0</div><div class="l">Statut Perdu</div></div>
-    <div class="stat"><div class="v" id="stat-converti">0</div><div class="l">Taux converti</div></div>
+    <div class="stat"><div class="v" id="stat-nb">0</div><div class="l" data-i18n="./kiffstationadmin/index-legacy.html_leads_enregistrés_34">Leads enregistrés</div></div>
+    <div class="stat"><div class="v acid" id="stat-nouveau">0</div><div class="l" data-i18n="./kiffstationadmin/index-legacy.html_statut_nouveau_35">Statut Nouveau</div></div>
+    <div class="stat"><div class="v red" id="stat-perdu">0</div><div class="l" data-i18n="./kiffstationadmin/index-legacy.html_statut_perdu_36">Statut Perdu</div></div>
+    <div class="stat"><div class="v" id="stat-converti">0</div><div class="l" data-i18n="./kiffstationadmin/index-legacy.html_taux_converti_37">Taux converti</div></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-i18n="./kiffstationadmin/index-legacy.html_graphique_montagne_3d_données_réelles_38">
     <div class="section-title">🏔 Graphique montagne 3D (données réelles)</div>
     <div class="chart-wrap"><canvas id="canvas3d"></canvas></div>
-    <div class="chart-legend">
+    <div class="chart-legend" data-i18n="./kiffstationadmin/index-legacy.html_pics_de_leads_39">
       <div class="legend-item"><span class="legend-dot" style="background:#d8ff3e"></span> Pics de leads</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#27d17f"></span> Surface terrain</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#6366f1"></span> Nuage points</div>
+      <div class="legend-item" data-i18n="./kiffstationadmin/index-legacy.html_surface_terrain_40"><span class="legend-dot" style="background:#27d17f"></span> Surface terrain</div>
+      <div class="legend-item" data-i18n="./kiffstationadmin/index-legacy.html_nuage_points_41"><span class="legend-dot" style="background:#6366f1"></span> Nuage points</div>
     </div>
-    <p style="color:var(--muted);font-size:.8rem;margin-top:8px">Le relief 3D se génère à partir du nombre de leads enregistrés. Chaque lead ajoute un pic au paysage.</p>
+    <p style="color:var(--muted);font-size:.8rem;margin-top:8px" data-i18n="./kiffstationadmin/index-legacy.html_le_relief_3d_se_génère_à_partir_du_nombr_1">Le relief 3D se génère à partir du nombre de leads enregistrés. Chaque lead ajoute un pic au paysage.</p>
   </div>
 
-  <div class="section" id="form">
+  <div class="section" id="form" data-i18n="./kiffstationadmin/index-legacy.html_ajouter_un_lead_donnée_réelle_42">
     <div class="section-title">➕ Ajouter un lead (donnée réelle)</div>
     <form id="lead-form" class="section" onsubmit="return ajouterLead(event)">
       <input type="text" id="f-nom" placeholder="Nom complet" required>
@@ -116,35 +116,35 @@
       <select id="f-source"><option value="site">Site web</option><option value="reseaux">Réseaux sociaux</option><option value="pub">Publicité</option><option value="bouche-oreille">Bouche à oreille</option><option direct="direct">Direct</option></select>
       <select id="f-statut"><option value="nouveau">Nouveau</option><option value="contacte">Contacté</option><option value="converti">Converti</option><option value="perdu">Perdu</option></select>
       <textarea id="f-notes" class="row-full" rows="2" placeholder="Notes (facultatif)"></textarea>
-      <button class="btn primary" type="submit">💾 Enregistrer le lead</button>
+      <button class="btn primary" type="submit" data-i18n="./kiffstationadmin/index-legacy.html_enregistrer_le_lead_2">💾 Enregistrer le lead</button>
     </form>
   </div>
 
-  <div class="section">
+  <div class="section" data-i18n="./kiffstationadmin/index-legacy.html_tableau_des_leads_43">
     <div class="section-title">📋 Tableau des leads</div>
-    <div id="empty-leads" class="empty" style="display:none">Aucun lead enregistré pour le moment. Ajoutez votre premier lead ci-dessus.</div>
+    <div id="empty-leads" class="empty" style="display:none" data-i18n="./kiffstationadmin/index-legacy.html_aucun_lead_enregistré_pour_le_moment_ajo_44">Aucun lead enregistré pour le moment. Ajoutez votre premier lead ci-dessus.</div>
     <table id="table-leads">
       <thead>
         <tr>
-          <th style="width:130px">Référence</th>
-          <th>Nom</th>
-          <th style="width:180px">Email</th>
-          <th style="width:140px">Téléphone</th>
-          <th style="width:120px">Source</th>
-          <th style="width:100px">Statut</th>
-          <th style="width:150px">Date</th>
-          <th style="width:130px">Actions</th>
+          <th style="width:130px" data-i18n="./kiffstationadmin/index-legacy.html_référence_24">Référence</th>
+          <th data-i18n="./kiffstationadmin/index-legacy.html_nom_25">Nom</th>
+          <th style="width:180px" data-i18n="./kiffstationadmin/index-legacy.html_email_26">Email</th>
+          <th style="width:140px" data-i18n="./kiffstationadmin/index-legacy.html_téléphone_27">Téléphone</th>
+          <th style="width:120px" data-i18n="./kiffstationadmin/index-legacy.html_source_28">Source</th>
+          <th style="width:100px" data-i18n="./kiffstationadmin/index-legacy.html_statut_29">Statut</th>
+          <th style="width:150px" data-i18n="./kiffstationadmin/index-legacy.html_date_30">Date</th>
+          <th style="width:130px" data-i18n="./kiffstationadmin/index-legacy.html_actions_31">Actions</th>
         </tr>
       </thead>
       <tbody id="tbody-leads"></tbody>
     </table>
   </div>
 
-  <div class="csv-wrap" id="export">
-    <a class="btn csv-btn" id="btn-csv" download="kiffstation-leads.csv">Exporter les leads en CSV</a>
+  <div class="csv-wrap" id="export" data-i18n="kiffstationadmin_index_legacy_exporter_les_leads_en_csv_0">
+    <a class="btn csv-btn" id="btn-csv" download="kiffstation-leads.csv" data-i18n="./kiffstationadmin/index-legacy.html_exporter_les_leads_en_csv_9">Exporter les leads en CSV</a>
   </div>
 
-  <div class="footer">KiffStation Admin · Données stockées localement (localStorage) · Aucune donnée n’est envoyée à un serveur tiers</div>
+  <div class="footer" data-i18n="./kiffstationadmin/index-legacy.html_kiffstation_admin_données_stockées_local_46">KiffStation Admin · Données stockées localement (localStorage) · Aucune donnée n’est envoyée à un serveur tiers</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -241,13 +241,13 @@ function render(){
     tbody.innerHTML=leads.map(l=>{
       const badgeClass={'nouveau':'badge nouveau','contacte':'badge contacte','converti':'badge converti','perdu':'badge perdu'}[l.statut]||'badge';
       return `<tr>
-        <td><span class="lead-ref">${esc(l.ref)}</span></td>
-        <td><span style="color:var(--text)">${esc(l.nom)}</span>${l.notes?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+esc(l.notes)+'</div>':''}</td>
-        <td><a href="mailto:${esc(l.email)}" style="color:var(--muted)">${esc(l.email)}</a></td>
-        <td><a href="tel:${esc(l.tel)}" style="color:var(--muted)">${esc(l.tel)}</a></td>
-        <td><span style="color:var(--muted);font-size:.8rem">${esc(l.source)}</span></td>
-        <td><span class="${badgeClass}">${esc(l.statut)}</span></td>
-        <td><span class="date">${fmtDate(l.date)}</span></td>
+        <td data-i18n="kiffstationadmin_index_legacy_esclref_9"><span class="lead-ref" data-i18n="./kiffstationadmin/index-legacy.html_esclref_12">${esc(l.ref)}</span></td>
+        <td data-i18n="kiffstationadmin_index_legacy_esclnomlnotesesclnotes_8"><span style="color:var(--text)" data-i18n="./kiffstationadmin/index-legacy.html_esclnom_13">${esc(l.nom)}</span>${l.notes?'<div style="font-size:.72rem;color:var(--muted);margin-top:2px" data-i18n="./kiffstationadmin/index-legacy.html_esclnotes_47">'+esc(l.notes)+'</div>':''}</td>
+        <td data-i18n="kiffstationadmin_index_legacy_esclemail_7"><a href="mailto:${esc(l.email)}" style="color:var(--muted)" data-i18n="./kiffstationadmin/index-legacy.html_esclemail_10">${esc(l.email)}</a></td>
+        <td data-i18n="kiffstationadmin_index_legacy_escltel_6"><a href="tel:${esc(l.tel)}" style="color:var(--muted)" data-i18n="./kiffstationadmin/index-legacy.html_escltel_11">${esc(l.tel)}</a></td>
+        <td data-i18n="kiffstationadmin_index_legacy_esclsource_5"><span style="color:var(--muted);font-size:.8rem" data-i18n="./kiffstationadmin/index-legacy.html_esclsource_14">${esc(l.source)}</span></td>
+        <td data-i18n="kiffstationadmin_index_legacy_esclstatut_4"><span class="${badgeClass}" data-i18n="./kiffstationadmin/index-legacy.html_esclstatut_15">${esc(l.statut)}</span></td>
+        <td data-i18n="kiffstationadmin_index_legacy_fmtdateldate_3"><span class="date" data-i18n="./kiffstationadmin/index-legacy.html_fmtdateldate_16">${fmtDate(l.date)}</span></td>
         <td><button class="btn danger" style="padding:4px 8px;font-size:.75rem" onclick="supprimerLead('${esc(l.ref)}')">🗑️</button></td>
       </tr>`;
     }).join('');

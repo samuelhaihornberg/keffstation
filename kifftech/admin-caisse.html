@@ -58,27 +58,27 @@
   @media (max-width:640px){.admin-head{flex-direction:column;align-items:stretch}table.admin-table{font-size:.75rem}table.admin-table th,table.admin-table td{padding:8px 10px}}
 </style>
 <body>
-<div class="admin-wrap">
+<div class="admin-wrap" data-i18n="kifftech/admin-caisse.html_kifftech_caisse_amp_paiements_historique_14">
   <div class="admin-head">
     <div>
       <h1 data-i18n="kifftech__kifftech_caisse_amp_paiements">💰 KiffTech — Caisse &amp; Paiements</h1>
       <p data-i18n="kifftech_historique_de_tout_ce_qui_a_t_pay_produi" style="color:#8a92b8;margin:4px 0 0;font-size:.85rem">Historique de tout ce qui a été payé (produits, panier, caisse).</p>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;flex-wrap:wrap" data-i18n="kifftech/admin-caisse.html_retour_catalogue_vider_lhistorique_15">
       <a data-i18n="kifftech__retour_catalogue" href="./catalog.html" class="btn secondary">← Retour catalogue</a>
       <button data-i18n="kifftech__vider_lhistorique" class="btn danger" onclick="viderHistorique()" id="btn-vider">🗑️ Vider l'historique</button>
     </div>
   </div>
 
   <div class="admin-stats">
-    <div class="stat"><div class="v" id="stat-nb">0</div><div class="l">Commandes payées</div></div>
-    <div class="stat"><div class="v" id="stat-total">0,00 €</div><div class="l">Total encaissé</div></div>
-    <div class="stat"><div class="v" id="stat-articles">0</div><div class="l">Articles vendus</div></div>
+    <div class="stat"><div class="v" id="stat-nb">0</div><div class="l" data-i18n="kifftech/admin-caisse.html_commandes_payées_16">Commandes payées</div></div>
+    <div class="stat" data-i18n="kifftech/admin-caisse.html_000_17"><div class="v" id="stat-total">0,00 €</div><div class="l" data-i18n="kifftech/admin-caisse.html_total_encaissé_18">Total encaissé</div></div>
+    <div class="stat"><div class="v" id="stat-articles">0</div><div class="l" data-i18n="kifftech/admin-caisse.html_articles_vendus_19">Articles vendus</div></div>
   </div>
 
-  <div class="empty" id="empty" style="display:none">Aucune commande payée pour le moment. Les paiements apparaissent ici après validation PayPal.</div>
+  <div class="empty" id="empty" style="display:none" data-i18n="kifftech/admin-caisse.html_aucune_commande_payée_pour_le_moment_les_20">Aucune commande payée pour le moment. Les paiements apparaissent ici après validation PayPal.</div>
 
-  <div id="state-err" class="state-err" style="display:none">
+  <div id="state-err" class="state-err" style="display:none" data-i18n="kifftech/admin-caisse.html_échec_de_chargement_des_données_le_stock_21">
     <b>⚠ Échec de chargement des données.</b><br>
     Le stockage local est indisponible ou corrompu. Les commandes payées ne peuvent pas être affichées.
   </div>
@@ -86,16 +86,16 @@
   <table class="admin-table" id="tableau" style="display:none">
     <thead>
       <tr>
-        <th style="width:150px">Référence</th>
-        <th style="width:150px">Date</th>
-        <th style="width:150px">Client</th>
-        <th style="width:180px">Email</th>
-        <th style="width:150px">Téléphone</th>
-        <th>Panier — produits</th>
-        <th style="width:110px">Total payé</th>
-        <th style="width:90px">Mode</th>
-        <th style="width:80px">Statut</th>
-        <th style="width:150px">Actions</th>
+        <th style="width:150px" data-i18n="kifftech/admin-caisse.html_référence_0">Référence</th>
+        <th style="width:150px" data-i18n="kifftech/admin-caisse.html_date_1">Date</th>
+        <th style="width:150px" data-i18n="kifftech/admin-caisse.html_client_2">Client</th>
+        <th style="width:180px" data-i18n="kifftech/admin-caisse.html_email_3">Email</th>
+        <th style="width:150px" data-i18n="kifftech/admin-caisse.html_téléphone_4">Téléphone</th>
+        <th data-i18n="kifftech/admin-caisse.html_panier_produits_5">Panier — produits</th>
+        <th style="width:110px" data-i18n="kifftech/admin-caisse.html_total_payé_6">Total payé</th>
+        <th style="width:90px" data-i18n="kifftech/admin-caisse.html_mode_7">Mode</th>
+        <th style="width:80px" data-i18n="kifftech/admin-caisse.html_statut_8">Statut</th>
+        <th style="width:150px" data-i18n="kifftech/admin-caisse.html_actions_9">Actions</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -107,28 +107,28 @@
   Refresh
 </button>
 
-<div class="modal" id="modal-detail">
+<div class="modal" id="modal-detail" data-i18n="kifftech/admin-caisse.html_détail_de_la_commande_times_22">
   <div class="modal-card">
     <div class="modal-head">
       <h3 data-i18n="kifftech_dtail_de_la_commande" id="modal-ref">Détail de la commande</h3>
       <button data-i18n="kifftech_times" class="modal-close" onclick="fermerDetail()">&times;</button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" data-i18n="kifftech/admin-caisse.html_référence_23">
       <div class="meta-grid">
         <div class="meta"><div>Référence</div><div class="v" id="d-ref">-</div></div>
-        <div class="meta"><div>Date</div><div class="v" id="d-date">-</div></div>
-        <div class="meta"><div>Client</div><div class="v" id="d-client">-</div></div>
-        <div class="meta"><div>Email</div><div class="v" id="d-email">-</div></div>
-        <div class="meta"><div>Téléphone</div><div class="v" id="d-tel">-</div></div>
-        <div class="meta"><div>Mode de paiement</div><div class="v" id="d-mode">-</div></div>
-        <div class="meta"><div>Statut</div><div class="v" id="d-statut">-</div></div>
+        <div class="meta" data-i18n="kifftech/admin-caisse.html_date_24"><div>Date</div><div class="v" id="d-date">-</div></div>
+        <div class="meta" data-i18n="kifftech/admin-caisse.html_client_25"><div>Client</div><div class="v" id="d-client">-</div></div>
+        <div class="meta" data-i18n="kifftech/admin-caisse.html_email_26"><div>Email</div><div class="v" id="d-email">-</div></div>
+        <div class="meta" data-i18n="kifftech/admin-caisse.html_téléphone_27"><div>Téléphone</div><div class="v" id="d-tel">-</div></div>
+        <div class="meta" data-i18n="kifftech/admin-caisse.html_mode_de_paiement_28"><div>Mode de paiement</div><div class="v" id="d-mode">-</div></div>
+        <div class="meta" data-i18n="kifftech/admin-caisse.html_statut_29"><div>Statut</div><div class="v" id="d-statut">-</div></div>
       </div>
-      <div style="font-size:.8rem;color:#8a92b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Articles du panier</div>
+      <div style="font-size:.8rem;color:#8a92b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px" data-i18n="kifftech/admin-caisse.html_articles_du_panier_30">Articles du panier</div>
       <table class="detail">
-        <thead><tr><th>Produit</th><th style="width:90px">Qté</th><th style="width:120px">Prix unitaire</th><th style="width:120px">Sous-total</th></tr></thead>
+        <thead><tr><th data-i18n="kifftech/admin-caisse.html_produit_10">Produit</th><th style="width:90px" data-i18n="kifftech/admin-caisse.html_qté_11">Qté</th><th style="width:120px" data-i18n="kifftech/admin-caisse.html_prix_unitaire_12">Prix unitaire</th><th style="width:120px" data-i18n="kifftech/admin-caisse.html_sous_total_13">Sous-total</th></tr></thead>
         <tbody id="d-items"></tbody>
       </table>
-      <div class="detail-total"><span data-i18n="kifftech_total_de_la_commande">Total de la commande</span><span data-i18n="kifftech_000_" id="d-total">0,00 €</span></div>
+      <div class="detail-total" data-i18n="kifftech/admin-caisse.html_total_de_la_commande000_31"><span data-i18n="kifftech_total_de_la_commande">Total de la commande</span><span data-i18n="kifftech_000_" id="d-total">0,00 €</span></div>
     </div>
   </div>
 </div>

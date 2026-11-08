@@ -249,13 +249,13 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
 <script defer src="./shopify-storefront.js"></script>
 </head>
 <body>
-<div class="app">
+<div class="app" data-i18n="kifftech/index.html_agent_ia_0">
 <header>
 <div class="header-left">
 <span data-i18n="kifftech_" class="logo">🤖</span>
 <span data-i18n="kifftech_agent_ia" class="agent-badge" data-i18n="kifftech_name">AGENT IA</span>
 </div>
-<div class="header-right">
+<div class="header-right" data-i18n="kifftech/index.html_0_hard_refresh_mise_à_jour_version_kifft_1">
 <button class="sub-btn icon-only" id="btn-subscribe-header" type="button" aria-label="S'abonner KiffTech Club" title="S'abonner KiffTech Club"></button>
 <button class="cart-btn" id="btn-cart-header" type="button" aria-label="La Caisse — passer à la caisse">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><p data-i18n="kifftech_0_hard_refresh_mise_jour_version_kifftec"ath d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
@@ -282,7 +282,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
     <div class="hero-visual">
       <img id="hero-img" src="./img/sp1.jpg" alt="Samsung Galaxy S24 Ultra, mise en avant KiffTech" width="460" height="460" loading="lazy" decoding="async">
     </div>
-    <div class="hero-body">
+    <div class="hero-body" data-i18n="kifftech/index.html_samsung_smartphones_2024_galaxy_s24_ultr_2">
       <p class="hero-kicker" id="hero-kicker" data-i18n="hero_kicker">Samsung • Smartphones • 2024</p>
       <h2 data-i18n="kifftech_galaxy_s24_ultra" id="hero-title" class="hero-title" data-i18n="hero_title">Galaxy S24 Ultra</h2>
       <p data-i18n="kifftech_1_469_1_322_prix_kifftech_10_" class="hero-meta" id="hero-meta">
@@ -308,18 +308,18 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
 
 <!-- Agent Status Panel -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><p data-i18n="kifftech_agent_de_veille_0produits_0sources_maj_0"ath d="M12 6v6l4 2"/></svg><span data-i18n="kifftech_agent_de_veille">Agent de Veille</span></div>
+<div class="panel-title" data-i18n="kifftech/index.html_agent_de_veille_3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><p data-i18n="kifftech_agent_de_veille_0produits_0sources_maj_0"ath d="M12 6v6l4 2"/></svg><span data-i18n="kifftech_agent_de_veille">Agent de Veille</span></div>
 <div class="stats-grid">
-<div class="stat-card"><div class="stat-value" id="stat-products">0</div><div class="stat-label">Produits</div></div>
-<div class="stat-card"><div class="stat-value" id="stat-sources">0</div><div class="stat-label">Sources</div></div>
-<div class="stat-card"><div class="stat-value" id="stat-updated">—</div><div class="stat-label">MAJ</div></div>
-<div class="stat-card"><div class="stat-value" id="stat-coverage">0%</div><div class="stat-label">Couverture</div></div>
+<div class="stat-card"><div class="stat-value" id="stat-products">0</div><div class="stat-label" data-i18n="kifftech/index.html_produits_4">Produits</div></div>
+<div class="stat-card"><div class="stat-value" id="stat-sources">0</div><div class="stat-label" data-i18n="kifftech/index.html_sources_5">Sources</div></div>
+<div class="stat-card"><div class="stat-value" id="stat-updated">—</div><div class="stat-label" data-i18n="kifftech/index.html_maj_6">MAJ</div></div>
+<div class="stat-card" data-i18n="kifftech/index.html_0_7"><div class="stat-value" id="stat-coverage">0%</div><div class="stat-label" data-i18n="kifftech/index.html_couverture_8">Couverture</div></div>
 </div>
 </section>
 
 <!-- Search & Filters -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span data-i18n="kifftech_recherche_filtres">Recherche & Filtres</span></div>
+<div class="panel-title" data-i18n="kifftech/index.html_recherche_filtres_9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span data-i18n="kifftech_recherche_filtres">Recherche & Filtres</span></div>
 <div class="search-box">
 <div class="search-input-wrap">
 <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -333,14 +333,14 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
 
 <!-- Sources Configuration -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="kifftech_sources_de_donnes">Sources de Données</span></div>
+<div class="panel-title" data-i18n="kifftech/index.html_sources_de_données_10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="kifftech_sources_de_donnes">Sources de Données</span></div>
 <div class="source-toggle" id="source-toggles"></div>
 </section>
 
 <!-- Actions -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span data-i18n="kifftech_actions">Actions</span></div>
-<div class="action-row">
+<div class="panel-title" data-i18n="kifftech/index.html_actions_11"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span data-i18n="kifftech_actions">Actions</span></div>
+<div class="action-row" data-i18n="kifftech/index.html_lancer_la_veille_exporter_json_vider_le__12">
 <button data-i18n="kifftech_lancer_la_veille" class="action-btn icon-only" id="btn-fetch" type="button" aria-label="Lancer la veille" title="Lancer la veille"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg><span data-i18n="kifftech_lancer_la_veille" class="sr-only">Lancer la veille</span></button>
 <button data-i18n="kifftech_exporter_json" class="action-btn icon-only" id="btn-export" type="button" disabled aria-label="Exporter JSON" title="Exporter JSON"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-i18n="kifftech_exporter_json" class="sr-only">Exporter JSON</span></button>
 <button data-i18n="kifftech_vider_le_cache" class="action-btn icon-only" id="btn-clear" type="button" aria-label="Vider le cache" title="Vider le cache"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg><span data-i18n="kifftech_vider_le_cache" class="sr-only">Vider le cache</span></button>
@@ -349,11 +349,11 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
 
 <!-- KiffTech Club -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span data-i18n="kifftech_kifftech_club">KiffTech Club</span></div>
+<div class="panel-title" data-i18n="kifftech/index.html_kifftech_club_13"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span data-i18n="kifftech_kifftech_club">KiffTech Club</span></div>
 <div id="promo-indicator" style="margin-bottom:12px;padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:.8rem"></div>
 <button class="action-btn icon-only" id="btn-subscribe" type="button" style="margin-bottom:12px" aria-label="S'abonner KiffTech Club" title="S'abonner KiffTech Club"></button>
-<div class="club-details">
-<strong>1€/jour</strong> (≈30€/mois) • Sans engagement<br>
+<div class="club-details" data-i18n="kifftech/index.html_1jour_30mois_sans_engagement_10_à_21_sel_14">
+<strong data-i18n="kifftech/index.html_1jour_17">1€/jour</strong> (≈30€/mois) • Sans engagement<br>
 • -10% à -21% selon ancienneté<br>
 • Livraison toujours offerte<br>
 • Accès priorité nouveautés
@@ -362,7 +362,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
 
 <!-- Ma Sélection -->
 <section class="panel">
-<div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg><span data-i18n="kifftech_la_caisse">La Caisse</span> <span class="cart-panel-count">0</span></div>
+<div class="panel-title" data-i18n="kifftech/index.html_la_caisse_0_15"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg><span data-i18n="kifftech_la_caisse">La Caisse</span> <span class="cart-panel-count">0</span></div>
 <div id="cart-panel" style="max-height:200px;overflow-y:auto"></div>
 </section>
 </aside>
@@ -379,7 +379,7 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;grid-template-columns: 1fr
 <option value="price-desc" data-i18n="sort_price_desc">Prix décroissant</option>
 </select>
 </header>
-<div class="reader-wrap" id="reader-wrap">
+<div class="reader-wrap" id="reader-wrap" data-i18n="kifftech/index.html_précédents_16">
 <button data-i18n="kifftech__prcdents" class="reader-nav reader-prev" type="button" aria-label="Produits précédents" data-i18n="reader_prev">‹ Précédents</button>
 <div class="reader-track" id="reader-track" role="list" tabindex="0" aria-label="Lecteur horizontal des produits">
 <!-- Injected par JS : cartes de produits alignées horizontalement -->

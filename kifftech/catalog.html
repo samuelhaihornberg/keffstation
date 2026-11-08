@@ -147,13 +147,13 @@ main{flex:1;width:100%;max-width:1400px;margin:0 auto;padding:clamp(16px,3vw,24p
 <script defer src="../i18n.js"></script>
 </head>
 <body>
-<div class="app">
+<div class="app" data-i18n="kifftech/catalog.html_kifftech_0">
 <header>
   <div class="header-left">
     <span class="logo">📱</span>
     <h1 data-i18n="kifftech_kifftech">KiffTech</h1>
   </div>
-  <div class="header-right">
+  <div class="header-right" data-i18n="kifftech/catalog.html_0_rayons_crédits_caisse_admin_cube_1">
     <button class="cart-btn" id="btn-cart-header" aria-label="La Caisse — passer à la caisse">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><p data-i18n="kifftech_0_rayons_crdits_caisse_admin_cube_recher"ath d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       <span id="cart-count">0</span>
@@ -169,14 +169,14 @@ main{flex:1;width:100%;max-width:1400px;margin:0 auto;padding:clamp(16px,3vw,24p
 </header>
 <main>
   <aside class="sidebar">
-    <div class="panel search-box">
+    <div class="panel search-box" data-i18n="kifftech/catalog.html_recherche_2">
       <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>Recherche</div>
       <div class="search-input-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
         <input type="search" class="search-input" id="search-input" placeholder="Marque, modèle, catégorie..." aria-label="Rechercher">
       </div>
     </div>
-    <div class="panel">
+    <div class="panel" data-i18n="kifftech/catalog.html_agent_ia_référence_exacte_3">
       <div class="panel-title">🤖 Agent IA — Référence exacte</div>
       <div class="search-input-wrap">
         <input type="search" class="search-input" id="agent-input" placeholder="Marque + modèle exacts…" aria-label="Agent IA : marque et modèle exacts" style="padding-left:16px">
@@ -184,40 +184,40 @@ main{flex:1;width:100%;max-width:1400px;margin:0 auto;padding:clamp(16px,3vw,24p
       <button data-i18n="kifftech_identifier_aperu" class="btn-sm primary" id="agent-btn" style="margin-top:10px;width:100%;padding:12px">Identifier + Aperçu</button>
       <div id="agent-result" style="margin-top:10px;display:grid;gap:8px" aria-live="polite"></div>
     </div>
-    <div class="panel">
+    <div class="panel" data-i18n="kifftech/catalog.html_filtres_4">
       <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Filtres</div>
-      <div class="filter-row">
+      <div class="filter-row" data-i18n="kifftech/catalog.html_catégorie_5">
         <div class="filter-group">
           <span data-i18n="kifftech_catgorie" class="filter-label">Catégorie</span>
           <div id="filter-category" class="filter-row" style="flex-direction:column"></div>
         </div>
-        <div class="filter-group">
+        <div class="filter-group" data-i18n="kifftech/catalog.html_année_6">
           <span data-i18n="kifftech_anne" class="filter-label">Année</span>
           <div id="filter-year" class="filter-row" style="flex-direction:column"></div>
         </div>
-        <div class="filter-group">
+        <div class="filter-group" data-i18n="kifftech/catalog.html_marque_7">
           <span data-i18n="kifftech_marque" class="filter-label">Marque</span>
           <div id="filter-brand" class="filter-row" style="flex-direction:column"></div>
         </div>
-        <div class="filter-group">
+        <div class="filter-group" data-i18n="kifftech/catalog.html_époque_consoles_8">
           <span data-i18n="kifftech_poque_consoles" class="filter-label">Époque (Consoles)</span>
           <div id="filter-era" class="filter-row" style="flex-direction:column"></div>
         </div>
       </div>
     </div>
     <div class="panel stats-grid">
-      <div class="stat-card"><div class="stat-value" id="stat-products">0</div><div class="stat-label">Produits</div></div>
-      <div class="stat-card"><div class="stat-value" id="stat-sources">-</div><div class="stat-label">Sources</div></div>
-      <div class="stat-card"><div class="stat-value" id="stat-coverage">-</div><div class="stat-label">Années</div></div>
-      <div class="stat-card"><div class="stat-value" id="stat-updated">-</div><div class="stat-label">MAJ</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-products">0</div><div class="stat-label" data-i18n="kifftech/catalog.html_produits_9">Produits</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-sources">-</div><div class="stat-label" data-i18n="kifftech/catalog.html_sources_10">Sources</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-coverage">-</div><div class="stat-label" data-i18n="kifftech/catalog.html_années_11">Années</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-updated">-</div><div class="stat-label" data-i18n="kifftech/catalog.html_maj_12">MAJ</div></div>
     </div>
-    <div class="panel">
+    <div class="panel" data-i18n="kifftech/catalog.html_la_caisse_0_13">
       <div class="panel-title">🛒 La Caisse <span class="cart-panel-count">0</span></div>
       <div id="cart-panel" style="max-height:200px;overflow-y:auto"></div>
     </div>
   </aside>
   <section class="products-section">
-    <div class="section-header">
+    <div class="section-header" data-i18n="kifftech/catalog.html_catalogue_0_produits_trier_pertinence_ma_14">
       <h2 data-i18n="kifftech_catalogue" class="section-title">Catalogue</h2>
       <span data-i18n="kifftech_0_produits" class="results-count" id="results-count">0 produits</span>
       <label data-i18n="kifftech_trier" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)" for="sort-select">Trier</label>
