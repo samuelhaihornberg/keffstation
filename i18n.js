@@ -4896,10 +4896,11 @@
     return SUPPORTED.indexOf(nav) !== -1 ? nav : DEFAULT_LANG;
   }
 
-  function setLang(lang) {
+  async function setLang(lang) {
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     document.documentElement.lang = lang;
-    applyTranslations(lang);
+    await applyTranslations(lang);
+    await applyTranslationsGoogle(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
   }
@@ -5104,7 +5105,7 @@
   }
 
   /* ========================= Init ========================= */
-  function init() {
+  async function init() {
     var lang = getLang();
     document.documentElement.lang = lang;
     injectSelector(lang);
@@ -5112,14 +5113,14 @@
     updateCurrencyDisplay();
 
     // Re-traduire si le DOM change (SPA / injection dynamique)
-    var observer = new MutationObserver(function (mutations) {
+    var observer = new MutationObserver(async function (mutations) {
       var need = false;
       mutations.forEach(function (m) {
         m.addedNodes.forEach(function (n) {
           if (n.nodeType === 1 && (n.hasAttribute && n.hasAttribute("data-i18n"))) need = true;
         });
       });
-      if (need) applyTranslations(lang);
+      if (need) { await applyTranslations(lang); await applyTranslationsGoogle(lang); }
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
@@ -5128,6 +5129,56 @@
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
+  }
+
+
+  /* ========================= Traduction automatique Google (fallback) ========================= */
+  var translationCache = {};
+  var translating = {};
+
+  async function googleTranslate(text, targetLang) {
+    if (!text || text.length === 0) return text;
+    var cacheKey = text + '||' + targetLang;
+    if (translationCache[cacheKey]) return translationCache[cacheKey];
+    if (translating[cacheKey]) return translating[cacheKey];
+    translating[cacheKey] = (async function () {
+      try {
+        var url = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=auto&tl=' + encodeURIComponent(targetLang) + '&q=' + encodeURIComponent(text);
+        var resp = await fetch(url);
+        var data = await resp.json();
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          var result = data[0][0][0];
+          translationCache[cacheKey] = result;
+          return result;
+        }
+      } catch (e) {
+        console.warn('[i18n] Google Translate failed:', e.message);
+      }
+      return text;
+    })();
+    return translating[cacheKey];
+  }
+
+  async function applyTranslationsGoogle(lang) {
+    var fallbackElems = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < fallbackElems.length; i++) {
+      (function (el) {
+        var key = el.getAttribute("data-i18n");
+        var val = t(key, lang);
+        if (val === key) {
+          var original = el.getAttribute("data-i18n-original");
+          if (!original) {
+            original = el.textContent;
+            el.setAttribute("data-i18n-original", original);
+          }
+          if (original && original !== key && original.trim().length > 0) {
+            googleTranslate(original, lang).then(function (translated) {
+              el.textContent = translated;
+            });
+          }
+        }
+      })(fallbackElems[i]);
+    }
   }
 
   // API exposée
