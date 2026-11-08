@@ -248,31 +248,31 @@
       <!-- Sphère 3D — boutons des 7 sous-PWA (logos + titres colorés) -->
       <div class="sphere-wrapper" aria-label="Sous-applications KeffStation">
         <div class="sphere" id="sphere">
-          <div class="sphere-face" style="--ry: 0deg; --tz: 120px;" onclick="location.href='./kifftech/'" aria-label="Ouvrir KiffTech">
+          <div class="sphere-face" style="--ry: 0deg; --tz: 120px;" data-url="./kifftech/" data-desc="Objets connectés, gadgets high-tech et accessoires électroniques. Catalogue, fiches détaillées et liens vers les boutiques officielles." onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
             <span class="sphere-icon">🤖</span>
             <span class="sphere-title" style="color:#1e6bff">KiffTech</span>
           </div>
-          <div class="sphere-face" style="--ry: 51.4deg; --tz: 120px;" onclick="location.href='./viartificial-labs/'" aria-label="Ouvrir ViArtificial Labs">
+          <div class="sphere-face" style="--ry: 51.4deg; --tz: 120px;" data-url="./viartificial-labs/" data-desc="Moteurs IA, conversation directe, assistants et expérimentations NLP/LLM fonctionnant en partie localement." onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
             <span class="sphere-icon">🧠</span>
-            <span class="sphere-title" style="color:#ff69b4">ViArtificial</span>
+            <span class="sphere-title" style="color:#ff69b4">ViArtificial Labs</span>
           </div>
-          <div class="sphere-face" style="--ry: 102.8deg; --tz: 120px;" onclick="location.href='https://samuelhaihornberg.github.io/critiques-services.com/'" aria-label="Ouvrir Critiques-Services">
+          <div class="sphere-face" style="--ry: 102.8deg; --tz: 120px;" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" data-desc="Avis et critiques de services en ligne et d'outils numériques. Espace d'information, pas une boutique." onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
             <span class="sphere-icon">📝</span>
             <span class="sphere-title" style="color:#ffd23f">Critiques-Services</span>
           </div>
-          <div class="sphere-face" style="--ry: 154.2deg; --tz: 120px;" onclick="location.href='./tricktrocjob/'" aria-label="Ouvrir Tricktrocjob">
+          <div class="sphere-face" style="--ry: 154.2deg; --tz: 120px;" data-url="./tricktrocjob/" data-desc="Utilitaires, scripts et outils techniques pour le dépannage et la productivité." onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
             <span class="sphere-icon">🔧</span>
             <span class="sphere-title" style="color:#27d17f">Tricktrocjob</span>
           </div>
-          <div class="sphere-face" style="--ry: 205.6deg; --tz: 120px;" onclick="location.href='./videogames/'" aria-label="Ouvrir Videogames">
+          <div class="sphere-face" style="--ry: 205.6deg; --tz: 120px;" data-url="./videogames/" data-desc="Jeux, émulation et contenu autour du retrogaming et du gaming." onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
             <span class="sphere-icon">🎮</span>
             <span class="sphere-title" style="color:#ff6b00">Videogames</span>
           </div>
-          <div class="sphere-face" style="--ry: 257deg; --tz: 120px;" onclick="location.href='./cos-editor/'" aria-label="Ouvrir cos Editor">
+          <div class="sphere-face" style="--ry: 257deg; --tz: 120px;" data-url="./cos-editor/" data-desc="Éditeur de syntaxe COS, analyse locale, aperçu SPA et export JSON. PWA offline-first." onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
             <span class="sphere-icon">🧩</span>
             <span class="sphere-title" style="color:#00d4ff">cos Editor</span>
           </div>
-          <div class="sphere-face" style="--ry: 308.4deg; --tz: 120px;" onclick="location.href='./linguistic-motors/'" aria-label="Ouvrir Linguistic Motors">
+          <div class="sphere-face" style="--ry: 308.4deg; --tz: 120px;" data-url="./linguistic-motors/" data-desc="Moteurs linguistiques expérimentaux NLP/LLM local." onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
             <span class="sphere-icon">🗣️</span>
             <span class="sphere-title" style="color:#b84dff">Linguistic Motors</span>
           </div>
@@ -285,6 +285,22 @@
   </div>
 
   <nav class="nav" id="nav" aria-label="Navigation des applications"></nav>
+
+  <!-- ===== Minifenetre découverte app (overlay par-dessus la vitrine) ===== -->
+  <div id="app-discover-overlay" class="discover-overlay" role="dialog" aria-modal="true" aria-label="Découvrir l'application">
+    <button id="discover-close" class="discover-close" type="button" aria-label="Fermer">×</button>
+    <div class="discover-modal">
+      <div class="discover-header">
+        <span id="discover-icon" class="discover-icon">📦</span>
+        <h2 id="discover-title" class="discover-title">Application</h2>
+      </div>
+      <p id="discover-desc" class="discover-desc"></p>
+      <div class="discover-actions">
+        <button id="discover-open" class="discover-btn-open" type="button">Découvrir l'app</button>
+        <button id="discover-cancel" class="discover-btn-cancel" type="button">Annuler</button>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -627,6 +643,64 @@ if ('serviceWorker' in navigator) {
       card.appendChild(s);
     }
   });
+})();
+</script>
+
+<script>
+(function () {
+  var overlay = document.getElementById('app-discover-overlay');
+  var closeBtn = document.getElementById('discover-close');
+  var cancelBtn = document.getElementById('discover-cancel');
+  var openBtn = document.getElementById('discover-open');
+  var iconEl = document.getElementById('discover-icon');
+  var titleEl = document.getElementById('discover-title');
+  var descEl = document.getElementById('discover-desc');
+  var currentUrl = null;
+
+  function close() {
+    if (overlay) overlay.classList.remove('visible');
+    currentUrl = null;
+  }
+
+  function openAppDiscover(el) {
+    if (!overlay || !el) return;
+    var url = el.getAttribute('data-url');
+    var desc = el.getAttribute('data-desc') || '';
+    var icon = el.querySelector('.sphere-icon') ? el.querySelector('.sphere-icon').textContent : '📦';
+    var title = el.querySelector('.sphere-title') ? el.querySelector('.sphere-title').textContent : 'Application';
+
+    if (iconEl) iconEl.textContent = icon;
+    if (titleEl) titleEl.textContent = title;
+    if (descEl) descEl.textContent = desc;
+    currentUrl = url;
+
+    overlay.classList.add('visible');
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (cancelBtn) cancelBtn.addEventListener('click', close);
+  if (overlay) {
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) close();
+    });
+  }
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      if (currentUrl) {
+        window.location.href = currentUrl;
+      }
+    });
+  }
+
+  // Fermeture avec la touche Échap
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay && overlay.classList.contains('visible')) {
+      close();
+    }
+  });
+
+  // Expose pour les onclick HTML
+  window.openAppDiscover = openAppDiscover;
 })();
 </script>
 </body>
