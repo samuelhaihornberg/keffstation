@@ -5435,7 +5435,22 @@
         console.warn('[i18n] Google Translate failed:', e.message);
       }
       return text;
-    })();
+      // Synchronisation inter-onglets : quand une autre page change la langue
+  window.addEventListener('storage', function (e) {
+    if (e.key === STORAGE_KEY) {
+      var newLang = e.newValue;
+      if (newLang && newLang.length >= 2) {
+        var code = newLang.slice(0, 2).toLowerCase();
+        if (SUPPORTED.indexOf(code) !== -1) {
+          document.documentElement.lang = code;
+          applyTranslations(code);
+          applyTranslationsGoogle(code).catch(function(){});
+          refreshSelector(code);
+        }
+      }
+    }
+  });
+})();
     return translating[cacheKey];
   }
 
