@@ -247,59 +247,58 @@
         <div class="core-name" data-i18n="./index.html_keffstation_82">KEFFSTATION</div>
         <div class="core-count" data-i18n="./index.html_7_apps_83"><span id="app-count">7</span> <span data-i18n="app_count">apps</span></div>
       </div>
-<!-- Boule sphérique facettée KeffStation : applications réparties sur la surface -->
-<div class="boule-wrapper" aria-label="Boule d'applications KeffStation">
+<!-- Trois cercles concentriques — vitrine KeffStation -->
+<div class="rings-wrapper" aria-label="Sous-applications KeffStation">
 
-  <!-- Boule principale avec divisions en demi-cercles -->
-  <div class="boule" aria-label="Boule KeffStation">
-
-    <!-- Lignes de division en demi-cercle -->
-    <div class="division division-1"></div>
-    <div class="division division-2"></div>
-    <div class="division division-3"></div>
-    <div class="division division-4"></div>
-    <div class="division division-5"></div>
-    <div class="division division-6"></div>
-
-    <!-- Facettes d'applications -->
-    <div class="facette" data-page="0" data-url="./viartificial-labs/" onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
-      <div class="app-icon">🧠</div>
-      <h3 data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</h3>
+  <!-- Cercle EXTÉRIEUR (grand, multicolore) : Apps IA & Codes en boutons dorés -->
+  <div class="ring-outer" aria-label="IA et codes informatiques">
+    <div class="app-ring-button" style="--a: 0deg;" data-page="0" data-url="./viartificial-labs/" onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
+      <span class="app-ring-icon">🧠</span>
+      <span class="app-ring-title" data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</span>
     </div>
-
-    <div class="facette" data-page="4" data-url="./kifftech/" onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
-      <div class="app-icon">🤖</div>
-      <h3 data-i18n="./index.html_kifftech_16">KiffTech</h3>
+    <div class="app-ring-button" style="--a: 90deg;" data-page="1" data-url="./cos-editor/" onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
+      <span class="app-ring-icon">🧩</span>
+      <span class="app-ring-title" data-i18n="./index.html_cos_editor_68">cos Editor</span>
     </div>
-
-    <div class="facette" data-page="1" data-url="./cos-editor/" onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
-      <div class="app-icon">🧩</div>
-      <h3 data-i18n="./index.html_cos_editor_68">cos Editor</h3>
+    <div class="app-ring-button" style="--a: 180deg;" data-page="2" data-url="./linguistic-motors/" onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
+      <span class="app-ring-icon">🗣️</span>
+      <span class="app-ring-title" data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</span>
     </div>
-
-    <div class="facette" data-page="5" data-url="./tricktrocjob/" onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
-      <div class="app-icon">🔧</div>
-      <h3 data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</h3>
+    <div class="app-ring-button" style="--a: 270deg;" data-page="3" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
+      <span class="app-ring-icon">📝</span>
+      <span class="app-ring-title" data-i18n="./index.html_critiques_services_65">Critiques-Services</span>
     </div>
+  </div>
 
-    <div class="facette" data-page="2" data-url="./linguistic-motors/" onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
-      <div class="app-icon">🗣️</div>
-      <h3 data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</h3>
+  <!-- Cercle MOYEN : Apps Utilitaires & Commerce en boutons dorés + Logo au centre -->
+  <div class="ring-middle" aria-label="Utilitaires et commerce">
+    <div class="app-ring-button" style="--a: 45deg;" data-page="4" data-url="./kifftech/" onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
+      <span class="app-ring-icon">🤖</span>
+      <span class="app-ring-title" data-i18n="./index.html_kifftech_63">KiffTech</span>
     </div>
-
-    <div class="facette" data-page="6" data-url="./videogames/" onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
-      <div class="app-icon">🎮</div>
-      <h3 data-i18n="./index.html_videogames_67">Videogames</h3>
+    <div class="app-ring-button" style="--a: 135deg;" data-page="5" data-url="./tricktrocjob/" onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
+      <span class="app-ring-icon">🔧</span>
+      <span class="app-ring-title" data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</span>
     </div>
-
-    <div class="facette" data-page="3" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
-      <div class="app-icon">📝</div>
-      <h3 data-i18n="./index.html_critiques_services_65">Critiques-Services</h3>
+    <div class="app-ring-button" style="--a: 225deg;" data-page="6" data-url="./videogames/" onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
+      <span class="app-ring-icon">🎮</span>
+      <span class="app-ring-title" data-i18n="./index.html_videogames_67">Videogames</span>
     </div>
+    <div class="app-ring-button" style="--a: 315deg;" data-page="6" data-url="#" onclick="event.preventDefault(); alert('Bientôt disponible !');" aria-label="Application à venir">
+      <span class="app-ring-icon">✨</span>
+      <span class="app-ring-title">Bientôt</span>
+    </div>
+    <!-- Logo KeffStation au centre du cercle moyen -->
+    <div class="logo-keffstation" aria-label="Logo KeffStation">
+      <img src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/7412756f143b879567f6784f6b5149ceac5c0d9b/Logo-kiffstation.png" alt="KeffStation Logo" class="logo-keffstation-img" />
+      <div class="label">KEFFSTATION</div>
+    </div>
+  </div>
 
-    <!-- Nom de la boule -->
-    <div class="boule-label">KEFFSTATION</div>
-
+  <!-- Cercle INTÉRIEUR : vide, espace respiratoire -->
+  <div class="ring-inner" aria-label="Espace central vide">
+  </div>
+</div>
   </div>
 </div><!doctype html>
 <html lang="fr">
