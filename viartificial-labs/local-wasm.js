@@ -86,7 +86,7 @@
     busy = true; set('generating', 'génération…');
     var o = opt || {};
     try {
-      var msgs = [{ role: 'system', content: sysPrompt(bot) }].concat(history);
+      var msgs = (history && history.length && history[0] && history[0].role === 'system') ? history.slice() : [{ role: 'system', content: sysPrompt(bot) }].concat(history);
       // Historique déjà borné en amont (formulerEntree : rôles ≤ 4 + bloc
       // mémoire + demande ; enveloppe tokens via preparerEntreeMoteur) :
       // aucune troncature aveugle ici, la consigne système part toujours.

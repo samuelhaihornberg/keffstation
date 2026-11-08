@@ -121,7 +121,7 @@ function makeEl() {
   o.remove = () => { o.removed = true; }; o.focus = () => {}; o.click = () => {};
   return o;
 }
-const ALL_FN = ['pump', 'promesseMoteurValide', 'runItem', 'preparerEntreeMoteur', 'orchestrerBLM', 'etatInitial', 'blmComprehension', 'blmMemoire', 'blmLangue', 'blmTon', 'blmCertitude', 'souvenirsPertinents', 'langueMessageLocal', 'formulerEntree', 'demanderReanalyse', 'blmCorrigerReponse', 'verifierFinaleBLM', 'reponseSalutation', 'estSalutation', 'explain', 'saveConv', 'flushConvs', 'H', 'setState', 'addStream', 'addOnce', 'add'];
+const ALL_FN = ['pump', 'promesseMoteurValide', 'runItem', 'choisirParleur', 'preparerEntreeMoteur', 'orchestrerBLM', 'etatInitial', 'blmComprehension', 'blmMemoire', 'blmLangue', 'blmTon', 'blmCertitude', 'souvenirsPertinents', 'langueMessageLocal', 'formulerEntree', 'demanderReanalyse', 'blmCorrigerReponse', 'verifierFinaleBLM', 'reponseSalutation', 'estSalutation', 'explain', 'finaliserSortie', 'saveConv', 'flushConvs', 'H', 'setState', 'addStream', 'addOnce', 'add', 'lireSeances', 'ecrireSeances', 'sessionActiveId', 'definirSeanceActive', 'trouverSeance', 'assurerSeance'];
 function grabFn(nom) {
   const html = fs.readFileSync(path.join(DIR, 'conversation.html'), 'utf8');
   let m = html.match(new RegExp('^function ' + nom + '\\([^)]*\\)[^\\n]*$', 'm'));
@@ -350,10 +350,10 @@ async function partieB() {
     R.pump();
     tours = 0;
     while (R.posted().filter(m => m.cmd === 'chat').length < 2 && tours++ < 300) await new Promise(r => setImmediate(r));
-    await R.respondChat('Réponse neuve.');
+    await R.respondChat('Voici une réponse neuve à ta nouvelle question.');
     await R.drain();
     const h2 = R.hists()['geeko'];
-    check('B2 tour suivant propre', h2[h2.length - 1].content === 'Réponse neuve.' && R.chats.length === 2);
+    check('B2 tour suivant propre', h2[h2.length - 1].content === 'Voici une réponse neuve à ta nouvelle question.' && R.chats.length === 2);
   }
 }
 

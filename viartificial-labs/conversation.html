@@ -128,6 +128,16 @@ body[data-min="1"] .msn{display:none}
 <section id="settings" hidden aria-label="Réglages">
 <h2>⚙️ Réglages</h2>
 <p id="pMsg" role="status" style="font-size:.85rem;color:#b9c0e6"></p>
+<div id="engineStatus" role="status" aria-live="polite" style="margin:8px 0;border:1px solid rgba(39,209,127,.45);border-radius:12px;padding:10px 12px;background:rgba(39,209,127,.06);font-size:.82rem">
+<h4 style="font-size:.88rem;color:#fff;margin-bottom:6px">État réel du moteur et des BLM</h4>
+<p>Moteur actif : <strong id="stEngine">—</strong></p>
+<p>Modèle utilisé : <span id="stModel">—</span></p>
+<p>BLM : <strong id="stBLM">non testés</strong></p>
+<p id="stBLMDetail" style="color:#b9c0e6">Auto-test non lancé.</p>
+<p id="stLLM" style="color:#b9c0e6">Test LLM : aucun test effectué.</p>
+<p id="stPath" style="color:#8f96bd">Dernier parcours : aucune requête depuis le chargement.</p>
+<p><button id="blmTestBtn" type="button">Relancer l’auto-test BLM</button></p>
+</div>
 <p style="font-size:.85rem">Accord modèle IA : <strong id="consentState">—</strong></p>
 <p style="font-size:.85rem"><label style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="pulseChk" type="checkbox" checked style="width:44px;min-height:44px"> Pulsation des réponses (mot à mot)</label></p>
 <p style="font-size:.85rem"><label style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="xreadChk" type="checkbox" checked style="width:44px;min-height:44px"> Relecture croisée Geeko ↔ Geekette (une phrase max)</label></p>
@@ -244,9 +254,6 @@ body[data-min="1"] .msn{display:none}
 <script>window.__blmMs={exports:{}};window.module=window.__blmMs;</script>
 <script src="./src/blm-mesures.js"></script>
 <script>window.BLMMesures=window.module.exports;window.module={exports:{}};</script>
-<script>window.__blmFo={exports:{}};window.module=window.__blmFo;</script>
-<script src="./src/blm-formation.js"></script>
-<script>window.BLMFormation=window.module.exports;window.module={exports:{}};</script>
 <script>window.__cosReg={exports:{}};window.module=window.__cosReg;</script>
 <script src="./src/cos-registre.js"></script>
 <script>window.COSRegistre=window.module.exports;window.module={exports:{}};</script>
@@ -295,6 +302,11 @@ function addPulsed(bot,text,moteur){
   return d;
 }
 var eng=ViaProviders.load();
+// États RÉELS, jamais déduits d'un simple réglage sélectionné : le LLM distant
+// n'est « actif » qu'après un test réussi, les BLM qu'après la batterie.
+var blmStatus={state:'untested',total:0,reussis:0,refuses:[],message:'auto-test non lancé',at:0};
+var llmStatus={state:'unverified',provider:null,baseUrl:'',model:'',detail:'aucun test effectué',at:0};
+window.__blmReady=false;
 var loadArmed=false; // vrai uniquement après appui explicite sur « Charger le modèle » (jamais auto)
 // Migration : un ancien réglage manuel « webllm » ne doit plus bloquer le parcours
 // automatique. Bascule vers le mode local automatique (une seule fois) SANS
@@ -346,6 +358,7 @@ function setState(st,msg){
   var lb=document.getElementById('loadBar'),lbtn=document.getElementById('loadBtn');
   if(lb){var granted=eng.provider==='local'&&ViaLocalEngine.getConsent()==='granted';lb.hidden=!(granted&&(st==='idle'||st==='error'||st==='checking'||st==='downloading'||st==='loading'));
     if(lbtn){var mb2='≈390 Mo';try{var pk2=ViaLocalEngine.pickModel(window.__viaCap||null);if(pk2&&pk2.downloadMB)mb2='≈'+pk2.downloadMB+' Mo';}catch(e){};if(st==='downloading'||st==='loading'||st==='checking'){lbtn.disabled=true;lbtn.innerHTML='⏳ '+(m[0]||'Chargement…')+' ('+mb2+')';}else{lbtn.disabled=false;lbtn.innerHTML=(st==='error'?'↻ Recharger le modèle':'📥 Charger le modèle local')+' ('+mb2+' conservés en cache après le 1er chargement)';}}}
+  try{if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(e){}
 }
 // Cause réelle, en clair : jamais de message générique quand le code est connu.
 function explain(e){
@@ -360,7 +373,103 @@ function explain(e){
   if(code==='ABORTED')return 'Annulé à ta demande.';
   return msg;
 }
-function fillSettings(){var pp=document.getElementById('pProvider');if(pp)pp.value=eng.provider;document.getElementById('pUrl').value=eng.baseUrl||'';document.getElementById('pModel').value=eng.model||'';}
+// État réellement constatable, jamais déduit du menu : un fournisseur choisi
+// n'est pas un moteur chargé, et une adresse Ollama saisie n'est pas un serveur
+// qui répond. Le LLM distant reste « non vérifié » jusqu'à un test réussi.
+function etatMoteurReel(){
+  var e=eng||{provider:'local'},out={provider:e.provider,label:'',etat:'',model:'',ready:false,llmDetail:'',phase:''};
+  if(e.provider==='local'){
+    out.label='Moteur local CPU/WASM (cet appareil)';
+    var sm={};try{sm=ViaLocalEngine.summary();}catch(x){}
+    out.phase=sm.phase||'idle';out.model=sm.model||'(aucun modèle chargé)';
+    if(out.phase==='ready'||out.phase==='generating'){out.etat='prêt';out.ready=true;}
+    else if(out.phase==='downloading')out.etat='téléchargement…';
+    else if(out.phase==='loading')out.etat='chargement…';
+    else if(out.phase==='error')out.etat='erreur';
+    else out.etat='non chargé';
+    out.llmDetail='modèle local '+(out.ready?'chargé':'non chargé')+' — '+out.model;
+  }else if(e.provider==='ollama'||e.provider==='custom'){
+    out.label=(e.provider==='ollama'?'Ollama':'Endpoint compatible OpenAI')+(e.baseUrl?' — '+e.baseUrl:' — adresse non renseignée');
+    out.model=e.model||'(non précisé)';
+    var meme=(llmStatus&&llmStatus.provider===e.provider&&llmStatus.baseUrl===(e.baseUrl||'')&&llmStatus.model===(e.model||''));
+    if(meme&&llmStatus.state==='ok'){out.etat='répond (testé)';out.ready=true;out.llmDetail=llmStatus.detail||'test réussi';}
+    else if(meme&&llmStatus.state==='error'){out.etat='échec du test';out.llmDetail=llmStatus.detail||'échec du test';}
+    else{out.etat='configuré, non vérifié';out.llmDetail='aucun test effectué pour cette adresse/modèle';}
+  }else{
+    out.label='Aucun moteur (désactivé)';out.model='—';out.etat='désactivé';out.llmDetail='aucun moteur sélectionné';
+  }
+  return out;
+}
+function etiquetteBLM(){
+  if(!blmStatus||blmStatus.state==='untested')return 'non testés';
+  if(blmStatus.state==='ok')return 'chargés ('+blmStatus.reussis+'/'+blmStatus.total+')';
+  if(blmStatus.state==='partial')return 'partiels ('+blmStatus.reussis+'/'+blmStatus.total+')';
+  return 'erreur'+(blmStatus.total?(' ('+blmStatus.reussis+'/'+blmStatus.total+')'):'');
+}
+function paintEngineStatus(){
+  try{
+    var er=etatMoteurReel();
+    var se=document.getElementById('stEngine');if(se)se.textContent=er.label+' — '+er.etat;
+    var sm=document.getElementById('stModel');if(sm)sm.textContent=er.model;
+    var sb=document.getElementById('stBLM');if(sb)sb.textContent=etiquetteBLM();
+    var sd=document.getElementById('stBLMDetail');
+    if(sd){if(blmStatus.state==='untested')sd.textContent='Auto-test non lancé : appuie sur « Charger le LLM + BLM » ou « Relancer l’auto-test BLM ».';else if(blmStatus.refuses&&blmStatus.refuses.length)sd.textContent='Exemples refusés : '+blmStatus.refuses.join(', ');else sd.textContent=blmStatus.message||'';}
+    var sl=document.getElementById('stLLM');if(sl)sl.textContent='Test LLM : '+(er.llmDetail||'aucun test effectué');
+    var sp=document.getElementById('stPath');if(sp)sp.textContent='Dernier parcours : '+(window.__viaDernierParcours||'aucune requête depuis le chargement');
+  }catch(e){}
+}
+// Batterie BLM complète (85 exemples exigés) : rapporte les identifiants exacts
+// refusés. Ne déclare JAMAIS « chargés » si un seul exemple échoue.
+function executerAutoTestBLM(){
+  var B={comprehension:window.BLMComprehension,langue:window.BLMLangue,registre:window.BLMRegistre,memoire:window.BLMMemoire,philo:window.BLMPhilo,coherence:window.BLMCoherence,contrat:window.BLMContrat,correction:window.BLMCorrection,routage:window.BLMRoutage,savoir:window.BLMSavoir,budget:window.BLMBudget,couts:window.BLMCouts,conscience:window.BLMConscience,securite:window.BLMSecurite,journal:window.BLMJournal};
+  try{
+    if(!window.BLMExemples||!window.BLMExemples.batterie)throw new Error('module d’exemples BLM absent');
+    var bat=window.BLMExemples.batterie(B);
+    var refuses=(bat.details||[]).filter(function(d){return d&&!d.ok&&!d.attente;}).map(function(d){return d.id+' ['+d.bloc+']';});
+    blmStatus={state:bat.ok?'ok':(bat.reussis>0?'partial':'error'),total:bat.total,reussis:bat.reussis,refuses:refuses,message:bat.ok?'batterie complète réussie':'batterie incomplète',at:Date.now()};
+    window.__blmReady=!!bat.ok;
+  }catch(e){
+    blmStatus={state:'error',total:0,reussis:0,refuses:[],message:(e&&e.message)?e.message:String(e),at:Date.now()};
+    window.__blmReady=false;
+  }
+  paintEngineStatus();
+  return blmStatus;
+}
+// Test LLM réellement distinct du choix du fournisseur. Local : résumé du moteur.
+// Distant : un vrai échange court (pré-vol Ollama inclus), avec l'adresse testée
+// et le code d'erreur affichés en cas d'échec.
+function testerLLM(timeoutMs){
+  return new Promise(function(resolve){
+    var e=eng||{};
+    var bot=(typeof botsById!=='undefined'&&(botsById[selectedBots[0]]||botsById[q]))||{id:'via',name:'ViA',specialty:'',personality:''};
+    function fin(state,detail,code){
+      llmStatus={provider:e.provider,baseUrl:e.baseUrl||'',model:e.model||'',state:state,detail:detail,code:code||null,at:Date.now()};
+      paintEngineStatus();
+      resolve({ok:state==='ok',state:state,detail:detail,code:code||null});
+    }
+    if(e.provider==='none'){fin('error','Aucun moteur sélectionné.');return;}
+    if(e.provider==='local'){
+      var sm={};try{sm=ViaLocalEngine.summary();}catch(x){}
+      if(sm.phase==='ready'||sm.phase==='generating')fin('ok','modèle local chargé — '+(sm.model||'?'));
+      else fin('error','modèle local non chargé (phase : '+(sm.phase||'idle')+').');
+      return;
+    }
+    var base=String(e.baseUrl||'').trim();
+    if(!base){fin('error','adresse vide : aucun serveur '+e.provider+' à contacter.');return;}
+    if(typeof ViaProviders==='undefined'||!ViaProviders.chat){fin('error','couche fournisseur non chargée.');return;}
+    var c=new AbortController(),done=false;
+    var t=setTimeout(function(){if(!done){done=true;try{c.abort();}catch(x){}fin('error','délai dépassé (15 s) : aucune réponse de '+base+'.','TIMEOUT');}},timeoutMs||15000);
+    var key=null;try{key=document.getElementById('pKey').value||null;}catch(x){}
+    ViaProviders.chat(e,bot,[{role:'user',content:'Dis juste : test OK.'}],c.signal,key).then(function(r){
+      if(done)return;done=true;clearTimeout(t);fin('ok','réponse reçue de '+base+' : '+String(r).slice(0,80));
+    },function(err){
+      if(done)return;done=true;clearTimeout(t);
+      var code=(err&&err.code)||null;
+      fin('error',((err&&err.message)||'échec')+(code?' ['+code+']':'')+' — adresse testée : '+base,code);
+    });
+  });
+}
+function fillSettings(){var pp=document.getElementById('pProvider');if(pp)pp.value=eng.provider;document.getElementById('pUrl').value=eng.baseUrl||'';document.getElementById('pModel').value=eng.model||'';llmStatus={state:'unverified',provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',detail:'aucun test effectué',at:0};paintEngineStatus();}
 function consentShown(v){document.getElementById('consentBar').hidden=!v;}
 function refreshConsent(){
   var c=ViaLocalEngine.getConsent();
@@ -372,7 +481,7 @@ function refreshConsent(){
   if(st)st.textContent=c==='granted'?'accordé':c==='later'?'reporté (redemandé à l’envoi)':c==='withdrawn'?'retiré':'non demandé';
   paintPick(window.__viaCap||null);
   var lic=document.getElementById('consentLicense');if(lic)lic.textContent='Apache 2.0 — usage autorisé pour discuter avec les SuperBots sur cet appareil.';
-  paintStorage();paintIdCard();
+  paintStorage();paintIdCard();paintEngineStatus();
 }
 // Taille réelle par appareil détecté (sans télécharger) + blocage explicite
 // si aucun moteur local ne convient. Ne conclut jamais sur « tout le téléphone ».
@@ -394,20 +503,29 @@ function paintPick(cap){
 // Version réellement chargée (à bumper à chaque publication : repère
 // anti-décalage local/Pages/cache) + moteur réellement utilisé (à distinguer
 // de « site accessible en ligne », qui ne dit rien de l'inférence).
-window.__VIA_BUILD = '2026-11-04-parcours11+110BLM';
+window.__VIA_BUILD = '2026-11-08-parcours12+110BLM';
 function paintDiag(cap){
   var el=document.getElementById('diagDetail');if(!el)return;
   cap=cap||(ViaLocalEngine.lastDetect?ViaLocalEngine.lastDetect():null);
   if(!cap){el.textContent='détection en cours…';return;}
   var L=['contexte sécurisé : '+(cap.secure?'oui':'NON'),
     'WebGPU : non utilisé (moteur CPU/WASM seul)',
-    'WebAssembly (moteur CPU) : '+(cap.wasm?'oui':'non) — requis')];
-  try{var pk=ViaLocalEngine.pickModel(cap);L.push('moteur sélectionné : '+(pk.error?('aucun ('+pk.error+')'):pk.backend+' / '+(pk.id||'auto')));}catch(e){}
-  try{if(eng.provider==='local'){var sm=ViaLocalEngine.summary();if(sm){L.push('moteur actif : '+(sm.backend||'?')+' / modèle : '+(sm.model||'—'));if(sm.tokenizer)L.push('tokenizer : '+sm.tokenizer);if(sm.mode&&sm.mode!=='—')L.push('mode : '+sm.mode);}}else{L.push('moteur actif : '+eng.provider+(eng.model?' / '+eng.model:'')+(eng.baseUrl?' ('+eng.baseUrl+')':''));L.push('moteur WASM : en pause (fournisseur manuel sélectionné, pas un BLM)');}}catch(e){}
+    'WebAssembly (moteur CPU) : '+(cap.wasm?'oui':'non — requis')];
+  try{var pk=ViaLocalEngine.pickModel(cap);L.push('modèle local sélectionnable : '+(pk.error?('aucun ('+pk.error+')'):pk.backend+' / '+(pk.id||'auto')));}catch(e){}
+  var er={};try{er=etatMoteurReel();}catch(e){}
+  L.push('moteur actif : '+(er.label||'?')+' — '+(er.etat||'?'));
+  L.push('modèle utilisé : '+(er.model||'—'));
+  try{
+    if(er.provider==='local'){var sm=ViaLocalEngine.summary();if(sm){if(sm.tokenizer)L.push('tokenizer : '+sm.tokenizer);if(sm.mode&&sm.mode!=='—')L.push('mode : '+sm.mode);if(sm.threads)L.push('threads : '+sm.threads);}}
+    else{var sm2=ViaLocalEngine.summary();L.push('moteur WASM local : '+((sm2&&(sm2.phase==='ready'||sm2.phase==='generating'))?'également chargé':'non chargé / en pause'));}
+  }catch(e){}
+  L.push('BLM : '+etiquetteBLM());
+  if(blmStatus.refuses&&blmStatus.refuses.length)L.push('exemples BLM refusés : '+blmStatus.refuses.join(', '));
+  L.push('test LLM : '+((llmStatus&&llmStatus.detail)||'aucun test effectué'));
   if(cap.reasons&&cap.reasons.length)L.push('causes : '+cap.reasons.join(' | '));
   else L.push('causes : aucune (appareil compatible)');
-  try{if(eng.provider==='local'){var sm2=ViaLocalEngine.summary();if(sm2){if(sm2.backend)L.push('moteur actif : '+sm2.backend+(sm2.model?' / '+sm2.model:''));if(sm2.threads)L.push('threads : '+sm2.threads);if(sm2.tokenizer)L.push('tokenizer : '+sm2.tokenizer);}}}catch(e){}
-  try{L.push('build : '+(window.__VIA_BUILD||'?'));L.push('inférence : '+(eng.provider==='local'?'locale (cet appareil, CPU/WASM)':'DISTANTE ('+eng.provider+' — le site reste joignable en ligne, l’inférence ne l’est pas)'));}catch(e){}
+  L.push('build : '+(window.__VIA_BUILD||'?'));
+  L.push('inférence : '+(er.provider==='local'?'locale (cet appareil, CPU/WASM)':(er.provider==='ollama'||er.provider==='custom')?'DISTANTE ('+er.provider+' — adresse configurée ; le site reste joignable en ligne, l’inférence dépend du serveur)':'aucune (moteur désactivé)'));
   el.textContent=L.join('\n');
 }
 function paintStorage(){
@@ -496,56 +614,54 @@ document.getElementById('llmBlmBtn').onclick=function(){
   if(!msg||btn.disabled)return;
   btn.disabled=true;
   function dire(t){msg.textContent=t;}
-  function finir(){btn.disabled=false;}
-  // 1) BLM d'abord, sans LLM.
-  try{
-    if(!window.BLMMemoire||!window.BLMPhilo||!window.BLMCoherence||!window.BLMCorrection)throw new Error('modules BLM non chargés');
-    var s=BLMMemoire.classerSouvenir({projet:'via',intention:'demande',type:'evolution',texte:'test BLM',statut:'actif'});
-    var ctx=BLMMemoire.restaurerSurLancement([s],{app:'via'});
-    var v=BLMPhilo.verifierReponse({langueOk:true,grammaireOk:true,pertinent:true,repetition:false,registreOk:true,coherent:true});
-    if(!ctx.length||!v.ok)throw new Error('auto-test BLM refusé');
-    if(!window.BLMExemples||!BLMExemples.batterie)throw new Error('exemples BLM non chargés');
-    var bat=BLMExemples.batterie({comprehension:window.BLMComprehension,langue:window.BLMLangue,registre:window.BLMRegistre,memoire:window.BLMMemoire,philo:window.BLMPhilo,coherence:window.BLMCoherence,contrat:window.BLMContrat,correction:window.BLMCorrection,routage:window.BLMRoutage,savoir:window.BLMSavoir,budget:window.BLMBudget,couts:window.BLMCouts,conscience:window.BLMConscience,securite:window.BLMSecurite,journal:window.BLMJournal});
-    if(!bat.ok)throw new Error('auto-test BLM refusé ('+bat.reussis+'/'+bat.total+' exemples)');
-    window.__blmReady=true;
-  }catch(e){dire('BLM indisponibles : '+(e&&e.message?e.message:e));finir();return;}
-  // 2) LLM actuellement sélectionné.
-  var bot=botsById[selectedBots[0]]||botsById[q];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){dire('Aucun serveur LLM configuré. Les BLM sont prêts. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');finir();return;}
+  function finir(){btn.disabled=false;paintEngineStatus();}
+  // 1) BLM : auto-test complet, indépendant du LLM. Un échec n'est jamais
+  // transformé en succès et les identifiants refusés sont affichés.
+  var bs=executerAutoTestBLM();
+  var blmTxt='BLM : '+etiquetteBLM();
+  if(bs.refuses&&bs.refuses.length)blmTxt+=' — refusé(s) : '+bs.refuses.join(', ');
+  else if(bs.state!=='ok')blmTxt+=' — '+bs.message;
+  // 2) LLM réellement sélectionné : test séparé, résultat séparé.
+  var baseTest=String(eng.baseUrl||'').trim();
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!baseTest){
+    llmStatus={provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',state:'error',detail:'adresse vide : aucun serveur à contacter',at:Date.now()};
+    dire(blmTxt+' · LLM '+eng.provider+' : aucun serveur configuré. Renseigne une adresse réellement joignable dans Réglages, ou choisis le moteur local.');
+    finir();return;
+  }
   if(eng.provider==='local'){
-    flushConvs();loadArmed=true;setState('checking');dire('BLM prêts. Chargement du modèle local…');
-    ensureEngine().then(function(){updateIdCard();pump();dire('BLM prêts + modèle local prêt.');},function(e){dire('BLM prêts. Modèle local : '+((e&&e.message)?e.message:e));}).then(finir);
+    flushConvs();loadArmed=true;setState('checking');dire(blmTxt+' · Chargement du modèle local…');
+    ensureEngine().then(function(){updateIdCard();pump();return testerLLM();}).then(function(r){
+      dire(blmTxt+' · LLM local : '+(r.ok?'prêt — '+r.detail:'échec — '+r.detail));
+    },function(e){
+      return testerLLM().then(function(r){dire(blmTxt+' · LLM local : échec — '+((e&&e.message)?e.message:e)+' · '+r.detail);});
+    }).then(finir);
   }else if(eng.provider==='ollama'||eng.provider==='custom'){
-    var baseTest=String(eng.baseUrl||'').trim();
     var avert=[];
     if(/^http:\/\//i.test(baseTest)&&location.protocol==='https:')avert.push('page https + adresse http : le navigateur bloque l’appel (contenu mixte) — il faut une adresse https joignable');
     if(/\/\/(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|localhost|127\.)/i.test(baseTest)&&location.protocol==='https:')avert.push('adresse locale depuis un site public : l’accès réseau privé est bloqué sans relais — prévoir un relais https (tunnel/proxy TLS) ou le moteur local');
-    dire('BLM : prêts (moteur de compréhension OK, indépendant). Test LLM '+eng.provider+'…'+(avert.length?' Avertissement navigateur : '+avert.join(' ; ')+'.':''));
-    var c=new AbortController(),done=false;
-    var t=setTimeout(function(){if(!done){done=true;c.abort();}},15000);
-    ViaProviders.chat(eng,bot,[{role:'user',content:'Dis juste : test OK.'}],c.signal,document.getElementById('pKey').value||null).then(function(r){
-      if(done)return;done=true;clearTimeout(t);dire('BLM : prêts. LLM '+eng.provider+' : OK — '+String(r).slice(0,80));
-    }).catch(function(e){
-      if(done)return;done=true;clearTimeout(t);
-      var dest=baseTest.replace(/\/$/,'')+(eng.provider==='ollama'?'/api/chat':'/chat/completions');
-      var apiNom=eng.provider==='ollama'?'Ollama':'OpenAI';
-      var m='BLM : prêts. LLM '+eng.provider+' : échec — '+((e&&e.message)?e.message:e)+'. Adresse testée : '+(baseTest?('POST '+dest):'(vide — rien envoyé)')+'. Cette adresse ne répond pas comme une API '+apiNom+'. Choix : (1) saisir dans Réglages l’adresse d’un serveur réellement joignable depuis cet appareil ; (2) utiliser le moteur local déjà proposé (fournisseur « local »).';
-      if(e&&e.code==='HTTP_405'){
-        m+=' Diagnostic du serveur…';dire(m);
+    setState('checking');dire(blmTxt+' · Test LLM '+eng.provider+'…'+(avert.length?' Avertissement navigateur : '+avert.join(' ; ')+'.':''));
+    testerLLM(15000).then(function(r){
+      if(r.ok){setState('ready');dire(blmTxt+' · LLM '+eng.provider+' : OK — '+r.detail);return;}
+      setState('idle');
+      var m=blmTxt+' · LLM '+eng.provider+' : échec — '+r.detail+'. Choix : (1) saisir une adresse de serveur réellement joignable depuis cet appareil ; (2) utiliser le moteur local proposé (fournisseur « local »).';
+      if(r.code==='HTTP_405'){
+        dire(m+' Diagnostic du serveur…');
         diagServeur(baseTest).then(function(d){
-          var r=d.racine,t=d.tags,verdict;
-          var estOllama=(r.status===200&&/ollama is running/i.test(r.body))||(t.status===200&&/models/i.test(t.body));
-          if(estOllama&&t.status===200)verdict='Le serveur répond comme Ollama aux infos mais refuse POST /api/chat : un intermédiaire (proxy, passerelle) modifie les requêtes, ou les versions divergent. Détail tags : '+t.body.slice(0,120);
-          else if(estOllama)verdict='Ollama identifié à cette adresse (racine OK) mais /api/chat et /api/tags anormaux : version ou intermédiaire à vérifier côté serveur.';
-          else if(r.status||t.status){var corps=(r.body||'')+' '+(t.body||'');var versPages=/Content-Security-Policy|default-src 'none'|github\.io|github/i.test(corps);verdict=versPages?'La requête est partie vers GitHub Pages (page 404 GitHub), pas vers un serveur Ollama : le champ Adresse est vide ou invalide — le saisir dans Réglages.':'Quelque chose répond à cette adresse mais pas comme Ollama (racine HTTP '+(r.status||r.erreur||'?')+(r.body?' « '+r.body.slice(0,60)+' »':'')+' / tags HTTP '+(t.status||t.erreur||'?')+(t.body?' « '+t.body.slice(0,60)+' »':'')+') : vérifie protocole, hôte, port et chemin de l’adresse saisie.';}
-          else verdict='Rien ne répond à cette adresse ('+(r.erreur||t.erreur||'réseau')+') : adresse erronée, serveur éteint, réseau différent, pare-feu, ou blocage navigateur (page https vers http, ou réseau privé sans relais). Si Ollama tourne sur une machine du même réseau, elle doit être joignable en https ou via un relais, sinon utilise le moteur local.';
+          var rr=d.racine,tt=d.tags;
+          var estOllama=(rr.status===200&&/ollama is running/i.test(rr.body))||(tt.status===200&&/models/i.test(tt.body));
+          var verdict=estOllama?'Le serveur répond comme Ollama mais refuse POST /api/chat : un intermédiaire (proxy, passerelle) modifie les requêtes, ou les versions divergent.':'Réponse non-Ollama à cette adresse (racine HTTP '+(rr.status||rr.erreur||'?')+', tags HTTP '+(tt.status||tt.erreur||'?')+') : vérifie protocole, hôte, port et chemin.';
           dire(m+' '+verdict);
         });
-        return;
-      }
-      dire(m);
+      }else dire(m);
     }).then(finir);
-  }else{dire('BLM prêts. Aucun moteur sélectionné : choisis local ou Ollama dans Réglages.');finir();}
+  }else{
+    testerLLM().then(function(r){dire(blmTxt+' · LLM : '+r.detail);}).then(finir);
+  }
+};
+var blmTestBtn=document.getElementById('blmTestBtn');
+if(blmTestBtn)blmTestBtn.onclick=function(){
+  var b=executerAutoTestBLM(),msg=document.getElementById('llmBlmMsg');
+  if(msg)msg.textContent='BLM : '+etiquetteBLM()+(b.refuses&&b.refuses.length?' — refusé(s) : '+b.refuses.join(', '):(b.state==='ok'?'':' — '+b.message));
 };
 document.getElementById('loadBtn').onclick=function(){
   var b=this;var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
@@ -555,13 +671,13 @@ document.getElementById('loadBtn').onclick=function(){
   ensureEngine().then(function(){updateIdCard();pump();},function(){}).then(function(){b.disabled=false;});
 };
 fillSettings();
-document.getElementById('pProvider').onchange=function(){eng.provider=this.value;eng.baseUrl=document.getElementById('pUrl').value.trim();eng.model=document.getElementById('pModel').value.trim();ViaProviders.save(eng);fillSettings();};
-document.getElementById('pUrl').onchange=function(){eng.baseUrl=this.value.trim();ViaProviders.save(eng);};
-document.getElementById('pModel').onchange=function(){eng.model=this.value.trim();ViaProviders.save(eng);};
+document.getElementById('pProvider').onchange=function(){eng.provider=this.value;eng.baseUrl=document.getElementById('pUrl').value.trim();eng.model=document.getElementById('pModel').value.trim();ViaProviders.save(eng);fillSettings();setState(eng.provider==='local'?(ViaLocalEngine.getConsent()==='granted'?'idle':'needs-consent'):'idle');paintDiag();};
+document.getElementById('pUrl').onchange=function(){eng.baseUrl=this.value.trim();ViaProviders.save(eng);llmStatus={state:'unverified',provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',detail:'aucun test effectué',at:0};paintEngineStatus();paintDiag();};
+document.getElementById('pModel').onchange=function(){eng.model=this.value.trim();ViaProviders.save(eng);llmStatus={state:'unverified',provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',detail:'aucun test effectué',at:0};paintEngineStatus();paintDiag();};
 document.getElementById('withdrawBtn').onclick=function(){flushConvs();ViaLocalEngine.setConsent('withdrawn');enginePromise=null;lastFailure=null;try{ViaLocalEngine.unload();}catch(e){}try{if(window.BLMJournal)window.BLMJournal.effacer();}catch(e){}setState('needs-consent');refreshConsent();document.getElementById('pMsg').textContent='Accord retiré. Les fichiers restent en cache : supprime-les ci-dessous si besoin.';};
 document.getElementById('deleteModelsBtn').onclick=function(){flushConvs();if(!confirm('Supprimer les fichiers du modèle téléchargé ? Ils seront re-téléchargés au prochain usage autorisé.'))return;var self=this;self.disabled=true;ViaLocalEngine.deleteModels().then(function(n){enginePromise=null;document.getElementById('pMsg').textContent='Modèles supprimés ('+n+' cache(s) vidé(s)).';setState(ViaLocalEngine.getConsent()==='granted'?'idle':'needs-consent');paintStorage();}).catch(function(e){document.getElementById('pMsg').textContent='Suppression incomplète : '+(e&&e.message?e.message:e);}).finally(function(){self.disabled=false;});};
 document.getElementById('pUnload').onclick=function(){flushConvs();try{ViaLocalEngine.unload();}catch(e){}enginePromise=null;lastFailure=null;loadArmed=false;document.getElementById('pProg').textContent='Modèle déchargé.';setState('idle');};
-document.getElementById('pTest').onclick=function(){var k=document.getElementById('pKey').value;document.getElementById('pMsg').textContent='Test en cours…';var c=new AbortController();var t=setTimeout(function(){c.abort();},15000);ViaProviders.chat(eng,b,[{role:'user',content:'Dis juste : test OK.'}],c.signal,k||null).then(function(r){document.getElementById('pMsg').textContent='Test réussi : '+r.slice(0,80);}).catch(function(e){document.getElementById('pMsg').textContent='Échec : '+e.message;}).finally(function(){clearTimeout(t);});};
+document.getElementById('pTest').onclick=function(){var k=document.getElementById('pKey').value;document.getElementById('pMsg').textContent='Test en cours…';var c=new AbortController();var t=setTimeout(function(){c.abort();},15000);ViaProviders.chat(eng,b,[{role:'user',content:'Dis juste : test OK.'}],c.signal,k||null).then(function(r){llmStatus={provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',state:'ok',detail:'réponse reçue : '+String(r).slice(0,80),at:Date.now()};paintEngineStatus();document.getElementById('pMsg').textContent='Test réussi : '+r.slice(0,80);}).catch(function(e){llmStatus={provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',state:'error',detail:((e&&e.message)||'échec')+(e&&e.code?' ['+e.code+']':''),at:Date.now()};paintEngineStatus();document.getElementById('pMsg').textContent='Échec : '+e.message;}).finally(function(){clearTimeout(t);});};
 add('bot',b.greeting+' — '+cfg.disclaimer);
 thread.lastChild.querySelector('.meta').textContent=b.name+' — accueil prédéfini (pas une réponse IA)';
 botsById={};cfg.bots.forEach(function(x){botsById[x.id]=x;});
@@ -610,8 +726,9 @@ function runItem(item){
         var h=H(bot.id);h.push({role:'user',content:item.text});
         var orch=orchestrerBLM(item.text,bot,h);
         try{if(window.BLMContrat){BLMContrat.tracer(orch,'registre','selection-'+bot.id,motifChoix||'');BLMContrat.tracer(orch,'parcours','requete-'+(item.id||'?'),bot.id);}}catch(xSel){}
-        var prep=preparerEntreeMoteur(orch,item.text);
+        var prep=preparerEntreeMoteur(orch,item.text,bot);
         if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
+        try{window.__viaDernierParcours='local CPU/WASM · '+bot.name+' · intention '+((orch&&orch.intention)||'?')+' · '+((prep.msgs||[]).length)+' message(s) · BLM '+etiquetteBLM();if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xP){}
         // BLM 066 : resoudreMoteur DÉTERMINE le moteur appelé (pas une trace).
         var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
         if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
@@ -703,7 +820,11 @@ function updateIdCard(){
   try{card=JSON.parse(localStorage.getItem(key)||'null');}catch(e){card=null;}
   var now=new Date(),p=function(n){return ('0'+n).slice(-2);};
   var stamp=now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(now.getDate())+' '+p(now.getHours())+':'+p(now.getMinutes());
-  var model=(ViaLocalEngine.summary().model)||ViaLocalEngine.MODELS[0].id;
+  var sm={};try{sm=ViaLocalEngine.summary();}catch(e){}
+  var model=sm.model;
+  // Aucun modèle local réellement chargé : ne pas inventer un chargement ni
+  // afficher SmolLM2 quand un moteur distant est sélectionné.
+  if(!model){paintIdCard();return;}
   if(!card||!card.token){var hh=0,s=model+stamp;for(var i=0;i<s.length;i++)hh=(hh*31+s.charCodeAt(i))>>>0;card={token:'VIA-'+hh.toString(36).toUpperCase(),firstLoaded:stamp,loads:0};}
   card.model=model;card.lastLoaded=stamp;card.loads=(card.loads||0)+1;
   try{localStorage.setItem(key,JSON.stringify(card));}catch(e){}
@@ -712,25 +833,28 @@ function updateIdCard(){
 function paintIdCard(card){
   try{if(!card)card=JSON.parse(localStorage.getItem('via-idcard')||'null');}catch(e){card=null;}
   var t=document.getElementById('idcToken');if(t)t.textContent=card?card.token:'—';
-  var m=document.getElementById('idcModel');if(m)m.textContent=card?card.model:'—';
-  var l=document.getElementById('idcLoaded');if(l)l.textContent=card?('le '+card.lastLoaded+' ('+card.loads+' chargement(s))'):'—';
+  var er={};try{er=etatMoteurReel();}catch(e){}
+  var m=document.getElementById('idcModel');if(m)m.textContent=(er.model||'—');
+  var l=document.getElementById('idcLoaded');if(l)l.textContent=(er.label||'?')+' — '+(er.etat||'?')+(card?(' · dernier chargement local : '+card.lastLoaded+' ('+card.loads+' chargement(s))'):'');
   var c0=null;try{c0=JSON.parse(localStorage.getItem(ViaLocalEngine.CONSENT_KEY||'via-consent')||'null');}catch(e){}
   var cs=document.getElementById('idcConsent');if(cs)cs.textContent=(c0&&c0.ts)?new Date(c0.ts).toLocaleString():'—';
 }
 function runRemote(item){
-  var b0=botsById[q]||botsById[selectedBots[0]];
-  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Aucun serveur LLM configuré. Les BLM sont prêts. Configure un serveur Ollama seulement si tu en as réellement un, ou choisis le moteur local disponible.');setState('idle');working=false;return Promise.resolve();}
+  var choixR=choisirParleur(selectedBots,item.text);
+  var b0=botsById[choixR.id]||botsById[q]||botsById[selectedBots[0]];
+  if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){addOnce('sys','Aucun serveur LLM configuré (BLM : '+etiquetteBLM()+'). Renseigne une adresse réellement joignable dans Réglages, ou choisis le moteur local disponible.');setState('idle');working=false;return Promise.resolve();}
   // BLM 066 : le moteur réellement appelé est celui de resoudreMoteur.
   var rmDistant=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:eng.provider,ollamaUrl:eng.baseUrl,gpuDemande:false}):{moteur:eng.provider+'-distant',repli:'',physique:true};
-  if(rmDistant.moteur==='aucun'){addOnce('sys','Erreur : '+rmDistant.repli+'. Les BLM sont prêts.');setState('error',rmDistant.repli);lastFailure={stage:'response',item:item};working=false;return Promise.resolve();}
+  if(rmDistant.moteur==='aucun'){addOnce('sys','Erreur : '+rmDistant.repli+'. BLM : '+etiquetteBLM()+'.');setState('error',rmDistant.repli);lastFailure={stage:'response',item:item};working=false;return Promise.resolve();}
   setState('responding',b0.name);
   var wait=addWait(b0);
   genCtl=new AbortController();
   var key=document.getElementById('pKey').value||null;try{var _seR=assurerSeance(b0.id);if(_seR&&!item.sessionId)item.sessionId=_seR.id;}catch(xSR){}var h=H(b0.id);h.push({role:'user',content:item.text});
   var orchR=orchestrerBLM(item.text,b0,h);
-  try{if(window.BLMContrat){BLMContrat.tracer(orchR,'registre','selection-'+b0.id,'choix-distant');BLMContrat.tracer(orchR,'parcours','requete-'+(item.id||'?'),b0.id);}}catch(xSelR){}
-  var prepR=preparerEntreeMoteur(orchR,item.text);
+  try{if(window.BLMContrat){BLMContrat.tracer(orchR,'registre','selection-'+b0.id,choixR.motif||'choix-distant');BLMContrat.tracer(orchR,'parcours','requete-'+(item.id||'?'),b0.id);}}catch(xSelR){}
+  var prepR=preparerEntreeMoteur(orchR,item.text,b0);
   if(!prepR.ok){wait.remove();addOnce('sys','Erreur : '+prepR.message);lastFailure={stage:'response',item:item};setState('error',prepR.message);return Promise.resolve();}
+  try{window.__viaDernierParcours=(eng.provider==='ollama'?'Ollama':(eng.provider==='custom'?'Endpoint compatible OpenAI':eng.provider))+' · '+b0.name+' · intention '+((orchR&&orchR.intention)||'?')+' · '+((prepR.msgs||[]).length)+' message(s) · BLM '+etiquetteBLM();if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xPR){}
   return ViaProviders.chat(eng,b0,prepR.msgs,genCtl.signal,key).then(function(r){
     try{if(item.sessionId){var _curR=null;try{_curR=sessionActiveId(b0.id);}catch(e){}if(_curR&&_curR!==item.sessionId){wait.remove();try{if(window.BLMContrat)BLMContrat.tracer(orchR,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
     r=blmCorrigerReponse(orchR,r);
@@ -767,8 +891,8 @@ function reponseSociale(bot,texte,langue){var dt='salutation-simple';try{if(wind
 function langueMessageLocal(t){var s=String(t||'');if(/[àâäéèêëîïôöùûüç]/i.test(s))return 'fr';if(/\b(le|la|les|des|est|une|vous|tu|que|pour|comment|avec)\b/i.test(s))return 'fr';if(/\b(hello|how|are|you|the|and|what|thanks|please|morning|today|with|for)\b/i.test(s))return 'en';return 'fr';}
 function souvenirsPertinents(botId,h,texteCourant){
   if(!window.BLMMemoire)return [];
-  var M=window.BLMMemoire,projet=String(botId||'courant'),base;
-  try{base=(M.filtrerEchanges?M.filtrerEchanges(h||[]):(h||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant')&&String(m.content||'').trim();})).slice(-8);}catch(e){base=[];}
+  var M=window.BLMMemoire,projet=String(botId||'courant'),base,courant=String(texteCourant||'').trim();
+  try{base=(M.filtrerEchanges?M.filtrerEchanges(h||[]):(h||[]).filter(function(m){return m&&(m.role==='user'||m.role==='assistant')&&String(m.content||'').trim();})).filter(function(m){return String((m&&m.content)||'').trim()!==courant;}).slice(-8);}catch(e){base=[];}
   var mem=base.map(function(m){var txt=String(m.content||'').slice(0,500),inten=m.role==='user'?'demande':'reponse';
     try{if(M.classerEchange)return M.classerEchange(projet,inten,txt);}catch(e){}
     return M.classerSouvenir({projet:projet,intention:inten,type:'evolution',texte:txt,statut:'actif'});});
@@ -910,9 +1034,9 @@ function orchestrerBLM(texte,bot,h){
   }}catch(errU){}
   try{if(window.BLMRoutage&&BLMRoutage.planifierBlocs){var pl=BLMRoutage.planifierBlocs(e.intention,{perimetre:e.perimetre});if(window.BLMContrat)BLMContrat.tracer(e,'routage','plan-'+pl.motif,pl.blocs.join(','));relierEtape(e,'001','002','orchestrateur-entree');}}catch(err){}
   blmMemoire(e,h);blmLangue(e);blmTon(e,bot);blmCertitude(e);
-  // Formation (blm-formation.js, après la langue : socle commun +
-  // approfondissement par bot). Jamais de texte intégral, jamais de récitation :
-  // au plus des ancres étiquetées avec source, dans la limite des faits.
+  // Formation (module optionnel, absent du dépôt : garde silencieuse ; jamais
+  // de texte intégral, jamais de récitation : au plus des ancres étiquetées
+  // avec source, dans la limite des faits).
   try{if(window.BLMFormation&&window.BLMFormation.recuperer){var _b0=null;try{_b0=(typeof botsById!=='undefined')?botsById[e.botId]:null;}catch(xB){}var _reste=Math.max(0,2-((e.faits||[]).length));if(_reste>0){var _fm=window.BLMFormation.recuperer({sujet:e.sujet||'',langue:e.langue||'fr',bot:_b0||{id:e.botId},max:_reste});if(_fm&&_fm.length){_fm.forEach(function(f){e.faits.push({texte:String(f.resume||'').slice(0,300),source:String(f.source||'formation').slice(0,120)});});if(window.BLMContrat)BLMContrat.tracer(e,'savoir','formation-'+_fm.length+'-extraits',_fm.map(function(f){return f.id;}).join(','));}}}}catch(errF2){}
   // Formule + suite (internes, jamais affichées ni transmises au moteur) :
   // formule seulement pour le salut simple (réponse directe), suite estimée
@@ -956,9 +1080,9 @@ function orchestrerBLM(texte,bot,h){
 // (005/099) puis enveloppe, puis contexte classé + savoir autorisé.
 // Ne jette jamais : le refus ({ok:false}) emprunte le parcours d'erreur
 // existant de l'appelant, jamais transformé en réponse réussie.
-function preparerEntreeMoteur(etat, texte){
+function preparerEntreeMoteur(etat, texte, bot){
   try{
-    var plan=(window.BLMRoutage&&window.BLMRoutage.planifierBlocs)?window.BLMRoutage.planifierBlocs(etat.intention,{perimetre:etat.perimetre}):{moteur:true,blocs:[],motif:'routage-absent'};
+    var plan=(window.BLMRoutage&&window.BLMRoutage.planifierBlocs)?window.BLMRoutage.planifierBlocs(etat.intention,{perimetre:etat.perimetre,forcerMoteur:(etat.intention==='salutation'&&eng&&eng.provider==='local'&&ViaLocalEngine&&ViaLocalEngine.summary&&ViaLocalEngine.summary().phase==='ready')}):{moteur:true,blocs:[],motif:'routage-absent'};
     var cpt=(window.BLMCouts&&window.BLMCouts.compteurDefaut)?window.BLMCouts.compteurDefaut():null;
     var cEtat=cpt?{appels:cpt.appels(),plafond:cpt.plafond()}:{appels:0,plafond:50};
     var env=(window.BLMBudget&&window.BLMBudget.calculerEnveloppe)?window.BLMBudget.calculerEnveloppe(plan,cEtat):{autorise:true,maxTokens:2048,motif:'budget-absent'};
@@ -973,6 +1097,33 @@ function preparerEntreeMoteur(etat, texte){
     // réellement disponibles, jamais tokens/s, FPS/IPS, GPU ni CPU%.
     try{if(window.BLMMesures&&BLMMesures.mesuresReelles){var mm=window.BLMMesures.mesuresReelles();etat.mesures={disponibles:Object.keys(mm.disponibles||{}),indisponibles:mm.indisponibles||[]};if(window.BLMContrat)BLMContrat.tracer(etat,'couts','110-mesures-reelles',(mm.disponibles?Object.keys(mm.disponibles).length:0)+'-dispo-'+(mm.indisponibles||[]).length+'-indispo');}}catch(x110){}
     var msgs=(window.BLMMemoire&&window.BLMMemoire.formulerEntreeClasse)?window.BLMMemoire.formulerEntreeClasse((etat&&etat.contexte)||[],texte,(etat&&etat.faits)||[]):formulerEntree(etat,texte);
+    msgs=msgs||[];
+    // S4 : la consigne de personnalité (ViA incluse) et le contexte BLM compact
+    // accompagnent CHAQUE appel moteur. Le texte brut de l'historique ne part
+    // toujours pas : seuls les souvenirs classés ci-dessus sont transmis.
+    var _bot=bot||((typeof botsById!=='undefined'&&etat&&etat.botId&&botsById[etat.botId])?botsById[etat.botId]:{id:'via',name:'ViA',specialty:'',personality:''});
+    var _sys='';
+    try{if(typeof ViaProviders!=='undefined'&&ViaProviders.sysPrompt)_sys=ViaProviders.sysPrompt(_bot);}catch(xSys){}
+    if(!_sys){_sys='Tu es '+(_bot.name||'ViA')+', personnage simulé sans conscience réelle. '+(_bot.specialty||'')+' '+(_bot.personality||'')+' Réponds en français, court. Tutoie toujours, jamais de « vous ». Si on te salue, salue en retour puis pose une question.';}
+    var _ctx=[];
+    if(etat){
+      if(etat.intention)_ctx.push('intention='+etat.intention);
+      if(etat.demandeType)_ctx.push('demande='+etat.demandeType);
+      if(etat.langue)_ctx.push('langue='+etat.langue);
+      if(etat.ton)_ctx.push('ton='+etat.ton);
+      if(etat.sujet)_ctx.push('sujet='+String(etat.sujet).slice(0,80));
+      if(etat.contexte&&etat.contexte.length)_ctx.push('souvenirs='+etat.contexte.length);
+      if(etat.faits&&etat.faits.length)_ctx.push('faits='+etat.faits.map(function(f){return String((f&&f.texte)||'').slice(0,60);}).join(' | '));
+      if(etat.contraintes&&etat.contraintes.length)_ctx.push('contraintes='+etat.contraintes.slice(0,4).join(' ; '));
+      if(etat.perimetre===false)_ctx.push('hors-perimetre=oui');
+      if(etat.melange)_ctx.push('melange-linguistique=oui');
+    }
+    var _ctxTxt=_ctx.length?('[Contexte BLM interne — ne pas réciter : '+_ctx.join('; ')+']'):'';
+    if(msgs.length&&msgs[0]&&msgs[0].role==='system'){
+      if(_ctxTxt)msgs[0]={role:'system',content:String(msgs[0].content||'')+'\n'+_ctxTxt};
+    }else{
+      msgs=[{role:'system',content:_sys+(_ctxTxt?'\n'+_ctxTxt:'')}].concat(msgs);
+    }
     if(window.BLMBudget&&window.BLMBudget.appliquerEnveloppe)msgs=window.BLMBudget.appliquerEnveloppe(msgs,env.maxTokens);
     // Orchestrateur de synthèse (065) : résultats rassemblés avant génération ;
     // LLM partagé pour formuler (068, consigne unique).
@@ -1048,7 +1199,26 @@ function verifierFinaleBLM(etat,rep){
     base.coherent=/salut|bonjour|coucou|hello|ça va|comment/i.test(s)&&(/\?\s*$/.test(s)||brefNonPresomptueux);
     base.repetition=etat.contexte.some(function(m){return m.texte===s;});
   } else {
+    // Vérification sujet/réponse pour tous les messages non-salutation :
+    // au moins un mot-clé du sujet doit apparaître dans la réponse
+    // (heuristique légère sur mots, pas de garantie sémantique complète).
+    var sujetMots=(etat.sujet||'').split(' ').filter(function(w){return w.length>=3;});
+    var reponseNorm=s.toLowerCase();
+    try{reponseNorm=reponseNorm.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
+    var chevauchement=0;
+    sujetMots.forEach(function(w){var wn=w.toLowerCase();try{wn=wn.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}if(reponseNorm.indexOf(wn)>=0)chevauchement++;});
+    base.pertinent=chevauchement>0||sujetMots.length===0;
     base.coherent=s.length>0&&etat.contexte.every(function(m){return m.texte!==s||etat.intention!=='question';});
+    // Une réponse à une question qui se termine par ? ne répond pas quand elle
+    // ne fait que renvoyer la question. Une réponse qui affirme quelque chose
+    // puis relance (« Oui, je parle français. Et toi ? ») reste valide.
+    if(etat.intention==='question'&&/\?\s*$/.test(s.trim())&&s.trim().length>15){
+      var avantQuestion=s.trim().replace(/\?\s*$/,'');
+      var phraseAvant=/[.!…]\s+\S/.test(avantQuestion);
+      var marqueurReponse=/\b(oui|non|si|je|j'|moi|c'est|voici|bien s[ûu]r|exact|plut[ôo]t|par exemple|il y a)\b/i.test(avantQuestion);
+      if(!phraseAvant&&!marqueurReponse)base.coherent=false;
+    }
+    base.repetition=etat.contexte.some(function(m){return m.texte===s;});
   }
   var v={ok:true,problemes:[]};
   try{if(window.BLMPhilo)v=BLMPhilo.verifierReponse(base);}catch(e){v={ok:base.langueOk&&base.grammaireOk&&base.pertinent&&!base.repetition&&base.registreOk&&base.coherent,problemes:['repli-local']};}
@@ -1062,10 +1232,11 @@ function verifierFinaleBLM(etat,rep){
   // réponse courte exigée par la consigne. Le seuil 2000c est le garde-fou
   // existant (027/tronque), pas un optimum.
   try{if(s.length>2000){tropLong=true;if(window.BLMContrat)window.BLMContrat.tracer(etat,'registre','059-longueur-pave-signale',String(s.length));}}catch(e){}
-  if(coh.verdict==='incoherent'||!v.ok||etat.contradictions.length||perso||fuite||tropLong||vecu){demanderReanalyse(etat,{bloc:'formulation',motif:(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[]).concat(vecu?['vecu-simule']:[])).join(',')||'reponse-écartée'});if(window.console&&console.warn)console.warn('[BLM] incohérent ('+(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[]).concat(vecu?['vecu-simule']:[])).join(',')+') : modèle vérifié (tentative unique).');return reponseSalutation();}
+  var motifsEcart=(coh.motifs.concat(v.problemes).concat(perso?['personnification']:[]).concat(fuite?['fuite']:[]).concat(tropLong?['longueur']:[]).concat(vecu?['vecu-simule']:[]));
+  if(coh.verdict==='incoherent'||!v.ok||etat.contradictions.length||perso||fuite||tropLong||vecu){demanderReanalyse(etat,{bloc:'formulation',motif:motifsEcart.join(',')||'reponse-écartée'});if(window.console&&console.warn)console.warn('[BLM] incohérent ('+motifsEcart.join(',')+') : modèle vérifié (tentative unique).');if(etat.intention==='salutation')return reponseSalutation();if(etat.intention==='question')return 'Je n’ai pas pu répondre à ta question. Peux-tu reformuler ?';return 'Je n’ai pas bien compris ta demande. Tu peux préciser ?';}
   return s;
 }
-form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';if(estSalutation(v)){var chx=choisirParleur(selectedBots,v);var b=botsById[chx.id];if(b){try{assurerSeance(b.id);}catch(e){}var h=H(b.id);h.push({role:'user',content:v});var orch0=null;try{orch0=orchestrerBLM(v,b,h);}catch(e){}var r0=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());var r=r0;try{if(orch0){r=blmCorrigerReponse(orch0,r0);r=verifierFinaleBLM(orch0,r);}}catch(e){r=r0;}h.push({role:'assistant',content:r});add('bot',r,b,'réponse directe (sans moteur)');saveConv(b.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b.id,issue:'succes',motif:'salutation-directe',verdict:'affiche',session:(function(){try{return sessionActiveId(b.id)||'';}catch(x){return '';}})(),redemandes:0});}catch(e){}}input.focus();return;}try{window.__qseq=(window.__qseq||0)+1;}catch(x){}queue.push({id:'q'+Date.now().toString(36)+(window.__qseq||0),text:v,cancelled:false});pump();input.focus();});
+form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.trim();if(!v)return;add('me',v);input.value='';var moteurPret=eng&&eng.provider==='local'&&ViaLocalEngine&&ViaLocalEngine.summary&&ViaLocalEngine.summary().phase==='ready';if(estSalutation(v)&&!moteurPret){var chx=choisirParleur(selectedBots,v);var b=botsById[chx.id];if(b){try{assurerSeance(b.id);}catch(e){}var h=H(b.id);h.push({role:'user',content:v});var orch0=null;try{orch0=orchestrerBLM(v,b,h);}catch(e){}var r0=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());var r=r0;try{if(orch0){r=blmCorrigerReponse(orch0,r0);r=verifierFinaleBLM(orch0,r);}}catch(e){r=r0;}h.push({role:'assistant',content:r});add('bot',r,b,'réponse directe (sans moteur)');saveConv(b.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b.id,issue:'succes',motif:'salutation-directe',verdict:'affiche',session:(function(){try{return sessionActiveId(b.id)||'';}catch(x){return '';}})(),redemandes:0});}catch(e){}}input.focus();return;}try{window.__qseq=(window.__qseq||0)+1;}catch(x){}queue.push({id:'q'+Date.now().toString(36)+(window.__qseq||0),text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
 var actCtl=null;
 function renderActs(){var el=document.getElementById('actList');el.innerHTML='';ViaActions.TOOLS.forEach(function(t){var d=document.createElement('div');var ok=ViaActions.available(t);d.textContent=(ok?'🟢 ':'🔴 ')+t.title+' — '+t.desc+' [accès : '+t.perms+']'+(t.sensitive?' [SENSIBLE : validation exigée]':'')+((t.needs&&!ok)?' [manquant : '+t.needs+']':'');var rb=document.createElement('button');rb.type='button';rb.textContent=ok?'Exécuter':'Indisponible';rb.style.cssText='margin-left:8px;min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f';rb.disabled=!ok;rb.onclick=function(){execAct(t);};d.appendChild(rb);el.appendChild(d);});}
@@ -1084,6 +1255,11 @@ try{document.getElementById('xreadChk').checked=xreadOn();}catch(e){}
 document.getElementById('xreadChk').onchange=function(){try{localStorage.setItem('via-xread',this.checked?'on':'off');}catch(e){}};
 document.getElementById('gearBtn').onclick=function(){var s=document.getElementById('settings');s.hidden=!s.hidden;if(!s.hidden){refreshConsent();paintPerms();paintDiag();}};
 refreshConsent();paintDiag();
+// Auto-test BLM au chargement : purement local, sans moteur ni réseau. Il rend
+// l'état réel visible immédiatement (chargés / partiels / erreur + exemples
+// exactement refusés) au lieu de supposer que les modules sont chargés.
+try{executerAutoTestBLM();}catch(e){}
+paintDiag();
 try{ViaLocalEngine.detect().then(function(c){window.__viaCap=c;paintPick(c);paintDiag(c);}).catch(function(){});}catch(e){}
 if(eng.provider==='local'&&ViaLocalEngine.getConsent()==='granted'){setState('idle');}else{setState(eng.provider==='local'?'needs-consent':'idle');if(eng.provider!=='local')document.getElementById('pMsg').textContent='Moteur manuel actif : '+eng.provider+'. Le modèle local automatique est en pause.';}
 ViaCaps.paint('capsLine');

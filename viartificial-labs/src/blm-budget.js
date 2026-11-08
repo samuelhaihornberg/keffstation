@@ -22,9 +22,13 @@ function calculerEnveloppe(plan, compteur, opts) {
 }
 function appliquerEnveloppe(msgs, maxTokens) {
   // Tronque par le début (plus anciens d'abord), jamais le message courant
-  // (toujours dernier). Ne refuse jamais : le refus relève du plan/plafond.
+  // (toujours dernier). Le message système (role 'system' en première
+  // position) est protégé : il contient la consigne de personnalité et ne
+  // doit jamais être coupé par la troncature. Ne refuse jamais : le refus
+  // relève du plan/plafond.
   var out = (msgs || []).slice(), max = maxTokens || BLM_BUDGET_DEFAUT, garde = 0;
-  while (out.length > 1 && estimerMessages(out) > max && garde < 50) { out.shift(); garde++; }
+  var debutProtege = (out.length > 0 && out[0] && out[0].role === 'system') ? 1 : 0;
+  while (out.length > debutProtege + 1 && estimerMessages(out) > max && garde < 50) { out.shift(); garde++; }
   return out;
 }
 module.exports = { calculerEnveloppe: calculerEnveloppe, appliquerEnveloppe: appliquerEnveloppe, estimerTokens: estimerTokens, estimerMessages: estimerMessages, DEFAUT: BLM_BUDGET_DEFAUT, MIN: BLM_BUDGET_MIN, MAX: BLM_BUDGET_MAX };

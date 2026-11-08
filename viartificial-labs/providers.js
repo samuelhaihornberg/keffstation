@@ -67,7 +67,7 @@
     var base = (cfg.baseUrl || '').replace(/\/$/, '');
     // Garde-fou central : jamais de POST relatif (GitHub Pages) sans adresse.
     if ((cfg.provider === 'ollama' || cfg.provider === 'custom') && !base) throw err('NO_ENGINE', 'Aucun serveur LLM configuré : renseigne l’adresse du serveur dans Réglages, ou choisis le moteur local.');
-    var messages = [{ role: 'system', content: sysPrompt(bot) }].concat(history);
+    var messages = (history && history.length && history[0] && history[0].role === 'system') ? history.slice() : [{ role: 'system', content: sysPrompt(bot) }].concat(history);
     var headers = { 'Content-Type': 'application/json' };
     var url, body;
     if (cfg.provider === 'ollama') {

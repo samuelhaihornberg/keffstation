@@ -12,7 +12,7 @@ var PLAN_STANDARD = ['019', '020', '021', '022', '023', '024', '029', '035', '03
 function planifierBlocs(intention, opts) {
   var o = opts || {};
   if (o.perimetre === false) return { blocs: PLAN_REPLI.slice(), minimal: true, moteur: false, motif: 'hors-perimetre' };
-  if (intention === 'salutation') return { blocs: PLAN_SALUTATION.slice(), minimal: false, moteur: false, motif: 'salutation-sans-moteur' };
+  if (intention === 'salutation') return { blocs: PLAN_SALUTATION.slice(), minimal: false, moteur: !!o.forcerMoteur, motif: o.forcerMoteur ? 'salutation-avec-moteur' : 'salutation-sans-moteur' };
   if (intention === 'question' || intention === 'message') return { blocs: PLAN_STANDARD.slice(), minimal: false, moteur: true, motif: 'parcours-standard' };
   return { blocs: PLAN_MINIMAL.slice(), minimal: true, moteur: false, motif: 'intention-nulle' };
 }

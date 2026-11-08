@@ -1,4 +1,4 @@
-const CACHE = 'viartificial-labs-v29'; // v29 : purge le mixte ancien/nouveau après publication (même nom = l'ancien parcours restait servi).
+const CACHE = 'viartificial-labs-v30'; // v30 : JS servi réseau d'abord (fin des modules BLM périmés), cache seulement hors-ligne.
 const ASSETS = ['./', './index.html', './xsstream.html', './conversation.html', './bots.json', './providers.js', './memory.js', './actions.js', './local-engine.js', './local-wasm.js', './local-wasm-worker.js', './responsive.css', './capabilities.js', './manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :
@@ -17,7 +17,13 @@ self.addEventListener('fetch', e => {
     e.respondWith(fetch(e.request, { cache: 'no-store' }).then(res => { if (res.ok) { const c = res.clone(); caches.open(CACHE).then(cache => cache.put(e.request, c)); } return res; }).catch(() => caches.match(e.request)));
     return;
   }
-  if (/\.(js|css|png|jpg|jpeg|gif|svg|webp|woff2?|ttf|ico|json)$/.test(url.pathname)) {
+  // Code et styles : RÉSEAU D'ABORD. Un ancien module BLM en cache ne doit
+  // jamais masquer une correction publiée ; le cache ne sert qu'hors-ligne.
+  if (/\.(js|css)$/.test(url.pathname)) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }).then(res => { if (res.ok) { const c = res.clone(); caches.open(CACHE).then(cache => cache.put(e.request, c)); } return res; }).catch(() => caches.match(e.request)));
+    return;
+  }
+  if (/\.(png|jpg|jpeg|gif|svg|webp|woff2?|ttf|ico|json)$/.test(url.pathname)) {
     e.respondWith(caches.match(e.request).then(cached => {
       const net = fetch(e.request).then(res => { if (res.ok) { const c = res.clone(); caches.open(CACHE).then(cache => cache.put(e.request, c)); } return res; }).catch(() => cached);
       return cached || net;

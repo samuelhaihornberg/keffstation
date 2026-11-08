@@ -89,7 +89,7 @@ function selectionner(etat, plan, env, besoins) {
   var b = besoins || {};
   var intention = etat && etat.intention, perimetre = !etat || etat.perimetre !== false;
   if (!perimetre) return [{ id: 'repli', type: 'memoire', polarite: 'neutre', etat: 'hors-perimetre', motif: '028-hors-perimetre' }];
-  if (intention === 'salutation') return [{ id: 'repli', type: 'memoire', polarite: 'neutre', etat: 'disponible', motif: '002-salutation-sans-moteur' }];
+  if (intention === 'salutation' && !(plan && plan.moteur === true)) return [{ id: 'repli', type: 'memoire', polarite: 'neutre', etat: 'disponible', motif: '002-salutation-sans-moteur' }];
   if (env && env.autorise === false) return [{ id: 'repli', type: 'memoire', polarite: 'neutre', etat: 'refuse-budget', motif: '005/099-' + (env.motif || 'refus') }];
   // Le sélecteur consulte les besoins (bot actif, équipe, fournisseur configuré)
   // puis TRANSMET le choix à 066, qui garde ses portes et son repli.
