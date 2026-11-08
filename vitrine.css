@@ -937,7 +937,18 @@ html { scroll-behavior: smooth; }
   pointer-events: none;
 }
 
-/* Cadre vidéo : 75 % largeur, 50 % hauteur */
+/* ========================= Lumière bioluminescente jaune sur toutes les sections ========================= */
+section {
+  position: relative;
+  box-shadow:
+    0 0 20px rgba(255, 215, 0, .35),
+    0 0 45px rgba(255, 170, 0, .25),
+    inset 0 0 25px rgba(255, 215, 0, .15);
+  border: 1px solid rgba(255, 215, 0, .18);
+  animation: bioluminescent-sections 5s ease-in-out infinite alternate;
+}
+
+/* ========================= Cadre vidéo : 75 % largeur, 50 % hauteur ========================= */
 .video-frame {
   position: relative;
   width: 70vw;
@@ -946,12 +957,12 @@ html { scroll-behavior: smooth; }
   overflow: hidden;
   border-radius: clamp(14px, 2.4vw, 24px);
   background: #000;
-  border: 3px solid #ffd700;
+  border: 4px solid #ffd700;
   box-shadow:
-    0 0 25px #ffd700,
-    0 0 55px #ffaa00,
-    0 0 85px #ffd700,
-    inset 0 0 30px #ffd700,
+    0 0 30px #ffd700,
+    0 0 65px #ffaa00,
+    0 0 100px #ffd700,
+    inset 0 0 35px #ffd700,
     0 24px 70px -30px #000,
     0 0 46px -18px rgba(255, 210, 63, .32),
     0 0 90px -40px rgba(255, 61, 154, .28);
@@ -959,19 +970,31 @@ html { scroll-behavior: smooth; }
   isolation: isolate;
 }
 
+/* Bordure carrée dorée pure miroitante autour de la vidéo (en plus du cadre bioluminescent) */
+.video-frame::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: inherit;
+  border: 3px solid transparent;
+  background: linear-gradient(45deg, #ffd700, #fff200, #ffd700, #ffaa00, #ffd700) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: 10;
+  animation: or-miroitement-carre 2.5s linear infinite;
+  pointer-events: none;
+}
+
+/* Lueur intérieure douce sur le contenu de la vidéo pour renforcer le côté bioluminescent */
 .video-frame::before {
   content: "";
   position: absolute;
-  inset: -5px;
+  inset: 0;
   border-radius: inherit;
-  background: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700, #ffaa00, #ffd700);
-  background-size: 400% 400%;
-  z-index: -1;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask-composite: destination-out;
-  animation: or-miroitement 3s linear infinite;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, .12) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 @keyframes bioluminescent-or {
@@ -979,9 +1002,20 @@ html { scroll-behavior: smooth; }
   100% { box-shadow: 0 0 40px #ffeb3b, 0 0 90px #ffaa00, 0 0 130px #ffd700, inset 0 0 45px #ffd700; }
 }
 
+@keyframes bioluminescent-sections {
+  0% { box-shadow: 0 0 15px rgba(255, 215, 0, .25), 0 0 30px rgba(255, 170, 0, .18), inset 0 0 20px rgba(255, 215, 0, .08); border-color: rgba(255, 215, 0, .12); }
+  100% { box-shadow: 0 0 30px rgba(255, 215, 0, .45), 0 0 60px rgba(255, 170, 0, .35), inset 0 0 30px rgba(255, 215, 0, .18); border-color: rgba(255, 215, 0, .28); }
+}
+
 @keyframes or-miroitement {
   0% { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
+}
+
+@keyframes or-miroitement-carre {
+  0% { background-position: 0% 0%; border-color: #ffd700; }
+  50% { background-position: 100% 100%; border-color: #fff200; }
+  100% { background-position: 0% 0%; border-color: #ffd700; }
 }
 
 .video-frame-media {
