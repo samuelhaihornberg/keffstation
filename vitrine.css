@@ -1737,19 +1737,32 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(340px, 85vw, 85vh);
-  height: min(340px, 85vw, 85vh);
-  margin-top: calc(min(340px, 85vw, 85vh) / -2);
-  margin-left: calc(min(340px, 85vw, 85vh) / -2);
+  width: min(420px, 90vw, 90vh);
+  height: min(420px, 90vw, 90vh);
+  margin-top: calc(min(420px, 90vw, 90vh) / -2);
+  margin-left: calc(min(420px, 90vw, 90vh) / -2);
   border-radius: 50%;
-  border: 4px solid #ffd700;
+  border: 6px solid transparent;
+  background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
+  background-size: 300% 300%;
   box-shadow:
-    0 0 40px #ffd700,
-    0 0 80px #ffaa00,
-    inset 0 0 25px #ffd700;
-  animation: bioluminescent-or 4s ease-in-out infinite alternate;
-  background: #0a0a12;
+    0 0 60px #ffd700,
+    0 0 120px #ffaa00,
+    inset 0 0 40px #ffd700;
+  animation: bioluminescent-or 4s ease-in-out infinite alternate, ring-rainbow 12s linear infinite;
   pointer-events: none;
+  z-index: 1;
+}
+
+.ring-outer::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 215, 0, 0.4);
+  z-index: 0;
+  pointer-events: none;
+  animation: ring-glow 6s ease-in-out infinite alternate;
 }
 
 /* Cercle INTÉRIEUR : Utilitaires, Commerce & Futures apps */
@@ -1757,21 +1770,22 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(200px, 65vw, 65vh);
-  height: min(200px, 65vw, 65vh);
-  margin-top: calc(min(200px, 65vw, 65vh) / -2);
-  margin-left: calc(min(200px, 65vw, 65vh) / -2);
+  width: min(140px, 50vw, 50vh);
+  height: min(140px, 50vw, 50vh);
+  margin-top: calc(min(140px, 50vw, 50vh) / -2);
+  margin-left: calc(min(140px, 50vw, 50vh) / -2);
   border-radius: 50%;
   background: #070816;
-  border: 2px solid rgba(255, 215, 0, 0.25);
+  border: 3px solid rgba(255, 215, 0, 0.35);
   box-shadow:
-    inset 0 0 20px rgba(255, 215, 0, 0.2),
-    0 0 30px rgba(255, 215, 0, 0.3);
+    inset 0 0 20px rgba(255, 215, 0, 0.25),
+    0 0 35px rgba(255, 215, 0, 0.4);
   animation: bioluminescent-sections 5s ease-in-out infinite alternate;
   pointer-events: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 4;
 }
 
 /* Cercle MOYEN : Logo KeffStation (laptop avec puce et circuit) */
@@ -1779,20 +1793,19 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(260px, 75vw, 75vh);
-  height: min(260px, 75vw, 75vh);
-  margin-top: calc(min(260px, 75vw, 75vh) / -2);
-  margin-left: calc(min(260px, 75vw, 75vh) / -2);
+  width: min(280px, 70vw, 70vh);
+  height: min(280px, 70vw, 70vh);
+  margin-top: calc(min(280px, 70vw, 70vh) / -2);
+  margin-left: calc(min(280px, 70vw, 70vh) / -2);
   border-radius: 50%;
   background: #070816;
-  border: 3px solid #ffd700;
+  border: 4px solid #ffd700;
   box-shadow:
-    0 0 30px #ffd700,
-    inset 0 0 20px #ffd700;
-  animation: bioluminescent-or 3s ease-in-out infinite alternate;
+    0 0 35px #ffd700,
+    inset 0 0 25px #ffd700;
+  animation: bioluminescent-or 3.5s ease-in-out infinite alternate;
   pointer-events: none;
-  z-index: 2;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, #070816 70%);
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1982,17 +1995,61 @@ section {
 
 /* Positionnement selon le cercle d'appartenance */
 .ring-outer .app-ring-button {
-  transform: rotate(var(--a)) translateX(130px) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(150px) rotate(calc(var(--a) * -1));
 }
 .ring-outer .app-ring-button:hover {
-  transform: rotate(var(--a)) translateX(130px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(150px) rotate(calc(var(--a) * -1)) scale(1.3);
 }
 
 .ring-inner .app-ring-button {
-  transform: rotate(var(--a)) translateX(60px) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(50px) rotate(calc(var(--a) * -1));
 }
 .ring-inner .app-ring-button:hover {
-  transform: rotate(var(--a)) translateX(60px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(50px) rotate(calc(var(--a) * -1)) scale(1.3);
+}
+
+/* Lignes radiales (aiguilles d'horloge) sur le cercle extérieur */
+.ring-outer .app-ring-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 150px;
+  background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
+  transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
+  transform-origin: top center;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.ring-outer .app-ring-button:hover::before {
+  height: 165px;
+  background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
+  box-shadow: 0 0 20px rgba(255, 242, 0, 0.7);
+}
+
+/* Lignes radiales sur le cercle intérieur */
+.ring-inner .app-ring-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 50px;
+  background: linear-gradient(to bottom, transparent, #ffd700, #ffd700);
+  transform: translate(-50%, -100%) rotate(calc(var(--a) * 1deg));
+  transform-origin: top center;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.ring-inner .app-ring-button:hover::before {
+  height: 65px;
+  background: linear-gradient(to bottom, transparent, #fff200, #ffd700);
+  box-shadow: 0 0 16px rgba(255, 242, 0, 0.6);
 }
 
 .app-ring-icon {
@@ -2018,9 +2075,14 @@ section {
   z-index: 2;
 }
 
-@keyframes clock-rainbow {
+@keyframes ring-rainbow {
   0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes ring-glow {
+  0%   { opacity: 0.3; border-color: rgba(255, 215, 0, 0.3); }
+  100% { opacity: 0.8; border-color: rgba(255, 242, 0, 0.7); }
 }
 
 @keyframes clock-glint {
