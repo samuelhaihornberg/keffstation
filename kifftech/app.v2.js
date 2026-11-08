@@ -241,19 +241,122 @@ function previewImage(p){
   return 'data:image/svg+xml,' + encodeURIComponent(svg).replace(/'/g, '%27');
 }
 
+// Visuel de remplacement quand l'image produit est indisponible.
+const KF_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%23121316' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%238f8c82' text-anchor='middle'%3E%3C/text%3E%3C/svg%3E";
+
+// Échappement HTML pour les libellés affichés (noms de rayons, raisons, etc.)
+function escHtml(s){return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Carte produit du lecteur horizontal : image, nom, marque, prix et actions (détails / caisse).
+function readerCard(p){
+  if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official, {isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
+  const kt = p.kifftech; const has = kt.discount > 0;
+  const imgSrc = previewImage(p);
+  const badges = [];
+  if (p.videos?.length) badges.push(`<span class="badge badge-video">Video</span>`);
+  if (p.images?.length) badges.push(`<span class="badge badge-official">Photo</span>`);
+  else badges.push(`<span class="badge badge-official">Aperçu généré</span>`);
+  if (has) badges.push(`<span class="badge badge-promo">-${kt.discount}%</span>`);
+  return `<article class="reader-card" data-id="${escAttr(p.id)}">
+    <div class="reader-media"><img src="${escAttr(imgSrc)}" alt="${escAttr(p.brand + ' ' + p.model)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escAttr(KF_PLACEHOLDER)}'"><div class="media-badge">${badges.join('')}</div></div>
+    <div class="reader-info">
+      <span class="reader-brand">${escAttr(p.brand)}</span>
+      <h3 class="reader-name">${escAttr(p.model)}</h3>
+      <div class="reader-meta"><span class="meta-item meta-year">${p.year}</span></div>
+      <div class="reader-prices">${has ? fmtPriceCrossed(kt.official) : ''}<span class="reader-price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div>
+      ${has ? `<div class="reader-promo">${escHtml(kt.reason)}</div>` : ''}
+      <div class="reader-actions">
+        <button class="btn-sm primary" type="button" onclick="openModal('${escAttr(p.id)}')" aria-label="Voir le détail de ${escAttr(p.brand + ' ' + p.model)}">Détails</button>
+        <button class="btn-sm" type="button" onclick="event.stopPropagation();addToCart('${escAttr(p.id)}')" aria-label="Ajouter ${escAttr(p.brand + ' ' + p.model)} à la caisse">Ajouter</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+// Mise en avant éditoriale : produit réel du catalogue (Samsung Galaxy S24 Ultra).
+// Prix et promotion calculés à partir de la configuration réelle de la boutique (pas d'invention).
+function renderHero(){
+  const root = $('#hero');
+  if (!root) return;
+  const p = products.find(x => x && x.id === 'sp1') || products.find(x => x && x.images && x.images.length);
+  if (!p) { root.style.display = 'none'; return; }
+  root.style.display = '';
+  if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official, {isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
+  const kt = p.kifftech; const has = kt.discount > 0;
+  const img = $('#hero-img');
+  if (img) { img.src = previewImage(p); img.alt = escAttr(p.brand + ' ' + p.model + ', mise en avant KiffTech'); }
+  if ($('#hero-title')) $('#hero-title').textContent = p.model;
+  if ($('#hero-kicker')) $('#hero-kicker').textContent = p.brand + ' • ' + p.category + (p.year ? ' • ' + p.year : '');
+  if ($('#hero-price-official')) $('#hero-price-official').textContent = fmtPrice(kt.official);
+  if ($('#hero-price-kifftech')) $('#hero-price-kifftech').textContent = fmtPrice(kt.kifftech);
+  if ($('#hero-discount')) $('#hero-discount').textContent = has ? ('-' + kt.discount + '% • ' + kt.reason) : 'Prix KiffTech';
+  if ($('#hero-promo')) $('#hero-promo').innerHTML = 'Prix Promo KiffTech : −20 % dès <strong>10 articles</strong> dans la caisse (' + cartCount() + '/10) • Livraison offerte aux abonnés KiffTech Club';
+}
+
+// Sélecteur vertical des rayons : catégories réelles du catalogue, chacune filtre le lecteur horizontal.
+function renderRayons(){
+  const sel = $('#rayon-selector');
+  if (!sel) return;
+  const counts = {};
+  products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+  const cats = ['all', ...new Set(products.map(p => p.category))];
+  const pl = n => n > 1 ? ' articles' : ' article';
+  let html = `<button type="button" class="rayon-btn ${activeCategory === 'all' ? 'active' : ''}" data-category="all" role="radio" aria-checked="${activeCategory === 'all'}">Tous les produits<span class="rayon-count">${products.length}${pl(products.length)}</span></button>`;
+  html += cats.filter(c => c !== 'all').map(c => `<button type="button" class="rayon-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}<span class="rayon-count">${counts[c] || 0}${pl(counts[c] || 0)}</span></button>`).join('');
+  sel.innerHTML = html;
+  sel.querySelectorAll('.rayon-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      activeCategory = b.dataset.category;
+      sel.querySelectorAll('.rayon-btn').forEach(x => {
+        x.classList.toggle('active', x === b);
+        x.setAttribute('aria-checked', x === b);
+      });
+      applyFilters();
+    });
+  });
+}
+
+// Lecture au clavier du lecteur horizontal (flèches gauche/droite) et défilement d'une carte.
+function scrollReader(step){
+  const track = $('#reader-track');
+  if (!track) return;
+  const first = track.querySelector('.reader-card');
+  if (!first) return;
+  const gap = parseFloat(getComputedStyle(track).gap || '0') || 0;
+  track.scrollBy({ left: step * (first.getBoundingClientRect().width + gap), behavior: 'smooth' });
+}
+
 function renderProducts(){
-  const grid=$('#products-grid');
-  if(!grid){console.warn('products-grid not found');return;}
-  if(filteredProducts.length===0){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1;padding:40px;text-align:center"><span style="font-size:48px">🔍</span><p>Aucun produit</p></div>`;return;}
-  const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";
-  grid.innerHTML=filteredProducts.map(p=>{
-    if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official);
-    const kt=p.kifftech;const has=kt.discount>0;const med=generateMedia(p);
-    const imgSrc = previewImage(p);
-    return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b=>`<span class="badge ${b.class}">${b.label}</span>`).join('')}${has?`<span class="badge badge-promo">-${kt.discount}%</span>`:''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year}</span><div class="meta-item meta-price-wrap">${has?fmtPriceCrossed(kt.official):''}<span class="price-kifftech ${has?'has-discount':''}">${fmtPrice(kt.kifftech)}</span></div></div>${has?`<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery?' • Livraison offerte':''}</div>`:''}<div class="product-specs">${Object.entries(p.specs||{}).slice(0,3).map(([k,v])=>`<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
-  }).join('');
-  $('#results-count').textContent=`${filteredProducts.length} produit${filteredProducts.length>1?'s':''}`;
-  updateStats();updateCartBadge();
+  const track = $('#reader-track');
+  const grid = $('#products-grid');
+  if (filteredProducts.length === 0) {
+    if (track) {
+      track.innerHTML = '<div class="reader-empty">Aucun produit dans ce rayon</div>';
+    } else if (grid) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;padding:40px;text-align:center"><span style="font-size:48px">🔍</span><p>Aucun produit</p></div>';
+    }
+    $('#results-count').textContent = '0 produits';
+    updateStats(); updateCartBadge();
+    if ($('#hero')) renderHero();
+    return;
+  }
+  if (track) {
+    track.innerHTML = filteredProducts.map(readerCard).join('');
+  } else if (grid) {
+    const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";
+    grid.innerHTML = filteredProducts.map(p => {
+      if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official);
+      const kt = p.kifftech; const has = kt.discount > 0; const med = generateMedia(p);
+      const imgSrc = previewImage(p);
+      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
+    }).join('');
+  } else {
+    console.warn('products reader/grid not found');
+    return;
+  }
+  $('#results-count').textContent = `${filteredProducts.length} produit${filteredProducts.length > 1 ? 's' : ''}`;
+  updateStats(); updateCartBadge();
+  if ($('#hero')) renderHero();
 }
 
 function updateStats(){$('#stat-products').textContent=products.length;$('#stat-sources').textContent='ClickWise+Local';const yrs=new Set(products.map(p=>p.year));$('#stat-coverage').textContent=`${yrs.size} ans`;$('#stat-updated').textContent=new Date().toLocaleDateString('fr-FR');}

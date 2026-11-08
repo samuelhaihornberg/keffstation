@@ -243,7 +243,6 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 <header>
 <div class="header-left">
 <span class="logo">🤖</span>
-<h1>KiffTech</h1>
 <span class="agent-badge">AGENT IA</span>
 </div>
 <div class="header-right">
@@ -257,6 +256,36 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 </div>
 </header>
 <main>
+<h1 class="shop-title" id="shop-title">KiffTech</h1>
+
+<section class="hero" id="hero" aria-label="Mise en avant — produit vedette de la boutique">
+  <div class="hero-inner">
+    <div class="hero-visual">
+      <img id="hero-img" src="./img/sp1.jpg" alt="Samsung Galaxy S24 Ultra, mise en avant KiffTech" width="460" height="460" loading="lazy" decoding="async">
+    </div>
+    <div class="hero-body">
+      <p class="hero-kicker" id="hero-kicker">Samsung • Smartphones • 2024</p>
+      <h2 id="hero-title" class="hero-title">Galaxy S24 Ultra</h2>
+      <p class="hero-meta" id="hero-meta">
+        <span class="hero-price-official"><span class="price-crossed" id="hero-price-official">1 469 €</span></span>
+        <span class="hero-price-kifftech" id="hero-price-kifftech">1 322 €</span>
+        <span id="hero-discount">Prix KiffTech −10 %</span>
+      </p>
+      <p class="hero-promo" id="hero-promo">Prix Promo KiffTech : −20 % dès 10 articles en caisse (achat groupé) • Livraison offerte aux abonnés KiffTech Club</p>
+      <div class="hero-actions">
+        <button class="btn-sm primary" type="button" onclick="openModal('sp1')" aria-label="Voir le détail du Samsung Galaxy S24 Ultra">Voir le détail</button>
+        <button class="btn-sm" type="button" onclick="addToCart('sp1')" aria-label="Ajouter le Samsung Galaxy S24 Ultra à la caisse">Ajouter à la caisse</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="rayons" id="rayons" aria-label="Rayons de la boutique">
+  <h3 class="rayons-title" id="rayons-title">Rayons</h3>
+  <nav class="rayon-selector" id="rayon-selector" role="radiogroup" aria-label="Choisir un rayon de produits">
+  </nav>
+</section>
+
 <aside class="sidebar">
 <!-- Agent Status Panel -->
 <section class="panel">
@@ -320,13 +349,23 @@ main{flex:1;padding:clamp(16px,3vw,24px);display:grid;gap:clamp(16px,2.5vw,20px)
 </aside>
 
 <!-- Products Grid -->
-<section class="products-section">
-<header class="section-header">
-<h2 class="section-title">Catalogue Produits</h2>
+<section class="products-section" id="products-section" aria-label="Produits de la boutique">
+<header class="section-header" id="reader-header">
 <span class="results-count" id="results-count">0 produits</span>
+<label class="sr-only" for="sort-select">Trier les produits</label>
+<select id="sort-select" aria-label="Trier les produits">
+<option value="relevance">Pertinence</option>
+<option value="brand">Marque A-Z</option>
+<option value="price-asc">Prix croissant</option>
+<option value="price-desc">Prix décroissant</option>
+</select>
 </header>
-<div class="products-grid" id="products-grid" role="list">
-<!-- Injected by JS -->
+<div class="reader-wrap" id="reader-wrap">
+<button class="reader-nav reader-prev" type="button" aria-label="Produits précédents">‹ Précédents</button>
+<div class="reader-track" id="reader-track" role="list" tabindex="0" aria-label="Lecteur horizontal des produits">
+<!-- Injected par JS : cartes de produits alignées horizontalement -->
+</div>
+<button class="reader-nav reader-next" type="button" aria-label="Produits suivants">Suivants ›</button>
 </div>
 </section>
 </main>
