@@ -1230,22 +1230,23 @@ section {
 }
 
 .app-card {
-  background: rgba(255, 255, 255, .05);
-  border: 1px solid rgba(255, 210, 63, .2);
+  background: rgba(10, 10, 18, 0.85);
+  border: 2px solid rgba(255, 210, 63, 0.5);
   border-radius: clamp(12px, 2vw, 16px);
   padding: clamp(16px, 3vw, 20px);
   text-align: center;
-  transition: transform .2s, background .2s;
+  transition: border-color .2s, background .2s;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 0 0 15px rgba(255, 210, 63, 0.25), 0 0 30px rgba(138, 77, 255, 0.15);
 }
 
 .app-card:hover,
 .app-card:focus-visible {
-  transform: translateY(-4px);
-  background: rgba(255, 210, 63, .1);
+  border-color: #ffd23f;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .app-icon {
@@ -1435,44 +1436,35 @@ section {
   animation: none !important;
 }
 
-/* Pulsation : plus grand / plus petit + clignotement léger */
+/* Pulsation : désactivée — cartes statiques */
 .app-card {
-  position: relative;
-  animation: app-pulse 4s ease-in-out infinite;
+  position: static;
+  animation: none;
+  transform: none;
   transform-origin: center;
 }
 
-/* Contour cadre multicolore arc-en-ciel animé autour de chaque carte */
+/* Contour cadre multicolore statique autour de chaque carte (pas d'animation) */
 .app-card::before {
   content: '';
   position: absolute;
   inset: -3px;
   border-radius: inherit;
   background: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
-  animation: rainbow-border 4s linear infinite;
+  animation: none;
   z-index: -1;
   filter: blur(1px);
-  opacity: 0.9;
+  opacity: 0.6;
 }
 
-/* Fond de carte pour masquer le centre du contour arc-en-ciel */
+/* Fond de carte sombre (masque le centre du contour) */
 .app-card::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 18, 0.9);
   z-index: -1;
-}
-
-@keyframes app-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; border-color: rgba(255, 210, 63, 0.2); }
-  50% { transform: scale(1.07); opacity: 1; border-color: rgba(255, 210, 63, 0.5); }
-}
-
-@keyframes rainbow-border {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 /* Étincelles clignotantes à l'intérieur des cartes */
