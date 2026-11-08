@@ -199,19 +199,34 @@
     lang = lang || CURRENT_LANG || DEFAULT_LANG;
     domain = domain || "system";
 
-    // 1. Chercher dans le fichier de langue chargé
+    // Détecter les clés au format ancien (./page.html_xxx) du dictionnaire legacy i18n.js
+    var isLegacyKey = (typeof key === "string" && (key.indexOf("./") === 0 || key.indexOf("_html") !== -1 || key.indexOf("index.html") !== -1));
+
+    // 1. Pour les clés legacy, consulter DICT_LEGACY en priorité (toutes les langues)
+    if (isLegacyKey && window.DICT_LEGACY) {
+      var legacy = window.DICT_LEGACY[key];
+      if (legacy) {
+        if (legacy[lang] !== undefined) return legacy[lang];
+        // Fallback fr → en dans le legacy
+        for (var f = 0; f < FALLBACK.length; f++) {
+          if (legacy[FALLBACK[f]] !== undefined) return legacy[FALLBACK[f]];
+        }
+      }
+    }
+
+    // 2. Chercher dans le fichier de langue chargé
     var langDict = DICT[lang];
     if (langDict && langDict[domain] && langDict[domain][key] !== undefined) {
       return langDict[domain][key];
     }
-    // 2. Chercher dans le domaine "system" (commun)
+    // 3. Chercher dans le domaine "system" (commun)
     if (domain !== "system") {
       var sysDict = DICT[lang];
       if (sysDict && sysDict.system && sysDict.system[key] !== undefined) {
         return sysDict.system[key];
       }
     }
-    // 3. Fallback vers les langues de repli
+    // 4. Fallback vers les langues de repli
     for (var i = 0; i < FALLBACK.length; i++) {
       var fb = FALLBACK[i];
       if (fb === lang) continue;
@@ -226,18 +241,17 @@
         }
       }
     }
-    // 4. Fallback sur l'ancien dictionnaire i18n.js (legacy) — uniquement fr/en,
-    // les autres langues passent par la traduction auto Google (autoTranslateMissing)
-    if ((lang === 'fr' || lang === 'en') && window.DICT_LEGACY) {
-      var legacy = window.DICT_LEGACY[key];
-      if (legacy) {
-        if (legacy[lang] !== undefined) return legacy[lang];
+    // 5. Fallback sur l'ancien dictionnaire i18n.js (legacy) pour les clés non-legacy
+    if ((lang === 'fr' || lang === 'en') && window.DICT_LEGACY && !isLegacyKey) {
+      var legacy2 = window.DICT_LEGACY[key];
+      if (legacy2) {
+        if (legacy2[lang] !== undefined) return legacy2[lang];
         for (var j = 0; j < FALLBACK.length; j++) {
-          if (legacy[FALLBACK[j]] !== undefined) return legacy[FALLBACK[j]];
+          if (legacy2[FALLBACK[j]] !== undefined) return legacy2[FALLBACK[j]];
         }
       }
     }
-    // 5. Retourner la clé elle-même (pas de page vide)
+    // 6. Retourner la clé elle-même (pas de page vide — autoTranslateMissing s'en charge pour les autres langues)
     return key;
   }
 
