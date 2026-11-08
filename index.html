@@ -250,7 +250,7 @@
       <!-- Trois cercles concentriques — vitrine KeffStation -->
       <div class="rings-wrapper" aria-label="Sous-applications KeffStation">
 
-        <!-- Cercle EXTÉRIEUR : IA & Codes / Informatique -->
+        <!-- Cercle EXTÉRIEUR (grand) : Apps IA & Codes -->
         <div class="ring-outer" aria-label="IA et codes informatiques">
           <div class="app-ring-button" style="--a: 0deg;" data-url="./viartificial-labs/" data-desc="Moteurs IA, assistants et expérimentations NLP/LLM." onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
             <span class="app-ring-icon">🧠</span>
@@ -270,8 +270,25 @@
           </div>
         </div>
 
-        <!-- Cercle MOYEN : Logo KeffStation (laptop avec puce et circuit) -->
-        <div class="ring-middle" aria-label="KeffStation">
+        <!-- Cercle MOYEN : Apps Utilitaires & Commerce + Logo au centre -->
+        <div class="ring-middle" aria-label="Utilitaires et commerce">
+          <div class="app-ring-button" style="--a: 45deg;" data-url="./kifftech/" data-desc="Objets connectés, gadgets high-tech et accessoires électroniques." onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
+            <span class="app-ring-icon">🤖</span>
+            <span class="app-ring-title" data-i18n="./index.html_kifftech_63">KiffTech</span>
+          </div>
+          <div class="app-ring-button" style="--a: 135deg;" data-url="./tricktrocjob/" data-desc="Utilitaires, scripts et outils techniques." onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
+            <span class="app-ring-icon">🔧</span>
+            <span class="app-ring-title" data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</span>
+          </div>
+          <div class="app-ring-button" style="--a: 225deg;" data-url="./videogames/" data-desc="Jeux et émulation." onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
+            <span class="app-ring-icon">🎮</span>
+            <span class="app-ring-title" data-i18n="./index.html_videogames_67">Videogames</span>
+          </div>
+          <div class="app-ring-button" style="--a: 315deg;" data-url="#" data-desc="Nouvelle application bientôt disponible." onclick="event.preventDefault(); alert('Bientôt disponible !');" aria-label="Application à venir">
+            <span class="app-ring-icon">✨</span>
+            <span class="app-ring-title">Bientôt</span>
+          </div>
+          <!-- Logo KeffStation au centre du cercle moyen -->
           <div class="logo-keffstation" aria-label="Logo KeffStation">
             <div class="laptop">
               <div class="screen"></div>
@@ -285,8 +302,8 @@
           </div>
         </div>
 
-        <!-- Cercle INTÉRIEUR : espace respiratoire autour du logo (vide) -->
-        <div class="ring-inner" aria-label="Espace central">
+        <!-- Cercle INTÉRIEUR : vide, espace respiratoire -->
+        <div class="ring-inner" aria-label="Espace central vide">
         </div>
       </div>
     </div>

@@ -1772,27 +1772,21 @@ section {
   animation: ring-glow 6s ease-in-out infinite alternate;
 }
 
-/* Cercle INTÉRIEUR : Utilitaires, Commerce & Futures apps */
+/* Cercle INTÉRIEUR : vide, espace respiratoire */
 .ring-inner {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(140px, 50vw, 50vh);
-  height: min(140px, 50vw, 50vh);
-  margin-top: calc(min(140px, 50vw, 50vh) / -2);
-  margin-left: calc(min(140px, 50vw, 50vh) / -2);
+  width: min(100px, 40vw, 40vh);
+  height: min(100px, 40vw, 40vh);
+  margin-top: calc(min(100px, 40vw, 40vh) / -2);
+  margin-left: calc(min(100px, 40vw, 40vh) / -2);
   border-radius: 50%;
-  background: #070816;
-  border: 3px solid rgba(255, 215, 0, 0.35);
-  box-shadow:
-    inset 0 0 20px rgba(255, 215, 0, 0.25),
-    0 0 35px rgba(255, 215, 0, 0.4);
+  background: transparent;
+  border: 2px solid rgba(255, 215, 0, 0.15);
   animation: bioluminescent-sections 5s ease-in-out infinite alternate;
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 4;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Cercle MOYEN : Logo KeffStation (laptop avec puce et circuit) */
@@ -2006,14 +2000,30 @@ section {
 }
 
 @keyframes widget-pulse {
-  0%, 100% { transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1); opacity: 0.85; border-color: #ffd700; }
-  50% { transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.15); opacity: 1; border-color: #fff200; box-shadow: 0 0 25px #ffd700, 0 0 50px #ffaa00; }
+  0%, 100% { transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1)) scale(1); opacity: 0.85; border-color: #ffd700; }
+  50% { transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1)) scale(1.15); opacity: 1; border-color: #fff200; box-shadow: 0 0 25px #ffd700, 0 0 50px #ffaa00; }
 }
 
 .ring-outer .app-ring-button:hover {
   animation: none;
-  transform: rotate(var(--a)) translateX(100px) rotate(calc(var(--a) * -1)) scale(1.3);
+  transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1)) scale(1.3);
   box-shadow: 0 0 30px #ffd700, 0 0 60px #ffaa00;
+}
+
+/* Effet widget clignotant sur les apps de l'anneau moyen */
+.ring-middle .app-ring-button {
+  animation: widget-pulse-middle 3s ease-in-out infinite;
+}
+
+@keyframes widget-pulse-middle {
+  0%, 100% { transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1)) scale(1); opacity: 0.85; border-color: #ffd700; }
+  50% { transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1)) scale(1.15); opacity: 1; border-color: #fff200; box-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00; }
+}
+
+.ring-middle .app-ring-button:hover {
+  animation: none;
+  transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1)) scale(1.3);
+  box-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
 }
 
 /* Positionnement selon le cercle d'appartenance */
@@ -2022,6 +2032,13 @@ section {
 }
 .ring-outer .app-ring-button:hover {
   transform: rotate(var(--a)) translateX(185px) rotate(calc(var(--a) * -1)) scale(1.3);
+}
+
+.ring-middle .app-ring-button {
+  transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1));
+}
+.ring-middle .app-ring-button:hover {
+  transform: rotate(var(--a)) translateX(90px) rotate(calc(var(--a) * -1)) scale(1.3);
 }
 
 .ring-inner .app-ring-button {
