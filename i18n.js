@@ -2,7 +2,7 @@
  * KeffStation i18n — Traducteur universel toutes langues
  * Sélecteur de langue avec bouton icône + menu drapeaux
  * Choix mémorisé (localStorage), synchronisation inter-onglets
- * Traduction immédiate sans animation parasite
+ * Traduction immédiate, AUCUNE animation, AUCUN écran noir
  */
 
 (function () {
@@ -189,7 +189,6 @@
     #ks-lang-selector {\
       position: fixed; top: 10px; right: 10px; z-index: 9999;\
       font: 700 13px/1.2 system-ui,sans-serif; user-select: none; -webkit-user-select: none;\
-      z-index: 9999;\
     }\
     #ks-lang-toggle {\
       position: relative; background: rgba(10,12,34,.92); border: 1px solid rgba(255,255,255,.2);\
@@ -220,19 +219,6 @@
     #ks-lang-menu .ks-option .ks-name { flex: 1; font-weight: 600; }\
     #ks-lang-menu .ks-divider { height: 1px; background: rgba(255,255,255,.1); margin: 8px 0; }\
     #ks-lang-menu .ks-loading { font: 400 12px/1.4 system-ui,sans-serif; color: #b9c0e6; padding: 10px 12px; text-align: center; opacity: .7; }\
-    #ks-anim-controls {\n      margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15);\n\
-      display: flex; flex-direction: column; gap: 6px;\n    }\
-    #ks-anim-controls .ks-section-title {\n      font: 700 10px/1.2 system-ui,sans-serif; color: #ffd23f;\n\
-      text-transform: uppercase; letter-spacing: .08em;\n    }\
-    #ks-anim-controls .ks-anim-btn {\n      display: flex; align-items: center; gap: 8px; padding: 7px 10px;\n\
-      border-radius: 8px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15);\n\
-      color: #f4f6ff; cursor: pointer; font: 500 12px/1.3 system-ui,sans-serif;\n\
-      transition: all .15s ease;\n    }\
-    #ks-anim-controls .ks-anim-btn:hover {\n      background: rgba(255,255,255,.14); border-color: #ffd23f; color: #ffd23f;\n    }\
-    #ks-anim-controls .ks-anim-btn.ks-active {\n      background: rgba(255,210,63,.18); color: #ffd23f;\n\
-      border: 1px solid #ffd23f; box-shadow: 0 0 12px rgba(255,210,63,.3);\n    }\
-    #ks-anim-controls .ks-anim-btn .ks-flag {\n      font-size: 16px; line-height: 1; min-width: 24px;\n\
-      text-align: center;\n    }\
   \";\n"
 
   function injectStyle() {
@@ -344,30 +330,6 @@
     var box = buildSelector(lang);
     document.body.appendChild(box);
   }
-
-  /* ========================= Animations (optionnelles, pas activées par défaut) ========================= */
-  function setAnimationMode(mode) {
-    document.body.classList.remove("anim-sync", "anim-async", "anim-desync");
-    if (mode === "sync" || mode === "async" || mode === "desync") {
-      document.body.classList.add("anim-" + mode);
-      document.documentElement.setAttribute("data-anim", mode);
-    } else {
-      document.documentElement.removeAttribute("data-anim");
-    }
-    try { localStorage.setItem(STORAGE_ANIM, mode); } catch (e) {}
-    document.dispatchEvent(new CustomEvent("ks-anim-change", { detail: { mode: mode } }));
-  }
-  function getAnimationMode() {
-    try {
-      var saved = localStorage.getItem(STORAGE_ANIM);
-      if (saved === "sync" || saved === "async" || saved === "desync") return saved;
-    } catch (e) {}
-    return null;
-  }
-  (function () {
-    var savedMode = getAnimationMode();
-    if (savedMode) setAnimationMode(savedMode);
-  })();
 
   /* ========================= Init ========================= */
   function init() {
