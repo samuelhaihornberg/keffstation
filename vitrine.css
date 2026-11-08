@@ -1963,10 +1963,119 @@ section {
 
 /* Accessibilité : réduire les animations si demandé */
 @media (prefers-reduced-motion: reduce) {
-  .ring-outer,
-  .ring-inner,
-  .ring-middle {
+  .sphere-container .app-sphere-position {
     animation: none;
+    transform: none;
+  }
+}
+
+/* ===== Présentation sphérique 3D des applications KeffStation ===== */
+.sphere-wrapper {
+  background: #070816;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.sphere-wrapper::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(at 50% 0%, rgba(255, 215, 0, 0.08) 0%, #070816 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sphere-wrapper .rings-wrapper {
+  display: none;
+}
+
+/* Sphère 3D container avec perspective */
+.sphere-container {
+  perspective: 700px;
+  perspective-origin: 50% 50%;
+  position: relative;
+  width: min(520px, 95vw);
+  height: min(520px, 95vh);
+  margin: 40px auto 0;
+  transform-style: preserve-3d;
+}
+
+/* Chaque position d'app avec angle sphère depuis l'inline style --sphere-angle */
+.app-sphere-position {
+  position: absolute;
+  width: 130px;
+  height: 160px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+/* Utilise la variable --sphere-angle depuis le style inline de chaque .app-sphere-position */
+.app-sphere-position {
+  transform: rotateY(var(--sphere-angle)) translateZ(300px);
+}
+
+/* Carte d'application : backface caché, contre-rotation pour face le spectateur */
+.app-sphere-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  backface-visibility: hidden;
+  transform: rotateY(calc(var(--sphere-angle) * -1));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+.app-sphere-card:hover {
+  transform: rotateY(calc(var(--sphere-angle) * -1)) scale(1.05);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+/* Taille et lisibilité améliorées pour ordinateur */
+@media (min-width: 480px) {
+  .app-sphere-card {
+    padding: 20px 16px;
+  }
+  .app-sphere-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .app-sphere-card h3 {
+    font-size: 14px;
+    margin: 8px 0 4px;
+  }
+  .app-sphere-card p {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+}
+
+/* Mobile : disposition compact, pas de chevauchement */
+@media (max-width: 479px) {
+  .sphere-container {
+    width: min(400px, 95vw);
+    height: min(400px, 95vh);
+    margin: 20px auto 0;
+  }
+  
+  .app-sphere-position {
+    width: 100px;
+    height: 120px;
+  }
+  
+  .app-sphere-card {
+    padding: 12px 10px;
+  }
+  .app-sphere-icon {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .app-sphere-card h3 {
+    font-size: 12px;
+    margin: 6px 0 3px;
+  }
+  .app-sphere-card p {
+    font-size: 10px;
+    line-height: 1.3;
   }
 }
 

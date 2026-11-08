@@ -247,56 +247,81 @@
         <div class="core-name" data-i18n="./index.html_keffstation_82">KEFFSTATION</div>
         <div class="core-count" data-i18n="./index.html_7_apps_83"><span id="app-count">7</span> <span data-i18n="app_count">apps</span></div>
       </div>
-      <!-- Trois cercles concentriques — vitrine KeffStation -->
-      <div class="rings-wrapper" aria-label="Sous-applications KeffStation">
+      <!-- Sphère 3D KeffStation : applications réparties autour d'une sphère en 3D -->
+      <div class="sphere-wrapper" aria-label="Sphère d'applications KeffStation">
 
-        <!-- Cercle EXTÉRIEUR (grand, multicolore) : Apps IA & Codes en boutons dorés -->
-        <div class="ring-outer" aria-label="IA et codes informatiques">
-          <div class="app-ring-button" style="--a: 0deg;" data-page="0" data-url="./viartificial-labs/" onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
-            <span class="app-ring-icon">🧠</span>
-            <span class="app-ring-title" data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</span>
-          </div>
-          <div class="app-ring-button" style="--a: 90deg;" data-page="1" data-url="./cos-editor/" onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
-            <span class="app-ring-icon">🧩</span>
-            <span class="app-ring-title" data-i18n="./index.html_cos_editor_68">cos Editor</span>
-          </div>
-          <div class="app-ring-button" style="--a: 180deg;" data-page="2" data-url="./linguistic-motors/" onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
-            <span class="app-ring-icon">🗣️</span>
-            <span class="app-ring-title" data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</span>
-          </div>
-          <div class="app-ring-button" style="--a: 270deg;" data-page="3" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
-            <span class="app-ring-icon">📝</span>
-            <span class="app-ring-title" data-i18n="./index.html_critiques_services_65">Critiques-Services</span>
-          </div>
-        </div>
+        <!-- Sphere container avec perspective 3D -->
+        <div class="sphere-container" aria-label="Sphère d'applications">
 
-        <!-- Cercle MOYEN : Apps Utilitaires & Commerce en boutons dorés + Logo au centre -->
-        <div class="ring-middle" aria-label="Utilitaires et commerce">
-          <div class="app-ring-button" style="--a: 45deg;" data-page="4" data-url="./kifftech/" onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
-            <span class="app-ring-icon">🤖</span>
-            <span class="app-ring-title" data-i18n="./index.html_kifftech_63">KiffTech</span>
+          <!-- App position 1 : ViArtificial Labs (0° est) -->
+          <div class="app-sphere-position" style="--sphere-angle: 0deg;" data-page="0" data-url="./viartificial-labs/" onclick="openAppDiscover(this)" aria-label="Ouvrir ViArtificial Labs">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">🧠</span>
+              <h3 data-i18n="./index.html_viartificial_labs_64">ViArtificial Labs</h3>
+              <p data-i18n="./index.html_boutique_et_gestion_dobjets_connectés_39">Boutique et gestion d'objets connectés</p>
+            </div>
           </div>
-          <div class="app-ring-button" style="--a: 135deg;" data-page="5" data-url="./tricktrocjob/" onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
-            <span class="app-ring-icon">🔧</span>
-            <span class="app-ring-title" data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</span>
-          </div>
-          <div class="app-ring-button" style="--a: 225deg;" data-page="6" data-url="./videogames/" onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
-            <span class="app-ring-icon">🎮</span>
-            <span class="app-ring-title" data-i18n="./index.html_videogames_67">Videogames</span>
-          </div>
-          <div class="app-ring-button" style="--a: 315deg;" data-page="6" data-url="#" onclick="event.preventDefault(); alert('Bientôt disponible !');" aria-label="Application à venir">
-            <span class="app-ring-icon">✨</span>
-            <span class="app-ring-title">Bientôt</span>
-          </div>
-          <!-- Logo KeffStation au centre du cercle moyen -->
-          <div class="logo-keffstation" aria-label="Logo KeffStation">
-            <img src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/7412756f143b879567f6784f6b5149ceac5c0d9b/Logo-kiffstation.png" alt="KeffStation Logo" class="logo-keffstation-img" />
-            <div class="label">KEFFSTATION</div>
-          </div>
-        </div>
 
-        <!-- Cercle INTÉRIEUR : vide, espace respiratoire -->
-        <div class="ring-inner" aria-label="Espace central vide">
+          <!-- App position 2 : KiffTech (45°) -->
+          <div class="app-sphere-position" style="--sphere-angle: 45deg;" data-page="4" data-url="./kifftech/" onclick="openAppDiscover(this)" aria-label="Ouvrir KiffTech">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">🤖</span>
+              <h3 data-i18n="./index.html_kifftech_16">KiffTech</h3>
+              <p data-i18n="./index.html_boutique_et_gestion_dobjets_connectés_39">Boutique et gestion d'objets connectés</p>
+            </div>
+          </div>
+
+          <!-- App position 3 : cos Editor (90° sud) -->
+          <div class="app-sphere-position" style="--sphere-angle: 90deg;" data-page="1" data-url="./cos-editor/" onclick="openAppDiscover(this)" aria-label="Ouvrir cos Editor">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">🧩</span>
+              <h3 data-i18n="./index.html_cos_editor_68">cos Editor</h3>
+              <p data-i18n="./index.html_analyse_locale_export_json_41">Analyse locale, export JSON</p>
+            </div>
+          </div>
+
+          <!-- App position 4 : Tricktrocjob (135°) -->
+          <div class="app-sphere-position" style="--sphere-angle: 135deg;" data-page="5" data-url="./tricktrocjob/" onclick="openAppDiscover(this)" aria-label="Ouvrir Tricktrocjob">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">🔧</span>
+              <h3 data-i18n="./index.html_tricktrocjob_66">Tricktrocjob</h3>
+              <p data-i18n="./index.html_utilitaires_scripts_outils_techniques_42">Utilitaires, scripts et outils techniques</p>
+            </div>
+          </div>
+
+          <!-- App position 5 : Linguistic Motors (180° ouest) -->
+          <div class="app-sphere-position" style="--sphere-angle: 180deg;" data-page="2" data-url="./linguistic-motors/" onclick="openAppDiscover(this)" aria-label="Ouvrir Linguistic Motors">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">🗣️</span>
+              <h3 data-i18n="./index.html_linguistic_motors_69">Linguistic Motors</h3>
+              <p data-i18n="./index.html_moteurs_linguistiques_nlp_llm_local_43">Moteurs linguistiques NLP/LLM local</p>
+            </div>
+          </div>
+
+          <!-- App position 6 : Videogames (225°) -->
+          <div class="app-sphere-position" style="--sphere-angle: 225deg;" data-page="6" data-url="./videogames/" onclick="openAppDiscover(this)" aria-label="Ouvrir Videogames">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">🎮</span>
+              <h3 data-i18n="./index.html_videogames_67">Videogames</h3>
+              <p data-i18n="./index.html_jeux__mulation_11">Jeux et émulation</p>
+            </div>
+          </div>
+
+          <!-- App position 7 : Critiques-Services (270° ouest) -->
+          <div class="app-sphere-position" style="--sphere-angle: 270deg;" data-page="3" data-url="https://samuelhaihornberg.github.io/critiques-services.com/" onclick="openAppDiscover(this)" aria-label="Ouvrir Critiques-Services">
+            <div class="app-sphere-card">
+              <span class="app-sphere-icon">📝</span>
+              <h3 data-i18n="./index.html_critiques_services_65">Critiques-Services</h3>
+              <p data-i18n="./index.html_avis_critiques_services_ligne_44">Avis et critiques de services en ligne</p>
+            </div>
+          </div>
+
+          <!-- Logo KeffStation au centre de la sphère -->
+          <div class="sphere-logo" aria-label="Logo KeffStation">
+            <img src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/7412756f143b879567f6784f6b5149ceac5c0d9b/Logo-kiffstation.png" alt="KeffStation Logo" class="sphere-logo-img" />
+            <div class="sphere-label">KEFFSTATION</div>
+          </div>
+
         </div>
       </div>
     </div>
