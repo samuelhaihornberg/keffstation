@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Keffstation Admin — Prototype</title>
   <link rel="stylesheet" href="styles.css">
+<script defer src="../i18n.js"></script>
 </head>
 <body>
   <div class="app">
@@ -14,28 +15,28 @@
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">K</div>
         <div>
-          <p class="eyebrow">Keffstation</p>
-          <h1>Administration</h1>
+          <p class="eyebrow" data-i18n="app_name">Keffstation</p>
+          <h1 data-i18n="admin_title">Administration</h1>
         </div>
       </div>
-      <span class="badge badge-private">Privé</span>
+      <span class="badge badge-private" data-i18n="prive">Privé</span>
     </header>
 
     <div class="notice" role="note">
-      <strong>Prototype.</strong> Données fictives, aucune connexion réelle, aucun secret.
+      <strong data-i18n="prototype_notice">Prototype.</strong> Données fictives, aucune connexion réelle, aucun secret.
     </div>
 
     <section class="period-bar" aria-label="Sélection de la période">
       <div class="period-buttons" role="group" aria-label="Périodes">
-        <button type="button" class="period is-active" data-period="7" aria-pressed="true">7 jours</button>
-        <button type="button" class="period" data-period="10" aria-pressed="false">10 jours</button>
-        <button type="button" class="period" data-period="30" aria-pressed="false">30 jours</button>
-        <button type="button" class="period" data-period="custom" aria-pressed="false">Personnalisé</button>
+        <button type="button" class="period is-active" data-period="7" aria-pressed="true" data-i18n="periode_7">7 jours</button>
+        <button type="button" class="period" data-period="10" aria-pressed="false" data-i18n="periode_10">10 jours</button>
+        <button type="button" class="period" data-period="30" aria-pressed="false" data-i18n="periode_30">30 jours</button>
+        <button type="button" class="period" data-period="custom" aria-pressed="false" data-i18n="periode_custom">Personnalisé</button>
       </div>
       <div class="custom-range" id="custom-range" hidden>
         <label>Du <input type="date" id="start-date"></label>
         <label>Au <input type="date" id="end-date"></label>
-        <button type="button" id="apply-range" class="apply">Appliquer</button>
+        <button type="button" id="apply-range" class="apply" data-i18n="appliquer">Appliquer</button>
       </div>
     </section>
 

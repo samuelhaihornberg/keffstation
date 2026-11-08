@@ -81,6 +81,7 @@
   gtag('config', 'G-WP6HC0CM9E');
 </script>
 <script defer src="./analytics-events.js"></script>
+<script defer src="./i18n.js"></script>
 
 </head>
 <body>
@@ -96,11 +97,11 @@
       <video class="video-frame-media" src="./header.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
     </div>
     <div class="hero-titles">
-      <h1 class="hero-title">KIFFSTATION</h1>
-      <p class="hero-tagline">Become.What.Ever.You.Want...Kw;)Nk...!</p>
+      <h1 class="hero-title" data-i18n="app_name">KIFFSTATION</h1>
+      <p class="hero-tagline" data-i18n="tagline">Become.What.Ever.You.Want...Kw;)Nk...!</p>
     </div>
     <a class="scroll-cue" href="#vitrine" aria-label="Défiler vers la vitrine">
-      <span class="scroll-cue-text">Défiler</span>
+      <span class="scroll-cue-text" data-i18n="scroll_down">Défiler</span>
       <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
     </a>
   </section>
@@ -125,15 +126,15 @@
       <div class="core-inner">
         <div class="core-k">K</div>
         <div class="core-name">KEFFSTATION</div>
-        <div class="core-count"><span id="app-count">6</span> apps</div>
+        <div class="core-count"><span id="app-count">6</span> <span data-i18n="app_count">apps</span></div>
       </div>
     </div>
 
     <div class="orbit" id="orbit">
   <!-- Section articles en bas de la vitrine -->
   <article class="platform-section" aria-label="Plateforme multi-PWA KiffStation">
-    <h2 class="section-title">KiffStation : Votre plateforme multi-PWA</h2>
-    <p class="section-description">
+    <h2 class="section-title" data-i18n="platform_title">KiffStation : Votre plateforme multi-PWA</h2>
+    <p class="section-description" data-i18n="platform_desc">
       KeffStation est une plateforme regroupant plusieurs applications web (PWA) dédiées
       à la technologie, aux gadgets high‑tech et aux objets connectés. Toutes les apps
       sont conçues pour offrir une expérience native sur Android, iOS et Windows.
@@ -161,13 +162,13 @@
       </div>
     </div>
     <div class="install-actions">
-      <h3>Installez vos apps préférées</h3>
+      <h3 data-i18n="install_title">Installez vos apps préférées</h3>
       <div class="install-buttons">
-        <button class="install-btn android" aria-label="Installer sur Android">⟶ Android APK</button>
-        <button class="install-btn ios" aria-label="Installer sur iOS">⟶ iOS IPA</button>
-        <button class="install-btn windows" aria-label="Installer sur Windows">⟶ Windows EXE</button>
+        <button class="install-btn android" aria-label="Installer sur Android" data-i18n="install_android">⟶ Android APK</button>
+        <button class="install-btn ios" aria-label="Installer sur iOS" data-i18n="install_ios">⟶ iOS IPA</button>
+        <button class="install-btn windows" aria-label="Installer sur Windows" data-i18n="install_windows">⟶ Windows EXE</button>
       </div>
-      <p class="install-note">
+      <p class="install-note" data-i18n="install_note">
         Ces applications fonctionnent hors ligne et sont mises à jour automatiquement.
       </p>
     </div>
