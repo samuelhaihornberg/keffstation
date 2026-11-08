@@ -1733,7 +1733,7 @@ section {
 }
 
 /* Cercle EXTÉRIEUR : IA & Codes / Informatique */
-/* Cercle EXTÉRIEUR : multicolore — cadre qui encercle les apps widgets */
+/* Cercle EXTÉRIEUR (grand, multicolore) : cadre qui encercle les apps */
 .ring-outer {
   position: absolute;
   top: 50%;
@@ -1749,7 +1749,7 @@ section {
     0 0 140px #ffaa00,
     inset 0 0 50px #ffd700,
     0 0 0 4px rgba(255, 215, 0, 0.3);
-  background: rgba(10, 10, 18, 0.6);
+  background: rgba(10, 10, 18, 0.55);
   background-image: conic-gradient(from 0deg, #ff0000, #ffdd00, #00ff00, #0099ff, #ff00ff, #ff0000);
   background-size: 300% 300%;
   background-blend-mode: overlay;
