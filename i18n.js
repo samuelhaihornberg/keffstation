@@ -642,6 +642,23 @@
       hi: "भाषा",
       tr: "Dil"
     },
+    currency: {
+      fr: "Devise",
+      en: "Currency",
+      es: "Divisa",
+      de: "Währung",
+      it: "Valuta",
+      pt: "Moeda",
+      nl: "Valuta",
+      pl: "Waluta",
+      ru: "Валюта",
+      zh: "货币",
+      ja: "通貨",
+      ko: "통화",
+      ar: "العملة",
+      hi: "मुद्रा",
+      tr: "Para birimi"
+    },
     offline: {
       fr: "Hors ligne",
       en: "Offline",
@@ -4832,8 +4849,39 @@
   };
 
   var STORAGE_KEY = "keffstation_lang";
+  var STORAGE_CURRENCY = "keffstation_currency";
   var DEFAULT_LANG = "fr";
+  var DEFAULT_CURRENCY = "EUR";
   var SUPPORTED = Object.keys(DICT.langNames);
+
+  /* Devises par région/pays (détection automatique depuis IP/navigateur) */
+  var REGION_CURRENCY = {
+    "fr": "EUR", "de": "EUR", "es": "EUR", "it": "EUR", "pt": "EUR", "nl": "EUR",
+    "pl": "PLN", "ru": "RUB", "zh": "CNY", "ja": "JPY", "ko": "KRW", "ar": "SAR",
+    "hi": "INR", "tr": "TRY", "en": "USD", "en-us": "USD", "en-gb": "GBP",
+    "en-ca": "CAD", "en-au": "AUD", "en-jp": "JPY"
+  };
+
+  /* Codes pays communs vers devises (fallback si région inconnue) */
+  var COUNTRY_CURRENCY = {
+    "US": "USD", "CA": "CAD", "GB": "GBP", "AU": "AUD", "JP": "JPY",
+    "CN": "CNY", "KR": "KRW", "IN": "INR", "BR": "BRL", "MX": "MXN",
+    "CH": "CHF", "SE": "SEK", "NO": "NOK", "DK": "DKK", "ZA": "ZAR"
+  };
+
+  /* Noms des devises affichés */
+  var CURRENCY_NAMES = {
+    "EUR": "Euro (€)", "USD": "Dollar US ($)", "GBP": "Livre sterling (£)",
+    "JPY": "Yen (¥)", "CAD": "Dollar canadien (C$)", "AUD": "Dollar australien (A$)",
+    "CHF": "Franc suisse (CHF)", "CNY": "Yuan (¥)", "KRW": "Won (₩)",
+    "INR": "Roupie (₹)", "BRL": "Real (R$)", "MXN": "Peso mexicain ($)",
+    "PLN": "Złoty (zł)", "RUB": "Rouble (₽)", "SAR": "Riyal (﷼)",
+    "TRY": "Livre turque (₺)", "SEK": "Kouronne suédoise (kr)",
+    "NOK": "Kouronne norvégienne (kr)", "DKK": "Kouronne danoise (kr)",
+    "ZAR": "Rand (R)"
+  };
+
+  var SUPPORTED_CURRENCIES = Object.keys(CURRENCY_NAMES);
 
   /* ========================= Helpers ========================= */
   function getLang() {
@@ -4854,6 +4902,41 @@
     applyTranslations(lang);
     refreshSelector(lang);
     document.dispatchEvent(new CustomEvent("ks-lang-change", { detail: { lang: lang } }));
+  }
+
+  function getCurrency() {
+    try {
+      var saved = localStorage.getItem(STORAGE_CURRENCY);
+      if (saved && SUPPORTED_CURRENCIES.indexOf(saved) !== -1) {
+        return saved;
+      }
+    } catch (e) {}
+    // détection automatique depuis la langue du navigateur
+    var nav = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
+    if (REGION_CURRENCY[nav]) return REGION_CURRENCY[nav];
+    var nav2 = nav.slice(0, 2);
+    if (REGION_CURRENCY[nav2]) return REGION_CURRENCY[nav2];
+    return DEFAULT_CURRENCY;
+  }
+
+  function setCurrency(currency) {
+    try { localStorage.setItem(STORAGE_CURRENCY, currency); } catch (e) {}
+    document.dispatchEvent(new CustomEvent("ks-currency-change", { detail: { currency: currency } }));
+    refreshCurrencySelector(currency);
+  }
+
+  function fmtCurrency(value, currency) {
+    var c = currency || getCurrency();
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: c,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }).format(value);
+    } catch (e) {
+      return value + " " + c;
+    }
   }
 
   // Fallback : langue demandée → anglais → français → clé brute
@@ -4899,15 +4982,42 @@
     });
   }
 
+  /* Mise à jour des prix quand la devise change */
+  function updateCurrencyDisplay() {
+    var currency = getCurrency();
+    document.querySelectorAll("[data-currency]").forEach(function (el) {
+      var raw = el.getAttribute("data-currency");
+      var val = parseFloat(raw);
+      if (!isNaN(val)) {
+        el.textContent = fmtCurrency(val, currency);
+      }
+    });
+  }
+
+  document.addEventListener("ks-currency-change", function (e) {
+    updateCurrencyDisplay();
+  });
+
   /* ========================= Sélecteur de langue ========================= */
   var SELECTOR_CSS = "\
     #ks-lang-selector {\
       position: fixed; top: 10px; right: 10px; z-index: 2000;\
       background: rgba(10,12,34,.92); border: 1px solid rgba(255,255,255,.2);\
-      border-radius: 12px; padding: 6px 10px; color: #f4f6ff;\
+      border-radius: 12px; padding: 10px; color: #f4f6ff;\
       font: 700 13px/1.2 system-ui,sans-serif; cursor: pointer; backdrop-filter: blur(6px);\
+      display: flex; flex-direction: column; gap: 8px; align-items: flex-start;\
     }\
-    #ks-lang-selector select {\n      background: transparent; border: none; color: #ffd23f;\n      font: inherit; outline: none; cursor: pointer; -webkit-appearance: none;\n    }\
+    #ks-lang-selector .ks-field {\
+      display: flex; flex-direction: column; gap: 4px; width: 100%;\
+    }\
+    #ks-lang-selector label {\
+      font: 600 11px/1.2 system-ui,sans-serif; color: #b9c0e6; margin: 0;\
+    }\
+    #ks-lang-selector select {\
+      background: transparent; border: 1px solid rgba(255,255,255,.2); color: #ffd23f;\
+      font: inherit; outline: none; cursor: pointer; -webkit-appearance: none;\
+      padding: 4px 8px; border-radius: 6px; width: 100%;\
+    }\
     #ks-lang-selector option { background: #070816; color: #f4f6ff; }\
   ";
 
@@ -4924,31 +5034,66 @@
     box.id = "ks-lang-selector";
     box.setAttribute("role", "combobox");
     box.setAttribute("aria-label", t("language", lang));
-    var label = document.createElement("span");
-    label.textContent = t("language", lang) + " ";
-    label.style.marginRight = "6px";
-    label.style.color = "#b9c0e6";
-    label.style.fontSize = "12px";
-    box.appendChild(label);
-    var sel = document.createElement("select");
-    sel.id = "ks-lang-picker";
+
+    // --- Champ langue ---
+    var langField = document.createElement("div");
+    langField.className = "ks-field";
+    var langLabel = document.createElement("label");
+    langLabel.textContent = t("language", lang);
+    langLabel.style.marginRight = "6px";
+    langLabel.style.color = "#b9c0e6";
+    langLabel.style.fontSize = "11px";
+    langField.appendChild(langLabel);
+    var langSel = document.createElement("select");
+    langSel.id = "ks-lang-picker";
     SUPPORTED.forEach(function (code) {
       var opt = document.createElement("option");
       opt.value = code;
       opt.textContent = DICT.langNames[code];
       if (code === lang) opt.selected = true;
-      sel.appendChild(opt);
+      langSel.appendChild(opt);
     });
-    sel.addEventListener("change", function () {
-      setLang(sel.value);
+    langSel.addEventListener("change", function () {
+      setLang(langSel.value);
     });
-    box.appendChild(sel);
+    langField.appendChild(langSel);
+    box.appendChild(langField);
+
+    // --- Champ devise ---
+    var currField = document.createElement("div");
+    currField.className = "ks-field";
+    var currLabel = document.createElement("label");
+    currLabel.textContent = t("currency", lang);
+    currLabel.style.marginRight = "6px";
+    currLabel.style.color = "#b9c0e6";
+    currLabel.style.fontSize = "11px";
+    currField.appendChild(currLabel);
+    var currSel = document.createElement("select");
+    currSel.id = "ks-currency-picker";
+    SUPPORTED_CURRENCIES.forEach(function (code) {
+      var opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = CURRENCY_NAMES[code] || code;
+      if (code === getCurrency()) opt.selected = true;
+      currSel.appendChild(opt);
+    });
+    currSel.addEventListener("change", function () {
+      setCurrency(currSel.value);
+    });
+    currField.appendChild(currSel);
+    box.appendChild(currField);
+
     return box;
   }
 
   function refreshSelector(lang) {
     var sel = document.getElementById("ks-lang-picker");
     if (sel) sel.value = lang;
+  }
+
+  function refreshCurrencySelector(currency) {
+    var sel = document.getElementById("ks-currency-picker");
+    if (sel) sel.value = currency;
   }
 
   function injectSelector(lang) {
@@ -4964,6 +5109,7 @@
     document.documentElement.lang = lang;
     injectSelector(lang);
     applyTranslations(lang);
+    updateCurrencyDisplay();
 
     // Re-traduire si le DOM change (SPA / injection dynamique)
     var observer = new MutationObserver(function (mutations) {

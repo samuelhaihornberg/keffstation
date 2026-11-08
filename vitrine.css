@@ -1189,9 +1189,10 @@ html { scroll-behavior: smooth; }
 
 .install-buttons {
   display: flex;
-  gap: clamp(8px, 2vw, 16px);
+  flex-direction: column;
+  gap: clamp(8px, 2vh, 12px);
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .install-btn {
@@ -1203,6 +1204,10 @@ html { scroll-behavior: smooth; }
   cursor: pointer;
   transition: background .2s, transform .1s;
   color: #000;
+  width: 100%;
+  max-width: 260px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .install-btn.android {
@@ -1894,6 +1899,47 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/* ===== Affichage des prix avec devise ===== */
+[data-currency] {
+  font-weight: 700;
+  color: #ffd23f;
+}
+.price-crossed {
+  text-decoration: line-through;
+  color: #8a92b8;
+  font-size: 0.85em;
+  margin-right: 6px;
+}
+.price-kifftech {
+  font-weight: 800;
+  color: #27d17f;
+  font-size: 1.05em;
+}
+.price-kifftech.has-discount {
+  color: #27d17f;
+}
+.discount-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: linear-gradient(135deg, rgba(39,209,127,.15), rgba(30,107,255,.1));
+  border: 1px solid rgba(39,209,127,.3);
+  border-radius: 8px;
+  font-size: clamp(.65rem, 1.3vw, .75rem);
+  color: #27d17f;
+  font-weight: 600;
+}
+.badge-promo {
+  background: linear-gradient(135deg,#ff3d9a,#ff6b00);
+  color: #fff;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,61,154,.5); }
+  50% { box-shadow: 0 0 20px rgba(255,107,0,.8); }
+}
+
 /* cache bust v16 */
 
 /* Accessibilité : réduire les animations si demandé */
@@ -1902,6 +1948,47 @@ html { scroll-behavior: smooth; }
     animation: none;
     transform: rotateY(0deg) rotateX(12deg);
   }
+}
+
+/* ===== Affichage des prix avec devise ===== */
+[data-currency] {
+  font-weight: 700;
+  color: #ffd23f;
+}
+.price-crossed {
+  text-decoration: line-through;
+  color: #8a92b8;
+  font-size: 0.85em;
+  margin-right: 6px;
+}
+.price-kifftech {
+  font-weight: 800;
+  color: #27d17f;
+  font-size: 1.05em;
+}
+.price-kifftech.has-discount {
+  color: #27d17f;
+}
+.discount-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: linear-gradient(135deg, rgba(39,209,127,.15), rgba(30,107,255,.1));
+  border: 1px solid rgba(39,209,127,.3);
+  border-radius: 8px;
+  font-size: clamp(.65rem, 1.3vw, .75rem);
+  color: #27d17f;
+  font-weight: 600;
+}
+.badge-promo {
+  background: linear-gradient(135deg,#ff3d9a,#ff6b00);
+  color: #fff;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,61,154,.5); }
+  50% { box-shadow: 0 0 20px rgba(255,107,0,.8); }
 }
 
 /* cache bust v16 */

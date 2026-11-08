@@ -191,8 +191,8 @@ let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], shopifyCa
 // ============ UTILITIES ============
 function $(sel, ctx=document){return ctx.querySelector(sel)}
 function $$(sel, ctx=document){return Array.from(ctx.querySelectorAll(sel))}
-function fmtPrice(price, currency='EUR'){return new Intl.NumberFormat('fr-FR',{style:'currency',currency,minimumFractionDigits:0}).format(price)}
-function fmtPriceCrossed(price, currency='EUR'){return `<span class="price-crossed">${fmtPrice(price,currency)}</span>`}
+function fmtPrice(price, currency){if(currency===undefined){currency=(window.ksI18n&&window.ksI18n.getCurrency?window.ksI18n.getCurrency():'EUR')}return new Intl.NumberFormat('fr-FR',{style:'currency',currency,minimumFractionDigits:0}).format(price)}
+function fmtPriceCrossed(price, currency){if(currency===undefined){currency=(window.ksI18n&&window.ksI18n.getCurrency?window.ksI18n.getCurrency():'EUR')}return `<span class="price-crossed" data-currency="${price}">${fmtPrice(price,currency)}</span>`}
 function toast(msg,type='info'){const t=$('#toast');t.textContent=msg;t.className='toast '+type+' visible';setTimeout(()=>t.classList.remove('visible'),3000)}
 function hardRefreshVersion(){
   if('serviceWorker' in navigator){
@@ -284,7 +284,7 @@ function readerCard(p){
       <span class="reader-brand">${escAttr(p.brand)}</span>
       <h3 class="reader-name">${escAttr(p.model)}</h3>
       <div class="reader-meta"><span class="meta-item meta-year">${p.year}</span></div>
-      <div class="reader-prices">${has ? fmtPriceCrossed(kt.official) : ''}<span class="reader-price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div>
+      <div class="reader-prices">${has ? fmtPriceCrossed(kt.official) : ''}<span class="reader-price-kifftech ${has ? 'has-discount' : ''}" data-currency="${kt.kifftech}">${fmtPrice(kt.kifftech)}</span></div>
       ${has ? `<div class="reader-promo">${escHtml(kt.reason)}</div>` : ''}
       <div class="reader-actions">
         <button class="btn-sm primary" type="button" onclick="openModal('${escAttr(p.id)}')" aria-label="Voir le détail de ${escAttr(p.brand + ' ' + p.model)}">Détails</button>
@@ -562,8 +562,8 @@ function updateCartPanel(){
         </div>
       </div>
       <div class="cart-item-prices">
-        <span class="cart-item-official">${fmtPrice(kt.official*q)}</span>
-        <span class="cart-item-kifftech">${fmtPrice(kt.kifftech*q)}</span>
+        <span class="cart-item-official" data-currency="${kt.official*q}">${fmtPrice(kt.official*q)}</span>
+        <span class="cart-item-kifftech" data-currency="${kt.kifftech*q}">${fmtPrice(kt.kifftech*q)}</span>
         ${q>1?`<span class="cart-item-unit">${q} × ${fmtPrice(kt.kifftech)}</span>`:''}
       </div>
       <button class="cart-item-remove" type="button" onclick="removeFromCart('${i.id}')" aria-label="Retirer ${escAttr(i.model)}">×</button>
