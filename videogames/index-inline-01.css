@@ -1,0 +1,16 @@
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark}html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif;overflow-x:clip}
+.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+header{padding:clamp(16px,4vh,24px) clamp(12px,3vw,20px);background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo{font-size:clamp(24px,5vw,32px)} h1{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:700;background:linear-gradient(90deg,#ff6b00,#ffd23f,#ff3d9a);-webkit-background-clip:text;background-clip:text;color:transparent}
+main{flex:1;width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24px);padding-left:max(clamp(12px,3vw,20px),env(safe-area-inset-left));padding-right:max(clamp(12px,3vw,20px),env(safe-area-inset-right));padding-bottom:max(clamp(16px,3vw,24px),env(safe-area-inset-bottom));display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,20px);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:12px}
+.card:hover{transform:translateY(-4px);border-color:#ff6b00;box-shadow:0 12px 40px rgba(255,107,0,.2)}
+.card h3{font-size:clamp(1rem,2.5vw,1.2rem);color:#ffd23f}
+.card p{color:#b9c0e6;line-height:1.5;flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(255,107,0,.2);border:1px solid rgba(255,107,0,.4);color:#ffcc80}
+.btn{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding:12px 20px;border-radius:999px;border:1px solid #ff6b00;background:linear-gradient(135deg,#ff6b00,#ffd23f);color:#070816;font-weight:600;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:scale(1.02);box-shadow:0 8px 24px rgba(255,107,0,.4)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media (max-width:360px){html,body{font-size:14px}.btn{width:100%;justify-content:center;padding:14px 20px}}@media (min-width:1400px){:root{font-size:19px}}

@@ -1,0 +1,1 @@
+window.BLMCoherence=window.module.exports;window.module={exports:{}};

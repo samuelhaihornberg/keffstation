@@ -1,0 +1,1 @@
+window.BLMRegistre=window.module.exports;window.module={exports:{}};

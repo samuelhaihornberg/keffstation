@@ -1,0 +1,1 @@
+window.BLMExemples=window.module.exports;window.module={exports:{}};

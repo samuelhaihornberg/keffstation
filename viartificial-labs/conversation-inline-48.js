@@ -1,0 +1,1 @@
+window.BLMMesures=window.module.exports;window.module={exports:{}};

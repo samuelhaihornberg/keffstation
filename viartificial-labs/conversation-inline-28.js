@@ -1,0 +1,1 @@
+window.BLMConscience=window.module.exports;window.module={exports:{}};

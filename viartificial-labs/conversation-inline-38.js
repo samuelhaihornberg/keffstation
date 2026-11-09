@@ -1,0 +1,1 @@
+window.BLMEquipe=window.module.exports;window.module={exports:{}};

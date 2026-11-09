@@ -1,0 +1,1 @@
+window.COSFiches=window.module.exports;window.module={exports:{}};

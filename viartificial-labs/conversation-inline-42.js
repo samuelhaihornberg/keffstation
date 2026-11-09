@@ -1,0 +1,1 @@
+window.BLMDicos=window.module.exports;window.module={exports:{}};

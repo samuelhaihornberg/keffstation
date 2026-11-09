@@ -1,0 +1,11 @@
+
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; color: #e9edf7; }
+  .container { background: #070816; padding: 2rem; border-radius: 8px; margin: 1rem 0; }
+  h1 { color: #ffd700; margin-top: 0; }
+  .status { padding: 0.5rem 1rem; border-radius: 4px; margin: 0.5rem 0; }
+  .pass { background: #1a1d23; color: #38d47a; }
+  .fail { background: #1a1d23; color: #ff6b7a; }
+  .info { background: #1a1d23; color: #5b8cff; }
+  pre { background: #162039; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  .card { background: #162039; padding: 1rem; border-radius: 4px; }

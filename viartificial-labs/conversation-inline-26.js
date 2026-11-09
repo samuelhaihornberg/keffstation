@@ -1,0 +1,1 @@
+window.BLMCouts=window.module.exports;window.module={exports:{}};

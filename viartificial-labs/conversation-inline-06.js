@@ -1,0 +1,1 @@
+window.BLMContrat=window.module.exports;window.module={exports:{}};

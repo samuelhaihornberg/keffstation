@@ -8,38 +8,7 @@
 <link data-i18n="viartificial-labs_xsstream_geeko_geekette_box-sizingborder" rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="./responsive.css">
 <title>xsStream — Geeko & Geekette</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{color-scheme:dark}html,body{background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif}
-.app{max-width:1100px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-header{padding:12px 16px;background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);display:flex;gap:8px;align-items:center;position:sticky;top:0;z-index:10;flex-wrap:wrap}
-header a{color:#ffd23f;text-decoration:none;border:1px solid rgba(255,210,63,.5);border-radius:999px;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center;font-size:.85rem}
-header h1{font-size:1rem;flex:1;min-width:160px}
-.badges{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px 0}
-.badge{font-size:.78rem;border:1px solid rgba(255,120,120,.5);color:#ffb3b3;border-radius:999px;padding:8px 12px}
-.badge.ok{border-color:rgba(39,209,127,.5);color:#9fe8b8}
-.grid{display:grid;gap:12px;padding:16px;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
-.cap{border:1px solid rgba(184,77,255,.5);border-radius:14px;padding:14px;background:#0d1026;display:flex;flex-direction:column;gap:10px}
-.cap h2{font-size:1rem;color:#ffd23f}
-.cap p,.cap li{font-size:.88rem;color:#b9c0e6}
-.cap ul{padding-left:18px}
-label{display:block;font-size:.88rem;margin:6px 0}
-select,input{min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:#12142e;color:#fff;padding:8px 10px;width:100%;font-size:1rem}
-button{min-height:48px;border-radius:999px;border:1px solid #b84dff;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;font-weight:600;padding:10px 18px;font-size:.95rem}
-button.ghost{background:transparent;border-color:#ffd23f;color:#ffd23f}
-button:disabled{opacity:.45}
-video{width:100%;border-radius:10px;background:#000;min-height:160px}
-a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
-.note{font-size:.8rem;color:#8f96bd}
-footer{padding:16px;text-align:center;color:#b9c0e6;font-size:.85rem}
-footer a{color:#ffd23f}
-.live-row{display:flex;gap:8px;flex-wrap:wrap}
-.live-row button{flex:1;min-width:140px}
-#xCam{max-width:180px;min-height:100px}
-.meter{height:10px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
-.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#27d17f,#ffd23f,#ff3d9a)}
-@media (max-width:720px){.grid{grid-template-columns:1fr}}
-</style>
+<link rel="stylesheet" href="xsstream-inline-01.css" >
 <script defer src="../i18n.js"></script>
 </head>
 <body>
@@ -80,36 +49,7 @@ footer a{color:#ffd23f}
 </div>
 <script src="./memory.js"></script>
 <script src="./capabilities.js"></script>
-<script>
-var botDemande=(new URLSearchParams(location.search).get('bot')||'').toLowerCase();
-if(!/^[a-z]+$/.test(botDemande))botDemande='';
-var bot=(new URLSearchParams(location.search).get('bot')||'geeko').toLowerCase();
-if(bot!=='geeko'&&bot!=='geekette')bot='geeko';
-document.getElementById('xBot').value=bot;
-function paintSet(){var s=ViaMemory.settings(bot);document.getElementById('xSkill').value=String(s.skill);document.getElementById('xInit').value=String(s.initiative);var pr=ViaMemory.progression(bot);document.getElementById('xProg').textContent='Progression '+ (bot==='geeko'?'Geeko':'Geekette') +' : '+pr.total+' expériences enregistrées ('+pr.confirmed+' confirmées). Réglages indépendants de l’autre compagnon.';}
-document.getElementById('xBot').onchange=function(e){bot=e.target.value;botDemande='';paintSet();};
-document.getElementById('xSave').onclick=function(){var cur=ViaMemory.settings(bot);ViaMemory.saveSettings(bot,{skill:document.getElementById('xSkill').value,initiative:document.getElementById('xInit').value,advice:cur.advice,persona:cur.persona});paintSet();};
-document.getElementById('xChat').onclick=function(){location.href='./conversation.html?bot='+(botDemande||bot);};
-paintSet();
-try{var g=JSON.parse(localStorage.getItem('xs-game')||'{}');document.getElementById('xGame').value=g.game||'';document.getElementById('xEdition').value=g.edition||'';if(g.game)document.getElementById('xGameMsg').textContent='Enregistré localement : '+g.game+' — '+g.edition+' (aucune connexion au jeu).';}catch(e){}
-document.getElementById('xGameSave').onclick=function(){var g={game:document.getElementById('xGame').value.trim(),edition:document.getElementById('xEdition').value.trim()};try{localStorage.setItem('xs-game',JSON.stringify(g));}catch(e){}document.getElementById('xGameMsg').textContent=g.game?('Enregistré localement : '+g.game+' — '+g.edition+' (aucune connexion au jeu).'):'Champ vide : rien enregistré.';};
-var screenStream=null,camStream=null,micStream=null,micRAF=null;
-function badge(id,txt,ok){var e=document.getElementById(id);e.textContent=txt;e.className='badge'+(ok?' ok':'');}
-function liveMsg(){document.getElementById('xScreenMsg').textContent='Écran : '+(screenStream?'partagé par toi':'non partagé')+'. Caméra : '+(camStream?'active':'coupée')+'. Micro : '+(micStream?'actif (niveau ci-dessus, sans retour son)':'coupé')+'. Prévisualisation locale — analyse compagnon : aucun service voix/moteur connecté.';}
-function stopTracks(s){if(s)s.getTracks().forEach(function(t){t.stop();});}
-document.getElementById('xShare').onclick=function(){goScreen(false);};
-document.getElementById('xShareSnd').onclick=function(){goScreen(true);};
-function goScreen(snd){if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){document.getElementById('xScreenMsg').textContent='Partage d’écran non supporté par ce navigateur.';return;}
-stopTracks(screenStream);screenStream=null;
-navigator.mediaDevices.getDisplayMedia({video:true,audio:!!snd}).then(function(s){screenStream=s;var v=document.getElementById('xVideo');v.srcObject=s;v.play().catch(function(){});badge('bScreen',snd?'🟢 Écran + son : partagés par toi':'🟢 Écran : partagé par toi',true);liveMsg();s.getVideoTracks()[0].addEventListener('ended',function(){stopTracks(screenStream);screenStream=null;document.getElementById('xVideo').srcObject=null;badge('bScreen','🔴 Écran : non partagé',false);liveMsg();});}).catch(function(e){document.getElementById('xScreenMsg').textContent='Partage refusé ou impossible : '+(e&&e.message?e.message:e)+'. Rien capturé.';});}
-document.getElementById('xCamOn').onclick=function(){if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
-stopTracks(camStream);navigator.mediaDevices.getUserMedia({video:{width:{ideal:640}},audio:false}).then(function(s){camStream=s;var v=document.getElementById('xCam');v.srcObject=s;v.play().catch(function(){});badge('bCam','🟢 Caméra : active (toi)',true);liveMsg();}).catch(function(e){document.getElementById('xScreenMsg').textContent='Caméra refusée ou impossible : '+(e&&e.message?e.message:e)+'.';});};
-document.getElementById('xMicOn').onclick=function(){if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
-stopTracks(micStream);navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:false}).then(function(s){micStream=s;badge('bMic','🟢 Micro : actif (voix en direct, niveau ci-dessus)',true);liveMsg();var AC=window.AudioContext||window.webkitAudioContext;if(!AC){return;}var ctx=new AC();var src=ctx.createMediaStreamSource(s);var an=ctx.createAnalyser();an.fftSize=256;src.connect(an);var buf=new Uint8Array(an.frequencyBinCount);var m=document.getElementById('xMeter');(function tick(){if(!micStream){try{ctx.close();}catch(e){}return;}an.getByteFrequencyData(buf);var v=0;for(var i=0;i<buf.length;i++)v+=buf[i];v=v/buf.length/255;m.style.width=Math.round(Math.min(100,v*160))+'%';micRAF=requestAnimationFrame(tick);})();}).catch(function(e){document.getElementById('xScreenMsg').textContent='Micro refusé ou impossible : '+(e&&e.message?e.message:e)+'. Voix en direct indisponible.';});};
-document.getElementById('xLiveOff').onclick=function(){stopTracks(screenStream);screenStream=null;stopTracks(camStream);camStream=null;stopTracks(micStream);micStream=null;if(micRAF)cancelAnimationFrame(micRAF);document.getElementById('xVideo').srcObject=null;document.getElementById('xCam').srcObject=null;document.getElementById('xMeter').style.width='0';badge('bScreen','🔴 Écran : non partagé',false);badge('bCam','🔴 Caméra : coupée',false);badge('bMic','🔴 Micro : coupé',false);liveMsg();};
-
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}ViaCaps.paint('capsLine');
-</script>
+<script src="xsstream-inline-02.js" ></script>
 <script src="../refresh.js"></script>
 </body>
 </html>

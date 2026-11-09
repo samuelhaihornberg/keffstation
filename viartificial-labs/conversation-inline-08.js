@@ -1,0 +1,1 @@
+window.BLMComprehension=window.module.exports;window.module={exports:{}};

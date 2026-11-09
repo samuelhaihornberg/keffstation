@@ -1,0 +1,1 @@
+window.__cosLang={exports:{}};window.module=window.__cosLang;

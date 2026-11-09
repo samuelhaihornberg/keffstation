@@ -1,0 +1,31 @@
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark}html,body{background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif}
+.app{max-width:1100px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+header{padding:12px 16px;background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);display:flex;gap:8px;align-items:center;position:sticky;top:0;z-index:10;flex-wrap:wrap}
+header a{color:#ffd23f;text-decoration:none;border:1px solid rgba(255,210,63,.5);border-radius:999px;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center;font-size:.85rem}
+header h1{font-size:1rem;flex:1;min-width:160px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px 0}
+.badge{font-size:.78rem;border:1px solid rgba(255,120,120,.5);color:#ffb3b3;border-radius:999px;padding:8px 12px}
+.badge.ok{border-color:rgba(39,209,127,.5);color:#9fe8b8}
+.grid{display:grid;gap:12px;padding:16px;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.cap{border:1px solid rgba(184,77,255,.5);border-radius:14px;padding:14px;background:#0d1026;display:flex;flex-direction:column;gap:10px}
+.cap h2{font-size:1rem;color:#ffd23f}
+.cap p,.cap li{font-size:.88rem;color:#b9c0e6}
+.cap ul{padding-left:18px}
+label{display:block;font-size:.88rem;margin:6px 0}
+select,input{min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:#12142e;color:#fff;padding:8px 10px;width:100%;font-size:1rem}
+button{min-height:48px;border-radius:999px;border:1px solid #b84dff;background:linear-gradient(135deg,#b84dff,#ff3d9a);color:#fff;font-weight:600;padding:10px 18px;font-size:.95rem}
+button.ghost{background:transparent;border-color:#ffd23f;color:#ffd23f}
+button:disabled{opacity:.45}
+video{width:100%;border-radius:10px;background:#000;min-height:160px}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
+.note{font-size:.8rem;color:#8f96bd}
+footer{padding:16px;text-align:center;color:#b9c0e6;font-size:.85rem}
+footer a{color:#ffd23f}
+.live-row{display:flex;gap:8px;flex-wrap:wrap}
+.live-row button{flex:1;min-width:140px}
+#xCam{max-width:180px;min-height:100px}
+.meter{height:10px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#27d17f,#ffd23f,#ff3d9a)}
+@media (max-width:720px){.grid{grid-template-columns:1fr}}

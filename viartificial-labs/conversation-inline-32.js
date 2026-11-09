@@ -1,0 +1,1 @@
+window.BLMJournal=window.module.exports;window.module={exports:{}};

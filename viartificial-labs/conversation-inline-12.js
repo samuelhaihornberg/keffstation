@@ -1,0 +1,1 @@
+window.BLMLangue=window.module.exports;window.module={exports:{}};

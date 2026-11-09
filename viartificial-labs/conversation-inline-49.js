@@ -1,0 +1,1 @@
+window.__cosReg={exports:{}};window.module=window.__cosReg;

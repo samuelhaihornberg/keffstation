@@ -1,0 +1,1 @@
+window.__cosDef={exports:{}};window.module=window.__cosDef;

@@ -1,0 +1,1 @@
+window.BLMEtats=window.module.exports;window.module={exports:{}};

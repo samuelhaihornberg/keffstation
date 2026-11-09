@@ -1,0 +1,1 @@
+window.BLMCos=window.module.exports;window.module={exports:{}};

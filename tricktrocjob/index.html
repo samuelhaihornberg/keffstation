@@ -8,31 +8,10 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🔄%3C/text%3E%3C/svg%3E">
 <title>Tricktrocjob — Trix / Trox / Services</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{color-scheme:dark}html,body{height:100%;background:#070816;color:#f4f6ff;font:16px/1.55 system-ui,sans-serif;overflow-x:clip}
-.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-header{padding:clamp(16px,4vh,24px) clamp(12px,3vw,20px);background:rgba(10,12,34,.9);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.logo{font-size:clamp(24px,5vw,32px)} h1{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:700;background:linear-gradient(90deg,#ff3d9a,#ffd23f,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent}
-main{flex:1;width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24px);padding-left:max(clamp(12px,3vw,20px),env(safe-area-inset-left));padding-right:max(clamp(12px,3vw,20px),env(safe-area-inset-right));padding-bottom:max(clamp(16px,3vw,24px),env(safe-area-inset-bottom));display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
-.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,20px);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:12px}
-.card:hover{transform:translateY(-4px);border-color:#ff3d9a;box-shadow:0 12px 40px rgba(255,61,154,.2)}
-.card h3{font-size:clamp(1rem,2.5vw,1.2rem);color:#ffd23f}
-.card p{color:#b9c0e6;line-height:1.5;flex:1}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:.7rem;padding:4px 10px;border-radius:999px;background:rgba(255,61,154,.2);border:1px solid rgba(255,61,154,.4);color:#ffb3d1}
-.btn{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding:12px 20px;border-radius:999px;border:1px solid #ff3d9a;background:linear-gradient(135deg,#ff3d9a,#ffd23f);color:#070816;font-weight:600;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.btn:hover{transform:scale(1.02);box-shadow:0 8px 24px rgba(255,61,154,.4)}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media (max-width:360px){html,body{font-size:14px}.btn{width:100%;justify-content:center;padding:14px 20px}}@media (min-width:1400px){:root{font-size:19px}}
-</style>
+<link rel="stylesheet" href="index-inline-01.css" >
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WP6HC0CM9E"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-WP6HC0CM9E');
-</script>
+<script src="index-inline-02.js" ></script>
 
 <script defer src="../i18n.js"></script>
 </head>
@@ -50,165 +29,10 @@ main{flex:1;width:100%;max-width:1200px;margin:0 auto;padding:clamp(16px,3vw,24p
 <article data-i18n="tricktrocjob_communaut_localevnements_ville_par_ville" class="card"><h3 data-i18n="tricktrocjob_communaut_locale">Communauté locale</h3><p data-i18n="tricktrocjob_vnements_ville_par_ville_changes_en_main">Événements ville par ville, échanges en main propre, ateliers réparation. Zéro frais port.</p><div class="tags" data-i18n="tricktrocjob/index.html_localrencontreconfiance_7"><span data-i18n="tricktrocjob_local" class="tag">Local</span><span data-i18n="tricktrocjob_rencontre" class="tag">Rencontre</span><span data-i18n="tricktrocjob_confiance" class="tag">Confiance</span></div><a href="#" class="btn">Rejoindre →</a></article>
 </main>
 </div>
-<script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
-</script>
+<script src="index-inline-03.js" ></script>
 <script src="../refresh.js"></script>
 
-<script defer>
-(function () {
-  "use strict";
-  var ENDPOINT = "https://qsibfydsqmrcnonwcbzn.supabase.co/functions/v1/clever-task";
-  var MAX_BATCH = 20;
-  var FLUSH_INTERVAL = 30000;
-  var queue = [];
-  var sessionId = null;
-  var sending = false;
-  var pageStartTime = Date.now();
-  var currentPath = location.pathname || "/";
-
-  function getSessionId() {
-    if (!sessionId) {
-      try { sessionId = sessionStorage.getItem("ks_session_id"); } catch (e) {}
-      if (!sessionId) {
-        try { sessionId = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : Math.random().toString(36).slice(2); } catch (e) { sessionId = Math.random().toString(36).slice(2); }
-        try { sessionStorage.setItem("ks_session_id", sessionId); } catch (e) {}
-      }
-    }
-    return sessionId;
-  }
-
-  function isBot() {
-    var ua = navigator.userAgent || "";
-    return /bot|crawler|spider|slurp|bingpreview|headless|lighthouse|pagespeed|facebookexternalhit|whatsapp|telegrambot|semrush|ahrefs|mj12bot|dotbot|yandex/i.test(ua);
-  }
-
-  function cleanPath(value) {
-    if (typeof value !== "string") return null;
-    try {
-      var url = new URL(value, "https://keffstation.invalid");
-      return (url.pathname || "/").slice(0, 300);
-    } catch (e) { return null; }
-  }
-
-  function cleanString(value, max) {
-    if (typeof value !== "string") return null;
-    var cleaned = value.replace(/[\x00-\x1f\x7f]/g, "").trim();
-    if (!cleaned) return null;
-    return cleaned.slice(0, max || 200);
-  }
-
-  function deviceType() {
-    var ua = navigator.userAgent || "";
-    if (/Mobi|Android|iPhone|iPad/.test(ua)) return "mobile";
-    if (/Tablet/.test(ua)) return "tablet";
-    return "desktop";
-  }
-
-  function sendEvent(type, elementType, elementId, elementLabel, path, metadata) {
-    if (isBot()) return;
-    getSessionId();
-    queue.push({
-      type: type,
-      sessionId: sessionId,
-      occurredAt: new Date().toISOString(),
-      path: path ? cleanPath(path) : null,
-      deviceType: deviceType(),
-      elementType: elementType || null,
-      elementId: elementId ? cleanString(elementId, 80) : null,
-      elementLabel: elementLabel ? cleanString(elementLabel, 80) : null,
-      metadata: metadata || {}
-    });
-    if (queue.length >= MAX_BATCH) flush();
-  }
-
-  function flush() {
-    if (sending || queue.length === 0) return;
-    sending = true;
-    var batch = queue.splice(0, MAX_BATCH);
-    var payload = JSON.stringify({ events: batch });
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(ENDPOINT, payload);
-      sending = false;
-      return;
-    }
-    fetch(ENDPOINT, {
-      method: "POST",
-      body: payload,
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      keepalive: true
-    }).then(function () { sending = false; }).catch(function () { sending = false; });
-  }
-
-  sendEvent("page_view", null, null, null, currentPath);
-
-  function sendPageDuration() {
-    var duration = Date.now() - pageStartTime;
-    if (duration > 500) {
-      sendEvent("page_view", null, null, null, currentPath, { duration_ms: Math.round(duration) });
-    }
-  }
-
-  window.addEventListener("popstate", function () {
-    sendPageDuration();
-    pageStartTime = Date.now();
-    currentPath = location.pathname || "/";
-    sendEvent("page_view", null, null, null, currentPath);
-  }, { passive: true });
-
-  (function () {
-    var origPushState = history.pushState;
-    history.pushState = function () {
-      origPushState.apply(this, arguments);
-      sendPageDuration();
-      pageStartTime = Date.now();
-      currentPath = location.pathname || "/";
-      sendEvent("page_view", null, null, null, currentPath);
-    };
-  })();
-
-  if (typeof document !== "undefined") {
-    document.addEventListener("click", function (ev) {
-      var target = ev.target;
-      while (target && target !== document.body) {
-        if (target.tagName === "A" || target.tagName === "BUTTON") {
-          var elType = target.tagName === "A" ? "link" : "button";
-          var label = (target.textContent || "").trim().slice(0, 80);
-          var id = target.id || target.getAttribute("data-id") || "";
-          var href = target.getAttribute("href") || "";
-          sendEvent("click", elType, id, label, href ? cleanPath(href) : null);
-          return;
-        }
-        target = target.parentElement;
-      }
-    }, { passive: true });
-
-    document.addEventListener("submit", function (ev) {
-      var form = ev.target;
-      if (form.tagName !== "FORM") return;
-      var formId = form.id || form.getAttribute("data-form-id") || cleanString(form.getAttribute("name"), 80) || "form";
-      sendEvent("form_start", "form", formId, null, null, { form_id: formId });
-      sendEvent("form_submit", "form", formId, null, null, { form_id: formId });
-    }, { passive: true });
-  }
-
-  setInterval(flush, FLUSH_INTERVAL);
-  if (typeof window !== "undefined") {
-    window.addEventListener("beforeunload", function () {
-      sendPageDuration();
-      flush();
-    });
-    window.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "hidden") {
-        sendPageDuration();
-        flush();
-      }
-    });
-  }
-
-  window.ksAnalytics = { send: sendEvent, flush: flush };
-})();
-</script>
+<script src="index-inline-04.js" defer></script>
 
 </body>
 </html>
