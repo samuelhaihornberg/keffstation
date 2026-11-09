@@ -203,8 +203,8 @@ class KeffStation {
     this.vitrine = document.getElementById('vitrine');
     this.orbit = document.getElementById('orbit');
     this.nav = document.getElementById('nav');
-    this.appPrev = document.getElementById('app-prev');
-    this.appNext = document.getElementById('app-next');
+    this.appPrev = document.getElementById('vitrine-prev');
+    this.appNext = document.getElementById('vitrine-next');
     this.loading = document.getElementById('loading');
     this.loadingBar = document.getElementById('loading-bar-inner');
     this.appCount = document.getElementById('app-count');

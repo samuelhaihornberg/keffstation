@@ -69,7 +69,7 @@ button { font: inherit; color: inherit; }
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: clamp(24px, 6vw, 72px) 16px calc(var(--nav-h) + 32px);
+  padding: clamp(24px, 6vw, 72px) 90px calc(var(--nav-h) + 32px);
   isolation: isolate;
   overflow: hidden;
 }
@@ -228,16 +228,7 @@ button { font: inherit; color: inherit; }
 .vitrine.paused .core::after,
 .vitrine.paused .core-inner { animation-play-state: paused; }
 
-/* ---------- Navigation des applications (lecteur d'app carrousel) ---------- */
-
-.app-reader {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 14px;
-  z-index: 60;
-}
+/* ---------- Navigation des applications (lecteur d'app carrousel latéral) ---------- */
 
 .nav {
   position: fixed;
@@ -256,7 +247,6 @@ button { font: inherit; color: inherit; }
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: opacity .3s var(--ease), transform .3s var(--ease);
-  /* Carrousel horizontal scrollable */
   overflow-x: auto;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
@@ -303,36 +293,60 @@ button { font: inherit; color: inherit; }
   box-shadow: 0 0 12px rgba(30, 107, 255, .4);
 }
 
-/* Flèches du lecteur d'app */
-.app-reader-prev,
-.app-reader-next {
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+/* Flèches latérales sur la vitrine — cercles colorés */
+.vitrine-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 70;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 14px;
-  background: rgba(10, 12, 30, .85);
+  border: none;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #ffd23f 0deg,
+    #1e6bff 90deg,
+    #00d4ff 180deg,
+    #ff3d9a 270deg,
+    #ffd23f 360deg
+  );
   color: #fff;
-  font-size: 1.35rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
   cursor: pointer;
-  transition: background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
+  box-shadow: 0 0 40px rgba(255, 210, 63, .45), 0 0 80px rgba(30, 107, 255, .3);
+  transition: transform .2s var(--ease), filter .2s var(--ease), box-shadow .2s var(--ease);
 }
 
-.app-reader-prev:hover,
-.app-reader-next:hover {
-  background: rgba(255, 255, 255, .12);
-  border-color: #fff;
-  transform: scale(1.08);
+.vitrine-nav::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: .35;
+  filter: blur(12px);
+  z-index: -1;
 }
 
-.app-reader-prev:active,
-.app-reader-next:active {
-  transform: scale(0.95);
+.vitrine-nav:hover {
+  transform: translateY(-50%) scale(1.15);
+  filter: brightness(1.15);
+  box-shadow: 0 0 60px rgba(255, 210, 63, .65), 0 0 110px rgba(30, 107, 255, .45);
 }
 
-/* Infobulle accessible au survol / focus */
+.vitrine-nav:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+.vitrine-nav-prev { left: 24px; }
+.vitrine-nav-next { right: 24px; }
+
+/* Infobulle accessible au survol / focus du nav (bas) */
 .nav button::after {
   content: attr(aria-label);
   position: absolute;
@@ -358,8 +372,8 @@ button { font: inherit; color: inherit; }
   transform: translate(-50%, 0);
 }
 
-body.overlay-open .app-reader,
-body.overlay-open .nav { opacity: 0; pointer-events: none; }
+body.overlay-open .nav,
+body.overlay-open .vitrine-nav { opacity: 0; pointer-events: none; }
 
 /* ---------- Cartes d'articles (communes) ---------- */
 
@@ -1030,7 +1044,11 @@ body.overlay-open .nav { opacity: 0; pointer-events: none; }
 @media (max-width: 640px) {
   :root { --nav-h: 58px; }
 
-  .vitrine { padding-bottom: calc(var(--nav-h) + 24px); }
+  .vitrine {
+    padding-top: 16px;
+    padding-bottom: calc(var(--nav-h) + 24px);
+    padding-inline: 22px;
+  }
 
   .core { width: min(88vmin, 440px); }
 
