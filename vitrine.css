@@ -228,7 +228,16 @@ button { font: inherit; color: inherit; }
 .vitrine.paused .core::after,
 .vitrine.paused .core-inner { animation-play-state: paused; }
 
-/* ---------- Navigation des applications ---------- */
+/* ---------- Navigation des applications (lecteur d'app carrousel) ---------- */
+
+.app-reader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  z-index: 60;
+}
 
 .nav {
   position: fixed;
@@ -239,7 +248,7 @@ button { font: inherit; color: inherit; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 16px;
+  padding: 10px 14px;
   border-radius: 999px;
   background: rgba(10, 12, 30, .74);
   border: 1px solid var(--line);
@@ -247,17 +256,30 @@ button { font: inherit; color: inherit; }
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: opacity .3s var(--ease), transform .3s var(--ease);
+  /* Carrousel horizontal scrollable */
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  max-width: min(92vw, 700px);
+  white-space: nowrap;
 }
+
+.nav::-webkit-scrollbar { display: none; }
 
 .nav button {
   position: relative;
-  width: 12px;
-  height: 12px;
+  width: 44px;
+  height: 44px;
   padding: 0;
-  border-radius: 999px;
+  border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, .38);
   background: rgba(255, 255, 255, .14);
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
   cursor: pointer;
+  scroll-snap-align: center;
+  flex: 0 0 auto;
   transition: width .3s var(--ease), background .3s var(--ease),
               border-color .3s var(--ease), box-shadow .3s var(--ease), transform .2s var(--ease);
 }
@@ -269,10 +291,45 @@ button { font: inherit; color: inherit; }
 }
 
 .nav button.active {
-  width: 30px;
+  width: 44px;
   background: linear-gradient(90deg, var(--gold), var(--gold-2));
   border-color: transparent;
-  box-shadow: 0 0 16px rgba(255, 210, 63, .65);
+  color: #1a1400;
+  box-shadow: 0 0 20px rgba(255, 210, 63, .6);
+}
+
+.nav button.focused {
+  border-color: var(--blue);
+  box-shadow: 0 0 12px rgba(30, 107, 255, .4);
+}
+
+/* Flèches du lecteur d'app */
+.app-reader-prev,
+.app-reader-next {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: rgba(10, 12, 30, .85);
+  color: #fff;
+  font-size: 1.35rem;
+  cursor: pointer;
+  transition: background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
+}
+
+.app-reader-prev:hover,
+.app-reader-next:hover {
+  background: rgba(255, 255, 255, .12);
+  border-color: #fff;
+  transform: scale(1.08);
+}
+
+.app-reader-prev:active,
+.app-reader-next:active {
+  transform: scale(0.95);
 }
 
 /* Infobulle accessible au survol / focus */
@@ -301,6 +358,7 @@ button { font: inherit; color: inherit; }
   transform: translate(-50%, 0);
 }
 
+body.overlay-open .app-reader,
 body.overlay-open .nav { opacity: 0; pointer-events: none; }
 
 /* ---------- Cartes d'articles (communes) ---------- */

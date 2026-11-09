@@ -286,8 +286,7 @@
       display: inline-flex; align-items: center; gap: 8px; min-width: 52px; min-height: 52px;\
       touch-action: manipulation;\
     }\
-    #ks-lang-toggle .ks-flag { font-size: 22px; line-height: 1; }\
-    #ks-lang-toggle .ks-arrow { font-size: 11px; color: #b9c0e6; margin-left: 4px; }\
+    #ks-lang-toggle .ks-flag { font-size: 24px; line-height: 1; }\
     #ks-lang-toggle.open + #ks-lang-menu, #ks-lang-menu.visible { display: block; }\
     #ks-lang-menu {\
       position: absolute; top: 100%; right: 0; margin-top: 8px;\
@@ -332,11 +331,7 @@
     var flag = document.createElement("span");
     flag.className = "ks-flag";
     flag.textContent = (LANG_META[lang] && LANG_META[lang].flag) || "🌐";
-    var arrow = document.createElement("span");
-    arrow.className = "ks-arrow";
-    arrow.textContent = "▼";
     toggle.appendChild(flag);
-    toggle.appendChild(arrow);
 
     var menu = document.createElement("div");
     menu.id = "ks-lang-menu";

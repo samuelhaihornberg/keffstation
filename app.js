@@ -203,6 +203,8 @@ class KeffStation {
     this.vitrine = document.getElementById('vitrine');
     this.orbit = document.getElementById('orbit');
     this.nav = document.getElementById('nav');
+    this.appPrev = document.getElementById('app-prev');
+    this.appNext = document.getElementById('app-next');
     this.loading = document.getElementById('loading');
     this.loadingBar = document.getElementById('loading-bar-inner');
     this.appCount = document.getElementById('app-count');
@@ -297,6 +299,7 @@ class KeffStation {
       dot.type = 'button';
       dot.dataset.index = i;
       dot.setAttribute('aria-label', `Ouvrir ${app.num}`);
+      dot.innerHTML = `<span class="app-dot-icon">${sanitizeHTML(APP_ICONS[app.num] || app.title.slice(0, 1))}</span>`;
       dot.addEventListener('click', () => this.openApp(i));
       this.nav.appendChild(dot);
     });
@@ -358,6 +361,32 @@ class KeffStation {
     document.getElementById('embed-newtab')?.addEventListener('click', () => {
       if (this.currentEmbedApp) window.open(this.currentEmbedApp.embedUrl, '_blank', 'noopener,noreferrer');
     });
+
+    // Lecteur d'app : flèches gauche / droite.
+    this.appPrev?.addEventListener('click', () => {
+      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+    });
+    this.appNext?.addEventListener('click', () => {
+      this.setFocus((this.current + 1) % this.apps.length);
+    });
+
+    // Lecteur d'app : swipe gauche / droite sur la vitrine.
+    let touchStartX = 0;
+    this.vitrine.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    this.vitrine.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 45) {
+        if (diff > 0) {
+          // swipe vers la gauche -> app suivante
+          this.setFocus((this.current + 1) % this.apps.length);
+        } else {
+          // swipe vers la droite -> app précédente
+          this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+        }
+      }
+    }, { passive: true });
   }
 
   // ---- Panneau détail ----
