@@ -1,4 +1,4 @@
-const CACHE = 'keffstation-vitrine-v21';
+const CACHE = 'keffstation-vitrine-v22';
 const ASSETS = [
   './', './index.html', './articles.html', './vitrine.css', './manifest.json',
   './app.js', './refresh.js', './i18n.js', './i18n-locales.js', './page-translate-adapter.js',
