@@ -217,8 +217,7 @@ class KeffStation {
     this.embedSubtitle = document.getElementById('embed-subtitle');
 
     const elementsFound = {
-      vitrine: !!this.vitrine, orbit: !!this.orbit, nav: !!this.nav,
-      loading: !!this.loading, panel: !!this.panel, panelCard: !!this.panelCard,
+      vitrine: !!this.vitrine, nav: !!this.nav, panel: !!this.panel, panelCard: !!this.panelCard,
       embedOverlay: !!this.embedOverlay, embedIframe: !!this.embedIframe,
       embedLoading: !!this.embedLoading
     };
@@ -290,9 +289,7 @@ class KeffStation {
     this.vitrine.style.setProperty('--count', total);
     if (this.appCount) this.appCount.textContent = total;
 
-    // L'orbite reste vide : plus de nodes qui tournent autour du cercle.
-    // Les cartes d'apps sont affichées statiquement dans la section plateforme.
-    this.orbit.innerHTML = '';
+    // L'orbite n'existe plus dans le DOM : les apps sont affichées statiquement.
     this.nodes = [];
 
     this.apps.forEach((app, i) => {
