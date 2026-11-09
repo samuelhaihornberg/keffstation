@@ -75,7 +75,7 @@ function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'
 function loadCached(){try{var r=localStorage.getItem(LSKEY);if(!r)return null;var o=JSON.parse(r);return (o&&o.bots&&o.bots.length)?o:null;}catch(e){return null;}}
 function saveCache(c){try{localStorage.setItem(LSKEY,JSON.stringify({ts:Date.now(),bots:c.bots,disclaimer:c.disclaimer,encouragement:c.encouragement}));}catch(e){}}
 function card(b,feat){var t=(b.tags||[]).map(function(x){return '<span data-i18n="viartificial-labs_escx" class="tag">'+esc(x)+'</span>';}).join('');
-return '<a data-i18n="viartificial-labs_escbavatarescbnameescbspecialtyescbperso"rticle class="card'+(feat?' featured':'')+'"><span data-i18n="viartificial-labs_escbavatar" class="avatar" aria-hidden="true">'+esc(b.avatar||'🤖')+'</span><h3 data-i18n="viartificial-labs_escbname">'+esc(b.name)+'</h3><p data-i18n="viartificial-labs_escbspecialty" class="role">'+esc(b.specialty||'')+'</p><p data-i18n="viartificial-labs_escbpersonality" class="persona">'+esc(b.personality||'')+'</p><div class="tags" data-i18n="viartificial-labs/index.html_t_3">'+t+'</div><a class="btn" href="./conversation.html?bot='+esc(b.id)+'">Ouvrir la conversation →</a></article>';}
+return '<article data-i18n="viartificial-labs_escbavatarescbnameescbspecialtyescbperso" class="card'+(feat?' featured':'')+'"><span data-i18n="viartificial-labs_escbavatar" class="avatar" aria-hidden="true">'+esc(b.avatar||'🤖')+'</span><h3 data-i18n="viartificial-labs_escbname">'+esc(b.name)+'</h3><p data-i18n="viartificial-labs_escbspecialty" class="role">'+esc(b.specialty||'')+'</p><p data-i18n="viartificial-labs_escbpersonality" class="persona">'+esc(b.personality||'')+'</p><div class="tags" data-i18n="viartificial-labs/index.html_t_3">'+t+'</div><a class="btn" href="./conversation.html?bot='+esc(b.id)+'">Ouvrir la conversation →</a></article>';}
 function paint(c,note){var duo='',tribu='';c.bots.forEach(function(b){if(b.featured)duo+=card(b,true);else tribu+=card(b,false);});
 DUO.innerHTML=duo;TRI.innerHTML=tribu;
 D.textContent=(c.disclaimer||'Personnages simulés.')+' '+(c.encouragement||'')+(note?(' ('+note+')'):'');
@@ -137,7 +137,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').cat
 
   function cleanString(value, max) {
     if (typeof value !== "string") return null;
-    var cleaned = value.replace(/[ -]/g, "").trim();
+    var cleaned = value.replace(/[\x00-\x1f\x7f]/g, "").trim();
     if (!cleaned) return null;
     return cleaned.slice(0, max || 200);
   }

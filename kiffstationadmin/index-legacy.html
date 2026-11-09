@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="fr">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KiffStation Admin — Leads & Graphique 3D</title>
@@ -69,6 +70,7 @@
   .footer{color:var(--muted);font-size:.75rem;padding:20px 0;border-top:1px solid var(--border);text-align:center}
   @media (max-width:640px){.container{padding:12px}table{font-size:.75rem}th,td{padding:8px 10px}}
 </style>
+</head>
 <body>
 <nav class="top">
   <a href="../" data-i18n="./kiffstationadmin/index-legacy.html_accueil_keffstation_3">← Accueil KeffStation</a>
@@ -110,12 +112,12 @@
   <div class="section" id="form" data-i18n="./kiffstationadmin/index-legacy.html_ajouter_un_lead_donnée_réelle_42">
     <div class="section-title">➕ Ajouter un lead (donnée réelle)</div>
     <form id="lead-form" class="section" onsubmit="return ajouterLead(event)">
-      <input type="text" id="f-nom" placeholder="Nom complet" required>
-      <input type="email" id="f-email" placeholder="Email" required>
-      <input type="tel" id="f-tel" placeholder="Téléphone" required>
-      <select id="f-source"><option value="site">Site web</option><option value="reseaux">Réseaux sociaux</option><option value="pub">Publicité</option><option value="bouche-oreille">Bouche à oreille</option><option direct="direct">Direct</option></select>
-      <select id="f-statut"><option value="nouveau">Nouveau</option><option value="contacte">Contacté</option><option value="converti">Converti</option><option value="perdu">Perdu</option></select>
-      <textarea id="f-notes" class="row-full" rows="2" placeholder="Notes (facultatif)"></textarea>
+      <input type="text" id="f-nom" placeholder="Nom complet" aria-label="Nom complet" required>
+      <input type="email" id="f-email" placeholder="Email" aria-label="Email" required>
+      <input type="tel" id="f-tel" placeholder="Téléphone" aria-label="Téléphone" required>
+      <select id="f-source" aria-label="Source du lead"><option value="site">Site web</option><option value="reseaux">Réseaux sociaux</option><option value="pub">Publicité</option><option value="bouche-oreille">Bouche à oreille</option><option direct="direct">Direct</option></select>
+      <select id="f-statut" aria-label="Statut du lead"><option value="nouveau">Nouveau</option><option value="contacte">Contacté</option><option value="converti">Converti</option><option value="perdu">Perdu</option></select>
+      <textarea id="f-notes" aria-label="Notes" class="row-full" rows="2" placeholder="Notes (facultatif)"></textarea>
       <button class="btn primary" type="submit" data-i18n="./kiffstationadmin/index-legacy.html_enregistrer_le_lead_2">💾 Enregistrer le lead</button>
     </form>
   </div>
