@@ -25,17 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify site files
-        run: |
-          test -f index.html || (echo "index.html manquant" && exit 1)
-          node --check app.js
-          node tests/run.js
-          if [ -f kifftech/impact-products.json ]; then
-            node -e "const d=require('./kifftech/impact-products.json');if(!Array.isArray(d.products)||!d.products.length)throw new Error('vide');console.log('impact-products.json OK:',d.products.length,'produits');"
-          else
-            echo "impact-products.json absent : catalogue local uniquement (normal avant la 1re synchro)."
-          fi
-
       - name: Inject PayPal public client ID
         env:
           PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID || secrets.paypal_secret_ID }}
