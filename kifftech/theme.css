@@ -2170,3 +2170,40 @@ textarea.caisse-input{min-height:64px;resize:vertical}
 /* ============ KiffTech — source du produit (Boutique / Impact) ============ */
 .badge-source { background: #7c5cff; color: #fff; font-size: .58rem; font-weight: 700; }
 .badge-source.badge-impact { background: #ff8a00; color: #1a1400; }
+
+/* ============ KiffTech — pagination lecteur / grille ============ */
+.reader-more {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 18px 0;
+}
+.reader-more .btn-sm {
+  background: rgba(255, 210, 63, .12);
+  border: 1px solid rgba(255, 210, 63, .45);
+  color: var(--kf-acid);
+  font-weight: 800;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.reader-more .btn-sm:hover { background: rgba(255, 210, 63, .22); }
+.reader-end { font: 600 .68rem var(--kf-mono); color: var(--kf-ink-dim); letter-spacing: .08em; text-transform: uppercase; }
+.grid-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 0 40px 0;
+  flex-wrap: wrap;
+}
+.grid-pager .btn-sm {
+  border: 1px solid var(--kf-line);
+  background: rgba(255, 255, 255, .04);
+  color: var(--kf-bone);
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.grid-pager .btn-sm:disabled { opacity: .35; cursor: default; }
+.pager-info { font: 600 .7rem var(--kf-mono); color: var(--kf-ink-dim); letter-spacing: .08em; text-transform: uppercase; }

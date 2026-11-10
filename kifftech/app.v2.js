@@ -287,6 +287,20 @@ function previewImage(p){
 }
 
 // Visuel de remplacement quand l'image produit est indisponible.
+// Appele depuis le onerror des <img> : evite d'inliner un SVG dans chaque
+// carte (plus de 1 Mo de HTML pour 473 produits).
+function kfImgFallback(el, brand, model, category){
+  try{
+    if (el) el.onerror = null;
+    var src = previewImage({ brand: brand, model: model, category: category });
+    if (el) el.src = src;
+  } catch(e){
+    if (el) el.src = KF_PLACEHOLDER;
+  }
+}
+window.kfImgFallback = kfImgFallback;
+
+// Visuel de remplacement quand l'image produit est indisponible.
 const KF_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%23121316' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%238f8c82' text-anchor='middle'%3E%3C/text%3E%3C/svg%3E";
 
 // Échappement HTML pour les libellés affichés (noms de rayons, raisons, etc.)
@@ -298,8 +312,6 @@ function readerCard(p, i = 0){
   if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official, {isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
   const kt = p.kifftech; const has = kt.discount > 0;
   const imgSrc = previewImage(p);
-  // Si l'image distante est indisponible : apercu genere (jamais un carre noir)
-  const fallbackImg = previewImage({ brand: p.brand, model: p.model, category: p.category });
   const tier = getTier(p);
   const badges = [];
   if (p.videos?.length) badges.push(`<span class="badge badge-video">Video</span>`);
@@ -312,9 +324,9 @@ function readerCard(p, i = 0){
   if (tier === 'popular') badges.push(`<span class="badge badge-tier badge-popular">Populaire</span>`);
   if (tier === 'populace') badges.push(`<span class="badge badge-tier badge-populace">Populace</span>`);
   badges.push(`<span class="badge badge-delivery">Livraison gratuite</span>`);
-  const rot = (i % 7 - 3) * 5;
+  const rot = (i % 7 - 3) * 2.2;
   return `<article class="reader-card" data-id="${escAttr(p.id)}" style="--rot:${rot}deg;">
-    <div class="reader-media"><img src="${escAttr(imgSrc)}" alt="${escAttr(p.brand + ' ' + p.model)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escAttr(fallbackImg)}'"><div class="media-badge">${badges.join('')}</div></div>
+    <div class="reader-media"><img src="${escAttr(imgSrc)}" alt="${escAttr(p.brand + ' ' + p.model)}" loading="lazy" decoding="async" onerror="kfImgFallback(this,'${escAttr(p.brand)}','${escAttr(p.model)}','${escAttr(p.category)}')"><div class="media-badge">${badges.join('')}</div></div>
     <div class="reader-info">
       <span class="reader-brand">${escAttr(p.brand)}</span>
       <h3 class="reader-name">${escAttr(p.model)}</h3>
@@ -387,6 +399,25 @@ function scrollReader(step){
   track.scrollBy({ left: step * (first.getBoundingClientRect().width + gap), behavior: 'smooth' });
 }
 
+// Pagination : on ne rend jamais 473 cartes d'un coup (sinon page lente / noire
+// sur mobile). Le lecteur affiche un lot, puis charge la suite a la demande.
+const READER_CHUNK = 48;
+const GRID_PAGE_SIZE = 48;
+let readerLimit = READER_CHUNK;
+let gridPage = 1;
+
+function showMoreProducts(){
+  readerLimit += READER_CHUNK;
+  renderProducts();
+  const track = $('#reader-track');
+  if (track && track.lastElementChild) track.lastElementChild.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'end' });
+}
+function nextPage(){ gridPage++; renderProducts(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function prevPage(){ gridPage = Math.max(1, gridPage - 1); renderProducts(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+window.showMoreProducts = showMoreProducts;
+window.nextPage = nextPage;
+window.prevPage = prevPage;
+
 function renderProducts(){
   const track = $('#reader-track');
   const grid = $('#products-grid');
@@ -402,16 +433,33 @@ function renderProducts(){
     return;
   }
   if (track) {
-    track.innerHTML = filteredProducts.map((p,i) => readerCard(p, i)).join('');
+    const shown = filteredProducts.slice(0, readerLimit);
+    track.innerHTML = shown.map((p,i) => readerCard(p, i)).join('');
+    const rest = filteredProducts.length - shown.length;
+    const holder = $('#reader-more');
+    if (holder) {
+      holder.innerHTML = rest > 0
+        ? `<button type="button" class="btn-sm primary" onclick="showMoreProducts()">Afficher ${Math.min(READER_CHUNK, rest)} produits de plus &middot; ${rest} restant(s)</button>`
+        : (filteredProducts.length > READER_CHUNK ? `<span class="reader-end">Fin de la liste — ${filteredProducts.length} produits</span>` : '');
+    }
   } else if (grid) {
-    grid.innerHTML = filteredProducts.map(p => {
+    const pages = Math.max(1, Math.ceil(filteredProducts.length / GRID_PAGE_SIZE));
+    if (gridPage > pages) gridPage = pages;
+    const slice = filteredProducts.slice((gridPage - 1) * GRID_PAGE_SIZE, gridPage * GRID_PAGE_SIZE);
+    grid.innerHTML = slice.map(p => {
       if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official);
       const kt = p.kifftech; const has = kt.discount > 0; const med = generateMedia(p);
       const imgSrc = previewImage(p);
-      // Fallback : apercu genere (marque + initiales), jamais un carre noir
-      const fallbackGridImg = previewImage({ brand: p.brand, model: p.model, category: p.category });
-      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackGridImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${p.source === 'shopify' ? '<span class="badge badge-source">Boutique</span>' : p.source === 'impact' ? '<span class="badge badge-source badge-impact">Impact</span>' : ''}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
+      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="kfImgFallback(this,'${escAttr(p.brand)}','${escAttr(p.model)}','${escAttr(p.category)}')"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${p.source === 'shopify' ? '<span class="badge badge-source">Boutique</span>' : p.source === 'impact' ? '<span class="badge badge-source badge-impact">Impact</span>' : ''}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
     }).join('');
+    const pager = $('#grid-pager');
+    if (pager) {
+      pager.innerHTML = pages > 1
+        ? `<button type="button" class="btn-sm" onclick="prevPage()" ${gridPage <= 1 ? 'disabled' : ''}>Pr&eacute;c&eacute;dent</button>` +
+          `<span class="pager-info">Page ${gridPage} / ${pages}</span>` +
+          `<button type="button" class="btn-sm" onclick="nextPage()" ${gridPage >= pages ? 'disabled' : ''}>Suivant</button>`
+        : `<span class="pager-info">${filteredProducts.length} produit(s)</span>`;
+    }
   } else {
     console.warn('products reader/grid not found');
     return;
@@ -1050,7 +1098,7 @@ async function loadShopifyProducts() {
 }
 
 // ============ FILTERS ============
-function applyFilters(){filteredProducts=products.filter(p=>{if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
+function applyFilters(){readerLimit=READER_CHUNK;gridPage=1;filteredProducts=products.filter(p=>{if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
 function renderFilters(){const cats=['all',...new Set(products.map(p=>p.category))];$('#filter-category').innerHTML=cats.map(c=>`<button class="filter-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c==='all'?'Toutes':c}</button>`).join('');const ss=$('#sort-select');if(ss)ss.value=activeSort;const years=['all',...[...new Set(products.map(p=>p.year))].sort((a,b)=>b-a)];$('#filter-year').innerHTML=years.map(y=>`<button class="filter-btn ${y===activeYear?'active':''}" data-year="${y}">${y==='all'?'Toutes':y}</button>`).join('');const brands=['all',...[...new Set(products.map(p=>p.brand))].sort()];$('#filter-brand').innerHTML=brands.map(b=>`<button class="filter-btn ${b===activeBrand?'active':''}" data-brand="${b}">${b==='all'?'Toutes':b}</button>`).join('');const eras=[['all','Tous'],['retro','🕹️ Rétro'],['modern','🚀 Modernes']];const fe=$('#filter-era');if(fe)fe.innerHTML=eras.map(([v,l])=>`<button class="filter-btn ${v===activeEra?'active':''}" data-era="${v}">${l}</button>`).join('');renderViewModeButtons();}
 
 // ============ PARTICLES ============
@@ -1113,32 +1161,27 @@ function injectCardStyle(){
   const s = document.createElement('style');
   s.id = 'kifftech-card-style';
   s.textContent = `
-    .view-mode-toggle { display:flex; align-items:center; gap:8px; padding:8px 0 12px 0; font-size:.85rem; color:#ffd23f; flex-wrap:wrap; }
+    /* Style minimal : le theme (theme.css) definit deja les cartes, les
+       badges et la mise en page. On n'ajoute QUE l'effet "deck de cartes"
+       et les badges de niveau, sans ecraser le theme. */
+    .view-mode-toggle { display:flex; align-items:center; gap:8px; padding:8px 0 12px 0; font-size:.85rem; color:var(--kf-acid); flex-wrap:wrap; }
     .view-mode-label { font-weight:800; text-transform:uppercase; letter-spacing:.1em; opacity:.8; }
-    .view-btn { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); color:#f4f6ff; border-radius:10px; padding:6px 12px; cursor:pointer; font-size:.8rem; font-weight:700; }
-    .view-btn.active { background:#ffd23f; color:#1a1400; border-color:#ffd23f; box-shadow:0 0 16px rgba(255,210,63,.4); }
+    .view-btn { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); color:var(--kf-bone); border-radius:10px; padding:6px 12px; cursor:pointer; font-size:.8rem; font-weight:700; }
+    .view-btn.active { background:var(--kf-acid); color:var(--kf-void); border-color:var(--kf-acid); box-shadow:0 0 16px rgba(216,255,62,.4); }
     .view-btn:hover { background:rgba(255,255,255,.14); }
-    .reader-track { display:flex; gap:-18px; overflow-x:auto; padding:10px 0 6px 0; scroll-snap-type:proximity; }
-    .reader-card { flex:0 0 auto; width:170px; margin-left:-26px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; position:relative; z-index:1; scroll-snap-align:start; border:1px solid rgba(255,255,255,.14); border-radius:12px; background:rgba(10,12,34,.85); backdrop-filter:blur(8px); box-shadow:0 6px 18px rgba(0,0,0,.45); transition:transform .18s, z-index .1s, box-shadow .18s; }
-    .reader-card:hover { transform:rotate(0deg) scale(1.08); z-index:10; margin-left:0; margin-right:-4px; box-shadow:0 10px 28px rgba(255,210,63,.25); border-color:#ffd23f; }
+
+    /* Deck de cartes : les cartes se chevauchent legerement et sont legerement
+       inclinees, comme des cartes a jouer dans une main. */
+    .reader-card { margin-left:-16px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; z-index:1; }
     .reader-card:first-child { margin-left:0; }
-    .reader-media { position:relative; height:190px; overflow:hidden; border-radius:11px 11px 0 0; background:linear-gradient(160deg,#1a1f2e,#0d1018); }
-    .reader-media img { width:100%; height:100%; object-fit:cover; display:block; }
-    .reader-info { padding:9px 11px; }
-    .reader-brand { font-size:.68rem; text-transform:uppercase; letter-spacing:.09em; color:#9dc0ff; display:block; margin-bottom:3px; }
-    .reader-name { font-size:.92rem; font-weight:800; color:#fff; margin:0 0 5px; line-height:1.15; }
-    .reader-meta { display:flex; gap:7px; font-size:.62rem; color:#8f96bd; margin-bottom:5px; flex-wrap:wrap; }
-    .reader-prices { display:flex; align-items:baseline; gap:6px; margin-bottom:5px; }
-    .reader-price-kifftech { font-weight:800; color:#ffd23f; }
-    .reader-promo { font-size:.68rem; color:#27d17f; margin-bottom:5px; }
-    .reader-actions { display:flex; gap:6px; }
-    .reader-actions .btn-sm { flex:1; font-size:.72rem; padding:6px; }
-    .media-badge { position:absolute; top:8px; left:8px; display:flex; flex-wrap:wrap; gap:4px; z-index:4; }
-    .media-badge .badge { font-size:.6rem; padding:3px 8px; border-radius:6px; background:rgba(0,0,0,.65); color:#fff; border:1px solid rgba(255,255,255,.3); }
-    .badge-tier { color:#1a1400; font-weight:800; }
-    .badge-popular { background:#ffd23f; }
-    .badge-populace { background:#27d17f; color:#001a1a; }
-    .badge-delivery { background:#1e6bff; color:#fff; font-size:.58rem; }
+    .reader-card:hover { transform:rotate(0deg) scale(1.04); z-index:10; margin-left:0; margin-right:-4px; }
+    .reader-track::-webkit-scrollbar { height:6px; }
+    .reader-track::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:99px; }
+
+    .badge-tier { color:var(--kf-void)!important; font-weight:800; }
+    .badge-popular { background:var(--kf-acid)!important; color:var(--kf-void)!important; }
+    .badge-populace { background:#27d17f!important; color:#001a1a!important; }
+    .badge-delivery { background:#1e6bff!important; color:#fff!important; font-size:.58rem; }
   `;
   (document.head || document.documentElement).appendChild(s);
 }
@@ -1217,7 +1260,7 @@ function init(){
     setTimeout(function(){
       const track=document.getElementById('reader-track');
       const grid=document.getElementById('products-grid');
-      const empty=(track&&!track.children.length)||(grid&&!grid.children.length);
+      const empty=(track&&track.children&&!track.children.length)||(grid&&grid.children&&!grid.children.length);
       if(empty&&!document.getElementById('kf-empty-note')){
         const n=document.createElement('div');
         n.id='kf-empty-note';

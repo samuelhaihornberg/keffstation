@@ -69,14 +69,47 @@
     return b + "|" + m;
   }
 
-  function fetchJSON(url) {
+  // La boutique doit etre PERSISTANTE : le catalogue est conserve en local
+  // (localStorage) et servi depuis ce cache si le reseau echoue.
+  var LS_CATALOGUE = "kifftech.catalogue.v1";
+  var LS_LIVE = "kifftech.live.v1";
+
+  function saveLocal(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify({ at: Date.now(), data: value }));
+    } catch (e) {
+      /* quota atteint : on ignore, le cache du SW suffira */
+    }
+  }
+
+  function readLocal(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      return obj && obj.data ? obj.data : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function fetchJSON(url, cacheKey) {
     if (!url) return Promise.resolve(null);
     return fetch(url, { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error(url + " → HTTP " + r.status);
         return r.json();
       })
+      .then(function (json) {
+        if (cacheKey) saveLocal(cacheKey, json);
+        return json;
+      })
       .catch(function (e) {
+        const cached = cacheKey ? readLocal(cacheKey) : null;
+        if (cached) {
+          console.warn("[KiffTech] catalogue servi depuis le cache local :", e.message);
+          return cached;
+        }
         console.warn("[KiffTech] catalogue indisponible :", e.message);
         return null;
       });
@@ -160,14 +193,14 @@
   }
 
   function loadLocal() {
-    return fetchJSON(DATA_CATALOGUE).then(function (json) {
+    return fetchJSON(DATA_CATALOGUE, LS_CATALOGUE).then(function (json) {
       if (!json) return [];
       return Array.isArray(json) ? json : json.products || [];
     });
   }
 
   function loadLive() {
-    return fetchJSON(DATA_LIVE).then(function (json) {
+    return fetchJSON(DATA_LIVE, LS_LIVE).then(function (json) {
       if (!json) return { products: [], meta: null };
       return { products: Array.isArray(json) ? json : json.products || [], meta: json };
     });
