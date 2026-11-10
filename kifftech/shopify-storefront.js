@@ -4,7 +4,7 @@
  * Appelle l'API Storefront publique de Shopify depuis le navigateur.
  *
  * Sécurité :
- *   - N'utilise QUE le jeton Storefront PUBLIC (lecture en magasin + panier)
+ *   - N'utilise QUE le jeton Storefront PUBLIC (lecture en magasin + caisse)
  *   - N'utilise JAMAIS de jeton Admin API ni de jeton Storefront privé
  *   - Toutes les clés secrètes restent côté serveur Shopify
  */
@@ -88,9 +88,9 @@
     })();
   }
 
-  /* ========================= Panier ========================= */
+  /* ========================= Caisse (cart Shopify) ========================= */
 
-  // Crée un panier Shopify avec les lignes données, retourne { cartId, checkoutUrl }
+  // Cree une caisse Shopify avec les lignes donnees, retourne { cartId, checkoutUrl }
   function createCart(lines) {
     var mutation = "\n      mutation cartCreate($input: CartInput!) {\n        cartCreate(input: $input) {\n          cart {\n            id\n            checkoutUrl\n            totalQuantity\n            cost {\n              totalAmount { amount currencyCode }\n            }\n            lines(first: 100) {\n              edges {\n                node {\n                  id\n                  quantity\n                  merchandise {\n                    ... on ProductVariant {\n                      id\n                      title\n                      sku\n                      image { url }\n                      price { amount currencyCode }\n                      compareAtPrice { amount currencyCode }\n                    }\n                  }\n                  cost {\n                    totalAmount { amount currencyCode }\n                  }\n                }\n              }\n            }\n          }\n          userErrors { field message }\n        }\n      }\n    ";
     var input = {
@@ -114,7 +114,7 @@
     });
   }
 
-  // Ajoute des lignes à un panier existant
+  // Ajoute des lignes a la caisse Shopify existante
   function addLinesToCart(cartId, lines) {
     var mutation = "\n      mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {\n        cartLinesAdd(cartId: $cartId, lines: $lines) {\n          cart { id checkoutUrl }\n          userErrors { field message }\n        }\n      }\n    ";
     var inputLines = lines.map(function (l) {

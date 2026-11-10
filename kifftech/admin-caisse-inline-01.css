@@ -29,8 +29,8 @@
   .state-err b{color:#ff6b6b}
   .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;font-weight:700;border:1px solid}
   .badge.payee{background:rgba(39,209,127,.15);color:#27d17f;border-color:rgba(39,209,127,.35)}
-  .panier{color:#b9c0e6;font-size:.8rem}
-  .panier .line{margin:2px 0}
+  .caisse-lignes{color:#b9c0e6;font-size:.8rem}
+  .caisse-lignes .line{margin:2px 0}
   .empty{text-align:center;padding:40px;color:#8a92b8}
   .actions{display:flex;gap:6px;flex-wrap:wrap}
   .actions .btn{font-size:.78rem;padding:6px 10px}

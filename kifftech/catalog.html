@@ -96,6 +96,7 @@
       <div class="stat-card"><div class="stat-value" id="stat-coverage">-</div><div class="stat-label" data-i18n="kifftech/catalog.html_années_11">Années</div></div>
       <div class="stat-card"><div class="stat-value" id="stat-updated">-</div><div class="stat-label" data-i18n="kifftech/catalog.html_maj_12">MAJ</div></div>
     </div>
+    <p class="live-status" id="live-status" role="status" aria-live="polite"></p>
     <div class="panel" data-i18n="kifftech/catalog.html_la_caisse_0_13">
       <div class="panel-title">🛒 La Caisse <span class="cart-panel-count">0</span></div>
       <div id="cart-panel" style="max-height:200px;overflow-y:auto"></div>
@@ -142,7 +143,8 @@
   </div>
 </div>
 <script src="paypal-config.js"></script>
-<script src="app.v2.js?v=25"></script>
+<script defer src="./catalogue-live.js"></script>
+<script src="app.v2.js?v=26"></script>
 <script src="catalog-inline-02.js" ></script>
 <script src="../refresh.js"></script>
 </body>

@@ -1,0 +1,84 @@
+name: Boutique Sync (Shopify + Impact)
+
+# Met à jour kifftech/data/products.json à partir des catalogues Shopify et
+# Impact.com. Les secrets ne quittent jamais le runner : seul le résultat
+# public (produits, prix, liens) est commité et publié.
+#
+# Secrets requis (Settings > Secrets and variables > Actions) :
+#   SHOPIFY_STORE_DOMAIN, SHOPIFY_ADMIN_TOKEN (ou SHOPIFY_STOREFRONT_TOKEN)
+#   IMPACT_API_KEY, IMPACT_API_SECRET, IMPACT_CAMPAIGN_ID, IMPACT_BRAND_ID
+# Variables facultatives :
+#   SHOPIFY_API_VERSION, SITE_DOMAIN, DEFAULT_CURRENCY
+#
+# Sans secret, le workflow écrit un catalogue vide et le site continue de
+# fonctionner avec son catalogue local (25+ produits par rayon).
+
+on:
+  schedule:
+    - cron: '23 4 * * *'   # chaque jour à 04:23 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Forcer la synchronisation même si rien ne change'
+        type: boolean
+        default: false
+  push:
+    branches: ['main']
+    paths:
+      - 'scripts/sync-boutique.mjs'
+      - '.github/workflows/boutique-sync.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 'boutique-sync'
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Synchroniser le catalogue live
+    runs-on: ubuntu-latest
+    env:
+      SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+      SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+      SHOPIFY_STOREFRONT_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_TOKEN }}
+      SHOPIFY_API_VERSION: ${{ secrets.SHOPIFY_API_VERSION }}
+      IMPACT_API_KEY: ${{ secrets.IMPACT_API_KEY }}
+      IMPACT_API_SECRET: ${{ secrets.IMPACT_API_SECRET }}
+      IMPACT_CAMPAIGN_ID: ${{ secrets.IMPACT_CAMPAIGN_ID }}
+      IMPACT_BRAND_ID: ${{ secrets.IMPACT_BRAND_ID }}
+      SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
+      DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Diagnostic de la configuration
+        run: |
+          echo "Shopify domaine   : ${SHOPIFY_STORE_DOMAIN:+configuré}${SHOPIFY_STORE_DOMAIN:-absent}"
+          echo "Shopify Admin     : ${SHOPIFY_ADMIN_TOKEN:+configuré}${SHOPIFY_ADMIN_TOKEN:-absent}"
+          echo "Shopify Storefront: ${SHOPIFY_STOREFRONT_TOKEN:+configuré}${SHOPIFY_STOREFRONT_TOKEN:-absent}"
+          echo "Impact API        : ${IMPACT_API_KEY:+configuré}${IMPACT_API_KEY:-absent}"
+          echo "Impact campagne   : ${IMPACT_CAMPAIGN_ID:+configuré}${IMPACT_CAMPAIGN_ID:-absent}"
+          echo "Domaine public    : ${SITE_DOMAIN:+configuré}${SITE_DOMAIN:-absent}"
+
+      - name: Synchroniser catalogue (Shopify + Impact)
+        run: node scripts/sync-boutique.mjs
+
+      - name: Publier le catalogue mis à jour
+        run: |
+          if git diff --quiet -- kifftech/data/products.json; then
+            echo "Catalogue déjà à jour — aucun commit nécessaire."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add kifftech/data/products.json
+          git commit -m "chore(boutique): catalogue live Shopify + Impact ($(node -e "const d=require('./kifftech/data/products.json');console.log(d.counts.total)") produits)"
+          git push origin HEAD:main

@@ -11,3 +11,6 @@ Thumbs.db
 *.log
 # Graphe COS complet (régénérable en une commande : node scripts/gen-cos-graphe.cjs)
 viartificial/src/cos-graphe/*.jsonl
+
+# Configuration Shopify generee au deploiement (jeton Storefront PUBLIC, non commite)
+kifftech/shopify-config.js

@@ -72,7 +72,7 @@
       const apercu=items.map(it=>{
         const q=Number(it.qty||1);
         return `${esc(it.model||it.id)} ×${q}`;
-      }).slice(0,3).join(' • ')+(items.length>3?' • …':'')||'Panier vide';
+      }).slice(0,3).join(' • ')+(items.length>3?' • …':'')||'Caisse vide';
 
       return `<tr>
         <td><span class="ref">${ref}</span></td>
@@ -81,7 +81,7 @@
         <td><span class="email">${email}</span></td>
         <td><span class="tel">${tel}</span></td>
         <td>
-          <div class="panier"><div class="line">${apercu}</div></div>
+          <div class="caisse-lignes"><div class="line">${apercu}</div></div>
         </td>
         <td><span class="total">${fmtPrice(o.total||0)}</span></td>
         <td><span class="badge" style="color:#b9c0e6;border-color:rgba(185,192,230,.35)">${mode}</span></td>
@@ -117,7 +117,7 @@
     const items=Array.isArray(o.items)?o.items:[];
     const tb=$('#d-items');
     if(items.length===0){
-      tb.innerHTML='<tr><td colspan="4" style="color:#8a92b8">Aucun détail de panier enregistré pour cette commande.</td></tr>';
+      tb.innerHTML='<tr><td colspan="4" style="color:#8a92b8">Aucun détail de caisse enregistré pour cette commande.</td></tr>';
     }else{
       tb.innerHTML=items.map(it=>{
         const q=Number(it.qty||1);

@@ -2150,3 +2150,19 @@ textarea.caisse-input{min-height:64px;resize:vertical}
   letter-spacing:.03em;
 }
 .caisse-success-btn{width:auto;min-width:180px}
+
+/* ============ KiffTech — statut des sources live (Shopify / Impact) ============ */
+.live-status {
+  margin: 10px 0 2px;
+  font-size: .72rem;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(255, 255, 255, .04);
+  color: #9aa2c8;
+}
+.live-status .live-on { color: #27d17f; font-weight: 700; }
+.live-status .live-off { color: #9aa2c8; }
+.live-status.live-on { border-color: rgba(39, 209, 127, .35); }
+.rayon-warn { font-size: .62rem; opacity: .9; }

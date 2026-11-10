@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-11-10T09:02:47.579Z",
+  "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
+  "siteDomain": null,
+  "currency": "EUR",
+  "shopifyDomain": null,
+  "sources": {
+    "shopify": {
+      "ok": false,
+      "error": "SHOPIFY_STORE_DOMAIN / token manquant"
+    },
+    "impact": {
+      "ok": false,
+      "error": "IMPACT_API_KEY / IMPACT_API_SECRET manquant"
+    }
+  },
+  "counts": {
+    "total": 0,
+    "shopify": 0,
+    "impact": 0
+  },
+  "products": []
+}

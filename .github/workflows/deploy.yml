@@ -43,6 +43,46 @@ jobs:
             : 'PayPal : Client ID absent ou invalide — bouton désactivé.');
           NODE
 
+      - name: Injecter la configuration Shopify publique (Storefront)
+        env:
+          SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          SHOPIFY_STOREFRONT_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_TOKEN }}
+          SHOPIFY_API_VERSION: ${{ secrets.SHOPIFY_API_VERSION }}
+          SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
+          DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY }}
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const domain = String(process.env.SHOPIFY_STORE_DOMAIN || '').trim()
+            .replace(/^https?:\/\//, '').replace(/\/$/, '');
+          const token = String(process.env.SHOPIFY_STOREFRONT_TOKEN || '').trim();
+          const apiVersion = String(process.env.SHOPIFY_API_VERSION || '2024-10').trim();
+          const siteDomain = String(process.env.SITE_DOMAIN || '').trim();
+          const currency = String(process.env.DEFAULT_CURRENCY || 'EUR').trim();
+          const domainOk = /^[a-z0-9-]+\.myshopify\.com$/i.test(domain);
+          // Jeton Storefront PUBLIC : conçu pour le navigateur (lecture magasin + panier).
+          const tokenOk = /^[a-zA-Z0-9_-]{20,200}$/.test(token);
+          const cfg = {
+            domain: domainOk ? domain : '',
+            storefrontAccessToken: tokenOk ? token : '',
+            apiVersion,
+            pageSize: 100,
+            replaceLocalDb: false,
+            currency,
+            idPrefix: 'shopify-',
+            siteDomain: siteDomain || '',
+          };
+          fs.writeFileSync(
+            'kifftech/shopify-config.js',
+            '// Généré au déploiement par .github/workflows/deploy.yml — jeton Storefront PUBLIC uniquement.\n' +
+            '// Aucun secret : le jeton Admin API reste côté serveur.\n' +
+            'window.KIFFTECH_SHOPIFY=' + JSON.stringify(cfg, null, 2) + ';\n'
+          );
+          console.log(domainOk
+            ? 'Shopify : domaine ' + domain + ' configuré (jeton ' + (tokenOk ? 'présent' : 'absent') + ').'
+            : 'Shopify : domaine absent ou invalide — boutique en mode catalogue local.');
+          NODE
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

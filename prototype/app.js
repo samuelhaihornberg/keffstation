@@ -33,7 +33,7 @@
       { label: "Voir les offres", type: "link", page: "/offres", count: 611 },
       { label: "Services", type: "tab", page: "/services", count: 488 },
       { label: "Ouvrir le menu", type: "menu", page: "/", count: 397 },
-      { label: "Ajouter au panier", type: "button", page: "/boutique", count: 321 },
+      { label: "Ajouter a la caisse", type: "button", page: "/boutique", count: 321 },
       { label: "Contact", type: "link", page: "/contact", count: 214 }
     ],
     searchTop: [

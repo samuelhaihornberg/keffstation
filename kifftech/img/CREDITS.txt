@@ -175,3 +175,342 @@ Visuels redimensionnés (500 px) pour le catalogue. Auteurs : voir pages Commons
 - steam-machine.jpg (Valve Steam Machine) : File:Steam machine front.jpg — CC BY-SA 4.0
 - steam-frame.jpg (Valve Steam Frame) : File:Steam Frame with controllers.jpg — CC BY 4.0
 - steam-controller.jpg (Valve Steam Controller (2026)) : File:Steam Controller with Puck.jpg — CC BY-SA 4.0
+
+--- 2026-11-10 — ajouts catalogue (build-catalogue.mjs) ---
+- microsoft-xbox-series-s.jpg (Microsoft Xbox Series S) : File:Xbox Series X and S with controllers.jpg — CC BY-SA 4.0 — User:AsmodeanUnderscore (Series S), Ian Hughes https://www.flickr.com/photos/epredator/ (Series X)
+- 8bitdo-pro-2.jpg (8BitDo Pro 2) : File:8BitDo Pro 2 Bluetooth gamepad.jpg — CC BY-SA 4.0 — Kyu3a
+
+--- 2026-11-10 — ajouts catalogue (build-catalogue.mjs) ---
+- elgato-wave-3.jpg (Elgato Wave:3) : File:Elgato Wave-3.jpg — CC BY 2.0 — Masahiko OHKUBO
+- twelve-south-curve-stand.jpg (Twelve South Curve Stand) : File:Curve stand at Ryavallen January 2008.JPG — CC BY 3.0 — Johannes Scherman
+- samsung-galaxy-tab-s10-ultra.jpg (Samsung Galaxy Tab S10 Ultra) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- xiaomi-pad-7-ultra.jpg (Xiaomi Pad 7 Ultra) : File:Xiaomi Pad 7 Ultra 及其触控笔、悬浮键盘配件（小米之家样机）.jpg — CC BY-SA 4.0 — MomodaniSakura
+- lenovo-yoga-slim-7x.jpg (Lenovo Yoga Slim 7x) : File:Yoga Slim 7x.jpg — CC0 — Fumikas Sagisavas
+- jbl-flip-6.jpg (JBL Flip 6) : File:Samsung Galaxy Z Flip - 6.jpg — CC BY-SA 4.0 — KKPCW
+- soundcore-space-one.jpg (Soundcore Space One) : File:Anker Soundcore Space One.jpg — CC BY-SA 4.0 — Kyu3a
+- garmin-venu-3.jpg (Garmin Venu 3) : File:Garmin Venu 3 (a).JPG — CC BY-SA 4.0 — C.Stadler/Bwag
+- coros-pace-3.jpg (COROS Pace 3) : File:Coros Pace 3.jpeg — CC BY-SA 4.0 — SUNSmania41
+- amazfit-gtr-4.jpg (Amazfit GTR 4) : File:No.111 G-Tech Sportster GTR (4).JPG — CC0 — Tokumeigakarinoaoshima
+- withings-scanwatch-2.jpg (Withings ScanWatch 2) : File:Withings ScanWatch 2 black.jpg — CC0 — Susie Felber
+- sony-playstation-2.jpg (Sony PlayStation 2) : File:Sony Playstation 2 SCPH-5001 V9 - Botões Eject e Reset Eject and Reset buttons (19290929960).jpg — CC BY 2.0 — Deni Williams from São Paulo, Brasil / Brazil
+- sega-saturn.jpg (Sega Saturn) : File:Saturn sega.jpg — Public domain — Antonio Rodríguez
+- nintendo-game-boy-advance.jpg (Nintendo Game Boy Advance) : File:Gameboyadvance gbacart by zeartul.JPG — CC BY-SA 3.0 — Zeartul
+- microsoft-xbox-series-s.jpg (Microsoft Xbox Series S) : File:Xbox Series X and S with controllers.jpg — CC BY-SA 4.0 — User:AsmodeanUnderscore (Series S), Ian Hughes https://www.flickr.com/photos/epredator/ (Series X)
+- retrotink-5x-pro.jpg (RetroTINK 5X Pro) : File:Chery Tiggo 5x Pro Hybrid 2024 (2).jpg — CC BY-SA 4.0 — Ethan Llamas
+- 8bitdo-pro-2.jpg (8BitDo Pro 2) : File:8BitDo Pro 2 Bluetooth gamepad.jpg — CC BY-SA 4.0 — Kyu3a
+- microsoft-xbox-wireless-controller.jpg (Microsoft Xbox Wireless Controller) : File:Xbox One Wireless Controller Model 1708 (35327619353).jpg — CC BY 2.0 — MiNe from Taipei, Taiwan
+- sony-dualsense-edge.jpg (Sony DualSense Edge) : File:DualSense Edge Controller.jpg — CC0 — Sonson2
+
+--- 2026-11-10 — ajouts catalogue (build-catalogue.mjs) ---
+- logitech-brio-4k.jpg (Logitech Brio 4K) : File:Logitech Brio 301 webcam HS1.jpg — CC BY 4.0 — Hayden Schiff
+- elgato-wave-3.jpg (Elgato Wave:3) : File:Elgato Wave-3.jpg — CC BY 2.0 — Masahiko OHKUBO
+- twelve-south-curve-stand.jpg (Twelve South Curve Stand) : File:Curve stand at Ryavallen January 2008.JPG — CC BY 3.0 — Johannes Scherman
+- spigen-tough-armor-iphone-16.jpg (Spigen Tough Armor (iPhone 16)) : File:Spigen Tough Armor on iPhone 6 Plus.jpg — CC BY 2.0 — Compudemano
+- 8bitdo-ultimate-wireless-controller.jpg (8BitDo Ultimate Wireless Controller) : File:8BitDo Ultimate 2C Wireless Controller Wukong 2.jpg — CC BY 4.0 — A particle for world to form
+- samsung-galaxy-tab-s10-ultra.jpg (Samsung Galaxy Tab S10 Ultra) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- samsung-galaxy-tab-s10-plus.jpg (Samsung Galaxy Tab S10+) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- apple-ipad-air-11-m2.jpg (Apple iPad Air 11 (M2)) : File:IPad Air Tasten.jpg — CC BY 4.0 — DYVER
+- apple-ipad-air-13-m3.jpg (Apple iPad Air 13 (M3)) : File:M2 iPad Air series - 1.jpg — CC BY-SA 4.0 — Kyu3a
+- apple-ipad-a16-11.jpg (Apple iPad (A16) 11") : File:Apple iPad 11 gen. & Apple iPhone 16 (still in a box) (2025-12-02).jpg — CC0 — Olgierd Rudak
+- xiaomi-pad-7-ultra.jpg (Xiaomi Pad 7 Ultra) : File:Xiaomi Pad 7 Ultra 及其触控笔、悬浮键盘配件（小米之家样机）.jpg — CC BY-SA 4.0 — MomodaniSakura
+- huawei-matepad-pro-11-2.jpg (Huawei MatePad Pro 11.2) : File:An 11-inch HUAWEI MatePad Pro.jpg — CC BY-SA 4.0 — X-SHLIED
+- amazon-kindle-fire-hd-10.jpg (Amazon Kindle Fire HD 10) : File:Amazon Kindle 4 PDF.JPG — CC BY-SA 4.0 — Malwek
+- amazon-kindle-scribe.jpg (Amazon Kindle Scribe) : File:Amazon Kindle 4 PDF.JPG — CC BY-SA 4.0 — Malwek
+- lenovo-yoga-slim-7x.jpg (Lenovo Yoga Slim 7x) : File:Yoga Slim 7x.jpg — CC0 — Fumikas Sagisavas
+- hp-spectre-x360-14.jpg (HP Spectre x360 14) : File:Hp Spectre x360.jpg — CC BY-SA 4.0 — Lokeish
+- msi-prestige-16-ai-evo.jpg (MSI Prestige 16 AI Evo) : File:MSI Prestige P100 20201101.jpg — CC BY-SA 4.0 — Solomon203
+- apple-mac-studio-m2-ultra.jpg (Apple Mac Studio M2 Ultra) : File:Apple Studio Display and Mac Studio with Peripherals.jpg — CC0 — AzureSaturn
+- apple-mac-mini-m2.jpg (Apple Mac mini M2) : File:Apple Mac mini - fourth generation-ar 16to10 PNr°0277.jpg — CC BY-SA 3.0 at — D-Kuru
+- framework-laptop-16.jpg (Framework Laptop 16) : File:Framework laptop sway community forum small.png — CC0 — Junaruga
+- asus-zenbook-14-oled.jpg (ASUS Zenbook 14 OLED) : File:Asus Zenbook UX303LA-R5088H.jpg — CC BY 2.0 — Jan-Willem Reusink
+- bose-quietcomfort-ultra-headphones.jpg (Bose QuietComfort Ultra Headphones) : File:Bose QuietComfort 25 Acoustic Noise Cancelling Headphones.jpg — CC BY-SA 3.0 — Florian Fuchs
+- jbl-flip-6.jpg (JBL Flip 6) : File:Samsung Galaxy Z Flip - 6.jpg — CC BY-SA 4.0 — KKPCW
+- soundcore-space-one.jpg (Soundcore Space One) : File:Anker Soundcore Space One.jpg — CC BY-SA 4.0 — Kyu3a
+- garmin-venu-3.jpg (Garmin Venu 3) : File:Garmin Venu 3 (a).JPG — CC BY-SA 4.0 — C.Stadler/Bwag
+- coros-pace-3.jpg (COROS Pace 3) : File:Coros Pace 3.jpeg — CC BY-SA 4.0 — SUNSmania41
+- amazfit-gtr-4.jpg (Amazfit GTR 4) : File:No.111 G-Tech Sportster GTR (4).JPG — CC0 — Tokumeigakarinoaoshima
+- withings-scanwatch-2.jpg (Withings ScanWatch 2) : File:Withings ScanWatch 2 black.jpg — CC0 — Susie Felber
+- sony-playstation-2.jpg (Sony PlayStation 2) : File:Sony Playstation 2 SCPH-5001 V9 - Botões Eject e Reset Eject and Reset buttons (19290929960).jpg — CC BY 2.0 — Deni Williams from São Paulo, Brasil / Brazil
+- sega-saturn.png (Sega Saturn) : File:Sega Saturn Console.png — CC BY-SA 3.0 — Saturnconsole.jpg: Robivy64 derivative work: AlphathonTM (talk)
+- nintendo-game-boy-advance.jpg (Nintendo Game Boy Advance) : File:Gameboyadvance gbacart by zeartul.JPG — CC BY-SA 3.0 — Zeartul
+- microsoft-xbox-series-s.jpg (Microsoft Xbox Series S) : File:Xbox Series X and S with controllers.jpg — CC BY-SA 4.0 — User:AsmodeanUnderscore (Series S), Ian Hughes https://www.flickr.com/photos/epredator/ (Series X)
+- retrotink-5x-pro.jpg (RetroTINK 5X Pro) : File:Chery Tiggo 5x Pro Hybrid 2024 (2).jpg — CC BY-SA 4.0 — Ethan Llamas
+- 8bitdo-pro-2.jpg (8BitDo Pro 2) : File:8BitDo Pro 2 Bluetooth gamepad.jpg — CC BY-SA 4.0 — Kyu3a
+- nacon-revolution-5-pro.jpg (Nacon Revolution 5 Pro) : File:NACON REVOLUTION Pro Controller (32392487904).jpg — CC BY-SA 2.0 — 迷惘的人生
+- microsoft-xbox-wireless-controller.jpg (Microsoft Xbox Wireless Controller) : File:Xbox One Wireless Controller Model 1708 (35327619353).jpg — CC BY 2.0 — MiNe from Taipei, Taiwan
+- sony-dualsense-edge.jpg (Sony DualSense Edge) : File:DualSense Edge Controller.jpg — CC0 — Sonson2
+- ci-intel-core-ultra-9-285k.jpg (Intel Core Ultra 9 285K) : File:INTEL CORE ULTRA 7 265K - DOVRESTI COMPRARLO¿ 👀 (1920p 25fps VP9 LQ-128kbit AAC)-00.08.34.800.png — CC BY 3.0 — MoreThanTech
+- ci-amd-ryzen-9-9950x.jpg (AMD Ryzen 9 9950X) : File:AMD Ryzen 9 9950X 2.jpg — CC BY 4.0 — 4300streetcar
+- ci-amd-ryzen-7-9800x3d.jpg (AMD Ryzen 7 9800X3D) : File:Video zum AMD Ryzen 7 9800X3D (极客湾Geekerwan) 01.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-intel-core-i5-14600k.jpg (Intel Core i5-14600K) : File:Intel Core i5-14600K (INVADERPC) 01.png — CC BY 3.0 — INVADER PC
+- ci-amd-threadripper-7970x.jpg (AMD Ryzen Threadripper 7970X) : File:Unterseite des AMD Ryzen Threadripper 7970X 20240407 074.tif — CC BY 4.0 — PantheraLeo1359531
+- ci-mac-studio-m4-max.jpg (Apple Mac Studio M4 Max) : File:Apple Studio Display and Mac Studio with Peripherals.jpg — CC0 — AzureSaturn
+- ci-geforce-rtx-5080.jpg (NVIDIA GeForce RTX 5080) : File:RTX 5080 FE首发评测：赛博工艺品 (2160p 60fps VP9-128kbit AAC)-00.00.16.319.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-geforce-rtx-5070-ti.jpg (NVIDIA GeForce RTX 5070 Ti) : File:RTX5070Ti首发评测：性能约等于4080S (2160p 60fps VP9-128kbit AAC)-00.00.38.578.png — CC BY 3.0 — https://www.youtube.com/@geekerwan1024 极客湾Geekerwan]
+- ci-radeon-rx-9070-xt.jpg (AMD Radeon RX 9070 XT) : File:AMD RX9070XT显卡评测：暴打50系，A卡支棱起来了！ (2160p 60fps VP9-128kbit AAC)-00.00.49.952.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-radeon-rx-9070.jpg (AMD Radeon RX 9070) : File:AMD RX9070XT显卡评测：暴打50系，A卡支棱起来了！ (2160p 60fps VP9-128kbit AAC)-00.00.49.952.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-intel-arc-b580.jpg (Intel Arc B580) : File:Intel Arc B580评测：意外地还不错！ (2160p 60fps AV1-128kbit AAC)-00.00.27.539.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-wd-black-sn850x-2to.jpg (WD Black SN850X 2 To) : File:WD Caviar Black 1 TB SATA Hard Drive (WD1001FALS).jpg — CC BY-SA 2.0 — Mario T.
+- ci-bequiet-straight-power-12-1200.jpg (be quiet! Straight Power 12 1200 W) : File:Stromkabel zum be quiet! Straight Power 12 1200W 20240405 HOF1554-HDR RAW-Export 000083.png — CC BY 4.0 — PantheraLeo1359531
+- ci-fractal-design-north.jpg (Fractal Design North) : File:Naturalis Biodiversity Center - RMNH.AVES.54391 2 - Malurus lamberti assimilis North, 1901 - Maluridae - bird skin specimen.jpeg — CC0 — North, 1901
+- coel-arduino-nano-esp32.jpg (Arduino Nano ESP32) : File:Arduino Nano v3 20140410.jpg — CC BY-SA 3.0 — Nevit Dilmen (talk)
+- coel-arduino-mega-2560.jpg (Arduino Mega 2560 Rev3) : File:Arduino Mega 2560 (HW-888) rear.jpg — CC BY-SA 4.0 — Goga504
+- coel-raspberry-pi-4-8go.jpg (Raspberry Pi 4 Model B 8 Go) : File:Raspberry Pi 4 Model B - Side.jpg — CC BY-SA 4.0 — Laserlicht
+- coel-raspberry-pi-pico-2.jpg (Raspberry Pi Pico 2) : File:Macro photograph of the RP2350 microcontroller on a Raspberry Pi Pico 2 board.jpg — CC0 — Profpcde
+- coel-bbc-microbit-v2.jpg (BBC micro:bit V2) : File:BBC micro bit v2.jpg — CC BY 4.0 — SimonWaldherr
+- coel-sparkfun-thing-plus-rp2040.jpg (SparkFun Thing Plus RP2040) : File:17745-SparkFun Thing Plus - RP2040-02a.jpg — CC BY 2.0 — SparkFun Electronics
+- coel-bosch-bme280.jpg (Bosch BME280) : File:SparkFun Atmospheric Sensor Breakout - BME280 13676.jpg — CC BY 2.0 — SparkFun
+- coel-hc-sr04.jpg (AZ-Delivery Capteur à ultrason HC-SR04) : File:HC SR04 Ultrasonic sensor 1480319 20 21 HDR Enhancer.jpg — CC BY-SA 3.0 — Nevit Dilmen (talk)
+- mat-fluke-117.png (Fluke 117) : File:117th Congress House Member Pin.png — Public domain — United States Congress
+- mat-rigol-dp832.jpg (Rigol DP832) : File:20260422 Wrocław hackerspace testing led driver 12v PWM80 Rigol-DP832 Siglent-SDG2042X.webp — CC BY-SA 4.0 — Alexey Vazhnov
+- mat-pine64-pinecil.jpg (Pine64 Pinecil) : File:Pinecil USB C soldering iron.jpg — CC BY 4.0 — 4300streetcar
+- mat-engineer-ss-02.jpg (Engineer SS-02) : File:1976-1978 Holden LX Torana SS 02.jpg — CC BY 3.0 — Richard Lewis
+- mat-electrosolder-freedom-100.jpg (Electrosolder Freedom 100) : File:BeatrizFreedom100.jpg — CC BY-SA 2.0 — Carey Akin from Manvel, Texas, USA
+- mat-bambu-lab-p1s.jpg (Bambu Lab P1S) : File:Classic cameras P1010977-P1S (9151129455).jpg — CC BY-SA 2.0 — David
+- mat-xtool-f1-ultra.png (xTool F1 Ultra) : File:Neumático F1 Ultra blando.png — CC BY-SA 4.0 — Velocidad Total
+- mat-dremel-3000.jpg (Dremel 3000) : File:Dremel 3000 (29618495991).png — CC BY-SA 2.0 — Gareth Halfacree from Bradford, UK
+
+--- 2026-11-10 — ajouts catalogue (build-catalogue.mjs) ---
+- logitech-brio-4k.jpg (Logitech Brio 4K) : File:Logitech Brio 301 webcam HS1.jpg — CC BY 4.0 — Hayden Schiff
+- elgato-wave-3.jpg (Elgato Wave:3) : File:Elgato Wave-3.jpg — CC BY 2.0 — Masahiko OHKUBO
+- twelve-south-curve-stand.jpg (Twelve South Curve Stand) : File:Curve stand at Ryavallen January 2008.JPG — CC BY 3.0 — Johannes Scherman
+- spigen-tough-armor-iphone-16.jpg (Spigen Tough Armor (iPhone 16)) : File:Spigen Tough Armor on iPhone 6 Plus.jpg — CC BY 2.0 — Compudemano
+- 8bitdo-ultimate-wireless-controller.jpg (8BitDo Ultimate Wireless Controller) : File:8BitDo Ultimate 2C Wireless Controller Wukong 2.jpg — CC BY 4.0 — A particle for world to form
+- samsung-galaxy-tab-s10-ultra.jpg (Samsung Galaxy Tab S10 Ultra) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- samsung-galaxy-tab-s10-plus.jpg (Samsung Galaxy Tab S10+) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- apple-ipad-air-11-m2.jpg (Apple iPad Air 11 (M2)) : File:IPad Air Tasten.jpg — CC BY 4.0 — DYVER
+- apple-ipad-air-13-m3.jpg (Apple iPad Air 13 (M3)) : File:M2 iPad Air series - 1.jpg — CC BY-SA 4.0 — Kyu3a
+- apple-ipad-a16-11.jpg (Apple iPad (A16) 11") : File:Apple iPad 11 gen. & Apple iPhone 16 (still in a box) (2025-12-02).jpg — CC0 — Olgierd Rudak
+- xiaomi-pad-7-ultra.jpg (Xiaomi Pad 7 Ultra) : File:Xiaomi Pad 7 Ultra 及其触控笔、悬浮键盘配件（小米之家样机）.jpg — CC BY-SA 4.0 — MomodaniSakura
+- huawei-matepad-pro-11-2.jpg (Huawei MatePad Pro 11.2) : File:An 11-inch HUAWEI MatePad Pro.jpg — CC BY-SA 4.0 — X-SHLIED
+- amazon-kindle-fire-hd-10.jpg (Amazon Kindle Fire HD 10) : File:Amazon Kindle 4 PDF.JPG — CC BY-SA 4.0 — Malwek
+- amazon-kindle-scribe.jpg (Amazon Kindle Scribe) : File:Amazon Kindle 4 PDF.JPG — CC BY-SA 4.0 — Malwek
+- lenovo-yoga-slim-7x.jpg (Lenovo Yoga Slim 7x) : File:Yoga Slim 7x.jpg — CC0 — Fumikas Sagisavas
+- hp-spectre-x360-14.jpg (HP Spectre x360 14) : File:Hp Spectre x360.jpg — CC BY-SA 4.0 — Lokeish
+- msi-prestige-16-ai-evo.jpg (MSI Prestige 16 AI Evo) : File:MSI Prestige P100 20201101.jpg — CC BY-SA 4.0 — Solomon203
+- apple-mac-studio-m2-ultra.jpg (Apple Mac Studio M2 Ultra) : File:Apple Studio Display and Mac Studio with Peripherals.jpg — CC0 — AzureSaturn
+- apple-mac-mini-m2.jpg (Apple Mac mini M2) : File:Apple Mac mini - fourth generation-ar 16to10 PNr°0277.jpg — CC BY-SA 3.0 at — D-Kuru
+- framework-laptop-16.jpg (Framework Laptop 16) : File:Framework laptop sway community forum small.png — CC0 — Junaruga
+- asus-zenbook-14-oled.jpg (ASUS Zenbook 14 OLED) : File:Asus Zenbook UX303LA-R5088H.jpg — CC BY 2.0 — Jan-Willem Reusink
+- bose-quietcomfort-ultra-headphones.jpg (Bose QuietComfort Ultra Headphones) : File:Bose QuietComfort 25 Acoustic Noise Cancelling Headphones.jpg — CC BY-SA 3.0 — Florian Fuchs
+- jbl-flip-6.jpg (JBL Flip 6) : File:Samsung Galaxy Z Flip - 6.jpg — CC BY-SA 4.0 — KKPCW
+- soundcore-space-one.jpg (Soundcore Space One) : File:Anker Soundcore Space One.jpg — CC BY-SA 4.0 — Kyu3a
+- garmin-venu-3.jpg (Garmin Venu 3) : File:Garmin Venu 3 (a).JPG — CC BY-SA 4.0 — C.Stadler/Bwag
+- coros-pace-3.jpg (COROS Pace 3) : File:Coros Pace 3.jpeg — CC BY-SA 4.0 — SUNSmania41
+- amazfit-gtr-4.jpg (Amazfit GTR 4) : File:No.111 G-Tech Sportster GTR (4).JPG — CC0 — Tokumeigakarinoaoshima
+- withings-scanwatch-2.jpg (Withings ScanWatch 2) : File:Withings ScanWatch 2 black.jpg — CC0 — Susie Felber
+- sony-playstation-2.jpg (Sony PlayStation 2) : File:Sony Playstation 2 SCPH-5001 V9 - Botões Eject e Reset Eject and Reset buttons (19290929960).jpg — CC BY 2.0 — Deni Williams from São Paulo, Brasil / Brazil
+- sega-saturn.png (Sega Saturn) : File:Sega Saturn Console.png — CC BY-SA 3.0 — Saturnconsole.jpg: Robivy64 derivative work: AlphathonTM (talk)
+- nintendo-game-boy-advance.jpg (Nintendo Game Boy Advance) : File:Gameboyadvance gbacart by zeartul.JPG — CC BY-SA 3.0 — Zeartul
+- microsoft-xbox-series-s.jpg (Microsoft Xbox Series S) : File:Xbox Series X and S with controllers.jpg — CC BY-SA 4.0 — User:AsmodeanUnderscore (Series S), Ian Hughes https://www.flickr.com/photos/epredator/ (Series X)
+- retrotink-5x-pro.jpg (RetroTINK 5X Pro) : File:Chery Tiggo 5x Pro Hybrid 2024 (2).jpg — CC BY-SA 4.0 — Ethan Llamas
+- 8bitdo-pro-2.jpg (8BitDo Pro 2) : File:8BitDo Pro 2 Bluetooth gamepad.jpg — CC BY-SA 4.0 — Kyu3a
+- nacon-revolution-5-pro.jpg (Nacon Revolution 5 Pro) : File:NACON REVOLUTION Pro Controller (32392487904).jpg — CC BY-SA 2.0 — 迷惘的人生
+- microsoft-xbox-wireless-controller.jpg (Microsoft Xbox Wireless Controller) : File:Xbox One Wireless Controller Model 1708 (35327619353).jpg — CC BY 2.0 — MiNe from Taipei, Taiwan
+- sony-dualsense-edge.jpg (Sony DualSense Edge) : File:DualSense Edge Controller.jpg — CC0 — Sonson2
+- google-nest-thermostat.jpg (Google Nest Thermostat) : File:Nest Thermostat.JPG — CC BY-SA 3.0 — Amanitamano
+- google-nest-doorbell.jpg (Google Nest Doorbell (2e génération)) : File:Nest Doorbell 1 2018-08-12.jpg — CC BY-SA 4.0 — FASTILY
+- august-wi-fi-smart-lock.jpg (August Wi-Fi Smart Lock) : File:August 2nd-gen smart lock.jpg — CC BY 4.0 — username
+- switchbot-curtain-3.jpg (SwitchBot Curtain 3) : File:Curtain (3).jpg — Public domain — Love Krittaya
+- switchbot-hub-2.jpg (SwitchBot Hub 2) : File:HUB 2.jpg — CC BY-SA 3.0 — Juan José Presa Domínguez
+- tp-link-deco-x60.jpg (TP-Link Deco X60) : File:Wifi mesh TP-link deco m4r.jpg — CC BY-SA 4.0 — Willmeial
+- airthings-wave-plus.png (Airthings Wave Plus) : File:Ta wave plus ST depression (ECG).png — CC BY-SA 3.0 — Bron766
+- husqvarna-automower-450x.jpg (Husqvarna Automower 450X) : File:Husqvarna automower 430X.jpg — CC0 — Syced
+- husqvarna-automower-105.jpg (Husqvarna Automower 105) : File:Husqvarna Automower 105 Lawn Robot Vestfold, Norway 2017-10-06.jpg — CC BY-SA 4.0 — Wolfmann
+- segway-navimow-i105.jpg (Segway Navimow i105) : File:Edificio Centro 1 (código I105).jpg — CC BY-SA 4.0 — Rafael Deminicis
+- segway-navimow-h100.jpg (Segway Navimow H100) : File:JRH H100-23.jpg — CC BY-SA 4.0 — MaedaAkihiko
+- rachio-3.jpg (Rachio 3) : File:Stamp of Indonesia - 1966 - Colnect 232475 - Maritime Day.jpeg — Public domain — Post of Indonesia
+- netatmo-smart-rain-gauge.jpg (Netatmo Smart Rain Gauge) : File:Netatmo Rain gauge 01.jpg — CC BY-SA 4.0 — Asacyan
+- philips-hue-twilight.jpg (Philips Hue Twilight) : File:Twilight in night sky.jpg — CC BY-SA 4.0 — Path slopu
+- tp-link-tapo-c225.jpg (Tapo C225) : File:N-TN-C225 Dalavanur Rockcut pallava Temple.jpg — CC BY-SA 4.0 — R.K.Lakshmi
+- birdfy-feed.jpg (Birdfy Feed) : File:Pig feed.jpg — CC BY-SA 4.0 — Azorbli
+- click-and-grow-smart-garden-9.jpg (Click & Grow The Smart Garden 9) : File:Click & Grow Smart Herb Garden.jpg — CC BY-SA 4.0 — Priitpedastsaar
+- lettuce-grow-farmstand.jpg (Lettuce Grow Farmstand) : File:Farmstand in winter - Flickr - Muffet.jpg — CC BY 2.0 — liz west from Boxborough, MA, USA
+- rise-gardens-rise-garden.jpg (Rise Gardens Rise Garden) : File:King's Park Rise Garden 2025.jpg — CC BY-SA 4.0 — Tombus20032000
+- aerogarden-tower-garden.jpg (AeroGarden Tower Garden) : File:2017 - Victoria Tower seen from the garden.jpg — CC BY-SA 4.0 — Jordiferrer
+- unitree-g1.jpg (Unitree G1) : File:Unitree G1.jpg — CC0 — Sayanesy
+- apptronik-apollo.jpg (Apptronik Apollo) : File:Roman Statue of Apollo.jpg — CC BY-SA 2.0 — Stuart Yeates
+- figure-02.jpg (Figure AI Figure 02) : File:Britannica Alloys Plate Figure 02.jpg — Public domain — Ewing and Rosenhain, Philosophical Transactions
+- fourier-intelligence-gr-1.jpg (Fourier Intelligence GR-1) : File:Ford Shelby GR-1 Concept.JPG — Public domain — Bull-Doser
+- dobot-nova-5.jpg (Dobot Nova 5) : File:Artemisia nova 5.jpg — CC BY-SA 3.0 — Stan Shebs
+- niryo-ned2.png (Niryo Ned2) : File:Haanden vil jeg dyppe ned2.png — Public domain — Haanden_vil_jeg_dyppe_ned.jpg: *Norsk_Billedbog_for_børn.djvu: Elling Holst (1849-1915) Eivind Nielsen (1864-1939) deriv
+- ufactory-lite-6.jpg (UFACTORY Lite 6) : File:Lite 6.JPG — CC BY-SA 3.0 — Mishraphotographer
+- robotis-op3.png (Robotis OP3) : File:Robotisop3.png — CC BY-SA 4.0 — DavidMansolino
+- lego-education-spike-prime.png (LEGO Education SPIKE Prime) : File:LegoSpikePrimeRobotOrdinatoScriviColore.png — CC BY 4.0 — Mattruffoni
+- anki-vector.jpg (Anki Vector) : File:Anki Vector (waiting for app to go live at 10pm) (45201795721).jpg — CC BY 2.0 — Ian Hughes
+- anki-cozmo.jpg (Anki Cozmo) : File:Anki Cozmo.png — CC BY-SA 4.0 — DecafPotato
+- dji-robomaster-s1.jpg (DJI RoboMaster S1) : File:DJI RoboMaster S1 - 1.jpg — CC BY-SA 4.0 — KKPCW
+- ozobot-evo.jpg (Ozobot Evo) : File:Quito, Acto en solidaridad con el señor Presidente del Estado Plurinacional de Bolivia, Evo Morales. (9356186240).jpg — CC BY-SA 2.0 — Cancillería Ecuador from Ecuador
+- thymio-ii.jpg (Thymio Thymio II) : File:Thymio Simulation.jpg — CC BY-SA 4.0 — OlivierMichel
+- ci-intel-core-ultra-9-285k.jpg (Intel Core Ultra 9 285K) : File:INTEL CORE ULTRA 7 265K - DOVRESTI COMPRARLO¿ 👀 (1920p 25fps VP9 LQ-128kbit AAC)-00.08.34.800.png — CC BY 3.0 — MoreThanTech
+- ci-amd-ryzen-9-9950x.jpg (AMD Ryzen 9 9950X) : File:AMD Ryzen 9 9950X 2.jpg — CC BY 4.0 — 4300streetcar
+- ci-amd-ryzen-7-9800x3d.jpg (AMD Ryzen 7 9800X3D) : File:Video zum AMD Ryzen 7 9800X3D (极客湾Geekerwan) 01.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-intel-core-i5-14600k.jpg (Intel Core i5-14600K) : File:Intel Core i5-14600K (INVADERPC) 01.png — CC BY 3.0 — INVADER PC
+- ci-amd-threadripper-7970x.jpg (AMD Ryzen Threadripper 7970X) : File:Unterseite des AMD Ryzen Threadripper 7970X 20240407 074.tif — CC BY 4.0 — PantheraLeo1359531
+- ci-mac-studio-m4-max.jpg (Apple Mac Studio M4 Max) : File:Apple Studio Display and Mac Studio with Peripherals.jpg — CC0 — AzureSaturn
+- ci-geforce-rtx-5080.jpg (NVIDIA GeForce RTX 5080) : File:RTX 5080 FE首发评测：赛博工艺品 (2160p 60fps VP9-128kbit AAC)-00.00.16.319.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-geforce-rtx-5070-ti.jpg (NVIDIA GeForce RTX 5070 Ti) : File:RTX5070Ti首发评测：性能约等于4080S (2160p 60fps VP9-128kbit AAC)-00.00.38.578.png — CC BY 3.0 — https://www.youtube.com/@geekerwan1024 极客湾Geekerwan]
+- ci-radeon-rx-9070-xt.jpg (AMD Radeon RX 9070 XT) : File:AMD RX9070XT显卡评测：暴打50系，A卡支棱起来了！ (2160p 60fps VP9-128kbit AAC)-00.00.49.952.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-radeon-rx-9070.jpg (AMD Radeon RX 9070) : File:AMD RX9070XT显卡评测：暴打50系，A卡支棱起来了！ (2160p 60fps VP9-128kbit AAC)-00.00.49.952.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-intel-arc-b580.jpg (Intel Arc B580) : File:Intel Arc B580评测：意外地还不错！ (2160p 60fps AV1-128kbit AAC)-00.00.27.539.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-wd-black-sn850x-2to.jpg (WD Black SN850X 2 To) : File:WD Caviar Black 1 TB SATA Hard Drive (WD1001FALS).jpg — CC BY-SA 2.0 — Mario T.
+- ci-bequiet-straight-power-12-1200.jpg (be quiet! Straight Power 12 1200 W) : File:Stromkabel zum be quiet! Straight Power 12 1200W 20240405 HOF1554-HDR RAW-Export 000083.png — CC BY 4.0 — PantheraLeo1359531
+- ci-fractal-design-north.jpg (Fractal Design North) : File:Naturalis Biodiversity Center - RMNH.AVES.54391 2 - Malurus lamberti assimilis North, 1901 - Maluridae - bird skin specimen.jpeg — CC0 — North, 1901
+- coel-arduino-nano-esp32.jpg (Arduino Nano ESP32) : File:Arduino Nano v3 20140410.jpg — CC BY-SA 3.0 — Nevit Dilmen (talk)
+- coel-arduino-mega-2560.jpg (Arduino Mega 2560 Rev3) : File:Arduino Mega 2560 (HW-888) rear.jpg — CC BY-SA 4.0 — Goga504
+- coel-raspberry-pi-4-8go.jpg (Raspberry Pi 4 Model B 8 Go) : File:Raspberry Pi 4 Model B - Side.jpg — CC BY-SA 4.0 — Laserlicht
+- coel-raspberry-pi-pico-2.jpg (Raspberry Pi Pico 2) : File:Macro photograph of the RP2350 microcontroller on a Raspberry Pi Pico 2 board.jpg — CC0 — Profpcde
+- coel-bbc-microbit-v2.jpg (BBC micro:bit V2) : File:BBC micro bit v2.jpg — CC BY 4.0 — SimonWaldherr
+- coel-sparkfun-thing-plus-rp2040.jpg (SparkFun Thing Plus RP2040) : File:17745-SparkFun Thing Plus - RP2040-02a.jpg — CC BY 2.0 — SparkFun Electronics
+- coel-bosch-bme280.jpg (Bosch BME280) : File:SparkFun Atmospheric Sensor Breakout - BME280 13676.jpg — CC BY 2.0 — SparkFun
+- coel-hc-sr04.jpg (AZ-Delivery Capteur à ultrason HC-SR04) : File:HC SR04 Ultrasonic sensor 1480319 20 21 HDR Enhancer.jpg — CC BY-SA 3.0 — Nevit Dilmen (talk)
+- mat-fluke-117.png (Fluke 117) : File:117th Congress House Member Pin.png — Public domain — United States Congress
+- mat-rigol-dp832.jpg (Rigol DP832) : File:20260422 Wrocław hackerspace testing led driver 12v PWM80 Rigol-DP832 Siglent-SDG2042X.webp — CC BY-SA 4.0 — Alexey Vazhnov
+- mat-pine64-pinecil.jpg (Pine64 Pinecil) : File:Pinecil USB C soldering iron.jpg — CC BY 4.0 — 4300streetcar
+- mat-engineer-ss-02.jpg (Engineer SS-02) : File:1976-1978 Holden LX Torana SS 02.jpg — CC BY 3.0 — Richard Lewis
+- mat-electrosolder-freedom-100.jpg (Electrosolder Freedom 100) : File:BeatrizFreedom100.jpg — CC BY-SA 2.0 — Carey Akin from Manvel, Texas, USA
+- mat-bambu-lab-p1s.jpg (Bambu Lab P1S) : File:Classic cameras P1010977-P1S (9151129455).jpg — CC BY-SA 2.0 — David
+- mat-xtool-f1-ultra.png (xTool F1 Ultra) : File:Neumático F1 Ultra blando.png — CC BY-SA 4.0 — Velocidad Total
+- mat-dremel-3000.jpg (Dremel 3000) : File:Dremel 3000 (29618495991).png — CC BY-SA 2.0 — Gareth Halfacree from Bradford, UK
+
+--- 2026-11-10 — ajouts catalogue (build-catalogue.mjs) ---
+- logitech-brio-4k.jpg (Logitech Brio 4K) : File:Logitech Brio 301 webcam HS1.jpg — CC BY 4.0 — Hayden Schiff
+- elgato-wave-3.jpg (Elgato Wave:3) : File:Elgato Wave-3.jpg — CC BY 2.0 — Masahiko OHKUBO
+- twelve-south-curve-stand.jpg (Twelve South Curve Stand) : File:Curve stand at Ryavallen January 2008.JPG — CC BY 3.0 — Johannes Scherman
+- spigen-tough-armor-iphone-16.jpg (Spigen Tough Armor (iPhone 16)) : File:Spigen Tough Armor on iPhone 6 Plus.jpg — CC BY 2.0 — Compudemano
+- 8bitdo-ultimate-wireless-controller.jpg (8BitDo Ultimate Wireless Controller) : File:8BitDo Ultimate 2C Wireless Controller Wukong 2.jpg — CC BY 4.0 — A particle for world to form
+- samsung-galaxy-tab-s10-ultra.jpg (Samsung Galaxy Tab S10 Ultra) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- samsung-galaxy-tab-s10-plus.jpg (Samsung Galaxy Tab S10+) : File:Tab S10 Ultra frontal image.png — CC BY-SA 4.0 — Hinothi1
+- apple-ipad-air-11-m2.jpg (Apple iPad Air 11 (M2)) : File:IPad Air Tasten.jpg — CC BY 4.0 — DYVER
+- apple-ipad-air-13-m3.jpg (Apple iPad Air 13 (M3)) : File:M2 iPad Air series - 1.jpg — CC BY-SA 4.0 — Kyu3a
+- apple-ipad-a16-11.jpg (Apple iPad (A16) 11") : File:Apple iPad 11 gen. & Apple iPhone 16 (still in a box) (2025-12-02).jpg — CC0 — Olgierd Rudak
+- xiaomi-pad-7-ultra.jpg (Xiaomi Pad 7 Ultra) : File:Xiaomi Pad 7 Ultra 及其触控笔、悬浮键盘配件（小米之家样机）.jpg — CC BY-SA 4.0 — MomodaniSakura
+- huawei-matepad-pro-11-2.jpg (Huawei MatePad Pro 11.2) : File:An 11-inch HUAWEI MatePad Pro.jpg — CC BY-SA 4.0 — X-SHLIED
+- amazon-kindle-fire-hd-10.jpg (Amazon Kindle Fire HD 10) : File:Amazon Kindle 4 PDF.JPG — CC BY-SA 4.0 — Malwek
+- amazon-kindle-scribe.jpg (Amazon Kindle Scribe) : File:Amazon Kindle 4 PDF.JPG — CC BY-SA 4.0 — Malwek
+- lenovo-yoga-slim-7x.jpg (Lenovo Yoga Slim 7x) : File:Yoga Slim 7x.jpg — CC0 — Fumikas Sagisavas
+- hp-spectre-x360-14.jpg (HP Spectre x360 14) : File:Hp Spectre x360.jpg — CC BY-SA 4.0 — Lokeish
+- msi-prestige-16-ai-evo.jpg (MSI Prestige 16 AI Evo) : File:MSI Prestige P100 20201101.jpg — CC BY-SA 4.0 — Solomon203
+- apple-mac-studio-m2-ultra.jpg (Apple Mac Studio M2 Ultra) : File:Apple Studio Display and Mac Studio with Peripherals.jpg — CC0 — AzureSaturn
+- apple-mac-mini-m2.jpg (Apple Mac mini M2) : File:Apple Mac mini - fourth generation-ar 16to10 PNr°0277.jpg — CC BY-SA 3.0 at — D-Kuru
+- framework-laptop-16.jpg (Framework Laptop 16) : File:Framework laptop sway community forum small.png — CC0 — Junaruga
+- asus-zenbook-14-oled.jpg (ASUS Zenbook 14 OLED) : File:Asus Zenbook UX303LA-R5088H.jpg — CC BY 2.0 — Jan-Willem Reusink
+- bose-quietcomfort-ultra-headphones.jpg (Bose QuietComfort Ultra Headphones) : File:Bose QuietComfort 25 Acoustic Noise Cancelling Headphones.jpg — CC BY-SA 3.0 — Florian Fuchs
+- jbl-flip-6.jpg (JBL Flip 6) : File:Samsung Galaxy Z Flip - 6.jpg — CC BY-SA 4.0 — KKPCW
+- soundcore-space-one.jpg (Soundcore Space One) : File:Anker Soundcore Space One.jpg — CC BY-SA 4.0 — Kyu3a
+- garmin-venu-3.jpg (Garmin Venu 3) : File:Garmin Venu 3 (a).JPG — CC BY-SA 4.0 — C.Stadler/Bwag
+- coros-pace-3.jpg (COROS Pace 3) : File:Coros Pace 3.jpeg — CC BY-SA 4.0 — SUNSmania41
+- amazfit-gtr-4.jpg (Amazfit GTR 4) : File:No.111 G-Tech Sportster GTR (4).JPG — CC0 — Tokumeigakarinoaoshima
+- withings-scanwatch-2.jpg (Withings ScanWatch 2) : File:Withings ScanWatch 2 black.jpg — CC0 — Susie Felber
+- sony-playstation-2.jpg (Sony PlayStation 2) : File:Sony Playstation 2 SCPH-5001 V9 - Botões Eject e Reset Eject and Reset buttons (19290929960).jpg — CC BY 2.0 — Deni Williams from São Paulo, Brasil / Brazil
+- sega-saturn.png (Sega Saturn) : File:Sega Saturn Console.png — CC BY-SA 3.0 — Saturnconsole.jpg: Robivy64 derivative work: AlphathonTM (talk)
+- nintendo-game-boy-advance.jpg (Nintendo Game Boy Advance) : File:Gameboyadvance gbacart by zeartul.JPG — CC BY-SA 3.0 — Zeartul
+- microsoft-xbox-series-s.jpg (Microsoft Xbox Series S) : File:Xbox Series X and S with controllers.jpg — CC BY-SA 4.0 — User:AsmodeanUnderscore (Series S), Ian Hughes https://www.flickr.com/photos/epredator/ (Series X)
+- retrotink-5x-pro.jpg (RetroTINK 5X Pro) : File:Chery Tiggo 5x Pro Hybrid 2024 (2).jpg — CC BY-SA 4.0 — Ethan Llamas
+- 8bitdo-pro-2.jpg (8BitDo Pro 2) : File:8BitDo Pro 2 Bluetooth gamepad.jpg — CC BY-SA 4.0 — Kyu3a
+- nacon-revolution-5-pro.jpg (Nacon Revolution 5 Pro) : File:NACON REVOLUTION Pro Controller (32392487904).jpg — CC BY-SA 2.0 — 迷惘的人生
+- microsoft-xbox-wireless-controller.jpg (Microsoft Xbox Wireless Controller) : File:Xbox One Wireless Controller Model 1708 (35327619353).jpg — CC BY 2.0 — MiNe from Taipei, Taiwan
+- sony-dualsense-edge.jpg (Sony DualSense Edge) : File:DualSense Edge Controller.jpg — CC0 — Sonson2
+- google-nest-thermostat.jpg (Google Nest Thermostat) : File:Nest Thermostat.JPG — CC BY-SA 3.0 — Amanitamano
+- google-nest-doorbell.jpg (Google Nest Doorbell (2e génération)) : File:Nest Doorbell 1 2018-08-12.jpg — CC BY-SA 4.0 — FASTILY
+- august-wi-fi-smart-lock.jpg (August Wi-Fi Smart Lock) : File:August 2nd-gen smart lock.jpg — CC BY 4.0 — username
+- switchbot-curtain-3.jpg (SwitchBot Curtain 3) : File:Curtain (3).jpg — Public domain — Love Krittaya
+- switchbot-hub-2.jpg (SwitchBot Hub 2) : File:HUB 2.jpg — CC BY-SA 3.0 — Juan José Presa Domínguez
+- tp-link-deco-x60.jpg (TP-Link Deco X60) : File:Wifi mesh TP-link deco m4r.jpg — CC BY-SA 4.0 — Willmeial
+- airthings-wave-plus.png (Airthings Wave Plus) : File:Ta wave plus ST depression (ECG).png — CC BY-SA 3.0 — Bron766
+- husqvarna-automower-450x.jpg (Husqvarna Automower 450X) : File:Husqvarna automower 430X.jpg — CC0 — Syced
+- husqvarna-automower-105.jpg (Husqvarna Automower 105) : File:Husqvarna Automower 105 Lawn Robot Vestfold, Norway 2017-10-06.jpg — CC BY-SA 4.0 — Wolfmann
+- segway-navimow-i105.jpg (Segway Navimow i105) : File:Edificio Centro 1 (código I105).jpg — CC BY-SA 4.0 — Rafael Deminicis
+- segway-navimow-h100.jpg (Segway Navimow H100) : File:JRH H100-23.jpg — CC BY-SA 4.0 — MaedaAkihiko
+- rachio-3.jpg (Rachio 3) : File:Stamp of Indonesia - 1966 - Colnect 232475 - Maritime Day.jpeg — Public domain — Post of Indonesia
+- netatmo-smart-rain-gauge.jpg (Netatmo Smart Rain Gauge) : File:Netatmo Rain gauge 01.jpg — CC BY-SA 4.0 — Asacyan
+- philips-hue-twilight.jpg (Philips Hue Twilight) : File:Twilight in night sky.jpg — CC BY-SA 4.0 — Path slopu
+- tp-link-tapo-c225.jpg (Tapo C225) : File:N-TN-C225 Dalavanur Rockcut pallava Temple.jpg — CC BY-SA 4.0 — R.K.Lakshmi
+- birdfy-feed.jpg (Birdfy Feed) : File:Pig feed.jpg — CC BY-SA 4.0 — Azorbli
+- click-and-grow-smart-garden-9.jpg (Click & Grow The Smart Garden 9) : File:Click & Grow Smart Herb Garden.jpg — CC BY-SA 4.0 — Priitpedastsaar
+- lettuce-grow-farmstand.jpg (Lettuce Grow Farmstand) : File:Farmstand in winter - Flickr - Muffet.jpg — CC BY 2.0 — liz west from Boxborough, MA, USA
+- rise-gardens-rise-garden.jpg (Rise Gardens Rise Garden) : File:King's Park Rise Garden 2025.jpg — CC BY-SA 4.0 — Tombus20032000
+- aerogarden-tower-garden.jpg (AeroGarden Tower Garden) : File:2017 - Victoria Tower seen from the garden.jpg — CC BY-SA 4.0 — Jordiferrer
+- unitree-g1.jpg (Unitree G1) : File:Unitree G1.jpg — CC0 — Sayanesy
+- apptronik-apollo.jpg (Apptronik Apollo) : File:Roman Statue of Apollo.jpg — CC BY-SA 2.0 — Stuart Yeates
+- figure-02.jpg (Figure AI Figure 02) : File:Britannica Alloys Plate Figure 02.jpg — Public domain — Ewing and Rosenhain, Philosophical Transactions
+- fourier-intelligence-gr-1.jpg (Fourier Intelligence GR-1) : File:Ford Shelby GR-1 Concept.JPG — Public domain — Bull-Doser
+- dobot-nova-5.jpg (Dobot Nova 5) : File:Artemisia nova 5.jpg — CC BY-SA 3.0 — Stan Shebs
+- niryo-ned2.png (Niryo Ned2) : File:Haanden vil jeg dyppe ned2.png — Public domain — Haanden_vil_jeg_dyppe_ned.jpg: *Norsk_Billedbog_for_børn.djvu: Elling Holst (1849-1915) Eivind Nielsen (1864-1939) deriv
+- ufactory-lite-6.jpg (UFACTORY Lite 6) : File:Lite 6.JPG — CC BY-SA 3.0 — Mishraphotographer
+- robotis-op3.png (Robotis OP3) : File:Robotisop3.png — CC BY-SA 4.0 — DavidMansolino
+- lego-education-spike-prime.png (LEGO Education SPIKE Prime) : File:LegoSpikePrimeRobotOrdinatoScriviColore.png — CC BY 4.0 — Mattruffoni
+- anki-vector.jpg (Anki Vector) : File:Anki Vector (waiting for app to go live at 10pm) (45201795721).jpg — CC BY 2.0 — Ian Hughes
+- anki-cozmo.jpg (Anki Cozmo) : File:Anki Cozmo.png — CC BY-SA 4.0 — DecafPotato
+- dji-robomaster-s1.jpg (DJI RoboMaster S1) : File:DJI RoboMaster S1 - 1.jpg — CC BY-SA 4.0 — KKPCW
+- ozobot-evo.jpg (Ozobot Evo) : File:Quito, Acto en solidaridad con el señor Presidente del Estado Plurinacional de Bolivia, Evo Morales. (9356186240).jpg — CC BY-SA 2.0 — Cancillería Ecuador from Ecuador
+- thymio-ii.jpg (Thymio Thymio II) : File:Thymio Simulation.jpg — CC BY-SA 4.0 — OlivierMichel
+- ci-intel-core-ultra-9-285k.jpg (Intel Core Ultra 9 285K) : File:INTEL CORE ULTRA 7 265K - DOVRESTI COMPRARLO¿ 👀 (1920p 25fps VP9 LQ-128kbit AAC)-00.08.34.800.png — CC BY 3.0 — MoreThanTech
+- ci-amd-ryzen-9-9950x.jpg (AMD Ryzen 9 9950X) : File:AMD Ryzen 9 9950X 2.jpg — CC BY 4.0 — 4300streetcar
+- ci-amd-ryzen-7-9800x3d.jpg (AMD Ryzen 7 9800X3D) : File:Video zum AMD Ryzen 7 9800X3D (极客湾Geekerwan) 01.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-intel-core-i5-14600k.jpg (Intel Core i5-14600K) : File:Intel Core i5-14600K (INVADERPC) 01.png — CC BY 3.0 — INVADER PC
+- ci-amd-threadripper-7970x.jpg (AMD Ryzen Threadripper 7970X) : File:Unterseite des AMD Ryzen Threadripper 7970X 20240407 074.tif — CC BY 4.0 — PantheraLeo1359531
+- ci-mac-studio-m4-max.jpg (Apple Mac Studio M4 Max) : File:Apple Studio Display and Mac Studio with Peripherals.jpg — CC0 — AzureSaturn
+- ci-geforce-rtx-5080.jpg (NVIDIA GeForce RTX 5080) : File:RTX 5080 FE首发评测：赛博工艺品 (2160p 60fps VP9-128kbit AAC)-00.00.16.319.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-geforce-rtx-5070-ti.jpg (NVIDIA GeForce RTX 5070 Ti) : File:RTX5070Ti首发评测：性能约等于4080S (2160p 60fps VP9-128kbit AAC)-00.00.38.578.png — CC BY 3.0 — https://www.youtube.com/@geekerwan1024 极客湾Geekerwan]
+- ci-radeon-rx-9070-xt.jpg (AMD Radeon RX 9070 XT) : File:AMD RX9070XT显卡评测：暴打50系，A卡支棱起来了！ (2160p 60fps VP9-128kbit AAC)-00.00.49.952.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-radeon-rx-9070.jpg (AMD Radeon RX 9070) : File:AMD RX9070XT显卡评测：暴打50系，A卡支棱起来了！ (2160p 60fps VP9-128kbit AAC)-00.00.49.952.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-intel-arc-b580.jpg (Intel Arc B580) : File:Intel Arc B580评测：意外地还不错！ (2160p 60fps AV1-128kbit AAC)-00.00.27.539.png — CC BY 3.0 — 极客湾Geekerwan
+- ci-wd-black-sn850x-2to.jpg (WD Black SN850X 2 To) : File:WD Caviar Black 1 TB SATA Hard Drive (WD1001FALS).jpg — CC BY-SA 2.0 — Mario T.
+- ci-bequiet-straight-power-12-1200.jpg (be quiet! Straight Power 12 1200 W) : File:Stromkabel zum be quiet! Straight Power 12 1200W 20240405 HOF1554-HDR RAW-Export 000083.png — CC BY 4.0 — PantheraLeo1359531
+- ci-fractal-design-north.jpg (Fractal Design North) : File:Naturalis Biodiversity Center - RMNH.AVES.54391 2 - Malurus lamberti assimilis North, 1901 - Maluridae - bird skin specimen.jpeg — CC0 — North, 1901
+- coel-arduino-nano-esp32.jpg (Arduino Nano ESP32) : File:Arduino Nano v3 20140410.jpg — CC BY-SA 3.0 — Nevit Dilmen (talk)
+- coel-arduino-mega-2560.jpg (Arduino Mega 2560 Rev3) : File:Arduino Mega 2560 (HW-888) rear.jpg — CC BY-SA 4.0 — Goga504
+- coel-raspberry-pi-4-8go.jpg (Raspberry Pi 4 Model B 8 Go) : File:Raspberry Pi 4 Model B - Side.jpg — CC BY-SA 4.0 — Laserlicht
+- coel-raspberry-pi-pico-2.jpg (Raspberry Pi Pico 2) : File:Macro photograph of the RP2350 microcontroller on a Raspberry Pi Pico 2 board.jpg — CC0 — Profpcde
+- coel-bbc-microbit-v2.jpg (BBC micro:bit V2) : File:BBC micro bit v2.jpg — CC BY 4.0 — SimonWaldherr
+- coel-sparkfun-thing-plus-rp2040.jpg (SparkFun Thing Plus RP2040) : File:17745-SparkFun Thing Plus - RP2040-02a.jpg — CC BY 2.0 — SparkFun Electronics
+- coel-bosch-bme280.jpg (Bosch BME280) : File:SparkFun Atmospheric Sensor Breakout - BME280 13676.jpg — CC BY 2.0 — SparkFun
+- coel-hc-sr04.jpg (AZ-Delivery Capteur à ultrason HC-SR04) : File:HC SR04 Ultrasonic sensor 1480319 20 21 HDR Enhancer.jpg — CC BY-SA 3.0 — Nevit Dilmen (talk)
+- mat-fluke-117.png (Fluke 117) : File:117th Congress House Member Pin.png — Public domain — United States Congress
+- mat-rigol-dp832.jpg (Rigol DP832) : File:20260422 Wrocław hackerspace testing led driver 12v PWM80 Rigol-DP832 Siglent-SDG2042X.webp — CC BY-SA 4.0 — Alexey Vazhnov
+- mat-pine64-pinecil.jpg (Pine64 Pinecil) : File:Pinecil USB C soldering iron.jpg — CC BY 4.0 — 4300streetcar
+- mat-engineer-ss-02.jpg (Engineer SS-02) : File:1976-1978 Holden LX Torana SS 02.jpg — CC BY 3.0 — Richard Lewis
+- mat-electrosolder-freedom-100.jpg (Electrosolder Freedom 100) : File:BeatrizFreedom100.jpg — CC BY-SA 2.0 — Carey Akin from Manvel, Texas, USA
+- mat-bambu-lab-p1s.jpg (Bambu Lab P1S) : File:Classic cameras P1010977-P1S (9151129455).jpg — CC BY-SA 2.0 — David
+- mat-xtool-f1-ultra.png (xTool F1 Ultra) : File:Neumático F1 Ultra blando.png — CC BY-SA 4.0 — Velocidad Total
+- mat-dremel-3000.jpg (Dremel 3000) : File:Dremel 3000 (29618495991).png — CC BY-SA 2.0 — Gareth Halfacree from Bradford, UK
+- meta-quest-pro.jpg (Meta Quest Pro) : File:Meta Quest 3 display unit.jpg — CC BY-SA 4.0 — IHazACatNamedMax
+- valve-index.jpg (Valve Index) : File:Air Force officer using Valve Index.jpg — Public domain — Airman 1st Class Robyn Hunsinger
+- pico-4-pro.jpg (PICO PICO 4 Pro) : File:Kust van Pico-2.jpg — CC BY-SA 4.0 — JopkeB
+- varjo-xr-4.jpg (Varjo XR-4) : File:XR 4 (48808128588).jpg — Public domain — Extinction Rebellion Sverige
+- pimax-crystal-light.jpg (Pimax Crystal Light) : File:Crystal Light lemonade.jpg — CC0 — Mx. Granger
+- dpvr-e4.jpg (DPVR E4) : File:E4Lpb.jpg — CC BY-SA 3.0
+- xreal-air-2.jpg (XREAL Air 2) : File:DJI Mavic Air 2 Drone.jpg — CC BY-SA 4.0 — Cullen Steber
+- lynx-r1.jpg (Lynx R1) : File:Prague Slivenec R1 Highway.jpg — CC BY-SA 2.5 — Czech Wikipedia user Packa
+- ray-ban-meta-gen-2.jpg (Ray-Ban Meta Gen 2) : File:Brickell Ray Ban Meta Wayfarer Smart Glasses - Colorful facade.jpg — CC BY 4.0 — Phillip Pessar
+- halliday-glasses.jpg (Halliday Halliday Glasses) : File:Sir Halliday Macartney.jpg — Public domain — Demetrius Charles Boulger, 1853-1928
+- halliday-g2.jpg (Halliday Halliday G2) : File:Sir Halliday Macartney.jpg — Public domain — Demetrius Charles Boulger, 1853-1928
+- oculus-go.jpg (Oculus Go) : File:Oculus Go - 3.jpg — CC0 — Syced
+- playstation-vr.jpg (Sony PlayStation VR) : File:Madrid Games Week, PlayStation VR, usuario, Madrid, España, 2015.JPG — CC BY-SA 4.0 — Benjamín Núñez González
+- samsung-freestyle.jpg (Samsung Freestyle) : File:Freestyle skiing jump2.jpg — CC BY-SA 2.0 — 极博双板滑雪俱乐部
+- dji-mini-4k.jpg (DJI Mini 4K) : File:DJI MT2PD Mini 4K (9-10-2025).jpg — CC BY-SA 4.0 — ZLEA
+- dji-mavic-4-pro.jpg (DJI Mavic 4 Pro) : File:DJI - Drohne Mavic 4 Pro (b).JPG — CC BY-SA 4.0 — C.Stadler/Bwag
+- dji-avata-2.jpg (DJI Avata 2) : File:DJI QF3W4K Avata 2 (4-12-2024).jpg — CC BY-SA 4.0 — ZLEA
+- dji-air-3s.jpg (DJI Air 3S) : File:2024 Dron DJI Air 3S (1).jpg — CC BY-SA 4.0 — Jacek Halicki
+- dji-neo.jpg (DJI Neo) : File:DJI NEO本体与遥控器.jpg — CC BY-SA 4.0 — Liuxingy
+- autel-evo-mini.jpg (Autel EVO Mini) : File:Viola (Cornuta Group) Evo Mini - 2020-10-17 - Andy Mabbett - 01.jpg — CC BY-SA 4.0 — Andy Mabbett
+- potensic-atom.jpg (Potensic Atom) : File:Planetary atom decay.gif — CC0 — Jacopo Bertolotti
+- parrot-anafi-ai.jpg (Parrot Anafi Ai) : File:Parrot PF728330 ANAFI Ai (FA3KP379LP) (2-25-2024).jpg — CC BY-SA 4.0 — ZLEA
+- sony-fx3.jpg (Sony FX3) : File:Sony FX3 with Sony FE 24mm F1.4 GM - by Henry Söderlund (51061907312).jpg — CC BY 2.0 — Henry Söderlund from Helsinki, Finland
+- dji-action-5-pro.jpg (DJI Osmo Action 5 Pro) : File:DJI Osmo Action 5 Pro 02.jpg — CC BY-SA 4.0 — Gannu03
+- canon-eos-r8.jpg (Canon EOS R8) : File:Canon EOS R8 27 may 2023a.jpg — CC BY-SA 4.0 — 昼落ち
+- canon-eos-r6-ii.jpg (Canon EOS R6 Mark II) : File:Canon EOS R6 Mark II - by Henry Söderlund (52546794891).jpg — CC BY 2.0 — Henry Söderlund from Helsinki, Finland
+- nikon-z8.jpg (Nikon Z8) : File:Nikon Z8 (52956802197).jpg — CC BY 2.0 — Henry Söderlund from Helsinki, Finland
+- nikon-z6-iii.jpg (Nikon Z6 III) : File:Nikon Z6III 13 jul 2024b.jpg — CC0 — 昼落ち
+- sony-a7r-v.png (Sony Alpha 7R V) : File:Muster Überbelichtung Sony Alpha 7R V.png — CC0 — PantheraLeo1359531
+- sony-a6700.jpg (Sony Alpha a6700) : File:Sony Alpha series products at 2025 China P&E 20250517110812.jpg — CC BY-SA 4.0 — TurnOnTheNight
+- fujifilm-x-t5.jpg (Fujifilm X-T5) : File:Fujifilm X-T5 4 nov 2022c.jpg — CC BY-SA 4.0 — 昼落ち
+- panasonic-lumix-s5-ii.jpg (Panasonic Lumix S5 II) : File:Panasonic LUMIX S5 II (52682131682).jpg — CC BY 2.0 — Henry Söderlund from Helsinki, Finland
+- panasonic-lumix-g9-ii.jpg (Panasonic Lumix G9 II) : File:Panasonic Lumix G9 II.jpg — CC BY-SA 4.0 — Peachyeung316
+- insta360-x4.jpg (Insta360 X4) : File:Mapillary (Hol Ger) 2025-09-06 08H04M23S000 (1139944651531496 at WZ59iBIpuQVDRhPbwYFl3s with Arashi Vision insta360 x4).jpg — CC BY-SA 4.0 — Hol_Ger
+- insta360-one-rs.jpg (Insta360 ONE RS) : File:Honda N-ONE RS (DBA-JG1) rear.jpg — CC BY-SA 4.0 — Tokumeigakarinoaoshima
+- blackmagic-pocket-6k.jpg (Blackmagic Pocket 6K) : File:Blackmagic Design Pocket Cinema.jpg — CC BY-SA 2.0 — Yoshwar Saridam
+- sigma-24-70-art-ii.jpg (Sigma 24-70mm F2.8 DG DN Art II) : File:Sigma 24-70mm F2.8 DG DN Art 01.jpg — CC BY 2.0 — Henry Söderlund
+- canon-rf-24-105-f4.jpg (Canon RF 24-105mm F4 L IS USM) : File:Canon RF24-105mm F4 L IS USM 07 sep 2018.jpg — CC BY-SA 4.0 — 昼落ち
+- sony-fe-24-70-gm-ii.jpg (Sony FE 24-70mm F2.8 GM II) : File:Sony FE 24-70mm F2.8 GM II - by Henry Söderlund (52131834285).jpg — CC BY 2.0 — Henry Söderlund from Helsinki, Finland

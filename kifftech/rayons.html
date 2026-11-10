@@ -283,10 +283,11 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:900;line-height:1.05;letter-spac
   <div class="nav-gap"></div>
   <div class="nav">
     <a class="btn ghost" href="../">← Cube</a>
-    <a class="btn primary" href="#panier">Voir le panier</a>
-    <button class="cart-btn" id="cartBtn" aria-label="Panier">
+    <a class="btn ghost" href="./index.html">Boutique</a>
+    <a class="btn primary" href="./index.html#caisse">La Caisse</a>
+    <a class="cart-btn" id="cartBtn" href="./index.html#caisse" aria-label="La Caisse — articles sélectionnés">
       🛒 <span class="badge" id="cartBadge">0</span>
-    </button>
+    </a>
   </div>
 </header>
 
@@ -315,22 +316,22 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:900;line-height:1.05;letter-spac
     <span class="promo-badge">🔥 Promotions multi-articles</span>
     <h2 class="promo-title">Achetez plusieurs articles <span class="kw">d’un coup, en une fois</span></h2>
   </div>
-  <p class="promo-desc">Plus vous sélectionnez d’articles dans le panier, plus la promotion s’applique. Remises automatiques dégressives selon le nombre d’articles.</p>
+  <p class="promo-desc">Plus vous cochez d’articles dans la caisse, plus la promotion s’applique : −20 % de base sur les prix officiels, puis +1 % par article dans la caisse, jusqu’à +7 % (−27 % au maximum).</p>
   <div class="promo-row">
     <div class="promo-col">
-      <div class="col-title"><span class="emoji">🛒</span>2 à 3 articles</div>
-      <p>Remise appliquée sur l’ensemble du panier : <strong class="price"><span class="old">-0 %</span> <span class="new">-5 %</span></strong></p>
-      <button class="btn secondary" onclick="filterCart(2)">Voir les 2+ articles</button>
+      <div class="col-title"><span class="emoji">🛒</span>1 article</div>
+      <p>Remise appliquée sur l’ensemble de la caisse : <strong class="price"><span class="old">-0 %</span> <span class="new">-20 %</span></strong></p>
+      <a class="btn secondary" href="./index.html">Voir la boutique</a>
     </div>
     <div class="promo-col">
-      <div class="col-title"><span class="emoji">📦</span>4 à 6 articles</div>
-      <p>Remise appliquée sur l’ensemble du panier : <strong class="price"><span class="old">-5 %</span> <span class="new">-12 %</span></strong></p>
-      <button class="btn secondary" onclick="filterCart(4)">Voir les 4+ articles</button>
+      <div class="col-title"><span class="emoji">📦</span>2 à 3 articles</div>
+      <p>Remise appliquée sur l’ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-21 à -23 %</span></strong></p>
+      <a class="btn secondary" href="./index.html">Voir la boutique</a>
     </div>
     <div class="promo-col">
-      <div class="col-title"><span class="emoji">🚀</span>7 articles et +</div>
-      <p>Remise appliquée sur l’ensemble du panier : <strong class="price"><span class="old">-12 %</span> <span class="new">-20 %</span></strong></p>
-      <button class="btn secondary" onclick="filterCart(7)">Voir les 7+ articles</button>
+      <div class="col-title"><span class="emoji">🚀</span>4 articles et +</div>
+      <p>Remise appliquée sur l’ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-24 à -27 %</span></strong></p>
+      <a class="btn secondary" href="./index.html">Voir la boutique</a>
     </div>
   </div>
 </section>
@@ -355,35 +356,56 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:900;line-height:1.05;letter-spac
       <div class="modal-specs" id="modalSpecs"></div>
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" id="modalCancel">Annuler</button>
-      <button class="btn-primary" id="modalAdd">Ajouter au panier</button>
+      <button class="btn-cancel" id="modalCancel">Fermer</button>
+      <a class="btn-primary" id="modalAdd" href="./index.html">Voir les produits de ce rayon</a>
     </div>
   </div>
 </div>
 
 <!-- Toast -->
-<div class="toast" id="toast" aria-live="polite"><span class="t-emoji">✅</span><span id="toastMsg">Ajouté au panier</span></div>
+<div class="toast" id="toast" aria-live="polite"><span class="t-emoji">✅</span><span id="toastMsg">Caisse mise à jour</span></div>
 
 <script>
 /* ==================== DATA RAYONS ==================== */
+// Chaque rayon pointe vers une catégorie canonique du catalogue (app.v2.js).
+// Clic = ouverture du lecteur de produits filtré sur ce rayon.
 const RAYONS = [
-  { id:'Accessories & Gadgets', icon:'🧰', color:'var(--kf-blue)', desc:'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
-  { id:'Smartphones', icon:'📱', color:'var(--kf-cyan)', desc:'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google.' },
-  { id:'Tablets', icon:'📲', color:'var(--kf-pink)', desc:'Tablettes pro et famille — stylet, clavier, grand écran.' },
-  { id:'Laptop & Tower & Mini PC', icon:'💻', color:'var(--kf-emerald)', desc:'Ultrabooks, PC de bureau, mini PC — Apple Silicon, Intel Core Ultra, Ryzen.' },
-  { id:'Consoles & Accessories VideoGames', icon:'🎮', color:'var(--kf-orange)', desc:'Consoles rétro et modernes — PS5, Switch, Xbox, Steam Deck, accessoires.' },
-  { id:'Immobilier', icon:'🏢', color:'var(--kf-violet)', desc:'Annonces et services liés à l’immobilier et au logement connecté.' },
-  { id:'Garden', icon:'🪴', color:'var(--kf-emerald)', desc:'Jardin et maison connectés — robots tondeuses, éclairage, arrosage.' },
-  { id:'Robots Compagny & Educative', icon:'🤖', color:'var(--kf-blue)', desc:'Robots compagnons et éducatifs — programmation, IA embarquée.' },
-  { id:'Sport Electronic', icon:'⌚', color:'var(--kf-pink)', desc:'Montres connectées, bracelets fitness, matériel sport électronique.' },
-  { id:'Compenent Informatic', icon:'🔌', color:'var(--kf-cyan)', desc:'Composants informatique — cartes graphiques, CPU, SSD, cartes mères.' },
-  { id:'Compenent Electronic', icon:'⚡', color:'var(--kf-orange)', desc:'Composants électroniques — résistances, condensateurs, modules, capteurs.' },
-  { id:'Compenent Matter for Electronic and/or Mecanic', icon:'⚙️', color:'var(--kf-violet)', desc:'Pièces et matière pour électronique et/ou mécanique — soudure, boîtiers, outillage.' }
+  { id:'Accessoires & Gadgets', cat:'Accessories', icon:'🧰', color:'var(--kf-blue)', desc:'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
+  { id:'Smartphones', cat:'Smartphones', icon:'📱', color:'var(--kf-cyan)', desc:'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google.' },
+  { id:'Tablets', cat:'Tablets', icon:'📲', color:'var(--kf-pink)', desc:'Tablettes pro et famille — stylet, clavier, grand écran.' },
+  { id:'Laptop, tour & mini PC', cat:'Computers', icon:'💻', color:'var(--kf-emerald)', desc:'Ultrabooks, PC de bureau, mini PC — Apple Silicon, Intel Core Ultra, Ryzen.' },
+  { id:'Consoles & accessoires vidéo games', cat:'Consoles & Videogames', icon:'🎮', color:'var(--kf-orange)', desc:'Consoles rétro et modernes — PS5, Switch, Xbox, Steam Deck, accessoires.' },
+  { id:'Immobilier & logement connecté', cat:'Smart Home', icon:'🏢', color:'var(--kf-violet)', desc:'Objets connectés du logement : maison intelligente, sécurité, énergie.' },
+  { id:'Garden', cat:'Garden & furnitures smart devices', icon:'🪴', color:'var(--kf-emerald)', desc:'Jardin et maison connectés — robots tondeuses, éclairage, arrosage.' },
+  { id:'Robots de compagnie & éducatifs', cat:'Company & studying Robots', icon:'🤖', color:'var(--kf-blue)', desc:'Robots compagnons et éducatifs — programmation, IA embarquée.' },
+  { id:'Sport & électronique', cat:'Audio & Wearables', icon:'⌚', color:'var(--kf-pink)', desc:'Montres connectées, bracelets fitness, matériel sport électronique.' },
+  { id:'Composants informatiques', cat:'Composant electronic & informatic', icon:'🔌', color:'var(--kf-cyan)', desc:'Composants informatique — cartes graphiques, CPU, SSD, cartes mères.' },
+  { id:'Composants électroniques', cat:'Composant electronic', icon:'⚡', color:'var(--kf-orange)', desc:'Composants électroniques — résistances, condensateurs, modules, capteurs.' },
+  { id:'Matière & outillage électronique', cat:'Materiel electronique & outillage', icon:'⚙️', color:'var(--kf-violet)', desc:'Pièces et matière pour électronique et/ou mécanique — soudure, boîtiers, outillage.' }
 ];
 
+/* Nombre de produits par rayon (catalogue JSON versionné) */
+const RAYON_COUNTS = {};
+function chargerComptes(){
+  return fetch('./data/catalogue.json', { cache:'no-cache' })
+    .then(r => r.ok ? r.json() : null)
+    .then(j => {
+      const list = Array.isArray(j) ? j : (j && j.products) || [];
+      list.forEach(p => {
+        const c = p.category || 'Accessories';
+        RAYON_COUNTS[c] = (RAYON_COUNTS[c] || 0) + 1;
+      });
+      return list;
+    })
+    .catch(() => []);
+}
+
 const rayonGrid = document.getElementById('rayonGrid');
-rayonGrid.innerHTML = RAYONS.map((r,i) => `
-  <a class="rayon-card" href="#" data-rayon="${i}" role="listitem" aria-label="Rayon ${r.id}">
+function urlRayon(cat){ return './index.html?rayon=' + encodeURIComponent(cat); }
+
+function rendreRayons(){
+  rayonGrid.innerHTML = RAYONS.map((r,i) => `
+  <a class="rayon-card" href="${urlRayon(r.cat)}" data-rayon="${i}" role="listitem" aria-label="Rayon ${r.id}">
     <div class="rayon-media">
       <span style="font-size:3.2rem">${r.icon}</span>
     </div>
@@ -392,19 +414,25 @@ rayonGrid.innerHTML = RAYONS.map((r,i) => `
       <div class="rayon-desc">${r.desc}</div>
     </div>
     <div class="rayon-footer">
-      <span class="rayon-count">0+</span>
+      <span class="rayon-count">${RAYON_COUNTS[r.cat] != null ? RAYON_COUNTS[r.cat] + ' produits' : '25+ produits'}</span>
       <span class="rayon-arrow">▸</span>
     </div>
   </a>
 `).join('');
+}
+rendreRayons();
 
 rayonGrid.querySelectorAll('.rayon-card').forEach(el => {
   el.addEventListener('click',(e)=>{
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return; // laisse le nouvel onglet fonctionner
     e.preventDefault();
     const i = +el.dataset.rayon;
     openModal(RAYONS[i]);
   });
 });
+
+/* Chargement du catalogue pour afficher le nombre de produits par rayon */
+chargerComptes().then(() => { rendreRayons(); });
 
 /* ==================== MODAL ==================== */
 const modalOverlay = document.getElementById('modalOverlay');
@@ -425,10 +453,12 @@ function openModal(r){
   modalMedia.textContent = r.icon;
   modalSpecs.innerHTML = `
     <div class="spec-item"><span class="spec-label">Rayon</span><span class="spec-value">${r.id}</span></div>
+    <div class="spec-item"><span class="spec-label">Produits</span><span class="spec-value">${RAYON_COUNTS[r.cat] != null ? RAYON_COUNTS[r.cat] : '25+'}</span></div>
     <div class="spec-item"><span class="spec-label">Statut</span><span class="spec-value">Disponible en file d’attente</span></div>
     <div class="spec-item"><span class="spec-label">Intermédiaire</span><span class="spec-value">KiffTech.store</span></div>
-    <div class="spec-item"><span class="spec-label">Promotion</span><span class="spec-value">Multi-articles</span></div>
+    <div class="spec-item"><span class="spec-label">Promotion</span><span class="spec-value">Multi-articles (−20 % +1 % / article)</span></div>
   `;
+  modalAdd.setAttribute('href', urlRayon(r.cat));
   modalOverlay.classList.add('open');
   modalClose.focus();
 }
@@ -444,22 +474,24 @@ modalOverlay.addEventListener('click',(e)=>{ if(e.target===modalOverlay) closeMo
 document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
 modalAdd.addEventListener('click',()=>{
   if(!currentRayon) return;
-  addToCart(currentRayon);
   closeModal();
-  showToast(`Ajouté au panier : ${currentRayon.id}`,'success');
 });
 
-/* ==================== PANIER ==================== */
-let cart = [];
+/* ==================== LA CAISSE (compteur réel) ==================== */
 const cartBadge = document.getElementById('cartBadge');
 const cartBtn = document.getElementById('cartBtn');
+const CART_KEY = 'kifftech.cart.v1';
 
-function addToCart(item){
-  cart.push(item);
-  cartBadge.textContent = cart.length;
-  cartBtn.classList.add('pop');
-  setTimeout(()=>cartBtn.classList.remove('pop'),150);
+function majCompteurCaisse(){
+  let n = 0;
+  try {
+    const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+    n = saved.reduce((a,i)=>a + (Number(i && i.qty) || 1), 0);
+  } catch(e){ n = 0; }
+  if (cartBadge) cartBadge.textContent = n;
 }
+majCompteurCaisse();
+window.addEventListener('storage', majCompteurCaisse);
 
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
@@ -470,8 +502,7 @@ function showToast(msg,type='success'){
 }
 
 function filterCart(n){
-  // Peut servir à filtrer l'affichage des promotions selon le nombre d'articles
-  showToast(`Promotion active pour ${n}+ articles sélectionnés`,'warn');
+  showToast(`Promotion de caisse active dès ${n} article(s) sélectionné(s)`,'warn');
 }
 
 /* Compteur simple affiché dans les cartes rayon (démo) */

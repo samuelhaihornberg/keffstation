@@ -243,7 +243,7 @@ async function fetchFromClickwise() {
 function generateMedia(p){const m={badges:[]};if(p.partner)m.badges.push({class:'badge-official',label:'Partenaire'});if(p.videos?.length)m.badges.push({class:'badge-video',label:'Video'});if(p.images?.length)m.badges.push({class:'badge-official',label:'Photo CC'});else m.badges.push({class:'badge-official',label:'Aperçu généré'});return m;}
 function hasOfficialPhoto(p){return !!(p.images&&p.images.length);}
 
-const CAT_EMOJI = {'Smartphones':'📱','Computers':'💻','Tablets':'📲','Audio & Wearables':'🎧','VR AR gadgets':'🥽','Garden & furnitures smart devices':'🪴','Composant electronic & informatic':'🔌','Company & studying Robots':'🤖','Consoles & Videogames':'🎮','Drones & Caméras':'🚁','Smart Home':'🏠'};
+const CAT_EMOJI = {'Smartphones':'📱','Computers':'💻','Tablets':'📲','Audio & Wearables':'🎧','VR AR gadgets':'🥽','Garden & furnitures smart devices':'🪴','Composant electronic & informatic':'🔌','Company & studying Robots':'🤖','Consoles & Videogames':'🎮','Drones & Caméras':'🚁','Smart Home':'🏠','Accessories':'🧰','Composant electronic':'⚡','Materiel electronique & outillage':'🧰'};
 
 /* Marques populaires (grandes marques) et marques peu connues (populace à faire connaître) */
 const POPULAR_BRANDS = ['Apple','Samsung','Sony','Microsoft','Google','Nintendo','Meta','Valve','DJI','GoPro','Canon','NVIDIA','AMD','Intel','LG','Huawei','OnePlus','Garmin','Bose','Beats','Shure','Xiaomi','OPPO','Honor'];
@@ -297,7 +297,7 @@ function brandHue(brand){let h = 0; for (const c of String(brand)) h = (h * 31 +
 const BRAND_SITES={'Samsung':'https://www.samsung.com/fr/','Apple':'https://www.apple.com/fr/','Xiaomi':'https://www.mi.com/fr/','Google':'https://store.google.com/fr/','OnePlus':'https://www.oneplus.com/fr','Nothing':'https://nothing.tech/','Motorola':'https://www.motorola.com/','OPPO':'https://www.oppo.com/fr/','Realme':'https://www.realme.com/fr/','POCO':'https://www.po.co/','Honor':'https://www.honor.com/fr/','Dell':'https://www.dell.com/fr-fr','ASUS':'https://www.asus.com/fr/','Lenovo':'https://www.lenovo.com/fr/','HP':'https://www.hp.com/fr-fr/','Framework':'https://frame.work/','MSI':'https://www.msi.com/','Razer':'https://www.razer.com/','LG':'https://www.lg.com/fr/','Huawei':'https://consumer.huawei.com/fr/','Microsoft':'https://www.microsoft.com/fr-fr/','Anker':'https://www.anker.com/','Ugreen':'https://www.ugreen.com/','Belkin':'https://www.belkin.com/fr/','Zendure':'https://zendure.com/','Shargeek':'https://www.sharge.com/','Baseus':'https://www.baseus.com/','Satechi':'https://satechi.net/','Oppo':'https://www.oppo.com/fr/','Cable Matters':'https://www.cablematters.com/','Spigen':'https://www.spigen.com/','ESR':'https://www.esrtech.com/','OtterBox':'https://www.otterbox.com/','Mous':'https://www.mous.co/','Pitaka':'https://www.pitaka.com/','Bellroy':'https://bellroy.com/','amFilm':'https://www.amfilm.com/','Zagg':'https://www.zagg.com/','Logitech':'https://www.logitech.com/fr-fr','Keychron':'https://www.keychron.com/','Nuphy':'https://nuphy.com/','Royal Kludge':'https://rkgamingstore.com/','CalDigit':'https://www.caldigit.com/','StarTech':'https://www.startech.com/fr/','Hyper':'https://www.hypershop.com/','SanDisk':'https://www.sandisk.com/','Crucial':'https://www.crucial.com/','WD':'https://www.westerndigital.com/','Seagate':'https://www.seagate.com/','Angelbird':'https://www.angelbird.com/','Twelve South':'https://www.twelvesouth.com/','Lamicall':'https://www.lamicall.com/','Meta':'https://www.meta.com/','HTC':'https://www.htc.com/','PICO':'https://www.picoxr.com/fr','XREAL':'https://www.xreal.com/','Rokid':'https://www.rokid.com/','Viture':'https://www.viture.com/','RayNeo':'https://www.rayneo.com/','DPVR':'https://www.dpvr.com/','Gigabyte':'https://www.gigabyte.com/','ASRock':'https://www.asrock.com/','Corsair':'https://www.corsair.com/','Seasonic':'https://seasonic.com/','G.Skill':'https://www.gskill.com/','Unitree':'https://www.unitree.com/','Boston Dynamics':'https://bostondynamics.com/','Agility Robotics':'https://agilityrobotics.com/','Tesla':'https://www.tesla.com/','Figure':'https://www.figure.ai/','1X Technologies':'https://www.1x.tech/','Apptronik':'https://apptronik.com/','ANYbotics':'https://www.anybotics.com/','Ghost Robotics':'https://www.ghostrobotics.io/','Deep Robotics':'https://www.deeprobotics.cn/','Husqvarna':'https://www.husqvarna.com/fr/','Segway':'https://www.segway.com/','Ecovacs':'https://www.ecovacs.com/fr/','Dreame':'https://www.dreametech.com/fr/','Mammotion':'https://mammotion.com/','Philips Hue':'https://www.philips-hue.com/fr-fr','Govee':'https://www.govee.com/','Rachio':'https://rachio.com/','Moen':'https://www.moen.com/','IKEA':'https://www.ikea.com/fr/fr/','Sony':'https://www.sony.fr/','Bose':'https://www.bose.fr/','Sennheiser':'https://www.sennheiser.com/fr-fr','Technics':'https://www.technics.com/fr/','Garmin':'https://www.garmin.com/fr-FR/'};
 function officialUrl(p){const base=BRAND_SITES[p.brand]||('https://www.google.com/search?q='+encodeURIComponent(p.brand+' '+p.model+' site officiel'));if(BRAND_SITES[p.brand])return base+'search?q='+encodeURIComponent(p.model);return base;}
 // Review complet généré localement (original KiffTech, sans copie presse) : résumé + points + note issue des specs/prix.
-function productReview(p){const specs=p.specs||{};const keys=Object.keys(specs);const top=keys.slice(0,3).map(k=>k+': '+specs[k]).join(' • ');const price=p.price?.official||0;const cat=p.category||'';let note=4.0;if(price>2000)note=4.2;else if(price<100)note=4.4;else note=4.3;if(hasOfficialPhoto(p))note=Math.min(5,note+0.2);note=Math.round(note*10)/10;const plus=keys.slice(0,2).map(k=>k+' '+specs[k]);const moins=[p.year&&p.year<2023?'Génération '+p.year+' (vérifier successeur)':'Prix officiel '+price+' € à comparer',cat.includes('Robot')||cat.includes('VR')?'Usage pro/étude : vérifier compatibilité ROS':'Vérifier compatibilité '+cat];const usage=p.usage||[];const impact=p.impact||null;return{summary:(p.brand+' '+p.model+' ('+p.year+', '+cat+'). '+top+'. Positionné à '+price+' € officiel, prix KiffTech recalculé -10 à -25% selon panier/abonnement.'),plus:plus.length?plus:['Fiche specs complète'],moins:moins,note:note,usage:usage,impact:impact};}
+function productReview(p){const specs=p.specs||{};const keys=Object.keys(specs);const top=keys.slice(0,3).map(k=>k+': '+specs[k]).join(' • ');const price=p.price?.official||0;const cat=p.category||'';let note=4.0;if(price>2000)note=4.2;else if(price<100)note=4.4;else note=4.3;if(hasOfficialPhoto(p))note=Math.min(5,note+0.2);note=Math.round(note*10)/10;const plus=keys.slice(0,2).map(k=>k+' '+specs[k]);const moins=[p.year&&p.year<2023?'Génération '+p.year+' (vérifier successeur)':'Prix officiel '+price+' € à comparer',cat.includes('Robot')||cat.includes('VR')?'Usage pro/étude : vérifier compatibilité ROS':'Vérifier compatibilité '+cat];const usage=p.usage||[];const impact=p.impact||null;return{summary:(p.brand+' '+p.model+' ('+p.year+', '+cat+'). '+top+'. Positionné à '+price+' € officiel, prix KiffTech recalculé -10 à -25% selon la caisse ou l abonnement.'),plus:plus.length?plus:['Fiche specs complète'],moins:moins,note:note,usage:usage,impact:impact};}
 function previewImage(p){
   if (p.images && p.images[0]) return p.images[0];
   const brand = p.brand || '?', model = p.model || '';
@@ -334,7 +334,7 @@ function readerCard(p, i = 0){
     <div class="reader-info">
       <span class="reader-brand">${escAttr(p.brand)}</span>
       <h3 class="reader-name">${escAttr(p.model)}</h3>
-      <div class="reader-meta"><span class="meta-item meta-year">${p.year}</span><span class="meta-item meta-tier">${tier === 'popular' ? '2025-2026' : tier === 'populace' ? 'À découvrir' : ''}</span></div>
+      <div class="reader-meta"><span class="meta-item meta-year">${p.year || ''}</span><span class="meta-item meta-tier">${tier === 'popular' ? '2025-2026' : tier === 'populace' ? 'À découvrir' : ''}</span></div>
       <div class="reader-prices">${has ? fmtPriceCrossed(kt.official) : ''}<span class="reader-price-kifftech ${has ? 'has-discount' : ''}" data-currency="${kt.kifftech}">${fmtPrice(kt.kifftech)}</span></div>
       ${has ? `<div class="reader-promo">${escHtml(kt.reason)}</div>` : ''}
       <div class="reader-actions">
@@ -374,7 +374,12 @@ function renderRayons(){
   const cats = ['all', ...new Set(products.map(p => p.category))];
   const pl = n => n > 1 ? ' articles' : ' article';
   let html = `<button type="button" class="rayon-btn ${activeCategory === 'all' ? 'active' : ''}" data-category="all" role="radio" aria-checked="${activeCategory === 'all'}">Tous les produits<span class="rayon-count">${products.length}${pl(products.length)}</span></button>`;
-  html += cats.filter(c => c !== 'all').map(c => `<button type="button" class="rayon-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}<span class="rayon-count">${counts[c] || 0}${pl(counts[c] || 0)}</span></button>`).join('');
+  const MIN_PAR_RAYON = 25;
+  html += cats.filter(c => c !== 'all').map(c => {
+    const n = counts[c] || 0;
+    const warn = n < MIN_PAR_RAYON ? ' <span class="rayon-warn" title="Rayon incomplet" aria-label="Rayon incomplet">⚠️</span>' : '';
+    return `<button type="button" class="rayon-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}${warn}<span class="rayon-count">${n}${pl(n)}</span></button>`;
+  }).join('');
   sel.innerHTML = html;
   sel.querySelectorAll('.rayon-btn').forEach(b => {
     b.addEventListener('click', () => {
@@ -420,7 +425,7 @@ function renderProducts(){
       if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official);
       const kt = p.kifftech; const has = kt.discount > 0; const med = generateMedia(p);
       const imgSrc = previewImage(p);
-      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
+      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
     }).join('');
   } else {
     console.warn('products reader/grid not found');
@@ -437,6 +442,36 @@ function fmtPriceCrossed(p,c='EUR'){return `<span class="price-crossed">${fmtPri
 function toast(m,t='info'){const e=$('#toast');e.textContent=m;e.className='toast '+t+' visible';setTimeout(()=>e.classList.remove('visible'),3000)}
 
 // ============ DATA LOADING ============
+// Applique le prix réel d'un produit live (Shopify / Impact) : pas de remise
+// KiffTech inventée sur un prix piloté par la source.
+function applyLivePricing(list){
+  (list||[]).forEach(p=>{
+    p.partner = true;
+    const off = Number(p.price?.official||0);
+    p.kifftech = { official: off, kifftech: off, discount: 0, savings: 0, freeDelivery: false, reason: 'Prix ' + (p.source==='impact'?'Impact':'Shopify'), currency: p.price?.currency || 'EUR' };
+  });
+}
+
+// Affiche l'état des sources live connectées (Shopify / Impact).
+function renderLiveStatus(meta){
+  const el = $('#live-status');
+  if (!el) return;
+  const s = meta && meta.sources ? meta.sources : {};
+  const shop = s.shopify || {};
+  const imp = s.impact || {};
+  const parts = [];
+  if (shop.ok) parts.push('Shopify ' + (shop.domain||'') + ' (' + (shop.count||0) + ')');
+  if (imp.ok) parts.push('Impact (' + (imp.count||0) + ')');
+  if (!parts.length) {
+    el.innerHTML = '<span class="live-off">Catalogue local — connectez Shopify et Impact via les secrets GitHub pour les prix live</span>';
+    el.classList.remove('live-on');
+    return;
+  }
+  const when = meta && meta.generatedAt ? new Date(meta.generatedAt).toLocaleString('fr-FR') : '';
+  el.innerHTML = '<span class="live-on">Sources live actives : ' + parts.join(' • ') + (when ? ' — actualisé le ' + when : '') + '</span>';
+  el.classList.add('live-on');
+}
+
 async function loadProducts(){
   try {
     toast('Chargement produits...','info');
@@ -444,7 +479,29 @@ async function loadProducts(){
     products.forEach(p=>p.kifftech=calcKiffTechPrice(p.price.official));
     filteredProducts=[...products];
     applyFilters();
-    toast(`${products.length} produits charges (local)`,`success`);
+
+    // Catalogue étendu (JSON versionné) + catalogue live Shopify / Impact
+    if (window.KiCatalogue && window.KiCatalogue.load) {
+      try {
+        const res = await window.KiCatalogue.load();
+        const addedLocal = window.KiCatalogue.merge(products, res.local || []);
+        const addedLive  = window.KiCatalogue.merge(products, res.live || []);
+        applyLivePricing(res.live || []);
+        if (addedLocal || addedLive) {
+          products.forEach(p=>{ if(!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official); });
+          filteredProducts=[...products];
+          renderFilters();
+          renderRayons();
+          refreshKiffTechPrices();
+          applyFilters();
+          if (addedLive) toast(`${addedLive} produits live (Shopify / Impact) ajoutés`, 'success');
+          else if (addedLocal) toast(`${addedLocal} produits du catalogue étendu ajoutés`, 'success');
+        } else {
+          toast(`${products.length} produits charges (local)`, `success`);
+        }
+        renderLiveStatus(res.meta);
+      } catch(e){ console.warn('[KiffTech] catalogue etendu indisponible:', e.message); }
+    }
 
     try {
       const apiProducts = await fetchFromClickwise();
@@ -491,7 +548,7 @@ function restoreCart(){
 }
 function addToCart(id,qty=1){
   const p=products.find(x=>x.id===id);if(!p)return;
-  // Produit Shopify : panier géré par Shopify Storefront API (checkoutUrl)
+  // Produit Shopify : caisse geree par Shopify Storefront API (checkoutUrl)
   if(p.shopify && window.KiShopify && window.KiShopify.isConfigured()){
     addToShopifyCart(p.id, qty);
     return;
@@ -517,12 +574,12 @@ async function addToShopifyCart(id,qty=1){
       userContext.shopifyCartId = res.cartId;
     }
     userContext.shopifyCheckoutUrl = res.checkoutUrl;
-    // Ne pas ajouter au panier local KiffTech pour les produits Shopify (panier séparé)
-    toast(`${p.model} ajouté au panier Shopify`,'success');
+    // Ne pas ajouter a la caisse locale KiffTech pour les produits Shopify (caisse separee)
+    toast(`${p.model} ajouté a la caisse Shopify`,'success');
     updateCartBadge();
   } catch(e){
-    console.warn('[Shopify] Échec ajout panier:', e.message);
-    toast('Impossible d\'ajouter au panier Shopify — réessayez','error');
+    console.warn('[Shopify] Echec ajout caisse:', e.message);
+    toast('Impossible d\'ajouter a la caisse Shopify — reessayez','error');
   }
 }
 function removeFromCart(id){
@@ -985,7 +1042,7 @@ async function loadShopifyProducts() {
 }
 
 // ============ FILTERS ============
-function applyFilters(){filteredProducts=products.filter(p=>{if(!(p.images&&p.images.length))return false;if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
+function applyFilters(){filteredProducts=products.filter(p=>{if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
 function renderFilters(){const cats=['all',...new Set(products.map(p=>p.category))];$('#filter-category').innerHTML=cats.map(c=>`<button class="filter-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c==='all'?'Toutes':c}</button>`).join('');const ss=$('#sort-select');if(ss)ss.value=activeSort;const years=['all',...[...new Set(products.map(p=>p.year))].sort((a,b)=>b-a)];$('#filter-year').innerHTML=years.map(y=>`<button class="filter-btn ${y===activeYear?'active':''}" data-year="${y}">${y==='all'?'Toutes':y}</button>`).join('');const brands=['all',...[...new Set(products.map(p=>p.brand))].sort()];$('#filter-brand').innerHTML=brands.map(b=>`<button class="filter-btn ${b===activeBrand?'active':''}" data-brand="${b}">${b==='all'?'Toutes':b}</button>`).join('');const eras=[['all','Tous'],['retro','🕹️ Rétro'],['modern','🚀 Modernes']];const fe=$('#filter-era');if(fe)fe.innerHTML=eras.map(([v,l])=>`<button class="filter-btn ${v===activeEra?'active':''}" data-era="${v}">${l}</button>`).join('');renderViewModeButtons();}
 
 // ============ PARTICLES ============
@@ -994,10 +1051,10 @@ function initParticles(){const c=$('#particules')||document.body.appendChild(Obj
 // ============ MODAL ============
 function openModal(id){const p=products.find(x=>x.id===id);if(!p)return;const kt=p.kifftech;const has=kt.discount>0;
 $('#modal-brand').textContent=p.brand;$('#modal-name').textContent=p.model;
-$('#modal-meta').innerHTML=`<span class="meta-year">${p.year}</span><span>${p.category}</span>${kt.discount>0?`<span class="meta-promo">-${kt.discount}%</span>`:''}`;
+$('#modal-meta').innerHTML=`<span class="meta-year">${p.year || ''}</span><span>${p.category}</span>${kt.discount>0?`<span class="meta-promo">-${kt.discount}%</span>`:''}`;
 $('#modal-desc').textContent = p.description || productReview(p).summary;
 const r=productReview(p);$('#modal-specs').innerHTML=Object.entries(p.specs||{}).map(([k,v])=>`<div class="spec-item"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')+`<div class="spec-item"><span class="spec-label">Note KiffTech</span><span class="spec-value">★ ${r.note}/5</span></div><div class="spec-item"><span class="spec-label">Points +</span><span class="spec-value">${r.plus.join(' ; ')}</span></div><div class="spec-item"><span class="spec-label">À vérifier</span><span class="spec-value">${r.moins.join(' ; ')}</span></div><div class="spec-item"><span class="spec-label">Visuel</span><span class="spec-value">${hasOfficialPhoto(p)?'Photo CC BY-SA':'Aperçu généré — voir page officielle'}</span></div>${r.usage&&r.usage.length?`<div class="spec-item"><span class="spec-label">Occasions d'utilisation</span><span class="spec-value">${r.usage.join(' • ')}</span></div>`:''}${r.impact?`<div class="spec-item"><span class="spec-label">Lien partenaire Impact</span><span class="spec-value"><a href="${escAttr(r.impact.url)}" target="_blank" rel="noopener nofollow">Voir sur Impact (référence partenaire)</a></span></div>`:''}`;
-$('#modal-prices').innerHTML=`<div class="price-card"><div class="price-source">Prix officiel</div><div class="price-value">${has?fmtPriceCrossed(kt.official):fmtPrice(kt.official)}</div><a class="price-link" href="${p.sources?.official||officialUrl(p)}" target="_blank" rel="noopener">Page officielle ${p.brand}</a></div>${has?`<div class="price-card primary"><div class="price-source">KiffTech <span class="discount-tag">-${kt.discount}%</span></div><div class="price-value">${fmtPrice(kt.kifftech)}</div><div style="color:#27d17f">Economisez ${fmtPrice(kt.savings)}</div><button class="price-link" style="margin-top:12px;background:linear-gradient(135deg,#27d17f,#1e6bff)" onclick="addToCart('${p.id}');closeModal()">Ajouter à la caisse</button></div>`:''}`;
+$('#modal-prices').innerHTML=`<div class="price-card"><div class="price-source">Prix officiel</div><div class="price-value">${has?fmtPriceCrossed(kt.official):fmtPrice(kt.official)}</div><a class="price-link" href="${p.sources?.official||officialUrl(p)}" target="_blank" rel="noopener">Page officielle ${p.brand}</a></div>${has?`<div class="price-card primary"><div class="price-source">KiffTech <span class="discount-tag">-${kt.discount}%</span></div><div class="price-value">${fmtPrice(kt.kifftech)}</div><div style="color:#27d17f">Economisez ${fmtPrice(kt.savings)}</div><button class="price-link" style="margin-top:12px;background:linear-gradient(135deg,#27d17f,#1e6bff)" onclick="addToCart('${p.id}');closeModal()">Ajouter à la caisse</button></div>`:''}${(p.checkoutUrl||p.url)?`<div class="price-card"><div class="price-source">${p.source==='impact'?'Achat partenaire (Impact)':'Achat boutique Shopify'}</div><div class="price-value">${fmtPrice(kt.official)}</div><a class="price-link" href="${escAttr(p.checkoutUrl||p.url)}" target="_blank" rel="noopener sponsored">${p.source==='impact'?'Ouvrir le lien partenaire':'Voir sur la boutique Shopify'}</a></div>`:''}`;
 const gallery = (p.images && p.images.length ? p.images : [previewImage(p)]);
 const galleryVideos = (p.videos && p.videos.length ? p.videos : []);
 const m=$('#modal-media');m.innerHTML='';gallery.forEach((img,i)=>{const e=document.createElement('img');e.src=img;e.decoding='async';e.alt=`${p.brand} ${p.model} - visuel ${i + 1}`;e.style.display=(i===0?'block':'none');m.appendChild(e);});galleryVideos.forEach((src,i)=>{const v=document.createElement('video');v.src=src;v.controls=true;v.preload='none';v.setAttribute('aria-label',`${p.brand} ${p.model} - vidéo ${i + 1}`);v.style.display='none';v.style.width='100%';m.appendChild(v);});
@@ -1117,6 +1174,12 @@ function init(){
     loadShopifyProducts();
     initEvents();
     console.log('[KiffTech] initEvents done');
+    // Ouverture directe de la caisse via l'ancre #caisse (liens depuis les rayons)
+    try {
+      if ((window.location.hash || '').replace('#', '') === 'caisse') {
+        setTimeout(() => { if (typeof openCaisse === 'function') openCaisse(); }, 350);
+      }
+    } catch (e) {}
     initParticles();
     console.log('[KiffTech] initParticles done');
     updateSubUI();
