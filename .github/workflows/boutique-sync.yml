@@ -44,7 +44,7 @@ jobs:
       # --- Shopify : identifiant de la boutique ---------------------------
       # (le secret peut contenir "nom" ou "nom.myshopify.com" : le script normalise)
       SHOPIFY_STORE_DOMAIN: >-
-        ${{ secrets.SHOPIFY_ID || secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain }}
+        ${{ secrets.SHOPIFY_STORE_DOMAIN || vars.SHOPIFY_DOMAIN || secrets.SHOPIFY_ID || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain }}
       # --- Shopify : jeton (Admin API en priorite, sinon Storefront) -------
       SHOPIFY_ADMIN_TOKEN: >-
         ${{ secrets.SHOPIFY_KEY || secrets.SHOPIFY_ADMIN_TOKEN || secrets.SHOPIFY_TOKEN }}

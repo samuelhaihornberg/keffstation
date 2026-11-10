@@ -32,7 +32,8 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..")
 const OUT_FILE = path.join(ROOT, "kifftech", "data", "products.json");
 
 const ENV = process.env;
-const SHOPIFY_RAW = (ENV.SHOPIFY_STORE_DOMAIN || "").trim();
+// Domaine de la boutique : secret dedie > identifiant existant > variable GitHub.
+const SHOPIFY_RAW = (ENV.SHOPIFY_STORE_DOMAIN || ENV.SHOPIFY_DOMAIN || "").trim();
 const SHOPIFY_ADMIN_TOKEN = (ENV.SHOPIFY_ADMIN_TOKEN || "").trim();
 const SHOPIFY_STOREFRONT_TOKEN = (ENV.SHOPIFY_STOREFRONT_TOKEN || "").trim();
 const SHOPIFY_API_VERSION = (ENV.SHOPIFY_API_VERSION || "2024-10").trim();
@@ -146,10 +147,19 @@ function normalizeProduct(p) {
 /* ------------------------------------------------------------------ */
 /* Descripteur non sensible du jeton : type + longueur (jamais la valeur). */
 function tokenFormat(t) {
-  const v = String(t || "");
+  const v = String(t || "").trim();
   if (!v) return "absent";
-  const kind = /^shpat_/i.test(v) ? "admin(shpat_)" : /^shpua_/i.test(v) ? "storefront(shpua_)" : /^[0-9a-f]{32,}$/i.test(v) ? "storefront(hex)" : /^shpca_/i.test(v) ? "admin-legacy" : "autre";
-  return `${kind}, longueur ${v.length}`;
+  const kind = /^shpat_/i.test(v)
+    ? "admin API (shpat_)"
+    : /^shpua_/i.test(v)
+      ? "storefront (shpua_)"
+      : /^shpca_/i.test(v)
+        ? "admin legacy (shpca_)"
+        : /^[0-9a-f]{32,}$/i.test(v)
+          ? "storefront public (hex)"
+          : "autre";
+  // 5 premiers caracteres seulement : jamais assez pour reconstruire le jeton
+  return `${kind}, longueur ${v.length}, debut ${v.slice(0, 5)}…`;
 }
 
 /* Les identifiants Shopify disponibles, tries par plausibilite. */
@@ -369,6 +379,7 @@ async function fetchImpactItems(sid, token, label) {
     for (const c of camps) {
       const cid = c.Id ?? c.id;
       if (cid == null) continue;
+      IMPACT_DETECTED_CAMPAIGN = String(cid);
       console.log(`[impact] ${label} — campagne ${cid} « ${c.Name ?? ""} » (${c.State ?? "?"})`);
       for (const sub of ["Catalogs", "Actions", "Products"]) {
         try {
@@ -468,6 +479,8 @@ async function fetchImpactItems(sid, token, label) {
   return out;
 }
 
+let IMPACT_DETECTED_CAMPAIGN = null;
+
 async function fetchImpact() {
   console.log(`[impact] SID principal (b64)   : ${Buffer.from(IMPACT_ACCOUNT_SID).toString("base64")}`);
   console.log(`[impact] SID boutique (b64)   : ${Buffer.from(IMPACT_BRAND_ID).toString("base64")}`);
@@ -501,8 +514,14 @@ function mapImpact(item) {
   const img = get("ImageUrl", "image_url", "Image", "image") || (Array.isArray(get("Images", "images")) ? get("Images", "images")[0] : null);
   const subId = String(get("CatalogItemId", "catalog_item_id", "Id", "id", "product_id") || slugify(model));
   const landing = String(get("Url", "url", "DestinationUrl", "destination_url") || "");
-  const campaignId = IMPACT_CAMPAIGN_ID || "";
-  const url = landing || (campaignId ? `https://api.impact.com/redirect?p=${encodeURIComponent(campaignId)}&subid=${encodeURIComponent(subId)}` : "");
+  const campaignId = IMPACT_CAMPAIGN_ID || IMPACT_DETECTED_CAMPAIGN || "";
+  // Lien de suivi Impact : redirect du compte annonceur vers la page produit,
+  // avec les parametres de tracking de la campagne (im_ref / sharedid / irpid).
+  const tracking = campaignId
+    ? `https://api.impact.com/redirect?p=${encodeURIComponent(IMPACT_ACCOUNT_SID || "")}` +
+      (campaignId ? `&campaignid=${encodeURIComponent(campaignId)}` : "") +
+      `&subid=${encodeURIComponent(subId)}`
+    : "";
   const specs = {};
   const specKeys = [
     ["Gtin", "GTIN"], ["Sku", "SKU"], ["Brand", "Marque"], ["Category", "Catégorie"],
@@ -523,9 +542,9 @@ function mapImpact(item) {
     specs,
     images: img ? [String(img)] : [],
     description: description.slice(0, 400),
-    url,
+    url: landing || tracking,
     checkoutUrl: "",
-    impact: url ? { campaignId, subId, url } : null,
+    impact: tracking || landing ? { campaignId, subId, url: tracking || landing } : null,
   });
 }
 
