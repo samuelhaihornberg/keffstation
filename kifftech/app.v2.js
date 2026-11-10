@@ -222,6 +222,13 @@ function refreshKiffTechPrices(){products.forEach(p=>{if(!p.partner)p.kifftech=c
 function generateMedia(p){const m={badges:[]};if(p.partner)m.badges.push({class:'badge-official',label:'Partenaire'});if(p.videos?.length)m.badges.push({class:'badge-video',label:'Video'});if(p.images?.length)m.badges.push({class:'badge-official',label:'Photo CC'});else m.badges.push({class:'badge-official',label:'Aperçu généré'});return m;}
 function hasOfficialPhoto(p){return !!(p.images&&p.images.length);}
 
+// Slug d'un rayon : regle identique a scripts/kifftech/gen-rayon-pages.mjs
+function slugRayon(cat){
+  return String(cat || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+}
+window.slugRayon = slugRayon;
+
 const CAT_EMOJI = {'Smartphones':'📱','Computers':'💻','Tablets':'📲','Audio & Wearables':'🎧','VR AR gadgets':'🥽','Garden & furnitures smart devices':'🪴','Composant electronic & informatic':'🔌','Company & studying Robots':'🤖','Consoles & Videogames':'🎮','Drones & Caméras':'🚁','Smart Home':'🏠','Accessories':'🧰','Composant electronic':'⚡','Materiel electronique & outillage':'🧰'};
 
 /* Marques populaires (grandes marques) et marques peu connues (populace à faire connaître) */
@@ -277,8 +284,17 @@ const BRAND_SITES={'Samsung':'https://www.samsung.com/fr/','Apple':'https://www.
 function officialUrl(p){const base=BRAND_SITES[p.brand]||('https://www.google.com/search?q='+encodeURIComponent(p.brand+' '+p.model+' site officiel'));if(BRAND_SITES[p.brand])return base+'search?q='+encodeURIComponent(p.model);return base;}
 // Review complet généré localement (original KiffTech, sans copie presse) : résumé + points + note issue des specs/prix.
 function productReview(p){const specs=p.specs||{};const keys=Object.keys(specs);const top=keys.slice(0,3).map(k=>k+': '+specs[k]).join(' • ');const price=p.price?.official||0;const cat=p.category||'';let note=4.0;if(price>2000)note=4.2;else if(price<100)note=4.4;else note=4.3;if(hasOfficialPhoto(p))note=Math.min(5,note+0.2);note=Math.round(note*10)/10;const plus=keys.slice(0,2).map(k=>k+' '+specs[k]);const moins=[p.year&&p.year<2023?'Génération '+p.year+' (vérifier successeur)':'Prix officiel '+price+' € à comparer',cat.includes('Robot')||cat.includes('VR')?'Usage pro/étude : vérifier compatibilité ROS':'Vérifier compatibilité '+cat];const usage=p.usage||[];const impact=p.impact||null;return{summary:(p.brand+' '+p.model+' ('+p.year+', '+cat+'). '+top+'. Positionné à '+price+' € officiel, prix KiffTech recalculé -10 à -25% selon la caisse ou l abonnement.'),plus:plus.length?plus:['Fiche specs complète'],moins:moins,note:note,usage:usage,impact:impact};}
+function resolveAsset(src){
+  var u = String(src || '');
+  if (!u) return u;
+  if (u.charAt(0) === '/' ) return u;                       // absolue
+  if (/^(https?:)?\/\//i.test(u)) return u;                  // distante
+  var base = (window.KIFFTECH_BASE || './');
+  if (u.indexOf('./') === 0) return base + u.slice(2);
+  return u;
+}
 function previewImage(p){
-  if (p.images && p.images[0]) return p.images[0];
+  if (p.images && p.images[0]) return resolveAsset(p.images[0]);
   const brand = p.brand || '?', model = p.model || '';
   const initials = escXml(((brand[0] || '?') + model.split(' ').map(w => w[0]).join('').slice(0, 2)).toUpperCase());
   const h = brandHue(brand), emoji = CAT_EMOJI[p.category] || '📦';
@@ -380,6 +396,15 @@ function renderRayons(){
   sel.querySelectorAll('.rayon-btn').forEach(b => {
     b.addEventListener('click', () => {
       activeCategory = b.dataset.category;
+      // URL propre et partageable : /kifftech/rayon/<slug>/
+      try {
+        const base = (window.KIFFTECH_BASE || './').replace(/\/$/, '');
+        const slug = slugRayon(activeCategory);
+        const url = activeCategory === 'all'
+          ? base + 'index.html'
+          : base + 'rayon/' + slug + '/';
+        history.replaceState({}, '', url);
+      } catch (e) {}
       sel.querySelectorAll('.rayon-btn').forEach(x => {
         x.classList.toggle('active', x === b);
         x.setAttribute('aria-checked', x === b);
@@ -1173,6 +1198,7 @@ function injectCardStyle(){
     /* Deck de cartes : les cartes se chevauchent legerement et sont legerement
        inclinees, comme des cartes a jouer dans une main. */
     .reader-card { margin-left:-16px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; z-index:1; }
+    .reader-media, .product-media { background:#e9e4d7; }   /* placeholder clair pendant le chargement */
     .reader-card:first-child { margin-left:0; }
     .reader-card:hover { transform:rotate(0deg) scale(1.04); z-index:10; margin-left:0; margin-right:-4px; }
     .reader-track::-webkit-scrollbar { height:6px; }
@@ -1226,7 +1252,18 @@ function init(){
     if (!products?.length) products = [...LOCAL_DB];
     try {
       const params = new URLSearchParams(window.location.search);
-      const rayon = params.get('rayon');
+      // 1) parametre ?rayon=  2) variable injectee par la page de rayon
+      // 3) chemin /rayon/<slug>/  (URL propre, partageable)
+      let rayon = params.get('rayon');
+      if (!rayon && window.KIFFTECH_RAYON) rayon = window.KIFFTECH_RAYON;
+      if (!rayon) {
+        const m = /\/rayon\/([a-z0-9-]+)\/?$/i.exec(window.location.pathname || '');
+        if (m) {
+          const wanted = m[1];
+          const hit = products.find(p => slugRayon(p.category) === wanted);
+          if (hit) rayon = hit.category;
+        }
+      }
       if (rayon) {
         requestedRayon = rayon;
         if (products.some(p => p.category === rayon)) activeCategory = rayon;

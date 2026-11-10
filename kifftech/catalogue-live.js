@@ -22,8 +22,26 @@
 (function (window) {
   "use strict";
 
-  var DATA_CATALOGUE = "./data/catalogue.json";
-  var DATA_LIVE = "./data/products.json";
+  // URL de base du site KiffTech, deduite de l'URL du script lui-meme :
+  // fonctionne aussi bien a la racine (/kifftech/) que dans une page de rayon
+  // (/kifftech/rayon/tablettes/).
+  var BASE = (function () {
+    try {
+      var s = document.currentScript;
+      if (!s) {
+        var list = document.getElementsByTagName("script");
+        for (var i = list.length - 1; i >= 0; i--) {
+          if (list[i].src && /catalogue-live\.js/.test(list[i].src)) { s = list[i]; break; }
+        }
+      }
+      if (s && s.src) return s.src.replace(/catalogue-live\.js.*$/, "");
+    } catch (e) {}
+    return "./";
+  })();
+  window.KIFFTECH_BASE = BASE;
+
+  var DATA_CATALOGUE = BASE + "data/catalogue.json";
+  var DATA_LIVE = BASE + "data/products.json";
 
   /* ---------------- normalisation des cles de rapprochement ---------------- */
   function stripAccents(s) {
