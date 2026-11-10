@@ -3,67 +3,481 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#070708">
-<meta name="description" content="KiffTech Rayons — index éditorial des smart devices par rayon : 173 objets illustrés, 11 rayons, prix officiels et prix KiffTech.">
+<meta name="theme-color" content="#05060a">
+<meta name="description" content="KiffTech Boutique — Catalogue smart devices, high tech et gadgets. Achetez plusieurs articles d’un coup et profitez des promotions. File d’attente fournisseur grossiste — intermédiaire KiffTech.store.">
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23070708'/%3E%3Ctext x='50' y='68' font-size='58' font-family='monospace' fill='%23d8ff3e' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
-<title>KiffTech — Rayons / Objets</title>
-<link rel="stylesheet" href="./theme.css">
-<script defer src="../i18n.js"></script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2305060a'/%3E%3Ctext x='50' y='68' font-size='56' font-family='monospace' fill='%23ffd23f' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
+<title>KiffTech — Boutique Catalogue & Promotions | KeffStation</title>
+<style>
+/* ==========================================================================
+   KIFFTECH BOUTIQUE — Classy, épuré, post-moderne, futuriste
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root{
+  --kf-bg:#05060a;
+  --kf-bg-2:#0a0c14;
+  --kf-card:#10121a;
+  --kf-ink:#f4f6f8;
+  --kf-ink-dim:#b9c0c8;
+  --kf-line:rgba(244,246,248,.12);
+  --kf-line-strong:rgba(244,246,248,.22);
+  --kf-acid:#d8ff3e;
+  --kf-acid-dim:#9bb31e;
+  --kf-champagne:#f4d29a;
+  --kf-blue:#1e6bff;
+  --kf-cyan:#00d4ff;
+  --kf-pink:#ff3d9a;
+  --kf-emerald:#27d17f;
+  --kf-orange:#ff8a00;
+  --kf-violet:#8a4dff;
+  --kf-shadow:0 20px 60px rgba(0,0,0,.55);
+  --kf-shadow-lg:0 40px 100px rgba(0,0,0,.7);
+  --radius:18px;
+  --radius-sm:10px;
+  --ease:cubic-bezier(.22,.8,.28,1);
+  --maxw:1400px;
+}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  min-height:100vh;min-height:100dvh;
+  background:var(--kf-bg);
+  color:var(--kf-ink);
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.55;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+img{max-width:100%;display:block}
+
+/* Texture de fond : grille fine + grain */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:
+    linear-gradient(var(--kf-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--kf-line) 1px,transparent 1px);
+  background-size:64px 64px;
+  opacity:.35;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* ============ HEADER ============ */
+.topbar{
+  position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:clamp(12px,3vw,18px) clamp(16px,3vw,24px);
+  background:rgba(5,6,10,.82);border-bottom:1px solid var(--kf-line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{font-size:clamp(26px,5vw,34px);line-height:1}
+.brand h1{
+  font-family:"Segoe UI",Roboto,sans-serif;font-weight:800;font-size:clamp(1.1rem,2.8vw,1.5rem);
+  letter-spacing:-.04em;text-transform:uppercase;letter-spacing:-.02em;
+  background:linear-gradient(90deg,var(--kf-blue),var(--kf-cyan),var(--kf-pink));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.brand h1::after{content:"®";font-family:monospace;font-size:.4em;color:var(--kf-acid);vertical-align:super;margin-left:.2em}
+.nav-gap{flex:1}
+.topbar .nav{
+  display:flex;align-items:center;gap:10px;
+}
+.topbar .btn{
+  padding:10px 16px;border-radius:12px;border:1px solid var(--kf-line);background:rgba(255,255,255,.04);color:var(--kf-ink-dim);font-weight:700;font-size:.78rem;cursor:pointer;transition:all .18s;white-space:nowrap;
+}
+.topbar .btn:hover{border-color:var(--kf-line-strong);background:rgba(255,255,255,.08);color:var(--kf-ink)}
+.topbar .btn.primary{
+  background:linear-gradient(90deg,var(--kf-blue),var(--kf-cyan));border-color:transparent;color:#05060a;
+}
+.topbar .btn.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.topbar .btn.ghost{border-color:transparent;background:transparent;color:var(--kf-ink-dim)}
+.topbar .btn.ghost:hover{color:var(--kf-acid)}
+.cart-btn{
+  position:relative;width:44px;height:44px;border-radius:14px;border:1px solid var(--kf-line);background:rgba(255,255,255,.06);color:var(--kf-ink);display:grid;place-items:center;cursor:pointer;transition:all .18s;
+}
+.cart-btn:hover{border-color:var(--kf-line-strong);background:rgba(255,255,255,.12)}
+.cart-btn .badge{
+  position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:999px;background:var(--kf-acid);color:#05060a;font-family:monospace;font-weight:800;font-size:.6rem;display:grid;place-items:center;padding:0 5px;
+}
+
+/* ============ HERO / FILE D'ATTENTE ============ */
+.hero{
+  padding:clamp(24px,5vw,56px) clamp(16px,3vw,24px) clamp(10px,3vw,30px);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(60% 50% at 50% 0%,rgba(30,107,255,.12),transparent 55%),
+            radial-gradient(50% 40% at 80% 10%,rgba(255,61,154,.1),transparent 50%);
+}
+.kicker{
+  font-family:monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--kf-acid);font-weight:700;display:block;margin-bottom:8px;
+}
+h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin:0 0 10px;color:var(--kf-ink)}
+.lede{font-size:clamp(1rem,2.2vw,1.25rem);color:var(--kf-ink-dim);max-width:64ch;margin:0 0 22px;line-height:1.6}
+
+/* Bandeau file d'attente fournisseur */
+.queue-band{
+  display:flex;align-items:center;gap:14px;padding:clamp(14px,3vw,20px);border-radius:var(--radius);
+  background:linear-gradient(90deg,rgba(216,255,62,.08),rgba(30,107,255,.06));
+  border:1px solid rgba(216,255,62,.25);margin-bottom:22px;position:relative;
+  box-shadow:0 0 40px rgba(216,255,62,.12);
+}
+.queue-band .q-icon{font-size:1.6rem;line-height:1}
+.queue-band .q-text strong{color:var(--kf-acid)}
+.queue-band .q-text em{color:var(--kf-cyan);font-style:normal;font-weight:700}
+.queue-band .q-badge{
+  margin-left:auto;padding:6px 14px;border-radius:999px;background:var(--kf-acid);color:#05060a;font-weight:900;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 24px rgba(216,255,62,.45);
+}
+
+/* ============ RAYONS ============ */
+.sections-title{
+  font-size:clamp(1.2rem,3vw,1.7rem);font-weight:900;letter-spacing:-.02em;margin:0 0 14px;color:var(--kf-ink);
+}
+.sections-title .accent{color:var(--kf-acid)}
+.rayon-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:clamp(16px,3vw,24px);margin-bottom:34px;
+}
+.rayon-card{
+  position:relative;border-radius:var(--radius);border:1px solid var(--kf-line);
+  background:linear-gradient(180deg,var(--kf-card),rgba(255,255,255,.02));
+  overflow:hidden;display:flex;flex-direction:column;transition:all .3s var(--ease);
+  text-decoration:none;color:inherit;cursor:pointer;
+}
+.rayon-card:hover{
+  border-color:var(--kf-line-strong);transform:translateY(-6px);box-shadow:var(--kf-shadow);
+}
+.rayon-media{
+  position:relative;aspect-ratio:1;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.08),transparent 70%);
+}
+.rayon-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.rayon-card:hover .rayon-media img{transform:scale(1.08)}
+.rayon-tag{
+  position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:999px;background:rgba(5,6,10,.85);border:1px solid var(--kf-line);color:var(--kf-acid);font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.rayon-body{padding:clamp(16px,3vw,20px);display:flex;flex-direction:column;gap:8px;flex:1}
+.rayon-name{font-size:clamp(1rem,2.4vw,1.25rem);font-weight:800;color:var(--kf-ink);line-height:1.2}
+.rayon-desc{font-size:clamp(.82rem,1.8vw,.95rem);color:var(--kf-ink-dim);line-height:1.5}
+.rayon-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--kf-line)}
+.rayon-count{font-family:monospace;font-size:.72rem;color:var(--kf-ink-dim);font-weight:700}
+.rayon-arrow{width:32px;height:32px;border-radius:50%;border:1px solid var(--kf-line);background:rgba(255,255,255,.05);color:var(--kf-ink);display:grid;place-items:center;font-size:1rem;transition:all .18s}
+.rayon-card:hover .rayon-arrow{border-color:var(--kf-acid);color:var(--kf-acid);transform:translateX(4px);background:rgba(216,255,62,.15)}
+
+/* ============ PROMOTIONS ============ */
+.promo-banner{
+  position:relative;border-radius:var(--radius);border:1px solid var(--kf-line);
+  background:linear-gradient(180deg,rgba(216,255,62,.08),rgba(30,107,255,.06));
+  padding:clamp(20px,4vw,32px) clamp(20px,4vw,32px) clamp(20px,4vw,34px);
+  margin-top:34px;box-shadow:0 0 50px rgba(216,255,62,.14);
+}
+.promo-banner::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:conic-gradient(from 0deg,rgba(216,255,62,.12),rgba(30,107,255,.08),rgba(255,61,154,.08),rgba(216,255,62,.12));
+  filter:blur(30px);opacity:.6;
+}
+.promo-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.promo-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+  background:var(--kf-acid);color:#05060a;font-weight:900;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 30px rgba(216,255,62,.55);
+}
+.promo-title{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:900;line-height:1.1;margin:0;color:var(--kf-ink);letter-spacing:-.02em}
+.promo-title .kw{color:var(--kf-acid)}
+.promo-desc{font-size:clamp(.95rem,2vw,1.1rem);color:var(--kf-ink-dim);margin:0 0 22px;line-height:1.7;max-width:52ch}
+.promo-row{display:flex;flex-direction:column;gap:14px}
+.promo-col{
+  padding:clamp(18px,3vw,26px);border-radius:var(--radius-sm);
+  border:1px solid var(--kf-line);background:rgba(255,255,255,.03);
+}
+.promo-col .col-title{font-size:clamp(1rem,2.5vw,1.25rem);font-weight:800;color:var(--kf-ink);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.promo-col .col-title .emoji{font-size:1.2rem;line-height:1}
+.promo-col p{font-size:clamp(.88rem,2vw,1rem);color:var(--kf-ink-dim);line-height:1.6;margin:0 0 14px}
+.promo-col .price{
+  display:flex;align-items:baseline;gap:8px;font-size:clamp(1.1rem,2.8vw,1.6rem);font-weight:900;color:var(--kf-acid);margin-bottom:16px;
+}
+.promo-col .price .old{font-size:.8rem;font-weight:600;color:var(--kf-ink-dim);text-decoration:line-through}
+.promo-col .btn{
+  width:100%;padding:14px 20px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--kf-blue),var(--kf-cyan));color:#05060a;font-weight:900;cursor:pointer;transition:all .2s var(--ease);font-size:.95rem;
+}
+.promo-col .btn:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 10px 30px rgba(30,107,255,.4)}
+.promo-col .btn.secondary{background:transparent;border:1px solid var(--kf-line);color:var(--kf-ink)}
+.promo-col .btn.secondary:hover{border-color:var(--kf-line-strong);background:rgba(255,255,255,.08)}
+
+/* ============ TOAST ============ */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(140px);
+  padding:12px 22px;border-radius:12px;background:var(--kf-card);border:1px solid var(--kf-line);color:var(--kf-ink);
+  font-weight:700;font-size:.85rem;z-index:1000;opacity:0;transition:all .3s var(--ease);pointer-events:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{color:var(--kf-emerald);border-color:rgba(39,209,127,.4)}
+.toast.warn{color:var(--kf-acid);border-color:rgba(216,255,62,.4)}
+.toast .t-emoji{font-size:1.1rem;margin-right:8px}
+
+/* ============ MODAL DETAIL ============ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;transition:all .3s var(--ease);display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{
+  background:var(--kf-card);border:1px solid var(--kf-line-strong);border-radius:var(--radius);
+  max-width:640px;width:100%;max-height:90vh;overflow:hidden;transform:scale(.94);transition:transform .3s var(--ease);
+}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;padding:clamp(18px,3vw,24px);border-bottom:1px solid var(--kf-line)}
+.modal-close{
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--kf-line);background:rgba(255,255,255,.06);color:var(--kf-ink);font-size:1.5rem;line-height:1;display:grid;place-items:center;cursor:pointer;transition:all .18s;
+}
+.modal-close:hover{border-color:var(--kf-line-strong);color:var(--kf-acid);transform:scale(1.05)}
+.modal-title{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:900;color:var(--kf-ink);margin:0 0 6px;letter-spacing:-.02em}
+.modal-sub{font-size:.85rem;color:var(--kf-ink-dim);margin:0}
+.modal-body{padding:clamp(18px,3vw,24px);overflow-y:auto;max-height:70vh;display:flex;flex-direction:column;gap:16px}
+.modal-media{position:relative;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:#05060a;border:1px solid var(--kf-line);color:var(--kf-ink-dim);display:flex;align-items:center;justify-content:center;font-size:3rem}
+.modal-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.spec-item{background:rgba(255,255,255,.03);border:1px solid var(--kf-line);border-radius:10px;padding:12px}
+.spec-label{font-size:.68rem;color:var(--kf-ink-dim);text-transform:uppercase;letter-spacing:.1em;font-weight:700;display:block;margin-bottom:4px}
+.spec-value{font-size:1rem;color:var(--kf-ink);font-weight:600}
+.modal-actions{padding:clamp(16px,3vw,20px);display:flex;gap:10px;border-top:1px solid var(--kf-line)}
+.modal-actions .btn-primary{
+  flex:1;padding:14px 20px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--kf-blue),var(--kf-cyan));color:#05060a;font-weight:900;font-size:1rem;cursor:pointer;transition:all .2s var(--ease);
+}
+.modal-actions .btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.modal-actions .btn-cancel{
+  flex:1;padding:14px 20px;border-radius:12px;border:1px solid var(--kf-line);background:transparent;color:var(--kf-ink-dim);font-weight:700;cursor:pointer;transition:all .2s var(--ease);
+}
+.modal-actions .btn-cancel:hover{background:rgba(255,255,255,.05);color:var(--kf-ink)}
+
+/* ============ FOOTER ============ */
+.footer{
+  border-top:1px solid var(--kf-line);padding:clamp(24px,4vw,40px) clamp(16px,3vw,24px);margin-top:40px;
+  color:var(--kf-ink-dim);font-size:.82rem;text-align:center;line-height:1.6
+}
+.footer .f-line{margin:0 0 8px}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:640px){
+  .topbar{padding:clamp(10px,3vw,14px) clamp(14px,3vw,20px)}
+  .topbar .btn{font-size:.7rem;padding:8px 12px}
+  .hero{padding-top:clamp(20px,4vw,40px);padding-bottom:clamp(8px,3vw,20px)}
+  .promo-row{flex-direction:column}
+  .modal-overlay{padding:16px}
+}
+/* Mouvement réduit */
+@media (prefers-reduced-motion:reduce){
+  *, *::before, *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+</style>
 </head>
-<body class="page-rayons">
-<div class="kf-shell" data-i18n="kifftech/rayons.html_keffstation_cube_kifftech_index_des_rayo_0">
+<body>
 
-  <nav class="kf-topline" aria-label="Navigation KiffTech">
-    <a data-i18n="kifftech__keffstation_cube" href="../">← KeffStation / Cube</a>
-    <span data-i18n="kifftech_kifftech_index_des_rayons_dition_2026" class="kf-topline-meta">KiffTech® — Index des rayons / <b>Édition 2026</b></span>
-    <a data-i18n="kifftech_catalogue_complet_" href="./catalog.html">Catalogue complet ↗</a>
-  </nav>
-
-  <header class="kf-hero">
-    <p data-i18n="kifftech_smart_devices_173_objets_illustrs_11_ray" class="kf-kicker">Smart devices — 173 objets illustrés / 11 rayons</p>
-    <h1 data-i18n="kifftech_rayons_dobjets" class="kf-hero-title">
-      <span data-i18n="kifftech_rayons" class="kf-hero-main">Rayons</span>
-      <span data-i18n="kifftech_dobjets" class="kf-hero-serif">d’objets</span>
-    </h1>
-    <div class="kf-hero-row">
-      <p data-i18n="kifftech_un_index_raisonn_de_la_tech_contemporain" class="kf-lede">Un index raisonné de la tech contemporaine : flagships, pliables, machines de calcul, audio, drones, consoles et objets connectés. Prix officiels, sélection KiffTech et visuels libres — de <em data-i18n="kifftech/rayons.html_2020_à_2026_5">2020 à 2026</em>.</p>
-      <aside data-i18n="kifftech_173_objets_11_rayons_2020_2026_modles_wi" class="kf-hero-aside" aria-label="Chiffres clés">
-        <span data-i18n="kifftech_173_objets"><strong>173</strong> objets</span>
-        <span data-i18n="kifftech_11_rayons"><strong>11</strong> rayons</span>
-        <span data-i18n="kifftech_2020_2026_modles"><strong data-i18n="kifftech/rayons.html_2020_2026_3">2020 → 2026</strong> modèles</span>
-        <span data-i18n="kifftech_wikimedia_visuels_libres"><strong data-i18n="kifftech/rayons.html_wikimedia_4">Wikimedia</strong> visuels libres</span>
-      </aside>
-    </div>
-    <div class="kf-actions" data-i18n="kifftech/rayons.html_tout_le_catalogue_trier_par_prix_index_d_1">
-      <a class="kf-btn kf-btn--solid" href="./catalog.html">Tout le catalogue →</a>
-      <a data-i18n="kifftech_trier_par_prix" class="kf-btn" href="./catalog.html?sort=price-asc">Trier par prix</a>
-      <a data-i18n="kifftech_index_des_rayons_" class="kf-btn" href="#index">Index des rayons ↓</a>
-    </div>
-  </header>
-
-  <div class="kf-marquee" aria-hidden="true">
-    <div class="kf-marquee-track" id="marquee-track"></div>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">📱</span>
+    <h1>KiffTech<span>®</span></h1>
   </div>
+  <div class="nav-gap"></div>
+  <div class="nav">
+    <a class="btn ghost" href="../">← Cube</a>
+    <a class="btn primary" href="#panier">Voir le panier</a>
+    <button class="cart-btn" id="cartBtn" aria-label="Panier">
+      🛒 <span class="badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</header>
 
-  <main class="kf-index" id="index">
-    <div class="kf-index-head" aria-hidden="true" data-i18n="kifftech/rayons.html_nrayonobjets_2">
-      <span data-i18n="kifftech_n">N°</span><span data-i18n="kifftech_rayon">Rayon</span><span data-i18n="kifftech_objets">Objets</span><span>↗</span>
+<section class="hero">
+  <span class="kicker">File d’attente fournisseur grossiste</span>
+  <h1>Boutique <span class="accent">KiffTech</span><br>Smart devices &amp; gadgets</h1>
+  <p class="lede">Passez dans la <strong>file d’attente fournisseur grossiste</strong> et commandez par l’intermédiaire de <em>KiffTech.store</em>. Achetez <strong>plusieurs articles d’un coup, en une fois</strong>, et les <strong>promotions</strong> s’appliquent automatiquement. Une boutique <strong>sérieuse, classy, classe, classique, hybride, post-moderne et futuriste</strong>.</p>
+
+  <div class="queue-band">
+    <span class="q-icon">⏳</span>
+    <div class="q-text">
+      <strong>Votre commande rejoint la file d’attente fournisseur grossiste.</strong><br>
+      KiffTech.store prépare, vérifie et expédie vos articles entre le grossiste et vous.
     </div>
-    <div class="kf-index-list" id="rayons-grid" role="list"></div>
-  </main>
+    <span class="q-badge">Intermédiaire officiel</span>
+  </div>
+</section>
 
-  <footer class="kf-footer">
-    <span data-i18n="kifftech_kifftech_dition_2026_keffstation">KiffTech® — Édition 2026 / KeffStation</span>
-    <span data-i18n="kifftech_crdits_visuels_catalogue_keffstation" class="kf-footer-links">
-      <a data-i18n="kifftech_crdits_visuels" href="./credits.html">Crédits visuels</a>
-      <a data-i18n="kifftech_catalogue" href="./catalog.html">Catalogue</a>
-      <a data-i18n="kifftech_keffstation" href="../">KeffStation</a>
-    </span>
-  </footer>
+<section class="rayons">
+  <h2 class="sections-title">Rayons <span class="accent">&amp; catégories</span></h2>
+  <div class="rayon-grid" id="rayonGrid"></div>
+</section>
 
+<section class="promo-banner">
+  <div class="promo-head">
+    <span class="promo-badge">🔥 Promotions multi-articles</span>
+    <h2 class="promo-title">Achetez plusieurs articles <span class="kw">d’un coup, en une fois</span></h2>
+  </div>
+  <p class="promo-desc">Plus vous sélectionnez d’articles dans le panier, plus la promotion s’applique. Remises automatiques dégressives selon le nombre d’articles.</p>
+  <div class="promo-row">
+    <div class="promo-col">
+      <div class="col-title"><span class="emoji">🛒</span>2 à 3 articles</div>
+      <p>Remise appliquée sur l’ensemble du panier : <strong class="price"><span class="old">-0 %</span> <span class="new">-5 %</span></strong></p>
+      <button class="btn secondary" onclick="filterCart(2)">Voir les 2+ articles</button>
+    </div>
+    <div class="promo-col">
+      <div class="col-title"><span class="emoji">📦</span>4 à 6 articles</div>
+      <p>Remise appliquée sur l’ensemble du panier : <strong class="price"><span class="old">-5 %</span> <span class="new">-12 %</span></strong></p>
+      <button class="btn secondary" onclick="filterCart(4)">Voir les 4+ articles</button>
+    </div>
+    <div class="promo-col">
+      <div class="col-title"><span class="emoji">🚀</span>7 articles et +</div>
+      <p>Remise appliquée sur l’ensemble du panier : <strong class="price"><span class="old">-12 %</span> <span class="new">-20 %</span></strong></p>
+      <button class="btn secondary" onclick="filterCart(7)">Voir les 7+ articles</button>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p class="f-line">KiffTech® — Boutique catalogue &amp; promotions. File d’attente fournisseur grossiste via KiffTech.store.</p>
+  <p class="f-line">KeffStation &middot; Sérieuse, classy, classe, classique, hybride, post-moderne, futuriste.</p>
+</footer>
+
+<!-- Modal produit -->
+<div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-media" id="modalMedia">📦</div>
+      <div class="modal-specs" id="modalSpecs"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modalCancel">Annuler</button>
+      <button class="btn-primary" id="modalAdd">Ajouter au panier</button>
+    </div>
+  </div>
 </div>
-<script src="rayons-inline-01.js" ></script>
-<script src="../refresh.js"></script>
+
+<!-- Toast -->
+<div class="toast" id="toast" aria-live="polite"><span class="t-emoji">✅</span><span id="toastMsg">Ajouté au panier</span></div>
+
+<script>
+/* ==================== DATA RAYONS ==================== */
+const RAYONS = [
+  { id:'Accessories & Gadgets', icon:'🧰', color:'var(--kf-blue)', desc:'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
+  { id:'Smartphones', icon:'📱', color:'var(--kf-cyan)', desc:'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google.' },
+  { id:'Tablets', icon:'📲', color:'var(--kf-pink)', desc:'Tablettes pro et famille — stylet, clavier, grand écran.' },
+  { id:'Laptop & Tower & Mini PC', icon:'💻', color:'var(--kf-emerald)', desc:'Ultrabooks, PC de bureau, mini PC — Apple Silicon, Intel Core Ultra, Ryzen.' },
+  { id:'Consoles & Accessories VideoGames', icon:'🎮', color:'var(--kf-orange)', desc:'Consoles rétro et modernes — PS5, Switch, Xbox, Steam Deck, accessoires.' },
+  { id:'Immobilier', icon:'🏢', color:'var(--kf-violet)', desc:'Annonces et services liés à l’immobilier et au logement connecté.' },
+  { id:'Garden', icon:'🪴', color:'var(--kf-emerald)', desc:'Jardin et maison connectés — robots tondeuses, éclairage, arrosage.' },
+  { id:'Robots Compagny & Educative', icon:'🤖', color:'var(--kf-blue)', desc:'Robots compagnons et éducatifs — programmation, IA embarquée.' },
+  { id:'Sport Electronic', icon:'⌚', color:'var(--kf-pink)', desc:'Montres connectées, bracelets fitness, matériel sport électronique.' },
+  { id:'Compenent Informatic', icon:'🔌', color:'var(--kf-cyan)', desc:'Composants informatique — cartes graphiques, CPU, SSD, cartes mères.' },
+  { id:'Compenent Electronic', icon:'⚡', color:'var(--kf-orange)', desc:'Composants électroniques — résistances, condensateurs, modules, capteurs.' },
+  { id:'Compenent Matter for Electronic and/or Mecanic', icon:'⚙️', color:'var(--kf-violet)', desc:'Pièces et matière pour électronique et/ou mécanique — soudure, boîtiers, outillage.' }
+];
+
+const rayonGrid = document.getElementById('rayonGrid');
+rayonGrid.innerHTML = RAYONS.map((r,i) => `
+  <a class="rayon-card" href="#" data-rayon="${i}" role="listitem" aria-label="Rayon ${r.id}">
+    <div class="rayon-media">
+      <span style="font-size:3.2rem">${r.icon}</span>
+    </div>
+    <div class="rayon-body">
+      <div class="rayon-name">${r.id}</div>
+      <div class="rayon-desc">${r.desc}</div>
+    </div>
+    <div class="rayon-footer">
+      <span class="rayon-count">0+</span>
+      <span class="rayon-arrow">▸</span>
+    </div>
+  </a>
+`).join('');
+
+rayonGrid.querySelectorAll('.rayon-card').forEach(el => {
+  el.addEventListener('click',(e)=>{
+    e.preventDefault();
+    const i = +el.dataset.rayon;
+    openModal(RAYONS[i]);
+  });
+});
+
+/* ==================== MODAL ==================== */
+const modalOverlay = document.getElementById('modalOverlay');
+const modalTitle = document.getElementById('modalTitle');
+const modalSub = document.getElementById('modalSub');
+const modalMedia = document.getElementById('modalMedia');
+const modalSpecs = document.getElementById('modalSpecs');
+const modalClose = document.getElementById('modalClose');
+const modalCancel = document.getElementById('modalCancel');
+const modalAdd = document.getElementById('modalAdd');
+
+let currentRayon = null;
+
+function openModal(r){
+  currentRayon = r;
+  modalTitle.textContent = r.id;
+  modalSub.textContent = r.desc;
+  modalMedia.textContent = r.icon;
+  modalSpecs.innerHTML = `
+    <div class="spec-item"><span class="spec-label">Rayon</span><span class="spec-value">${r.id}</span></div>
+    <div class="spec-item"><span class="spec-label">Statut</span><span class="spec-value">Disponible en file d’attente</span></div>
+    <div class="spec-item"><span class="spec-label">Intermédiaire</span><span class="spec-value">KiffTech.store</span></div>
+    <div class="spec-item"><span class="spec-label">Promotion</span><span class="spec-value">Multi-articles</span></div>
+  `;
+  modalOverlay.classList.add('open');
+  modalClose.focus();
+}
+
+function closeModal(){
+  modalOverlay.classList.remove('open');
+  currentRayon = null;
+}
+
+modalClose.addEventListener('click',closeModal);
+modalCancel.addEventListener('click',closeModal);
+modalOverlay.addEventListener('click',(e)=>{ if(e.target===modalOverlay) closeModal(); });
+document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
+modalAdd.addEventListener('click',()=>{
+  if(!currentRayon) return;
+  addToCart(currentRayon);
+  closeModal();
+  showToast(`Ajouté au panier : ${currentRayon.id}`,'success');
+});
+
+/* ==================== PANIER ==================== */
+let cart = [];
+const cartBadge = document.getElementById('cartBadge');
+const cartBtn = document.getElementById('cartBtn');
+
+function addToCart(item){
+  cart.push(item);
+  cartBadge.textContent = cart.length;
+  cartBtn.classList.add('pop');
+  setTimeout(()=>cartBtn.classList.remove('pop'),150);
+}
+
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.querySelector('.t-emoji').textContent = type==='success'?'✅':'⚠️';
+  t.querySelector('#toastMsg').textContent = msg;
+  t.className = 'toast show '+type;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function filterCart(n){
+  // Peut servir à filtrer l'affichage des promotions selon le nombre d'articles
+  showToast(`Promotion active pour ${n}+ articles sélectionnés`,'warn');
+}
+
+/* Compteur simple affiché dans les cartes rayon (démo) */
+rayonGrid.querySelectorAll('.rayon-count').forEach(el=>{
+  el.textContent = Math.floor(Math.random()*40)+5 + '+';
+});
+</script>
 </body>
 </html>
