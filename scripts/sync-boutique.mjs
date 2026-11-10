@@ -144,14 +144,36 @@ function normalizeProduct(p) {
 /* ------------------------------------------------------------------ */
 /* Shopify                                                             */
 /* ------------------------------------------------------------------ */
+/* Descripteur non sensible du jeton : type + longueur (jamais la valeur). */
+function tokenFormat(t) {
+  const v = String(t || "");
+  if (!v) return "absent";
+  const kind = /^shpat_/i.test(v) ? "admin(shpat_)" : /^shpua_/i.test(v) ? "storefront(shpua_)" : /^[0-9a-f]{32,}$/i.test(v) ? "storefront(hex)" : /^shpca_/i.test(v) ? "admin-legacy" : "autre";
+  return `${kind}, longueur ${v.length}`;
+}
+
+/* Les identifiants Shopify disponibles, tries par plausibilite. */
+function shopifyDomainCandidates() {
+  const cands = [];
+  const push = (v, label) => {
+    const d = normalizeShopDomain(v);
+    if (d && !cands.some((x) => x.domain === d)) cands.push({ domain: d, label });
+  };
+  push(SHOPIFY_RAW, "SHOPIFY_ID");
+  push(ENV.SHOPIFY_KEY, "SHOPIFY_KEY");
+  push(ENV.KIFFTECHSTORE, "KIFFTECHSTORE");
+  push(ENV.SITE_DOMAIN, "SITE_DOMAIN");
+  return cands;
+}
+
 const SHOPIFY_VERSIONS = Array.from(
   new Set([SHOPIFY_API_VERSION, "2026-01", "2025-10", "2025-07", "2025-04", "2025-01", "2024-10", "2024-07", "2024-04", "2024-01"].filter(Boolean)),
 );
 
-async function fetchShopifyAdmin() {
+async function fetchShopifyAdmin(domain = SHOPIFY_DOMAIN) {
   let lastErr = null;
   for (const v of SHOPIFY_VERSIONS) {
-    const url = `https://${SHOPIFY_DOMAIN}/admin/api/${v}/products.json?limit=250`;
+    const url = `https://${domain}/admin/api/${v}/products.json?limit=250`;
     try {
       const res = await fetch(url, {
         headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN, Accept: "application/json" },
@@ -173,11 +195,11 @@ async function fetchShopifyAdmin() {
   throw lastErr || new Error("Admin API : aucune version disponible");
 }
 
-async function fetchShopifyStorefront() {
+async function fetchShopifyStorefront(domain = SHOPIFY_DOMAIN) {
   let lastErr = null;
   for (const v of SHOPIFY_VERSIONS) {
     try {
-      const out = await fetchShopifyStorefrontVersion(v);
+      const out = await fetchShopifyStorefrontVersion(v, domain);
       if (out.length) {
         console.log(`[shopify] Storefront API ${v} : ${out.length} produit(s)`);
         return out;
@@ -190,8 +212,8 @@ async function fetchShopifyStorefront() {
   throw lastErr || new Error("Storefront API : aucune version disponible");
 }
 
-async function fetchShopifyStorefrontVersion(apiVersion) {
-  const endpoint = `https://${SHOPIFY_DOMAIN}/api/${apiVersion}/graphql.json`;
+async function fetchShopifyStorefrontVersion(apiVersion, domain = SHOPIFY_DOMAIN) {
+  const endpoint = `https://${domain}/api/${apiVersion}/graphql.json`;
   const query = `query products($first: Int!, $after: String) {
     products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
       edges { node {
@@ -339,6 +361,45 @@ async function fetchImpactItems(sid, token, label) {
     }
   }
 
+  // 0bis) Catalogues rattaches a une campagne (le catalogue peut etre au niveau campagne)
+  try {
+    const campUrl = `https://api.impact.com/Advertisers/${sid}/Campaigns?PageSize=100`;
+    const campData = await impactGet(campUrl, token, sid);
+    const camps = pickArray(campData, "Campaigns", "campaigns");
+    for (const c of camps) {
+      const cid = c.Id ?? c.id;
+      if (cid == null) continue;
+      console.log(`[impact] ${label} — campagne ${cid} « ${c.Name ?? ""} » (${c.State ?? "?"})`);
+      for (const sub of ["Catalogs", "Actions", "Products"]) {
+        try {
+          const u = `https://api.impact.com/Advertisers/${sid}/Campaigns/${cid}/${sub}`;
+          const d = await impactGet(u, token, sid);
+          const arr = pickArray(d, "Items", "items", "Catalogs", "catalogs", "Actions", "actions", "Products", "products");
+          console.log(`[impact] ${label} — campagne ${cid}/${sub} : ${arr.length} element(s)`);
+          if (sub === "Catalogs" && arr.length) {
+            for (const cat of arr) {
+              const kid = cat.Id ?? cat.id;
+              try {
+                const id2 = await impactGet(`https://api.impact.com/Advertisers/${sid}/Catalogs/${kid}/Items?PageSize=200`, token, sid);
+                const items = pickArray(id2, "Items", "items");
+                console.log(`[impact] ${label} — catalogue ${cat.Name ?? kid} : ${items.length} produit(s)`);
+                if (items.length) return items;
+              } catch (e) {
+                console.warn(`[impact] ${label} — items catalogue ${kid} : ${e.message}`);
+              }
+            }
+          }
+          if (arr.length && sub !== "Catalogs") out.push(...arr);
+        } catch (e) {
+          console.warn(`[impact] ${label} — campagne ${cid}/${sub} : ${e.message}${e.body ? " | " + e.body : ""}`);
+        }
+      }
+    }
+    if (out.length) return out;
+  } catch (e) {
+    console.warn(`[impact] ${label} — campagnes : ${e.message}${e.body ? " | " + e.body : ""}`);
+  }
+
   // 0) Produits directs de l'annonceur
   for (const path of [
     `https://api.impact.com/Advertisers/${sid}/Products?PageSize=200`,
@@ -481,16 +542,35 @@ async function main() {
       let mode = "admin";
       // Base64 : le masque de secrets GitHub remplace la valeur par *** dans les logs,
       // ce qui masque aussi le domaine derivé. L'base64 reste lisible ici.
-      console.log(`[shopify] boutique (b64) : ${Buffer.from(SHOPIFY_DOMAIN).toString("base64")}`);
       console.log(`[shopify] identifiant brut (b64) : ${Buffer.from(SHOPIFY_RAW).toString("base64")}`);
-      try {
-        list = (await fetchShopifyAdmin()).map(mapShopifyAdmin);
-      } catch (e) {
-        console.warn(`[shopify] Admin API indisponible (${e.message}) — tentative Storefront API`);
-        list = (await fetchShopifyStorefront()).map(mapShopifyStorefront);
-        mode = "storefront";
+      console.log(`[shopify] format du jeton : ${tokenFormat(SHOPIFY_ADMIN_TOKEN)}`);
+      const candidates = shopifyDomainCandidates();
+      console.log(`[shopify] domaines candidats : ${candidates.map((c) => c.label + "=" + Buffer.from(c.domain).toString("base64")).join(", ") || "aucun"}`);
+      const errors = [];
+      for (const cand of candidates) {
+        console.log(`[shopify] essai sur le domaine du secret ${cand.label} (b64 : ${Buffer.from(cand.domain).toString("base64")})`);
+        try {
+          list = (await fetchShopifyAdmin(cand.domain)).map(mapShopifyAdmin);
+          mode = "admin";
+          sources.shopify = { ok: true, mode, count: list.length, domain: cand.domain };
+          break;
+        } catch (e) {
+          errors.push(`${cand.label}/admin : ${e.message}`);
+          console.warn(`[shopify] ${cand.label} Admin API : ${e.message}`);
+          try {
+            list = (await fetchShopifyStorefront(cand.domain)).map(mapShopifyStorefront);
+            mode = "storefront";
+            sources.shopify = { ok: true, mode, count: list.length, domain: cand.domain };
+            break;
+          } catch (e2) {
+            errors.push(`${cand.label}/storefront : ${e2.message}`);
+            console.warn(`[shopify] ${cand.label} Storefront API : ${e2.message}`);
+          }
+        }
       }
-      sources.shopify = { ok: true, mode, count: list.length, domain: SHOPIFY_DOMAIN };
+      if (!list.length) {
+        sources.shopify = { ok: false, error: errors.slice(0, 3).join(" | ") || "aucun domaine exploitable" };
+      }
       products.push(...list);
     } catch (e) {
       sources.shopify = { ok: false, error: String(e.message || e) };
