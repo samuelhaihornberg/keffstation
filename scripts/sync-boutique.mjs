@@ -141,18 +141,54 @@ function normalizeProduct(p) {
 /* ------------------------------------------------------------------ */
 /* Shopify                                                             */
 /* ------------------------------------------------------------------ */
+const SHOPIFY_VERSIONS = Array.from(
+  new Set([SHOPIFY_API_VERSION, "2026-01", "2025-10", "2025-07", "2025-04", "2025-01", "2024-10", "2024-07", "2024-04", "2024-01"].filter(Boolean)),
+);
+
 async function fetchShopifyAdmin() {
-  const url = `https://${SHOPIFY_DOMAIN}/admin/api/${SHOPIFY_API_VERSION}/products.json?limit=250&fields=id,title,handle,product_type,tags,status,variants,images,body_html,created_at`;
-  const res = await fetch(url, {
-    headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN, Accept: "application/json" },
-  });
-  if (!res.ok) throw new Error(`Admin API ${res.status} ${(await res.text()).slice(0, 200)}`);
-  const data = await res.json();
-  return (data.products || []).filter((p) => p.status === "active");
+  let lastErr = null;
+  for (const v of SHOPIFY_VERSIONS) {
+    const url = `https://${SHOPIFY_DOMAIN}/admin/api/${v}/products.json?limit=250`;
+    try {
+      const res = await fetch(url, {
+        headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN, Accept: "application/json" },
+      });
+      if (!res.ok) {
+        lastErr = new Error(`Admin API ${v} -> HTTP ${res.status} ${(await res.text()).slice(0, 140)}`);
+        console.warn(`[shopify] ${lastErr.message}`);
+        continue;
+      }
+      const data = await res.json();
+      const list = (data.products || []).filter((p) => p.status === "active");
+      console.log(`[shopify] Admin API ${v} : ${list.length} produit(s) actif(s)`);
+      return list;
+    } catch (e) {
+      lastErr = e;
+      console.warn(`[shopify] Admin API ${v} : ${e.message}`);
+    }
+  }
+  throw lastErr || new Error("Admin API : aucune version disponible");
 }
 
 async function fetchShopifyStorefront() {
-  const endpoint = `https://${SHOPIFY_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
+  let lastErr = null;
+  for (const v of SHOPIFY_VERSIONS) {
+    try {
+      const out = await fetchShopifyStorefrontVersion(v);
+      if (out.length) {
+        console.log(`[shopify] Storefront API ${v} : ${out.length} produit(s)`);
+        return out;
+      }
+    } catch (e) {
+      lastErr = e;
+      console.warn(`[shopify] Storefront API ${v} : ${e.message}`);
+    }
+  }
+  throw lastErr || new Error("Storefront API : aucune version disponible");
+}
+
+async function fetchShopifyStorefrontVersion(apiVersion) {
+  const endpoint = `https://${SHOPIFY_DOMAIN}/api/${apiVersion}/graphql.json`;
   const query = `query products($first: Int!, $after: String) {
     products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
       edges { node {
@@ -282,25 +318,28 @@ async function fetchImpactItems(sid, token, label) {
   const bases = ["Mediapartners", "Advertisers"];
   const out = [];
   for (const base of bases) {
-    // 1) Recherche directe dans tous les catalogues (Mediapartners seulement)
-    if (base === "Mediapartners") {
+    // 1) Recherche directe dans tous les catalogues
+    for (const [label2, path] of [
+      ["ItemSearch", `https://api.impact.com/${base}/${sid}/Catalogs/ItemSearch?PageSize=200&Page=1`],
+      ["ItemSearch+ACTIVE", `https://api.impact.com/${base}/${sid}/Catalogs/ItemSearch?PageSize=200&Status=ACTIVE`],
+    ]) {
       try {
-        const url = `https://api.impact.com/Mediapartners/${sid}/Catalogs/ItemSearch?PageSize=200&Page=1`;
-        const data = await impactGet(url, token, sid);
+        const data = await impactGet(path, token, sid);
         const items = pickArray(data, "Items", "items", "Results", "results");
+        console.log(`[impact] ${label} — ${base}/${label2} : ${items.length} produit(s)`);
         if (items.length) {
-          console.log(`[impact] ${label} — ItemSearch : ${items.length} produit(s)`);
           out.push(...items);
           return out;
         }
       } catch (e) {
-        console.warn(`[impact] ${label} — ItemSearch : ${e.message}${e.body ? " | " + e.body : ""}`);
+        console.warn(`[impact] ${label} — ${base}/${label2} : ${e.message}${e.body ? " | " + e.body : ""}`);
       }
     }
 
     // 2) Liste des catalogues puis items de chaque catalogue
+    for (const [suffix, extra] of [["", ""], ["+ACTIVE", "?Status=ACTIVE"], ["+PENDING", "?Status=PENDING"]]) {
     try {
-      const catUrl = `https://api.impact.com/${base}/${sid}/Catalogs`;
+      const catUrl = `https://api.impact.com/${base}/${sid}/Catalogs${extra}`;
       const catData = await impactGet(catUrl, token, sid);
       const catalogs = pickArray(catData, "Catalogs", "catalogs", "Items", "items");
       console.log(`[impact] ${label} — ${base}/${sid}/Catalogs : ${catalogs.length} catalogue(s)`);
@@ -320,13 +359,16 @@ async function fetchImpactItems(sid, token, label) {
       }
       if (out.length) return out;
     } catch (e) {
-      console.warn(`[impact] ${label} — ${base}/Catalogs : ${e.message}${e.body ? " | " + e.body : ""}`);
+      console.warn(`[impact] ${label} — ${base}/Catalogs${suffix} : ${e.message}${e.body ? " | " + e.body : ""}`);
+    }
     }
   }
   return out;
 }
 
 async function fetchImpact() {
+  console.log(`[impact] SID principal (b64)   : ${Buffer.from(IMPACT_ACCOUNT_SID).toString("base64")}`);
+  console.log(`[impact] SID boutique (b64)   : ${Buffer.from(IMPACT_BRAND_ID).toString("base64")}`);
   const accounts = [];
   if (IMPACT_ACCOUNT_SID && IMPACT_AUTH_TOKEN) {
     accounts.push({ sid: IMPACT_ACCOUNT_SID, token: IMPACT_AUTH_TOKEN, label: "compte principal" });
@@ -396,7 +438,10 @@ async function main() {
     try {
       let list = [];
       let mode = "admin";
-      console.log(`[shopify] boutique : ${SHOPIFY_DOMAIN}`);
+      // Base64 : le masque de secrets GitHub remplace la valeur par *** dans les logs,
+      // ce qui masque aussi le domaine derivé. L'base64 reste lisible ici.
+      console.log(`[shopify] boutique (b64) : ${Buffer.from(SHOPIFY_DOMAIN).toString("base64")}`);
+      console.log(`[shopify] identifiant brut (b64) : ${Buffer.from(SHOPIFY_RAW).toString("base64")}`);
       try {
         list = (await fetchShopifyAdmin()).map(mapShopifyAdmin);
       } catch (e) {
