@@ -64,7 +64,7 @@ jobs:
       - name: Injecter la configuration Shopify publique (Storefront)
         env:
           SHOPIFY_STORE_DOMAIN: >-
-            ${{ secrets.SHOPIFY_ID || secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain }}
+            ${{ vars.SHOPIFY_DOMAIN || secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_ID || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN }}
           SHOPIFY_TOKEN: >-
             ${{ secrets.SHOPIFY_KEY || secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_ADMIN_TOKEN }}
           SHOPIFY_API_VERSION: >-
