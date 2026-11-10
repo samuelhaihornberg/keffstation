@@ -1,0 +1,81 @@
+name: Collect Real Stats
+
+# Collecte des statistiques RÉELLES de toutes les PWA KeffStation et les publie
+# dans stats/data/live.json (servi par GitHub Pages).
+#
+# Sources (indépendantes et optionnelles) :
+#   - GitHub Traffic API : vues / visiteurs uniques par chemin, par dépôt
+#   - GA4 Data API       : vues, durée d'engagement, clics liens/boutons
+#   - Search Console API : clics et impressions de recherche par URL
+#
+# Secrets à configurer (Settings > Secrets and variables > Actions) :
+#   GH_TRAFFIC_TOKEN            (PAT classic, scope public_repo ou repo)
+#   GA4_PROPERTY_ID            (ex. 123456789)
+#   GA4_SERVICE_ACCOUNT_JSON   (clé JSON complète du compte de service)
+#   GSC_SITE_URL               (ex. sc-domain:samuelhaihornberg.github.io)
+#   GSC_SERVICE_ACCOUNT_JSON   (ou GSC_CLIENT_ID / GSC_CLIENT_SECRET / GSC_REFRESH_TOKEN)
+#
+# Aucune source n'est obligatoire : le workflow collecte ce qui est configuré
+# et n'écrit le fichier que si au moins une source a répondu.
+
+on:
+  schedule:
+    - cron: '17 5 * * *'   # chaque jour à 05:17 UTC
+  workflow_dispatch:
+    inputs:
+      window:
+        description: 'Fenêtre d''analyse en jours (7 / 30 / 90)'
+        required: false
+        default: '30'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 'stats-collect'
+  cancel-in-progress: true
+
+jobs:
+  collect:
+    name: Collect GitHub + GA4 + Search Console
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Collect
+        env:
+          GH_TRAFFIC_TOKEN: ${{ secrets.GH_TRAFFIC_TOKEN }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ secrets.GSC_SITE_URL }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_CLIENT_ID: ${{ secrets.GSC_CLIENT_ID }}
+          GSC_CLIENT_SECRET: ${{ secrets.GSC_CLIENT_SECRET }}
+          GSC_REFRESH_TOKEN: ${{ secrets.GSC_REFRESH_TOKEN }}
+          STATS_WINDOW_DAYS: ${{ github.event.inputs.window || '30' }}
+        run: |
+          node scripts/collect-stats.js 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Fichier généré" >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat stats/data/live.json >> "$GITHUB_STEP_SUMMARY" || echo '(non généré)' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit live.json
+        run: |
+          if [ ! -f stats/data/live.json ]; then
+            echo "Aucune donnée collectée : rien à committer."
+            exit 0
+          fi
+          git config user.name "keffstation-bot"
+          git config user.email "keffstation-bot@users.noreply.github.com"
+          git add stats/data/live.json
+          git diff --cached --quiet && echo "Aucun changement (données identiques)." && exit 0
+          git commit -m "data(stats): collecte réelle (GitHub Traffic + GA4 + Search Console)"
+          git push

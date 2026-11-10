@@ -1,0 +1,39 @@
+{
+  "generated": null,
+  "real": true,
+  "note": "Fichier généré automatiquement par .github/workflows/stats-collect.yml (GitHub Traffic API + GA4 Data API + Search Console API). Tant qu'il est vide, lance le workflow manuellement : Actions > Collect Real Stats > Run workflow.",
+  "window": {
+    "days": 30,
+    "from": null,
+    "to": null
+  },
+  "sources": {
+    "github": {
+      "ok": false,
+      "reason": "Collecte pas encore lancée",
+      "repos": []
+    },
+    "ga4": {
+      "ok": false,
+      "reason": "Collecte pas encore lancée",
+      "property": null,
+      "range": null,
+      "totals": {}
+    },
+    "gsc": {
+      "ok": false,
+      "reason": "Collecte pas encore lancée",
+      "site": null,
+      "range": null,
+      "totals": {}
+    }
+  },
+  "pages": {},
+  "links": {},
+  "buttons": {},
+  "totals": {
+    "views": 0,
+    "clicks": 0,
+    "duration": 0
+  }
+}

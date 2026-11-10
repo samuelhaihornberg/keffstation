@@ -1,9 +1,14 @@
-# 📊 Statistiques publiques — KeffStation
+# 📊 Statistiques KeffStation
 
-Page publique de statistiques de la plateforme : **vues** et **durée de consultation par page**,
-**clics par lien et par bouton**, le tout en graphiques 3D « montagnes ».
+Page de statistiques de la plateforme : **vues** et **durée de consultation par page**,
+**clics par lien et par bouton**, en graphiques 3D « montagnes ».
 
 🔗 URL publique : <https://samuelhaihornberg.github.io/keffstation/stats/>
+
+> **Les données sont réelles.** Aucun chiffre n'est simulé : la page consomme
+> `data/live.json`, produit par le workflow *Collect Real Stats* à partir des API
+> GitHub Traffic, Google Analytics 4 et Google Search Console.
+> Voir **[SOURCES.md](SOURCES.md)** pour brancher les accès.
 
 ---
 
@@ -11,11 +16,13 @@ Page publique de statistiques de la plateforme : **vues** et **durée de consult
 
 | Fichier | Rôle |
 |---|---|
-| `index.html` | Page publique (KPI, 2 scènes 3D, tables, import/export) |
+| `index.html` | Page publique (KPI, sources, 4 scènes 3D, tables, import/export) |
 | `css/style.css` | Thème sombre aligné sur la vitrine (palette `--cyan` / `--violet` / `--pink`) |
-| `js/script.js` | Fusion des données, rendu des tableaux, scènes 3D (Three.js) + repli 2D |
-| `data/stats.json` | Base de référence versionnée (données de démonstration) |
+| `js/script.js` | Fusion des données (live + local + import), rendu, scènes 3D + repli 2D |
+| `data/live.json` | **Données réelles** collectées (généré par le workflow, commité par le bot) |
 | `../keff-stats.js` | Tracker partagé chargé sur **toutes** les pages de la plateforme |
+| `../ga4.js` | Configuration Google Analytics 4 (partagée par toutes les PWA) |
+| `../scripts/collect-stats.js` | Collecteur (GitHub Traffic + GA4 + Search Console) |
 
 ## Le tracker `keff-stats.js`
 
@@ -84,13 +91,19 @@ clic pour sélectionner la page. Les scènes hors écran sont mises en pause (é
 ## Consolider plusieurs navigateurs
 
 1. Sur le poste A : **Exporter JSON** → `keffstation-stats.json`.
-2. Sur le poste B : **Importer** → le fichier → les totaux sont **fusionnés** avec la base
-   de référence et les données locales.
-3. **Réinitialiser** vide les mesures locales (la base de référence est conservée).
+2. Sur le poste B : **Importer** → le fichier → les totaux sont **fusionnés** avec les
+   données réelles collectées et les données locales.
+3. **Réinitialiser** vide les mesures locales (les données collectées sont conservées).
 
 ## Note sur les données
 
-Les mesures sont **locales au navigateur** : elles reflètent la navigation de chaque visiteur.
-La base de référence (`data/stats.json`) est versionnée dans le dépôt pour disposer d'un jeu
-cohérent de démonstration. Pour des chiffres globaux, les mêmes événements sont envoyés à
-Google Analytics.
+Les chiffres affichés proviennent de quatre sources, dont l'état est visible dans le
+panneau **Sources des données** :
+
+- **GitHub Traffic API** — vues et visiteurs uniques par chemin, pour chaque dépôt
+  (keffstation, Factureboutique, Kifftech.store, critiques-services.com) ;
+- **GA4 Data API** — vues, durée d'engagement et clics par lien/bouton ;
+- **Search Console API** — clics et impressions de recherche par URL ;
+- **ce navigateur** — mesures réalisées sur l'appareil du visiteur (`localStorage`).
+
+Chaque page indique les sources qui l'ont alimentée.

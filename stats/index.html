@@ -59,9 +59,27 @@
       <div class="kpi-label" data-t="kpi_avg">Durée moyenne / page</div>
     </div>
     <div class="kpi">
+      <div class="kpi-value" id="kpiUniques">—</div>
+      <div class="kpi-label" data-t="kpi_uniques">Visiteurs uniques</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value" id="kpiSearch">—</div>
+      <div class="kpi-label" data-t="kpi_search">Clics Google</div>
+    </div>
+    <div class="kpi">
       <div class="kpi-value" id="kpiTop">—</div>
       <div class="kpi-label" data-t="kpi_top">Page la plus vue</div>
     </div>
+  </section>
+
+  <!-- ============ Sources de données réelles ============ -->
+  <section class="panel" id="sourcesPanel">
+    <div class="panel-head">
+      <h2 data-t="sources_title">Sources des données</h2>
+      <span class="badge" id="badgeCollected" data-t="collected">Collecte : —</span>
+    </div>
+    <div class="sources-grid" id="sourcesGrid"></div>
+    <p class="hint-line" data-t="sources_hint">Collecte automatique par GitHub Actions (quotidienne). Aucun secret n'est exposé dans le navigateur.</p>
   </section>
 
   <!-- ============ Barre de sélection : mode + statistique ============ -->
@@ -140,6 +158,47 @@
   </section>
 
   <p class="hint-line" data-t="scene_hint">Glisse pour tourner · molette pour zoomer · clique une montagne pour ouvrir le détail de la page</p>
+
+  <!-- ============ Toutes les PWA (autres dépôts) ============ -->
+  <section class="charts">
+    <div class="chart-card wide" data-stat-card="sites">
+      <div class="chart-head">
+        <h2 data-t="chart_sites">Toutes les PWA — vues par chemin</h2>
+        <span class="chart-hint" data-t="chart_sites_hint">GitHub Traffic API · tous les dépôts</span>
+      </div>
+      <div class="scene" id="sceneSites">
+        <div class="scene-loading" data-t="loading">Chargement de la 3D…</div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-low s"></i><span data-t="legend_low">Faible</span></span>
+        <span><i class="sw sw-mid s"></i><span data-t="legend_mid">Moyen</span></span>
+        <span><i class="sw sw-high s"></i><span data-t="legend_high">Élevé</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2 data-t="sites_title">Trafic de tous les dépôts</h2>
+      <div class="filters" role="group" aria-label="Filtre par dépôt">
+        <button type="button" class="chip active" data-site-filter="all" data-t="f_all">Tous</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-t="th_depot">Dépôt</th>
+            <th data-t="th_page">Page</th>
+            <th class="num" data-t="th_views">Vues</th>
+            <th class="num" data-t="th_uniques">Uniques</th>
+            <th class="bar-col" data-t="th_share">Part</th>
+          </tr>
+        </thead>
+        <tbody id="sitesBody"></tbody>
+      </table>
+    </div>
+  </section>
 
   <!-- ============ Vue par page sélectionnée ============ -->
   <section class="panel page-panel" id="pagePanel" hidden>
@@ -257,6 +316,9 @@
 
 <div class="tooltip" id="tooltip" hidden></div>
 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WP6HC0CM9E"></script>
+<script defer src="../ga4.js"></script>
+<script defer src="../analytics-events.js"></script>
 <script defer src="../keff-stats.js"></script>
 <script defer src="js/script.js"></script>
 </body>

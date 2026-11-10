@@ -279,6 +279,60 @@ tbody tr { cursor: pointer; }
 .sw.p.sw-low { background: linear-gradient(135deg, #a16207, #facc15); }
 .sw.p.sw-mid { background: linear-gradient(135deg, #c2410c, #fb923c); }
 .sw.p.sw-high { background: linear-gradient(135deg, #be123c, #fb7185); }
+.sw.s.sw-low { background: linear-gradient(135deg, #065f46, #34d399); }
+.sw.s.sw-mid { background: linear-gradient(135deg, #0e7490, #22d3ee); }
+.sw.s.sw-high { background: linear-gradient(135deg, #1d4ed8, #60a5fa); }
+.bar.s > i { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+
+/* ---------- Sources de données réelles ---------- */
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.source-card {
+  padding: 12px 14px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .03);
+}
+
+.source-card.ok { border-color: rgba(39, 209, 127, .38); background: rgba(39, 209, 127, .06); }
+.source-card.off { opacity: .62; }
+
+.source-head { display: flex; align-items: center; gap: 8px; font-size: .88rem; }
+.source-head strong { font-weight: 700; }
+
+.source-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: 0 0 auto;
+}
+
+.source-card.ok .source-dot { background: var(--green); box-shadow: 0 0 10px rgba(39, 209, 127, .8); }
+
+.source-state {
+  margin-left: auto;
+  font-size: .66rem;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--muted);
+}
+
+.source-card.ok .source-state { color: var(--green); }
+
+.source-desc { margin-top: 4px; font-size: .75rem; color: var(--muted); }
+.source-detail { margin-top: 6px; font-size: .78rem; font-family: var(--mono); color: var(--cyan); }
+
+/* ---------- Carte pleine largeur ---------- */
+
+.chart-card.wide { grid-column: 1 / -1; }
 
 /* ---------- Graphiques 3D ---------- */
 

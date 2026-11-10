@@ -26,6 +26,20 @@ const T = {
     kpi_duration: 'Durée totale',
     kpi_avg: 'Durée moyenne / page',
     kpi_top: 'Page la plus vue',
+    kpi_uniques: 'Visiteurs uniques',
+    kpi_search: 'Clics Google',
+    source_real: 'Source : données réelles collectées',
+    source_missing: 'Non configurée',
+    source_on: 'actif',
+    source_off: 'inactif',
+    collected: 'Collecte : —',
+    sources_title: 'Sources des données',
+    sources_hint: 'Collecte automatique par GitHub Actions (quotidienne). Aucun secret n\'est exposé dans le navigateur.',
+    chart_sites: 'Toutes les PWA — vues par chemin',
+    chart_sites_hint: 'GitHub Traffic API · tous les dépôts',
+    sites_title: 'Trafic de tous les dépôts',
+    th_depot: 'Dépôt',
+    th_uniques: 'Uniques',
     tb_mode: 'Affichage',
     tb_stat: 'Statistique',
     tb_note: 'Clique une montagne ou une ligne du tableau pour ouvrir le détail de la page.',
@@ -106,6 +120,20 @@ const T = {
     kpi_duration: 'Total duration',
     kpi_avg: 'Average time / page',
     kpi_top: 'Most viewed page',
+    kpi_uniques: 'Unique visitors',
+    kpi_search: 'Google clicks',
+    source_real: 'Source: real collected data',
+    source_missing: 'Not configured',
+    source_on: 'active',
+    source_off: 'inactive',
+    collected: 'Collected: —',
+    sources_title: 'Data sources',
+    sources_hint: 'Collected automatically by GitHub Actions (daily). No secret is exposed in the browser.',
+    chart_sites: 'All PWAs — views per path',
+    chart_sites_hint: 'GitHub Traffic API · every repository',
+    sites_title: 'Traffic of every repository',
+    th_depot: 'Repository',
+    th_uniques: 'Unique',
     tb_mode: 'Display',
     tb_stat: 'Statistic',
     tb_note: 'Click a mountain or a table row to open the page detail.',
@@ -215,11 +243,12 @@ function pageLabel(path) {
 
 /* ---------------- Sources de données ---------------- */
 
-const STORE_KEY = 'keffstation_stats_v1';
+const STORAGE_KEY = 'keffstation_stats_v1';
+const MAIN_SITE = 'keffstation';
 
 function readLocal() {
   try {
-    const raw = localStorage.getItem(STORE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (!data || typeof data !== 'object') return null;
@@ -232,109 +261,189 @@ function readLocal() {
   } catch (e) { return null; }
 }
 
-let imported = null; // données fusionnées via import JSON
-let seed = null;     // base de référence versionnée
+let imported = null; // import manuel d'un export JSON
+let live = null;     // stats/data/live.json — données RÉELLES collectées par GitHub Actions
 
-function merge(seedData) {
-  const src = seedData !== undefined ? seedData : seed;
-  const pages = {};
-  const links = {};
-  const buttons = {};
+/* Cible normalisée : '/keffstation/kifftech/rayons.html' -> 'kifftech/rayons.html'
+   Les cibles déjà relatives à la racine du site (produites par le tracker)
+   sont conservées telles quelles. */
+function shortTarget(t) {
+  if (!t) return '';
+  const s = String(t);
+  if (s.charAt(0) !== '/' && !/^https?:\/\//i.test(s)) return s.replace(/^\/+/, '');
+  try {
+    const u = new URL(s, location.href);
+    let p = u.pathname;
+    const pre = '/' + MAIN_SITE + '/';
+    if (p.indexOf(pre) === 0) p = p.slice(pre.length);
+    p = p.replace(/^\/+/, '');
+    if (p.length > 1 && p.charAt(p.length - 1) === '/') p += 'index.html';
+    return p + (u.search || '');
+  } catch (e) { return s.slice(0, 60); }
+}
 
-  const addPage = (path, rec) => {
-    if (!path) return;
-    const p = pages[path] || { path, label: pageLabel(path), views: 0, clicks: 0, duration: 0, sessions: 0, local: false, seeded: false };
-    p.views += Number(rec.views || 0);
-    p.clicks += Number(rec.clicks || 0);
-    p.duration += Number(rec.duration || 0);
-    p.sessions += Number(rec.sessions || 0);
-    if (rec.local) p.local = true;
-    if (rec.seeded) p.seeded = true;
-    pages[path] = p;
-  };
+function liveSite(site) {
+  const out = { pages: {}, links: {}, buttons: {} };
+  if (!live) return out;
 
-  const addHit = (bucket, key, rec, kind) => {
-    if (!key) return;
-    const item = bucket[key] || { key, kind, label: rec.label || '', target: rec.target || rec.href || '', page: rec.page || '', count: 0, local: false, seeded: false };
-    item.count += Number(rec.count || 0);
-    if (rec.local) item.local = true;
-    if (rec.seeded) item.seeded = true;
-    if (!item.label && rec.label) item.label = rec.label;
-    if (!item.target && rec.target) item.target = rec.target;
-    bucket[key] = item;
-  };
-
-  if (src) {
-    Object.keys(src.pages || {}).forEach((path) => {
-      addPage(path, Object.assign({}, src.pages[path], { seeded: true }));
-    });
-    Object.keys(src.links || {}).forEach((k) => {
-      addHit(links, k, Object.assign({}, src.links[k], { seeded: true }), 'link');
-    });
-    Object.keys(src.buttons || {}).forEach((k) => {
-      addHit(buttons, k, Object.assign({}, src.buttons[k], { seeded: true }), 'button');
-    });
-  }
-
-  const sources = [readLocal(), imported].filter(Boolean);
-  sources.forEach((src2) => {
-    Object.keys(src2.pages || {}).forEach((path) => {
-      addPage(path, Object.assign({}, src2.pages[path], { local: true }));
-    });
-    Object.keys(src2.links || {}).forEach((k) => {
-      addHit(links, k, Object.assign({}, src2.links[k], { local: true }), 'link');
-    });
-    Object.keys(src2.buttons || {}).forEach((k) => {
-      addHit(buttons, k, Object.assign({}, src2.buttons[k], { local: true }), 'button');
-    });
+  const lp = (live.pages && live.pages[site]) || {};
+  Object.keys(lp).forEach((path) => {
+    const v = lp[path] || {};
+    out.pages[path] = {
+      path,
+      label: v.label || pageLabel(path),
+      views: Number(v.views || 0),
+      uniques: Number(v.uniques || 0),
+      clicks: Number(v.clicks || 0),
+      duration: Number(v.duration || 0),
+      search_clicks: Number(v.search_clicks || 0),
+      impressions: Number(v.impressions || 0),
+      position: Number(v.position || 0),
+      sources: v.sources || []
+    };
   });
 
-  const pageList = Object.values(pages)
-    .map((p) => ({
-      path: p.path,
-      label: p.label || pageLabel(p.path),
-      views: p.views,
-      clicks: p.clicks,
-      duration: p.duration,
-      sessions: p.sessions,
-      avg: p.views > 0 ? Math.round(p.duration / p.views) : 0,
-      local: p.local,
-      seeded: p.seeded
-    }))
-    .filter((p) => p.views > 0 || p.clicks > 0 || p.duration > 0);
+  const readHits = (bucket, kind) => {
+    const src = (live[bucket] && live[bucket][site]) || {};
+    Object.keys(src).forEach((k) => {
+      const v = src[k] || {};
+      const label = v.label || '';
+      const target = kind === 'link' ? shortTarget(v.href || v.target || '') : (v.target || v.href || '');
+      out.bucket_add(bucket, kind, { key: `${v.page || ''}||${label}|${target}`, kind, label, target, page: v.page || '', count: Number(v.count || 0), sources: v.sources || [] });
+    });
+  };
+  out.bucket_add = (bucket, kind, rec) => { out[bucket][rec.key] = rec; };
+  readHits('links', 'link');
+  readHits('buttons', 'button');
 
-  const hitList = []
-    .concat(Object.values(links).map((x) => Object.assign({ kind: 'link' }, x)))
-    .concat(Object.values(buttons).map((x) => Object.assign({ kind: 'button' }, x)))
-    .map((x) => ({
-      kind: x.kind,
-      label: x.label || '(sans libellé)',
-      target: x.target || '',
-      page: x.page || '',
-      count: x.count,
-      local: x.local,
-      seeded: x.seeded
-    }))
-    .sort((a, b) => b.count - a.count);
+  return out;
+}
+
+function merge(site) {
+  const s = site || MAIN_SITE;
+  const base = liveSite(s);
+  const pages = {};
+  const hits = [];
+
+  Object.keys(base.pages).forEach((path) => {
+    const v = base.pages[path];
+    pages[path] = Object.assign({}, v, { avg: v.views > 0 ? Math.round(v.duration / v.views) : 0 });
+  });
+  Object.keys(base.links).forEach((k) => hits.push(base.links[k]));
+  Object.keys(base.buttons).forEach((k) => hits.push(base.buttons[k]));
+
+  const bumpHit = (kind, page, label, target, count) => {
+    const key = `${page}||${label}|${target}`;
+    const found = hits.find((h) => h.kind === kind && h.key === key);
+    if (found) {
+      found.count += count;
+      if (!found.sources.includes('local')) found.sources.push('local');
+    } else {
+      hits.push({ key, kind, label, target, page, count, sources: ['local'] });
+    }
+  };
+
+  /* Données locales (ce navigateur) — site principal uniquement */
+  if (s === MAIN_SITE) {
+    const local = readLocal();
+    if (local) {
+      Object.keys(local.pages || {}).forEach((path) => {
+        const v = local.pages[path] || {};
+        const cur = pages[path] || {
+          path, label: pageLabel(path), views: 0, uniques: 0, clicks: 0, duration: 0,
+          search_clicks: 0, impressions: 0, position: 0, sources: [], avg: 0
+        };
+        cur.views += Number(v.views || 0);
+        cur.clicks += Number(v.clicks || 0);
+        cur.duration += Number(v.duration || 0);
+        cur.sessions = Number(v.sessions || 0);
+        if (!cur.sources.includes('local')) cur.sources.push('local');
+        cur.avg = cur.views > 0 ? Math.round(cur.duration / cur.views) : 0;
+        pages[path] = cur;
+      });
+      Object.keys(local.links || {}).forEach((k) => {
+        const v = local.links[k] || {};
+        bumpHit('link', v.page || '', v.label || '', shortTarget(v.target || v.href || ''), Number(v.count || 0));
+      });
+      Object.keys(local.buttons || {}).forEach((k) => {
+        const v = local.buttons[k] || {};
+        bumpHit('button', v.page || '', v.label || '', v.target || '', Number(v.count || 0));
+      });
+    }
+
+    /* Import manuel d'un export JSON */
+    if (imported) {
+      Object.keys(imported.pages || {}).forEach((path) => {
+        const v = imported.pages[path] || {};
+        const cur = pages[path] || {
+          path, label: pageLabel(path), views: 0, uniques: 0, clicks: 0, duration: 0,
+          search_clicks: 0, impressions: 0, position: 0, sources: [], avg: 0
+        };
+        cur.views += Number(v.views || 0);
+        cur.clicks += Number(v.clicks || 0);
+        cur.duration += Number(v.duration || 0);
+        if (!cur.sources.includes('import')) cur.sources.push('import');
+        cur.avg = cur.views > 0 ? Math.round(cur.duration / cur.views) : 0;
+        pages[path] = cur;
+      });
+      Object.keys(imported.links || {}).forEach((k) => {
+        const v = imported.links[k] || {};
+        bumpHit('link', v.page || '', v.label || '', shortTarget(v.href || v.target || ''), Number(v.count || 0));
+      });
+      Object.keys(imported.buttons || {}).forEach((k) => {
+        const v = imported.buttons[k] || {};
+        bumpHit('button', v.page || '', v.label || '', v.target || '', Number(v.count || 0));
+      });
+    }
+  }
+
+  const pageList = Object.values(pages).filter((p) => p.views || p.clicks || p.duration);
+  hits.sort((a, b) => b.count - a.count);
 
   const totals = pageList.reduce((acc, p) => {
     acc.views += p.views;
     acc.clicks += p.clicks;
     acc.duration += p.duration;
+    acc.uniques += p.uniques || 0;
+    acc.search_clicks += p.search_clicks || 0;
+    acc.impressions += p.impressions || 0;
     return acc;
-  }, { views: 0, clicks: 0, duration: 0 });
-
-  const local = readLocal();
+  }, { views: 0, clicks: 0, duration: 0, uniques: 0, search_clicks: 0, impressions: 0 });
 
   return {
     pages: pageList,
-    hits: hitList,
+    hits,
     totals,
-    updated: (local && local.updated) || (src && src.generated) || null,
-    hasLocal: !!local && Object.keys(local.pages || {}).length > 0,
-    hasSeed: !!src && Object.keys(src.pages || {}).length > 0
+    updated: (live && live.generated) || null,
+    window: (live && live.window) || null,
+    sources: (live && live.sources) || null,
+    hasLive: !!live
   };
 }
+
+/* Toutes les pages de tous les dépôts (GitHub Traffic) */
+function allSites() {
+  const rows = [];
+  if (!live || !live.pages) return rows;
+  Object.keys(live.pages).forEach((site) => {
+    const bag = live.pages[site] || {};
+    Object.keys(bag).forEach((path) => {
+      const v = bag[path] || {};
+      if (!v.views && !v.uniques) return;
+      rows.push({
+        site,
+        path,
+        label: v.label || path,
+        views: Number(v.views || 0),
+        uniques: Number(v.uniques || 0),
+        sources: v.sources || []
+      });
+    });
+  });
+  rows.sort((a, b) => b.views - a.views);
+  return rows;
+}
+
 
 /* ---------------- Formatage ---------------- */
 
@@ -452,25 +561,151 @@ function renderKpis(data) {
   set('kpiClicks', fmtInt(data.totals.clicks));
   set('kpiDuration', fmtDuration(data.totals.duration));
   set('kpiAvg', fmtDuration(data.pages.length ? data.totals.duration / data.pages.length : 0));
+  set('kpiUniques', fmtInt(data.totals.uniques));
+  set('kpiSearch', fmtInt(data.totals.search_clicks));
 
   const top = data.pages.slice().sort((a, b) => b.views - a.views)[0];
   set('kpiTop', top ? top.label : '—');
 
   const badge = document.getElementById('badgeSource');
-  if (badge) badge.textContent = data.hasLocal && data.hasSeed ? T[lang].source_merged : (data.hasSeed ? T[lang].source_merged : T[lang].source_local);
+  if (badge) badge.textContent = data.hasLive ? T[lang].source_real : T[lang].source_local;
 
   const upd = document.getElementById('badgeUpdated');
   if (upd) {
-    let d = data.updated;
-    if (d) {
-      const dt = new Date(d);
-      upd.textContent = `${T[lang].updated.replace('—', '')} ${dt.toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US')}`;
-    }
+    const d = data.updated;
+    upd.textContent = d ? `${T[lang].updated.replace('—', '')} ${new Date(d).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US')}` : T[lang].updated;
   }
 
   const pagesBadge = document.getElementById('badgePages');
   if (pagesBadge) pagesBadge.textContent = `${T[lang].pages_count.replace('—', '')} ${data.pages.length}`;
 }
+
+/* ---------------- Sources réelles ---------------- */
+
+const SOURCE_META = {
+  github: { label: 'GitHub Traffic API', desc: 'Vues et visiteurs uniques par chemin (14 jours glissants)' },
+  ga4: { label: 'Google Analytics 4', desc: 'Vues, durée d\'engagement et clics liens/boutons' },
+  gsc: { label: 'Google Search Console', desc: 'Clics et impressions de recherche par URL' },
+  local: { label: 'Ce navigateur', desc: 'Vues, durée et clics mesurés sur cet appareil' }
+};
+
+function renderSources(data) {
+  const grid = document.getElementById('sourcesGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const src = data.sources || {};
+  const cards = [];
+
+  ['github', 'ga4', 'gsc'].forEach((key) => {
+    const info = src[key] || {};
+    const ok = !!info.ok;
+    const meta = SOURCE_META[key];
+    let detail = '';
+    if (ok && key === 'github') {
+      const repos = (info.repos || []).filter((r) => !r.error);
+      const total = repos.reduce((a, r) => a + (r.views || 0), 0);
+      detail = `${repos.length} dépôt(s) · ${fmtInt(total)} vues`;
+    } else if (ok && key === 'ga4') {
+      const t = info.totals || {};
+      detail = `${fmtInt(t.screenPageViews || 0)} vues · ${fmtDuration(t.userEngagementDuration || 0)} d'engagement`;
+    } else if (ok && key === 'gsc') {
+      const t = info.totals || {};
+      detail = `${fmtInt(t.clicks || 0)} clics · ${fmtInt(t.impressions || 0)} impressions`;
+    } else {
+      detail = info.reason || T[lang].source_missing;
+    }
+    cards.push({ key, label: meta.label, desc: meta.desc, ok, detail });
+  });
+
+  const local = readLocal();
+  cards.push({
+    key: 'local',
+    label: SOURCE_META.local.label,
+    desc: SOURCE_META.local.desc,
+    ok: !!local && Object.keys(local.pages || {}).length > 0,
+    detail: local ? `${Object.keys(local.pages).length} page(s) mesurée(s)` : T[lang].source_missing
+  });
+
+  cards.forEach((c) => {
+    const div = document.createElement('div');
+    div.className = 'source-card' + (c.ok ? ' ok' : ' off');
+    div.innerHTML = `
+      <div class="source-head">
+        <span class="source-dot"></span>
+        <strong>${escapeHtml(c.label)}</strong>
+        <span class="source-state">${c.ok ? escapeHtml(T[lang].source_on) : escapeHtml(T[lang].source_off)}</span>
+      </div>
+      <div class="source-desc">${escapeHtml(c.desc)}</div>
+      <div class="source-detail">${escapeHtml(c.detail)}</div>`;
+    grid.appendChild(div);
+  });
+
+  const badge = document.getElementById('badgeCollected');
+  if (badge) {
+    badge.textContent = data.updated
+      ? `${T[lang].collected.replace('—', '')} ${new Date(data.updated).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US')}`
+      : T[lang].collected;
+  }
+}
+
+/* ---------------- Trafic des autres dépôts ---------------- */
+
+let siteFilter = 'all';
+
+function renderSites() {
+  const tbody = document.getElementById('sitesBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  let rows = allSites();
+  if (siteFilter !== 'all') rows = rows.filter((r) => r.site === siteFilter);
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">${escapeHtml(T[lang].no_data)}</td></tr>`;
+    return;
+  }
+
+  const max = Math.max(...rows.map((r) => r.views || 0), 1);
+  rows.forEach((r) => {
+    const tr = document.createElement('tr');
+    const share = Math.round(((r.views || 0) / max) * 100);
+    tr.innerHTML = `
+      <td><div class="cell-main">${escapeHtml(r.site)}</div></td>
+      <td><div class="cell-sub">${escapeHtml(r.path)}</div></td>
+      <td class="num">${fmtInt(r.views)}</td>
+      <td class="num">${fmtInt(r.uniques)}</td>
+      <td class="bar-col"><div class="bar s"><i style="width:${share}%"></i></div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderSiteFilters() {
+  const box = document.querySelector('[data-site-filter="all"]') ? document.querySelector('[data-site-filter="all"]').parentElement : null;
+  if (!box) return;
+  const sites = [];
+  Object.keys((live && live.pages) || {}).forEach((s) => { if (s !== MAIN_SITE) sites.push(s); });
+  if (!sites.length) return;
+
+  Array.from(box.querySelectorAll('[data-site-filter]')).forEach((b) => {
+    if (b.getAttribute('data-site-filter') !== 'all') b.remove();
+  });
+
+  sites.forEach((s) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (siteFilter === s ? ' active' : '');
+    b.setAttribute('data-site-filter', s);
+    b.textContent = s;
+    b.addEventListener('click', () => {
+      siteFilter = s;
+      Array.from(box.querySelectorAll('[data-site-filter]')).forEach((x) => x.classList.toggle('active', x === b));
+      renderSites();
+    });
+    box.appendChild(b);
+  });
+}
+
 
 /* ---------------- Graphique 3D (Three.js) ---------------- */
 
@@ -1017,13 +1252,20 @@ function exportJson() {
   const data = currentData || merge();
   const payload = {
     generated: new Date().toISOString(),
-    note: 'Export KeffStation — statistiques publiques',
+    note: 'Export KeffStation — statistiques (réelles + navigation locale)',
+    sources: data.sources || null,
+    collected: data.updated || null,
     pages: {},
     links: {},
     buttons: {}
   };
   data.pages.forEach((p) => {
-    payload.pages[p.path] = { label: p.label, views: p.views, clicks: p.clicks, duration: p.duration, sessions: p.sessions };
+    payload.pages[p.path] = {
+      label: p.label, views: p.views, uniques: p.uniques, clicks: p.clicks,
+      duration: p.duration, sessions: p.sessions || 0,
+      search_clicks: p.search_clicks || 0, impressions: p.impressions || 0,
+      position: p.position || 0, sources: p.sources || []
+    };
   });
   data.hits.forEach((h) => {
     const key = `${h.page}||${h.label}|${h.target}`;
@@ -1072,18 +1314,35 @@ function toast(msg) {
 
 let statCharts = {};
 let pageChart = null;
+let sitesChart = null;
 
 function render() {
   currentData = merge();
   renderKpis(currentData);
+  renderSources(currentData);
   renderPages(currentData);
   renderHits(currentData);
+  renderSiteFilters();
+  renderSites();
   if (selectedPage) renderPagePanel();
 
   STATS.forEach((s) => {
     const chart = statCharts[s.key];
     if (chart) chart.setItems(currentData.pages, s.key);
   });
+
+  if (sitesChart) {
+    const rows = allSites().map((r) => ({
+      label: `${r.site} — ${r.path}`,
+      path: r.path,
+      site: r.site,
+      views: r.views,
+      clicks: 0,
+      duration: 0,
+      avg: 0
+    }));
+    sitesChart.setItems(rows, 'views', { uniform: false });
+  }
 }
 
 /* ---------------- Amorçage ---------------- */
@@ -1091,10 +1350,14 @@ function render() {
 async function boot() {
   applyLang();
 
+  /* Données RÉELLES collectées par GitHub Actions (stats/data/live.json) */
   try {
-    const res = await fetch('data/stats.json', { cache: 'no-store' });
-    if (res.ok) seed = await res.json();
-  } catch (e) { seed = null; }
+    const res = await fetch('data/live.json', { cache: 'no-store' });
+    if (res.ok) {
+      live = await res.json();
+      if (live && live.real !== true) live = null; // pas de fichier simulé accepté
+    }
+  } catch (e) { live = null; }
 
   render();
   setActiveStat(activeStat);
@@ -1179,7 +1442,7 @@ async function boot() {
   const btnReset = document.getElementById('btnReset');
   if (btnReset) {
     btnReset.addEventListener('click', () => {
-      try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
       imported = null;
       render();
       toast(T[lang].reset_done);
@@ -1225,12 +1488,41 @@ async function boot() {
     }
   }
 
+  /* Scène « toutes les PWA » */
+  const cSites = document.getElementById('sceneSites');
+  if (cSites && use3D) {
+    try {
+      sitesChart = new MountainChart(cSites, THREE, {
+        metric: 'views',
+        hue: { h0: 0.32, h1: 0.58, s: 0.8, l0: 0.32, l1: 0.6 },
+        keyColor: 0x27d17f,
+        rimColor: 0x00d4ff,
+        onSelect: (item) => {
+          if (!item) return;
+          const rows = Array.from(document.querySelectorAll('#sitesBody tr'));
+          rows.forEach((tr) => {
+            tr.classList.remove('flash');
+            if (tr.textContent.indexOf(item.path) !== -1) {
+              tr.classList.add('flash');
+              tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          });
+        }
+      });
+    } catch (e) {
+      sitesChart = null;
+    }
+  }
+
   // Repli 2D si la 3D n'est pas disponible
   STATS.forEach((s) => {
     const c = document.getElementById(s.scene);
     if (!c) return;
     if (!statCharts[s.key]) fallback2d(c, currentData.pages, s.key);
   });
+  if (cSites && !sitesChart) {
+    fallback2d(cSites, allSites().map((r) => ({ label: `${r.site} — ${r.path}`, views: r.views, clicks: 0, duration: 0 })), 'views');
+  }
 
   render();
 }
