@@ -422,11 +422,11 @@ function renderRayons(){
       activeCategory = b.dataset.category;
       // URL propre et partageable : /kifftech/rayon/<slug>/
       try {
-        const base = (window.KIFFTECH_BASE || './').replace(/\/$/, '');
+        const base = '/keffstation/kifftech';
         const slug = slugRayon(activeCategory);
         const url = activeCategory === 'all'
-          ? base + 'index.html'
-          : base + 'rayon/' + slug + '/';
+          ? base + '/index.html'
+          : base + '/rayon/' + slug + '/';
         history.replaceState({}, '', url);
       } catch (e) {}
       sel.querySelectorAll('.rayon-btn').forEach(x => {
