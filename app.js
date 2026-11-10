@@ -30,32 +30,6 @@ const APPS = [
     ]
   },
   {
-    num: "Tricktrocjob",
-    title: "Tricktrocjob",
-    desc: "Échange d'astuces pas à pas, troc d'objets, services entre particuliers. Frais dégressifs 17%→5%, double porte-monnaie (solde + crédits).",
-    tags: ["Marketplace", "Troc", "Crédits", "Communauté"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/tricktrocjob/",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/tricktrocjob/",
-    embedLabel: "Ouvrir Tricktrocjob",
-    color: "#ff3d9a",
-    subArticles: [
-      { title: "Comment créer un Trix", desc: "Tutoriel pas à pas pour publier votre astuce ou tutoriel.", tags: ["Tutoriel", "Publication", "Trix"] },
-      { title: "Échanger un Trox", desc: "Mettre en ligne un objet, gérer les propositions, finaliser l'échange.", tags: ["Trox", "Échange", "Objet"] },
-      { title: "Proposer un Service", desc: "Créer une offre de service, fixer le prix, gérer les clients.", tags: ["Service", "Freelance", "Compétence"] },
-      { title: "Gagner des crédits", desc: "Système de récompenses, parrainage, bonus de validation.", tags: ["Crédits", "Récompense", "Économie"] },
-      { title: "Créer un Trix viral : structure gagnante", desc: "Titre accrocheur, étapes numérotées, photos qualité, prix en crédits. Exemples de Trix à 10k+ vues.", tags: ["Trix", "Viral", "Rédaction", "Visibilité"] },
-      { title: "Négocier un Trox : techniques gagnantes", desc: "Évaluer la valeur, proposer contre-offre, photos sous angles, description honnête. Évitez les arnaques.", tags: ["Trox", "Négociation", "Sécurité", "Évaluation"] },
-      { title: "Service récurrent : revenus passifs", desc: "Abonnement mensuel, facturation auto, fidélisation clients. Ex: maintenance PC, cours hebdo, livraison courses.", tags: ["Service", "Récurrent", "Revenus", "Automatisation"] },
-      { title: "Parrainage : 500 crédits par filleul", desc: "Partagez votre lien, filleul valide son 1er échange = 500 crédits chacun. Illimité, cumulable avec promos.", tags: ["Parrainage", "Crédits", "Récompense", "Viral"] },
-      { title: "Trix vidéo : format court engageant", desc: "60-90 sec, hook 3 sec, démo claire, CTA crédits. Format vertical, sous-titres, musique libre. +300% engagement.", tags: ["Trix", "Vidéo", "Format", "Engagement"] },
-      { title: "Objets rares : authentification pro", desc: "Service expertise gratuite pour objets >500€. Certificat authenticité, estimation marché, assurance transport incluse.", tags: ["Expertise", "Authentique", "Luxe", "Sécurité"] },
-      { title: "Communauté locale : rencontres mensuelles", desc: "Événements ville par ville, échanges en main propre, ateliers réparation. Zéro frais port, confiance directe.", tags: ["Communauté", "Local", "Rencontre", "Échange"] },
-      { title: "Dashboard vendeur : stats temps réel", desc: "Vues, favoris, conversions, revenus crédits/€. Alertes prix, relance paniers, export CSV. Pilotage pro.", tags: ["Dashboard", "Stats", "Vente", "Pro"] },
-      { title: "API publique : intégration tierce", desc: "REST + Webhooks, taux limités, scopes granulaires. Intégrez Tricktroc dans votre app.", tags: ["API", "Intégration", "Dev", "Webhook"] },
-      { title: "Mode hors-ligne : PWA offline-first", desc: "Cache intelligent, sync différée, conflits résolus. Travaillez sans connexion.", tags: ["PWA", "Offline", "Sync", "Cache"] }
-    ]
-  },
-  {
     num: "ViArtificial labs",
     title: "ViArtificial labs",
     desc: "Syntaxe cos (connexions), famille SuperBots (ViA, BTB+Golem, Geeko, Guideoplan), blocs logiques BLM/BLSM, motor.s injection.",
@@ -186,7 +160,6 @@ function orbitPosition(index, total, radius = 36) {
 
 const APP_ICONS = {
   'Kifftech': '<img class="app-icon-img" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20KeffTech.png" alt="Logo KiffTech" loading="lazy">',
-  'Tricktrocjob': '🔄',
   'ViArtificial labs': '<img class="app-icon-img" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20ViA.png" alt="Logo ViArtificial Labs" loading="lazy">',
   'Videogames': '🎮',
   'cos Editor': '🧩',
