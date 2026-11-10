@@ -344,9 +344,25 @@ async function main() {
     products: clean,
   };
 
-  fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
-  fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log(`[boutique] ${clean.length} produits live écrits dans ${path.relative(ROOT, OUT_FILE)}`);
+  // Écriture uniquement si le catalogue a réellement changé (sinon commit inutile).
+  let previous = null;
+  try {
+    previous = JSON.parse(fs.readFileSync(OUT_FILE, "utf8"));
+  } catch (e) {
+    previous = null;
+  }
+  const sameProducts =
+    previous &&
+    JSON.stringify(previous.products || []) === JSON.stringify(payload.products) &&
+    JSON.stringify(previous.sources || {}) === JSON.stringify(payload.sources);
+
+  if (sameProducts) {
+    console.log(`[boutique] catalogue identique (${clean.length} produits) — fichier inchange.`);
+  } else {
+    fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
+    fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
+    console.log(`[boutique] ${clean.length} produits live ecrits dans ${path.relative(ROOT, OUT_FILE)}`);
+  }
   console.log(`[boutique] sources : ${JSON.stringify(sources)}`);
 }
 
