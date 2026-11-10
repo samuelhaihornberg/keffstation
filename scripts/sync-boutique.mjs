@@ -233,15 +233,22 @@ function mapShopifyStorefront(node) {
 /* Impact.com                                                          */
 /* ------------------------------------------------------------------ */
 /**
- * Impact.com : authentification moderne
- *   Authorization: Bearer <IMPACT_AUTH_TOKEN>
- *   Impact-Account-Sid: <IMPACT_ACCOUNT_SID>
- * (un couple SID + jeton est aussi disponible pour la boutique KiffTech.store)
+ * Impact.com — API Brand / Partner
+ *   Auth : Basic(base64(AccountSID:AuthToken))
+ *   Routes :
+ *     GET /Mediapartners/{SID}/Catalogs
+ *     GET /Mediapartners/{SID}/Catalogs/ItemSearch?PageSize=200&Page=1
+ *     GET /Mediapartners/{SID}/Catalogs/{CatalogId}/Items
+ *     GET /Advertisers/{SID}/Catalogs
+ *     GET /Advertisers/{SID}/Catalogs/{CatalogId}/Items
  */
 function impactHeaders(token, sid) {
   const h = { Accept: "application/json", "Impact-Version": "2" };
-  if (token) h.Authorization = `Bearer ${token}`;
-  if (sid) h["Impact-Account-Sid"] = sid;
+  if (token && sid) {
+    h.Authorization = `Basic ${Buffer.from(`${sid}:${token}`).toString("base64")}`;
+  } else if (token) {
+    h.Authorization = `Bearer ${token}`;
+  }
   return h;
 }
 
@@ -249,77 +256,118 @@ async function impactGet(url, token, sid) {
   const res = await fetch(url, { headers: impactHeaders(token, sid) });
   const text = await res.text();
   if (!res.ok) {
-    const err = new Error(`HTTP ${res.status} ${url.replace(/\?.*/, "")}`);
+    const err = new Error(`HTTP ${res.status}`);
     err.status = res.status;
-    err.body = text.slice(0, 160);
+    err.body = text.replace(/\s+/g, " ").slice(0, 180);
+    err.url = url;
     throw err;
   }
   try {
     return JSON.parse(text);
   } catch (e) {
-    throw new Error(`reponse non JSON (${url.replace(/\?.*/, "")}) : ${text.slice(0, 120)}`);
+    throw new Error(`réponse non JSON (${url.replace(/\?.*/, "")}) : ${text.slice(0, 120)}`);
   }
+}
+
+function pickArray(data, ...keys) {
+  for (const k of keys) {
+    if (Array.isArray(data?.[k])) return data[k];
+    if (Array.isArray(data?.[k]?.Items)) return data[k].Items;
+    if (Array.isArray(data?.[k]?.items)) return data[k].items;
+  }
+  return [];
+}
+
+async function fetchImpactItems(sid, token, label) {
+  const bases = ["Mediapartners", "Advertisers"];
+  const out = [];
+  for (const base of bases) {
+    // 1) Recherche directe dans tous les catalogues (Mediapartners seulement)
+    if (base === "Mediapartners") {
+      try {
+        const url = `https://api.impact.com/Mediapartners/${sid}/Catalogs/ItemSearch?PageSize=200&Page=1`;
+        const data = await impactGet(url, token, sid);
+        const items = pickArray(data, "Items", "items", "Results", "results");
+        if (items.length) {
+          console.log(`[impact] ${label} — ItemSearch : ${items.length} produit(s)`);
+          out.push(...items);
+          return out;
+        }
+      } catch (e) {
+        console.warn(`[impact] ${label} — ItemSearch : ${e.message}${e.body ? " | " + e.body : ""}`);
+      }
+    }
+
+    // 2) Liste des catalogues puis items de chaque catalogue
+    try {
+      const catUrl = `https://api.impact.com/${base}/${sid}/Catalogs`;
+      const catData = await impactGet(catUrl, token, sid);
+      const catalogs = pickArray(catData, "Catalogs", "catalogs", "Items", "items");
+      console.log(`[impact] ${label} — ${base}/${sid}/Catalogs : ${catalogs.length} catalogue(s)`);
+      if (!catalogs.length) continue;
+      for (const c of catalogs) {
+        const cid = c.Id ?? c.id ?? c.CatalogId;
+        if (cid == null) continue;
+        try {
+          const itemsUrl = `https://api.impact.com/${base}/${sid}/Catalogs/${cid}/Items?PageSize=200`;
+          const itemsData = await impactGet(itemsUrl, token, sid);
+          const items = pickArray(itemsData, "Items", "items", "Results", "results");
+          console.log(`[impact] ${label} — catalogue ${c.Name ?? cid} : ${items.length} produit(s)`);
+          out.push(...items);
+        } catch (e) {
+          console.warn(`[impact] ${label} — items catalogue ${cid} : ${e.message}`);
+        }
+      }
+      if (out.length) return out;
+    } catch (e) {
+      console.warn(`[impact] ${label} — ${base}/Catalogs : ${e.message}${e.body ? " | " + e.body : ""}`);
+    }
+  }
+  return out;
 }
 
 async function fetchImpact() {
-  const p = new URLSearchParams();
-  p.set("currency", CURRENCY);
-  p.set("limit", "1000");
-  if (IMPACT_BRAND_ID) p.set("brand_id", IMPACT_BRAND_ID);
-  const q2 = new URLSearchParams();
-  q2.set("currency", CURRENCY);
-  q2.set("limit", "1000");
-  if (IMPACT_CAMPAIGN_ID) q2.set("campaign_id", IMPACT_CAMPAIGN_ID);
-
-  // (URL, jeton, SID) — on essaie chaque couple jusqu'a une reponse exploitable
-  const combos = [];
-  if (IMPACT_AUTH_TOKEN && IMPACT_ACCOUNT_SID) {
-    combos.push({ token: IMPACT_AUTH_TOKEN, sid: IMPACT_ACCOUNT_SID, label: "compte principal" });
+  const accounts = [];
+  if (IMPACT_ACCOUNT_SID && IMPACT_AUTH_TOKEN) {
+    accounts.push({ sid: IMPACT_ACCOUNT_SID, token: IMPACT_AUTH_TOKEN, label: "compte principal" });
   }
-  if (IMPACT_STORE_TOKEN && IMPACT_BRAND_ID) {
-    combos.push({ token: IMPACT_STORE_TOKEN, sid: IMPACT_BRAND_ID, label: "boutique KiffTech.store" });
+  if (IMPACT_BRAND_ID && IMPACT_STORE_TOKEN) {
+    accounts.push({ sid: IMPACT_BRAND_ID, token: IMPACT_STORE_TOKEN, label: "boutique KiffTech.store" });
   }
-  if (IMPACT_AUTH_TOKEN && !IMPACT_ACCOUNT_SID) {
-    combos.push({ token: IMPACT_AUTH_TOKEN, sid: "", label: "compte principal (sans SID)" });
+  if (!accounts.length) throw new Error("IMPACT_ACCOUNT_SID / IMPACT_AUTH_TOKEN manquant");
+
+  for (const a of accounts) {
+    const items = await fetchImpactItems(a.sid, a.token, a.label);
+    if (items.length) return items;
   }
-
-  const urls = [
-    `https://api.impact.com/catalog/products?${p.toString()}`,
-    `https://api.impact.com/partner/v1/catalog/products?${p.toString()}`,
-    `https://api.impact.com/advertiser/v1/catalog/products?${p.toString()}`,
-    `https://api.impact.com/products/search?${q2.toString()}`,
-    `https://api.impact.com/partner/v1/products?${p.toString()}`,
-    `https://api.impact.com/action/v1/products?${p.toString()}`,
-  ];
-
-  if (!combos.length) throw new Error("IMPACT_AUTH_TOKEN / IMPACT_ACCOUNT_SID manquant");
-
-  for (const c of combos) {
-    for (const url of urls) {
-      try {
-        const data = await impactGet(url, c.token, c.sid);
-        const items = data.items || data.products || data.data || data.results || [];
-        const arr = Array.isArray(items) ? items : Array.isArray(items.items) ? items.items : [];
-        console.log(`[impact] ${c.label} -> ${url.replace(/\?.*/, "")} : ${arr.length} produit(s)`);
-        if (arr.length) return arr;
-      } catch (e) {
-        console.warn(`[impact] ${c.label} -> ${url.replace(/\?.*/, "")} : ${e.message}${e.body ? " | " + e.body : ""}`);
-      }
-    }
-  }
-  throw new Error("Impact : aucune reponse exploitable");
+  throw new Error("Impact : aucun produit récupéré");
 }
 
 function mapImpact(item) {
-  const price = Number(item.price ?? item.price_value ?? 0);
-  const brand = item.brand_name || item.brand || "";
-  const model = item.name || item.title || "";
-  const text = [item.category, item.sub_category, item.description, brand, model].filter(Boolean).join(" ");
-  const img = item.image_url || item.image || (Array.isArray(item.images) ? item.images[0] : null);
-  const subId = item.id || item.product_id || slugify(model);
-  const url = IMPACT_CAMPAIGN_ID
-    ? `https://api.impact.com/redirect?p=${encodeURIComponent(IMPACT_CAMPAIGN_ID)}&subid=${encodeURIComponent(subId)}`
-    : "";
+  const get = (...keys) => {
+    for (const k of keys) if (item[k] !== undefined && item[k] !== null && item[k] !== "") return item[k];
+    return undefined;
+  };
+  const price = Number(get("CurrentPrice", "current_price", "price", "price_value", "BuyPrice", "buy_price") || 0);
+  const brand = String(get("Manufacturer", "manufacturer", "brand_name", "Brand", "brand") || "");
+  const model = String(get("Name", "name", "title", "Title") || "");
+  const description = String(get("Description", "description") || "");
+  const category = String(get("Category", "category", "Type", "type") || "");
+  const text = [category, description, brand, model].filter(Boolean).join(" ");
+  const img = get("ImageUrl", "image_url", "Image", "image") || (Array.isArray(get("Images", "images")) ? get("Images", "images")[0] : null);
+  const subId = String(get("CatalogItemId", "catalog_item_id", "Id", "id", "product_id") || slugify(model));
+  const landing = String(get("Url", "url", "DestinationUrl", "destination_url") || "");
+  const campaignId = IMPACT_CAMPAIGN_ID || "";
+  const url = landing || (campaignId ? `https://api.impact.com/redirect?p=${encodeURIComponent(campaignId)}&subid=${encodeURIComponent(subId)}` : "");
+  const specs = {};
+  const specKeys = [
+    ["Gtin", "GTIN"], ["Sku", "SKU"], ["Brand", "Marque"], ["Category", "Catégorie"],
+    ["StockAvailability", "Disponibilité"], ["DiscountPercentage", "Remise"], ["Labels", "Étiquettes"],
+  ];
+  for (const [k, label] of specKeys) {
+    const v = get(k, k.toLowerCase());
+    if (v !== undefined && v !== null && v !== "") specs[label] = String(v).slice(0, 80);
+  }
   return normalizeProduct({
     id: `impact-${slugify(subId)}`,
     source: "impact",
@@ -327,13 +375,13 @@ function mapImpact(item) {
     model,
     year: yearFrom(text),
     category: guessCategory(text),
-    price: { official: price, currency: item.currency || CURRENCY },
-    specs: {},
-    images: img ? [img] : [],
-    description: String(item.description || "").slice(0, 400),
+    price: { official: price, currency: get("Currency", "currency") || CURRENCY },
+    specs,
+    images: img ? [String(img)] : [],
+    description: description.slice(0, 400),
     url,
     checkoutUrl: "",
-    impact: url ? { campaignId: IMPACT_CAMPAIGN_ID, subId: String(subId), url } : null,
+    impact: url ? { campaignId, subId, url } : null,
   });
 }
 
@@ -348,6 +396,7 @@ async function main() {
     try {
       let list = [];
       let mode = "admin";
+      console.log(`[shopify] boutique : ${SHOPIFY_DOMAIN}`);
       try {
         list = (await fetchShopifyAdmin()).map(mapShopifyAdmin);
       } catch (e) {
