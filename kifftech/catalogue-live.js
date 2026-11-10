@@ -38,10 +38,10 @@
     } catch (e) {}
     return "./";
   })();
-  window.KIFFTECH_BASE = BASE;
+  window.KIFFTECH_BASE = "/keffstation/";
 
-  var DATA_CATALOGUE = BASE + "data/catalogue.json";
-  var DATA_LIVE = BASE + "data/products.json";
+  var DATA_CATALOGUE = window.KIFFTECH_BASE + "data/catalogue.json";
+  var DATA_LIVE = window.KIFFTECH_BASE + "data/products.json";
 
   /* ---------------- normalisation des cles de rapprochement ---------------- */
   function stripAccents(s) {
