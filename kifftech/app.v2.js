@@ -884,6 +884,18 @@ function loadPayPalSdk(){
   });
   return paypalSdkPromise;
 }
+// Boutons PayPal personnalises : style, options de financement, message.
+// Surchargeable via window.KIFFTECH_PAYPAL_BUTTONS (genere au deploiement).
+function paypalButtonConfig(){
+  const def={style:{shape:'rect',color:'gold',layout:'vertical',label:'paypal',height:44},funding:['paypal'],message:{color:'black',size:12},disableFunding:[]};
+  const c=window.KIFFTECH_PAYPAL_BUTTONS||{};
+  return {
+    style:Object.assign({},def.style,c.style||{}),
+    funding:Array.isArray(c.funding)&&c.funding.length?c.funding:def.funding,
+    message:Object.assign({},def.message,c.message||{}),
+    disableFunding:Array.isArray(c.disableFunding)?c.disableFunding:def.disableFunding,
+  };
+}
 function paypalStatus(msg,color,sel='#paypal-status'){const el=$(sel);if(el){el.textContent=msg||'';el.style.color=color||'var(--kf-muted)';}}
 function renderPayPalButton(total,slotSel='#paypal-button-container',statusSel='#paypal-status'){
   const box=$(slotSel);
@@ -897,8 +909,12 @@ function renderPayPalButton(total,slotSel='#paypal-button-container',statusSel='
   loadPayPalSdk().then(paypal=>{
     if(!document.body.contains(box))return;
     box.innerHTML='';
+    const bcfg = paypalButtonConfig();
     paypal.Buttons({
-      style:{shape:'rect',color:'gold',layout:'vertical',label:'paypal',height:44},
+      style: bcfg.style,
+      funding: bcfg.funding,
+      message: bcfg.message,
+      disableFunding: bcfg.disableFunding,
       onClick:(data,actions)=>{if(!validateCaisse())return actions.reject();},
       createOrder:(data,actions)=>{
         caisseOrderRef=caisseOrderRef||newOrderRef();

@@ -29,19 +29,36 @@ jobs:
         env:
           PAYPAL_CLIENT_ID: >-
             ${{ secrets.PAYPAL_CLIENT_ID || secrets.paypal_secret_ID || secrets.PAYPAL_PUBLIC_CLIENT_ID || secrets.PAYPAL_SANDBOX_CLIENT_ID }}
+          PAYPAL_BUTTONS: ${{ vars.PAYPAL_BUTTONS }}
         run: |
           node - <<'NODE'
           const fs = require('fs');
           const id = String(process.env.PAYPAL_CLIENT_ID || '').trim();
           const safe = /^[A-Za-z0-9_-]{10,200}$/.test(id);
+          // Boutons de paiement personnalises (style, financement, message).
+          // Personnalisation : variable GitHub PAYPAL_BUTTONS (JSON) ou
+          // edition directe de window.KIFFTECH_PAYPAL_BUTTONS apres generation.
+          let buttons = {
+            style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'paypal', height: 44 },
+            funding: ['paypal'],
+            message: { color: 'black', size: 12 },
+            disableFunding: [],
+          };
+          const rawButtons = String(process.env.PAYPAL_BUTTONS || '').trim();
+          if (rawButtons) {
+            try { buttons = { ...buttons, ...JSON.parse(rawButtons) }; }
+            catch (e) { console.log('PayPal : PAYPAL_BUTTONS JSON invalide, style par defaut conserve.'); }
+          }
           fs.writeFileSync(
             'kifftech/paypal-config.js',
-            '// Généré au déploiement — Client ID public uniquement.\n' +
-            'window.KIFFTECH_PAYPAL_CLIENT_ID=' + JSON.stringify(safe ? id : '') + ';\n'
+            '// Genere au deploiement par .github/workflows/deploy.yml — Client ID public uniquement.\n' +
+            '// Boutons de paiement personnalises : modifiez window.KIFFTECH_PAYPAL_BUTTONS.\n' +
+            'window.KIFFTECH_PAYPAL_CLIENT_ID=' + JSON.stringify(safe ? id : '') + ';\n' +
+            'window.KIFFTECH_PAYPAL_BUTTONS=' + JSON.stringify(buttons, null, 2) + ';\n'
           );
           console.log(safe
-            ? 'PayPal : Client ID public injecté (' + id.length + ' caractères).'
-            : 'PayPal : Client ID absent ou invalide — bouton désactivé.');
+            ? 'PayPal : Client ID public injecte (' + id.length + ' caracteres). Boutons : ' + JSON.stringify(buttons.style) + ' | financement : ' + buttons.funding.join(', ') + '.'
+            : 'PayPal : Client ID absent ou invalide — bouton desactive.');
           NODE
 
       - name: Injecter la configuration Shopify publique (Storefront)
