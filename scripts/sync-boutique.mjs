@@ -608,7 +608,8 @@ async function main() {
   const products = [];
 
   const shopCandidates = shopifyDomainCandidates();
-  if (shopCandidates.length && SHOPIFY_ADMIN_TOKEN) {
+  const shopCanAuth = Boolean(SHOPIFY_ADMIN_TOKEN || (SHOPIFY_CLIENT_ID && SHOPIFY_CLIENT_SECRET));
+  if (shopCandidates.length && shopCanAuth) {
     try {
       let list = [];
       let mode = "admin";
@@ -652,9 +653,9 @@ async function main() {
   } else {
     sources.shopify = {
       ok: false,
-      error: SHOPIFY_RAW
+      error: !shopCandidates.length
         ? `identifiant « ${SHOPIFY_RAW} » non exploitable en tant que domaine (.myshopify.com attendu)`
-        : "SHOPIFY_ID / SHOPIFY_KEY manquant",
+        : "SHOPIFY_ID / SHOPIFY_KEY (Client ID + Client Secret) manquant",
     };
   }
 
