@@ -127,15 +127,18 @@ jobs:
           test -f index.html && echo "✅ index.html présent"
           test -f kifftech/index.html && echo "✅ kifftech/index.html présent"
 
+      - name: Preparer l'artefact (alleger)
+        run: |
+          # header.mp4 (7,3 Mo) n'est pas servi par le site : il est charge
+          # depuis raw.githubusercontent. On le retire de l'artefact pour rester
+          # sous la limite de temps du deploiement Pages.
+          rm -f header.mp4
+          echo "Taille de l'artefact : $(du -sh --exclude=.git . | cut -f1)"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # header.mp4 (7,3 Mo) n'est pas servi par le site (il est charge
-          # depuis raw.githubusercontent) : on l'exclut pour alleger l'artefact
-          # et rester sous la limite de temps du deploiement Pages.
-          path: |
-            .
-            !header.mp4
+          path: .
 
       - name: Deploy to GitHub Pages
         id: deployment
