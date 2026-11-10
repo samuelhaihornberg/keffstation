@@ -32,14 +32,33 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..")
 const OUT_FILE = path.join(ROOT, "kifftech", "data", "products.json");
 
 const ENV = process.env;
-const SHOPIFY_DOMAIN = (ENV.SHOPIFY_STORE_DOMAIN || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
+const SHOPIFY_RAW = (ENV.SHOPIFY_STORE_DOMAIN || "").trim();
 const SHOPIFY_ADMIN_TOKEN = (ENV.SHOPIFY_ADMIN_TOKEN || "").trim();
 const SHOPIFY_STOREFRONT_TOKEN = (ENV.SHOPIFY_STOREFRONT_TOKEN || "").trim();
 const SHOPIFY_API_VERSION = (ENV.SHOPIFY_API_VERSION || "2024-10").trim();
-const IMPACT_API_KEY = (ENV.IMPACT_API_KEY || "").trim();
-const IMPACT_API_SECRET = (ENV.IMPACT_API_SECRET || "").trim();
+// Impact.com : API moderne = jeton Bearer + en-tete Impact-Account-Sid
+const IMPACT_ACCOUNT_SID = (ENV.IMPACT_ACCOUNT_SID || "").trim();
+const IMPACT_AUTH_TOKEN = (ENV.IMPACT_AUTH_TOKEN || "").trim();
+const IMPACT_STORE_TOKEN = (ENV.IMPACT_STORE_TOKEN || "").trim();
 const IMPACT_CAMPAIGN_ID = (ENV.IMPACT_CAMPAIGN_ID || "").trim();
 const IMPACT_BRAND_ID = (ENV.IMPACT_BRAND_ID || "").trim();
+
+/**
+ * Normalise l'identifiant de boutique Shopify :
+ *   "kifftech"            -> "kifftech.myshopify.com"
+ *   "kifftech.myshopify.com" -> inchange
+ *   "https://xxx.myshopify.com/" -> "xxx.myshopify.com"
+ */
+function normalizeShopDomain(raw) {
+  let d = String(raw || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  if (!d) return "";
+  if (/\.myshopify\.com$/i.test(d)) return d;
+  if (/^\d+$/.test(d)) return ""; // identifiant numerique : pas un domaine utilisable
+  d = d.replace(/[^a-z0-9-]/gi, "").toLowerCase();
+  if (!d) return "";
+  return d + ".myshopify.com";
+}
+const SHOPIFY_DOMAIN = normalizeShopDomain(SHOPIFY_RAW);
 const SITE_DOMAIN = (ENV.SITE_DOMAIN || "").trim();
 const CURRENCY = (ENV.DEFAULT_CURRENCY || "EUR").trim().toUpperCase();
 
@@ -213,42 +232,82 @@ function mapShopifyStorefront(node) {
 /* ------------------------------------------------------------------ */
 /* Impact.com                                                          */
 /* ------------------------------------------------------------------ */
-function impactHeaders() {
-  const basic = Buffer.from(`${IMPACT_API_KEY}:${IMPACT_API_SECRET}`).toString("base64");
-  return { Authorization: `Basic ${basic}`, Accept: "application/json", "Impact-Version": "2" };
+/**
+ * Impact.com : authentification moderne
+ *   Authorization: Bearer <IMPACT_AUTH_TOKEN>
+ *   Impact-Account-Sid: <IMPACT_ACCOUNT_SID>
+ * (un couple SID + jeton est aussi disponible pour la boutique KiffTech.store)
+ */
+function impactHeaders(token, sid) {
+  const h = { Accept: "application/json", "Impact-Version": "2" };
+  if (token) h.Authorization = `Bearer ${token}`;
+  if (sid) h["Impact-Account-Sid"] = sid;
+  return h;
 }
 
-async function impactGet(url) {
-  const res = await fetch(url, { headers: impactHeaders() });
-  if (!res.ok) throw new Error(`Impact ${res.status} ${url}`);
-  return res.json();
+async function impactGet(url, token, sid) {
+  const res = await fetch(url, { headers: impactHeaders(token, sid) });
+  const text = await res.text();
+  if (!res.ok) {
+    const err = new Error(`HTTP ${res.status} ${url.replace(/\?.*/, "")}`);
+    err.status = res.status;
+    err.body = text.slice(0, 160);
+    throw err;
+  }
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error(`reponse non JSON (${url.replace(/\?.*/, "")}) : ${text.slice(0, 120)}`);
+  }
 }
 
 async function fetchImpact() {
-  const queries = [];
-  const params = new URLSearchParams();
-  params.set("currency", CURRENCY);
-  params.set("limit", "1000");
-  if (IMPACT_BRAND_ID) params.set("brand_id", IMPACT_BRAND_ID);
-  queries.push(`https://api.impact.com/catalog/products?${params.toString()}`);
-  queries.push(`https://api.impact.com/catalog/products?${params.toString()}`);
+  const p = new URLSearchParams();
+  p.set("currency", CURRENCY);
+  p.set("limit", "1000");
+  if (IMPACT_BRAND_ID) p.set("brand_id", IMPACT_BRAND_ID);
   const q2 = new URLSearchParams();
   q2.set("currency", CURRENCY);
   q2.set("limit", "1000");
   if (IMPACT_CAMPAIGN_ID) q2.set("campaign_id", IMPACT_CAMPAIGN_ID);
-  queries.push(`https://api.impact.com/products/search?${q2.toString()}`);
 
-  let lastErr = null;
-  for (const url of queries) {
-    try {
-      const data = await impactGet(url);
-      const items = data.items || data.products || data.data || [];
-      if (Array.isArray(items) && items.length) return items;
-    } catch (e) {
-      lastErr = e;
+  // (URL, jeton, SID) — on essaie chaque couple jusqu'a une reponse exploitable
+  const combos = [];
+  if (IMPACT_AUTH_TOKEN && IMPACT_ACCOUNT_SID) {
+    combos.push({ token: IMPACT_AUTH_TOKEN, sid: IMPACT_ACCOUNT_SID, label: "compte principal" });
+  }
+  if (IMPACT_STORE_TOKEN && IMPACT_BRAND_ID) {
+    combos.push({ token: IMPACT_STORE_TOKEN, sid: IMPACT_BRAND_ID, label: "boutique KiffTech.store" });
+  }
+  if (IMPACT_AUTH_TOKEN && !IMPACT_ACCOUNT_SID) {
+    combos.push({ token: IMPACT_AUTH_TOKEN, sid: "", label: "compte principal (sans SID)" });
+  }
+
+  const urls = [
+    `https://api.impact.com/catalog/products?${p.toString()}`,
+    `https://api.impact.com/partner/v1/catalog/products?${p.toString()}`,
+    `https://api.impact.com/advertiser/v1/catalog/products?${p.toString()}`,
+    `https://api.impact.com/products/search?${q2.toString()}`,
+    `https://api.impact.com/partner/v1/products?${p.toString()}`,
+    `https://api.impact.com/action/v1/products?${p.toString()}`,
+  ];
+
+  if (!combos.length) throw new Error("IMPACT_AUTH_TOKEN / IMPACT_ACCOUNT_SID manquant");
+
+  for (const c of combos) {
+    for (const url of urls) {
+      try {
+        const data = await impactGet(url, c.token, c.sid);
+        const items = data.items || data.products || data.data || data.results || [];
+        const arr = Array.isArray(items) ? items : Array.isArray(items.items) ? items.items : [];
+        console.log(`[impact] ${c.label} -> ${url.replace(/\?.*/, "")} : ${arr.length} produit(s)`);
+        if (arr.length) return arr;
+      } catch (e) {
+        console.warn(`[impact] ${c.label} -> ${url.replace(/\?.*/, "")} : ${e.message}${e.body ? " | " + e.body : ""}`);
+      }
     }
   }
-  throw lastErr || new Error("Impact : aucune réponse exploitable");
+  throw new Error("Impact : aucune reponse exploitable");
 }
 
 function mapImpact(item) {
@@ -285,36 +344,43 @@ async function main() {
   const sources = {};
   const products = [];
 
-  if (SHOPIFY_DOMAIN && (SHOPIFY_ADMIN_TOKEN || SHOPIFY_STOREFRONT_TOKEN)) {
+  if (SHOPIFY_DOMAIN && SHOPIFY_ADMIN_TOKEN) {
     try {
       let list = [];
-      if (SHOPIFY_ADMIN_TOKEN) {
+      let mode = "admin";
+      try {
         list = (await fetchShopifyAdmin()).map(mapShopifyAdmin);
-        sources.shopify = { ok: true, mode: "admin", count: list.length, domain: SHOPIFY_DOMAIN };
-      } else {
+      } catch (e) {
+        console.warn(`[shopify] Admin API indisponible (${e.message}) — tentative Storefront API`);
         list = (await fetchShopifyStorefront()).map(mapShopifyStorefront);
-        sources.shopify = { ok: true, mode: "storefront", count: list.length, domain: SHOPIFY_DOMAIN };
+        mode = "storefront";
       }
+      sources.shopify = { ok: true, mode, count: list.length, domain: SHOPIFY_DOMAIN };
       products.push(...list);
     } catch (e) {
       sources.shopify = { ok: false, error: String(e.message || e) };
       console.warn(`[shopify] échec : ${e.message}`);
     }
   } else {
-    sources.shopify = { ok: false, error: "SHOPIFY_STORE_DOMAIN / token manquant" };
+    sources.shopify = {
+      ok: false,
+      error: SHOPIFY_RAW
+        ? `identifiant « ${SHOPIFY_RAW} » non exploitable en tant que domaine (.myshopify.com attendu)`
+        : "SHOPIFY_ID / SHOPIFY_KEY manquant",
+    };
   }
 
-  if (IMPACT_API_KEY && IMPACT_API_SECRET) {
+  if ((IMPACT_AUTH_TOKEN && IMPACT_ACCOUNT_SID) || (IMPACT_STORE_TOKEN && IMPACT_BRAND_ID)) {
     try {
       const list = (await fetchImpact()).map(mapImpact);
-      sources.impact = { ok: true, count: list.length, campaignId: IMPACT_CAMPAIGN_ID || null };
+      sources.impact = { ok: true, count: list.length, campaignId: IMPACT_CAMPAIGN_ID || null, brandId: IMPACT_BRAND_ID || null };
       products.push(...list);
     } catch (e) {
       sources.impact = { ok: false, error: String(e.message || e) };
       console.warn(`[impact] échec : ${e.message}`);
     }
   } else {
-    sources.impact = { ok: false, error: "IMPACT_API_KEY / IMPACT_API_SECRET manquant" };
+    sources.impact = { ok: false, error: "IMPACT_AUTH_TOKEN / IMPACT_ACCOUNT_SID manquant" };
   }
 
   // Dédoublonnage : priorité aux produits partenaires (prix réels)

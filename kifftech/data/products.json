@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T09:28:53.800Z",
+  "generatedAt": "2026-11-10T09:55:25.302Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
   "siteDomain": null,
   "currency": "EUR",
@@ -7,11 +7,11 @@
   "sources": {
     "shopify": {
       "ok": false,
-      "error": "SHOPIFY_STORE_DOMAIN / token manquant"
+      "error": "SHOPIFY_ID / SHOPIFY_KEY manquant"
     },
     "impact": {
       "ok": false,
-      "error": "IMPACT_API_KEY / IMPACT_API_SECRET manquant"
+      "error": "IMPACT_AUTH_TOKEN / IMPACT_ACCOUNT_SID manquant"
     }
   },
   "counts": {

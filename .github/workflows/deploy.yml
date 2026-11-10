@@ -47,9 +47,9 @@ jobs:
       - name: Injecter la configuration Shopify publique (Storefront)
         env:
           SHOPIFY_STORE_DOMAIN: >-
-            ${{ secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain || secrets.SHOP_DOMAIN }}
-          SHOPIFY_STOREFRONT_TOKEN: >-
-            ${{ secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_STOREFRONT_ACCESS_TOKEN || secrets.SHOPIFY_PUBLIC_TOKEN || secrets.shopify_storefront_token }}
+            ${{ secrets.SHOPIFY_ID || secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain }}
+          SHOPIFY_TOKEN: >-
+            ${{ secrets.SHOPIFY_KEY || secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_ADMIN_TOKEN }}
           SHOPIFY_API_VERSION: >-
             ${{ secrets.SHOPIFY_API_VERSION || secrets.shopify_api_version }}
           SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
@@ -57,15 +57,22 @@ jobs:
         run: |
           node - <<'NODE'
           const fs = require('fs');
-          const domain = String(process.env.SHOPIFY_STORE_DOMAIN || '').trim()
+          const raw = String(process.env.SHOPIFY_STORE_DOMAIN || '').trim()
             .replace(/^https?:\/\//, '').replace(/\/$/, '');
-          const token = String(process.env.SHOPIFY_STOREFRONT_TOKEN || '').trim();
+          // Normalisation : "kifftech" -> "kifftech.myshopify.com"
+          let domain = raw;
+          if (domain && !/\.myshopify\.com$/i.test(domain)) {
+            const clean = domain.replace(/[^a-z0-9-]/gi, '').toLowerCase();
+            domain = /^\d+$/.test(clean) ? '' : (clean ? clean + '.myshopify.com' : '');
+          }
+          const token = String(process.env.SHOPIFY_TOKEN || '').trim();
           const apiVersion = String(process.env.SHOPIFY_API_VERSION || '2024-10').trim();
           const siteDomain = String(process.env.SITE_DOMAIN || '').trim();
           const currency = String(process.env.DEFAULT_CURRENCY || 'EUR').trim();
           const domainOk = /^[a-z0-9-]+\.myshopify\.com$/i.test(domain);
-          // Jeton Storefront PUBLIC : conçu pour le navigateur (lecture magasin + panier).
-          const tokenOk = /^[a-zA-Z0-9_-]{20,200}$/.test(token);
+          // Un jeton Admin API (shpat_...) ne doit JAMAIS etre expose dans le navigateur.
+          const isAdminToken = /^shpat_/i.test(token);
+          const tokenOk = !isAdminToken && /^[a-zA-Z0-9_-]{20,200}$/.test(token);
           const cfg = {
             domain: domainOk ? domain : '',
             storefrontAccessToken: tokenOk ? token : '',
@@ -82,9 +89,13 @@ jobs:
             '// Aucun secret : le jeton Admin API reste côté serveur.\n' +
             'window.KIFFTECH_SHOPIFY=' + JSON.stringify(cfg, null, 2) + ';\n'
           );
-          console.log(domainOk
-            ? 'Shopify : domaine ' + domain + ' configuré (jeton ' + (tokenOk ? 'présent' : 'absent') + ').'
-            : 'Shopify : domaine absent ou invalide — boutique en mode catalogue local.');
+          if (domainOk && isAdminToken) {
+            console.log('Shopify : domaine ' + domain + ' configuré. Jeton Admin API detecte -> NON injecte dans le navigateur (securite) ; les produits et les prix arrivent par le catalogue serveur.');
+          } else if (domainOk) {
+            console.log('Shopify : domaine ' + domain + ' configuré (jeton Storefront ' + (tokenOk ? 'present' : 'absent') + ').');
+          } else {
+            console.log('Shopify : domaine absent ou invalide — boutique en mode catalogue local.');
+          }
           NODE
 
       - name: Setup Pages
