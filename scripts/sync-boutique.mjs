@@ -35,6 +35,8 @@ const OUT_FILE = path.join(ROOT, "kifftech", "data", "products.json");
 const ENV = process.env;
 // Domaine de la boutique : secret dedie > identifiant existant > variable GitHub.
 const SHOPIFY_RAW = (ENV.SHOPIFY_STORE_DOMAIN || ENV.SHOPIFY_DOMAIN || "").trim();
+const SHOPIFY_CLIENT_ID = (ENV.SHOPIFY_CLIENT_ID || "").trim();
+const SHOPIFY_CLIENT_SECRET = (ENV.SHOPIFY_CLIENT_SECRET || "").trim();
 const SHOPIFY_ADMIN_TOKEN = (ENV.SHOPIFY_ADMIN_TOKEN || "").trim();
 const SHOPIFY_STOREFRONT_TOKEN = (ENV.SHOPIFY_STOREFRONT_TOKEN || "").trim();
 const SHOPIFY_API_VERSION = (ENV.SHOPIFY_API_VERSION || "2024-10").trim();
@@ -181,13 +183,62 @@ const SHOPIFY_VERSIONS = Array.from(
   new Set([SHOPIFY_API_VERSION, "2026-01", "2025-10", "2025-07", "2025-04", "2025-01", "2024-10", "2024-07", "2024-04", "2024-01"].filter(Boolean)),
 );
 
+/**
+ * Shopify (depuis 2026) n'expose plus de jeton statique : on echange
+ * le couple Client ID + Client Secret contre un jeton d'acces Admin API
+ * via l'octet "client credentials" (grant_type=client_credentials).
+ * Le jeton obtenu expire (~24 h) : il est regenere a chaque execution.
+ */
+async function shopifyAccessToken(domain = SHOPIFY_DOMAIN) {
+  const direct = SHOPIFY_ADMIN_TOKEN || "";
+  if (/^shp(at|ca|pa|ua)_/i.test(direct)) {
+    console.log("[shopify] jeton d'acces Admin fourni directement.");
+    return direct;
+  }
+  if (!SHOPIFY_CLIENT_ID || !SHOPIFY_CLIENT_SECRET) {
+    throw new Error("ni jeton Admin direct, ni couple Client ID / Client Secret");
+  }
+  const res = await fetch(`https://${domain}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: SHOPIFY_CLIENT_ID,
+      client_secret: SHOPIFY_CLIENT_SECRET,
+    }).toString(),
+  });
+  const body = await res.text();
+  if (!res.ok) {
+    throw new Error(`echange OAuth HTTP ${res.status} : ${body.replace(/\s+/g, " ").slice(0, 160)}`);
+  }
+  let json;
+  try {
+    json = JSON.parse(body);
+  } catch (e) {
+    throw new Error(`reponse OAuth non JSON : ${body.slice(0, 120)}`);
+  }
+  if (!json.access_token) throw new Error(`pas de access_token dans la reponse OAuth : ${Object.keys(json).join(", ")}`);
+  const scope = json.scope ? ` (scopes: ${json.scope})` : "";
+  console.log(`[shopify] jeton d'acces Admin obtenu via client_credentials${scope}`);
+  return json.access_token;
+}
+
 async function fetchShopifyAdmin(domain = SHOPIFY_DOMAIN) {
   let lastErr = null;
+  let token = null;
+  try {
+    token = await shopifyAccessToken(domain);
+  } catch (e) {
+    console.warn(`[shopify] jeton d'acces indisponible : ${e.message}`);
+  }
   for (const v of SHOPIFY_VERSIONS) {
     const url = `https://${domain}/admin/api/${v}/products.json?limit=250`;
     try {
       const res = await fetch(url, {
-        headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN, Accept: "application/json" },
+        headers: { "X-Shopify-Access-Token": token || SHOPIFY_ADMIN_TOKEN, Accept: "application/json" },
       });
       if (!res.ok) {
         lastErr = new Error(`Admin API ${v} -> HTTP ${res.status} ${(await res.text()).slice(0, 140)}`);
@@ -564,7 +615,8 @@ async function main() {
       // Base64 : le masque de secrets GitHub remplace la valeur par *** dans les logs,
       // ce qui masque aussi le domaine derivé. L'base64 reste lisible ici.
       console.log(`[shopify] identifiant brut (b64) : ${Buffer.from(SHOPIFY_RAW).toString("base64")}`);
-      console.log(`[shopify] format du jeton : ${tokenFormat(SHOPIFY_ADMIN_TOKEN)}`);
+      console.log(`[shopify] format du secret : ${tokenFormat(SHOPIFY_ADMIN_TOKEN)}`);
+      console.log(`[shopify] Client ID present : ${SHOPIFY_CLIENT_ID ? "oui" : "non"} | Client Secret present : ${SHOPIFY_CLIENT_SECRET ? "oui" : "non"}`);
       const candidates = shopCandidates;
       console.log(`[shopify] domaines candidats : ${candidates.map((c) => c.label + "=" + Buffer.from(c.domain).toString("base64")).join(", ") || "aucun"}`);
       const errors = [];

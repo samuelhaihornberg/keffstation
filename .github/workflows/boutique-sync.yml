@@ -50,11 +50,16 @@ jobs:
       # (le secret peut contenir "nom" ou "nom.myshopify.com" : le script normalise)
       SHOPIFY_STORE_DOMAIN: >-
         ${{ secrets.SHOPIFY_STORE_DOMAIN || vars.SHOPIFY_DOMAIN || secrets.SHOPIFY_ID || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain }}
-      # --- Shopify : jeton (Admin API en priorite, sinon Storefront) -------
+      # --- Shopify : jeton Admin direct (shpat_...) si disponible ---------
       SHOPIFY_ADMIN_TOKEN: >-
-        ${{ secrets.SHOPIFY_KEY || secrets.SHOPIFY_ADMIN_TOKEN || secrets.SHOPIFY_TOKEN }}
+        ${{ secrets.SHOPIFY_ADMIN_TOKEN || secrets.SHOPIFY_TOKEN }}
+      # --- Shopify : couple Client ID + Client Secret (echange OAuth) ------
+      SHOPIFY_CLIENT_ID: >-
+        ${{ secrets.SHOPIFY_ID }}
+      SHOPIFY_CLIENT_SECRET: >-
+        ${{ secrets.SHOPIFY_KEY }}
       SHOPIFY_STOREFRONT_TOKEN: >-
-        ${{ secrets.SHOPIFY_KEY || secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_PUBLIC_TOKEN }}
+        ${{ secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_PUBLIC_TOKEN }}
       SHOPIFY_API_VERSION: >-
         ${{ secrets.SHOPIFY_API_VERSION || secrets.shopify_api_version }}
       # --- Impact.com : SID de compte + jeton d'authentification -----------

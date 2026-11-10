@@ -66,7 +66,7 @@ jobs:
           SHOPIFY_STORE_DOMAIN: >-
             ${{ vars.SHOPIFY_DOMAIN || secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_ID || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN }}
           SHOPIFY_TOKEN: >-
-            ${{ secrets.SHOPIFY_KEY || secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_ADMIN_TOKEN }}
+            ${{ secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_PUBLIC_TOKEN }}
           SHOPIFY_API_VERSION: >-
             ${{ secrets.SHOPIFY_API_VERSION || secrets.shopify_api_version }}
           SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
@@ -87,9 +87,12 @@ jobs:
           const siteDomain = String(process.env.SITE_DOMAIN || '').trim();
           const currency = String(process.env.DEFAULT_CURRENCY || 'EUR').trim();
           const domainOk = /^[a-z0-9-]+\.myshopify\.com$/i.test(domain);
-          // Un jeton Admin API (shpat_...) ne doit JAMAIS etre expose dans le navigateur.
-          const isAdminToken = /^shpat_/i.test(token);
-          const tokenOk = !isAdminToken && /^[a-zA-Z0-9_-]{20,200}$/.test(token);
+          // Aucun jeton Admin (shpat_/shpca_) ni Client Secret (shpss_) ne doit
+          // JAMAIS etre expose dans le navigateur : seuls les jetons Storefront
+          // publics (shpsat_... ou hex 32) y ont leur place.
+          const isAdminToken = /^(shpat|shpca|shppa|shpua)_/i.test(token);
+          const isClientSecret = /^shpss_/i.test(token);
+          const tokenOk = !isAdminToken && !isClientSecret && /^[a-zA-Z0-9_-]{20,200}$/.test(token);
           const cfg = {
             domain: domainOk ? domain : '',
             storefrontAccessToken: tokenOk ? token : '',
@@ -106,8 +109,8 @@ jobs:
             '// Aucun secret : le jeton Admin API reste côté serveur.\n' +
             'window.KIFFTECH_SHOPIFY=' + JSON.stringify(cfg, null, 2) + ';\n'
           );
-          if (domainOk && isAdminToken) {
-            console.log('Shopify : domaine ' + domain + ' configuré. Jeton Admin API detecte -> NON injecte dans le navigateur (securite) ; les produits et les prix arrivent par le catalogue serveur.');
+          if (domainOk && (isAdminToken || isClientSecret)) {
+            console.log('Shopify : domaine ' + domain + ' configure. Jeton non public detecte -> NON injecte dans le navigateur (securite) ; les produits et les prix arrivent par le catalogue serveur (kifftech/data/products.json).');
           } else if (domainOk) {
             console.log('Shopify : domaine ' + domain + ' configuré (jeton Storefront ' + (tokenOk ? 'present' : 'absent') + ').');
           } else {
