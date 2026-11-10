@@ -31,9 +31,9 @@ const APPS = [
   },
   {
     num: "ViArtificial labs",
-    title: "ViArtificial labs",
-    desc: "Syntaxe cos (connexions), famille SuperBots (ViA, BTB+Golem, Geeko, Guideoplan), blocs logiques BLM/BLSM, motor.s injection.",
-    tags: ["cos", "SuperBots", "BLM", "motor.s"],
+    title: "ViArtificial Labs",
+    desc: "Plateforme IA local-first : SuperBots, conversation, moteurs linguistiques, éditeur cos, tokenizer, embeddings, génération contrôlée, quantization GGUF. Inférence zéro serveur dans le navigateur.",
+    tags: ["cos", "SuperBots", "BLM", "motor.s", "NLP", "LLM", "Local-first"],
     appUrl: "https://samuelhaihornberg.github.io/keffstation/viartificial-labs/",
     embedUrl: "https://samuelhaihornberg.github.io/keffstation/viartificial-labs/",
     embedLabel: "Ouvrir SuperBots",
@@ -65,7 +65,9 @@ const APPS = [
       { title: "Snippets cos prêts à l'emploi", desc: "Templates : pipelines, boucles, conditions, parallélisme, gestion d'erreurs.", tags: ["Snippets", "Templates", "cos"] },
       { title: "Débogage visuel cos", desc: "Inspecteur de graphe, points d'arrêt, exécution pas à pas, logs colorés.", tags: ["Debug", "Inspecteur", "cos"] },
       { title: "Playground cos live", desc: "Éditeur Monaco/CodeMirror, validation temps réel, coloration, autocomplétion, export JSON.", tags: ["Playground", "Live", "Export"] },
-      { title: "cos en CI/CD", desc: "GitHub Actions, GitLab CI, validation PR, tests cos unitaires, déploiement auto.", tags: ["CI/CD", "GitHub", "GitLab"] }
+      { title: "cos en CI/CD", desc: "GitHub Actions, GitLab CI, validation PR, tests cos unitaires, déploiement auto.", tags: ["CI/CD", "GitHub", "GitLab"] },
+      { title: "Éditeur cos", desc: "Éditeur cos dans le navigateur : connexions A1 ➡️ B2, mode sandwich miroir, validation temps réel, coloration syntaxique et export JSON.", tags: ["cos", "Éditeur", "Dev"] },
+      { title: "Moteurs linguistiques", desc: "Moteurs linguistiques local-first : tokenisation, embeddings, génération contrôlée, quantization GGUF. Inférence zéro serveur dans le navigateur.", tags: ["NLP", "LLM", "Local-first", "WASM"] }
     ]
   },
   {
@@ -84,37 +86,6 @@ const APPS = [
       { title: "Emulation Station", desc: "RetroArch, Dolphin, PCSX2, Ryujinx, Cemu, PPSSPP — configs optimisées, shaders, netplay.", tags: ["Emulation", "Retro", "Shaders"] },
       { title: "Benchmarks GPU/CPU", desc: "FPS, frametime, 1% low, 0.1% low, consommation, DLSS/FSR/XeSS, frame gen.", tags: ["Benchmark", "Performance", "Upscaling"] },
       { title: "Mods & Tools", desc: "Nexus, Thunderstore, Vortex, MO2, r2modman — profils, déploiement, résolution conflits.", tags: ["Mods", "Tools", "Gestion"] }
-    ]
-  },
-  {
-    num: "cos Editor",
-    title: "cos Editor",
-    desc: "Éditeur cos dans le navigateur : connexions A1 ➡️ B2, mode sandwich miroir, validation temps réel, coloration syntaxique et export JSON.",
-    tags: ["cos", "Éditeur", "Dev"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/cos-editor/",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/cos-editor/",
-    embedLabel: "Ouvrir cos Editor",
-    color: "#27d17f",
-    subArticles: [
-      { title: "Syntaxe cos", desc: "Connexions, sandwich miroir, adresses alphanumériques et CSM.", tags: ["cos", "Syntaxe", "Référence"] },
-      { title: "Validation temps réel", desc: "Erreurs soulignées, suggestions, exécution pas à pas et export JSON.", tags: ["Validation", "Debug", "Export"] },
-      { title: "Snippets prêts à l'emploi", desc: "Templates pipelines, boucles, conditions, parallélisme.", tags: ["Snippets", "Templates"] }
-    ]
-  },
-  {
-    num: "Linguistic Motors",
-    title: "Linguistic Motors",
-    desc: "Moteurs linguistiques local-first : tokenisation, embeddings, génération contrôlée, quantization GGUF. Inférence zéro serveur dans le navigateur.",
-    tags: ["NLP", "LLM", "Local-first", "WASM"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/linguistic-motors/",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/linguistic-motors/",
-    embedLabel: "Ouvrir Linguistic Motors",
-    color: "#ffd23f",
-    subArticles: [
-      { title: "Tokenizer Visualizer", desc: "Visualisation interactive BPE/WordPiece/Unigram, vocabulaire, merges, ratio de compression.", tags: ["Tokenizer", "Visualisation", "NLP"] },
-      { title: "Embedding Explorer", desc: "Projection 2D/3D, similarité cosinus, analogies vectorielles, clusters.", tags: ["Embeddings", "Projection", "NLP"] },
-      { title: "Generation Playground", desc: "Sampling top-k/p, température, repetition penalty, seeds reproductibles.", tags: ["Génération", "Sampling", "LLM"] },
-      { title: "Quantization Lab", desc: "GGUF q2_k → q8_0, calibration, perplexity, benchmark vitesse/mémoire.", tags: ["Quantization", "GGUF", "Benchmark"] }
     ]
   },
   {
@@ -170,8 +141,7 @@ const APP_ICONS = {
     fallback: '🤖'
   },
   'Videogames': '🎮',
-  'cos Editor': '🧩',
-  'Linguistic Motors': '🧠'
+  'Critiques Services': '📝'
 };
 
 /* Rend une icône d'application dans un conteneur DOM.
