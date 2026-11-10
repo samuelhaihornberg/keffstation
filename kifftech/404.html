@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redirection — KiffTech</title>
+<script>
+  // Routage SPA : toute route inconnue renvoie vers la boutique principale
+  // qui affiche les produits selon l'URL demandée.
+  var path = window.location.pathname;
+  var target = '/kifftech/index.html';
+  if (path.indexOf('/kifftech/rayons/') === 0) {
+    var rayon = path.replace('/kifftech/rayons/', '').replace(/\/$/, '');
+    if (rayon && rayon !== '') {
+      target = '/kifftech/index.html?rayon=' + rayon;
+    }
+  }
+  window.location.replace(target);
+</script>
+</head>
+<body>
+<p>Redirection vers la boutique…</p>
+</body>
+</html>

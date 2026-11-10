@@ -216,6 +216,23 @@
 <script src="paypal-config.js"></script>
 <script defer src="./catalogue-live.js?v=27"></script>
 <script src="app.v2.js?v=27"></script>
+<script>
+  // Routage : activer le rayon demandé depuis l'URL (?rayon=smartphones)
+  (function(){
+    var params = new URLSearchParams(location.search);
+    var rayon = params.get('rayon');
+    if (!rayon) return;
+    var cat = rayon.split('-').map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+    function tryClick(){
+      var btns = document.querySelectorAll('.rayon-btn[data-category]');
+      var target = null;
+      btns.forEach(function(b){ if (b.dataset.category === cat) target = b; });
+      if (target) { target.click(); }
+      else { setTimeout(tryClick, 100); }
+    }
+    tryClick();
+  })();
+</script>
 <script src="../refresh.js"></script>
 
 <script src="index-inline-03.js" defer></script>
