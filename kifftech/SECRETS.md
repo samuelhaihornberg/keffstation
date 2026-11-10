@@ -22,21 +22,36 @@ Secrets GitHub  ──►  workflow boutique-sync  ──►  kifftech/data/prod
 
 Repo GitHub → `Settings` → `Secrets and variables` → `Actions` → `New repository secret`.
 
-| Secret | Obligatoire | Exemple | Rôle |
-|---|---|---|---|
-| `SHOPIFY_STORE_DOMAIN` | oui (Shopify) | `kifftech.myshopify.com` | Domaine de la boutique Shopify |
-| `SHOPIFY_ADMIN_TOKEN` | recommandé | `shpat_…` | Admin API, scope `read_products` (et `read_inventory`) |
-| `SHOPIFY_STOREFRONT_TOKEN` | recommandé | `shpat_…` ou `…` | Storefront API public, injecté dans le navigateur |
-| `SHOPIFY_API_VERSION` | non | `2024-10` | Version de l'API (défaut `2024-10`) |
-| `IMPACT_API_KEY` | oui (Impact) | `…` | Clé API Impact.com |
-| `IMPACT_API_SECRET` | oui (Impact) | `…` | Secret API Impact.com |
-| `IMPACT_CAMPAIGN_ID` | oui (Impact) | `…` | Identifiant de campagne (subid) pour les liens de suivi |
-| `IMPACT_BRAND_ID` | non | `…` | Identifiant de catalogue/marque Impact |
-| `SITE_DOMAIN` | variable | `kiffstation.com` | Domaine public du site |
-| `DEFAULT_CURRENCY` | variable | `EUR` | Devise d'affichage |
+### Ce que ton dépôt contient déjà (vérifié)
 
-> `SITE_DOMAIN` et `DEFAULT_CURRENCY` sont des **variables** (onglet
-> *Variables*), pas des secrets.
+| Secret existant | Contenu | État |
+|---|---|---|
+| `PAYPAL_SECRET_ID` | Client ID public PayPal | ✅ injecté au déploiement → boutons PayPal actifs |
+| `SHOPIFY_KEY` | jeton **Storefront** `shpss_…` (public) | ✅ détecté, injecté au navigateur |
+| `SHOPIFY_ID` | **UUID de l'app** (`d1e0d09c-d9da-…-ecc0a`) | ⚠️ ce n'est pas le domaine de la boutique |
+| `IMPACT_ACCOUNT_SID` | SID de compte annonceur Impact | ✅ API répond |
+| `IMPACT_AUTH_TOKEN` | jeton d'authentification Impact | ✅ API répond |
+| `KIFFTECHSTORE` | 2ᵉ SID de compte Impact | ✅ API répond |
+| `TOKEN_KIFFTECHSTORE` | 2ᵉ jeton Impact | ✅ API répond |
+
+### Ce qu'il manque
+
+| Secret / variable | Valeur attendue | Pourquoi |
+|---|---|---|
+| `SHOPIFY_DOMAIN` (**variable**, pas secret) | `kifftech.myshopify.com` | Le sous-domaine réel de la boutique. Sans lui, l'API Shopify renvoie **404** (une boutique inexistante) au lieu de 401. Le UUID `SHOPIFY_ID` ne peut pas servir de domaine. |
+| `SHOPIFY_STORE_DOMAIN` (secret, prioritaire) | idem | Alternative au nom ci-dessus. |
+
+> Le workflow accepte plusieurs alias pour chaque valeur
+> (`SHOPIFY_STORE_DOMAIN` > variable `SHOPIFY_DOMAIN` > `SHOPIFY_ID` > …).
+
+### Variables utiles
+
+| Variable | Exemple | Rôle |
+|---|---|---|
+| `SHOPIFY_DOMAIN` | `kifftech.myshopify.com` | domaine de la boutique Shopify |
+| `SITE_DOMAIN` | `kiffstation.com` | domaine public du site |
+| `DEFAULT_CURRENCY` | `EUR` | devise d'affichage |
+| `PAYPAL_BUTTONS` | `{"style":{"color":"blue","layout":"horizontal"}}` | boutons PayPal personnalisés (style, financement, message) |
 
 ### Où trouver ces valeurs
 
