@@ -27,6 +27,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { readLocalImports } from "./kifftech/import-products.mjs";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const OUT_FILE = path.join(ROOT, "kifftech", "data", "products.json");
@@ -618,6 +619,23 @@ async function main() {
     sources.impact = { ok: false, error: "IMPACT_AUTH_TOKEN / IMPACT_ACCOUNT_SID manquant" };
   }
 
+  // Imports locaux (exports Shopify / Impact déposés dans kifftech/data/)
+  const localImports = readLocalImports();
+  if (localImports.files.length) {
+    console.log(`[import] ${localImports.files.map((f) => f.file + " (" + f.count + ")").join(", ")}`);
+    for (const p of localImports.shopify) {
+      p.category = guessCategory(`${p.category} ${p.brand} ${p.model}`);
+      if (!p.url && p.handle && SHOPIFY_DOMAIN) p.url = `https://${SHOPIFY_DOMAIN}/products/${p.handle}`;
+      products.push(normalizeProduct(p));
+    }
+    for (const p of localImports.impact) {
+      p.category = guessCategory(`${p.category || ""} ${p.brand} ${p.model}`);
+      products.push(normalizeProduct(p));
+    }
+  } else {
+    console.log("[import] aucun export local dans kifftech/data/ (shopify-export.csv / impact-export.csv)");
+  }
+
   // Dédoublonnage : priorité aux produits partenaires (prix réels)
   const seen = new Set();
   const clean = [];
@@ -642,6 +660,7 @@ async function main() {
       shopify: clean.filter((p) => p.source === "shopify").length,
       impact: clean.filter((p) => p.source === "impact").length,
     },
+    imports: localImports.files,
     products: clean,
   };
 

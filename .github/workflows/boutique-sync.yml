@@ -27,6 +27,11 @@ on:
     branches: ['main']
     paths:
       - 'scripts/sync-boutique.mjs'
+      - 'scripts/kifftech/import-products.mjs'
+      - 'kifftech/data/shopify-export.csv'
+      - 'kifftech/data/impact-export.csv'
+      - 'kifftech/data/shopify-export.json'
+      - 'kifftech/data/impact-export.json'
       - '.github/workflows/boutique-sync.yml'
 
 permissions:

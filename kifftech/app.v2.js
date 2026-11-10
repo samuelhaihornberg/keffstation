@@ -1035,7 +1035,11 @@ async function loadPartnerProducts(){
 // ============ SHOPIFY HEADLESS (Storefront API publique) ============
 async function loadShopifyProducts() {
   if (!window.KiShopify || !window.KiShopify.isConfigured()) {
-    console.log('[Shopify] Non configuré — produits locaux uniquement');
+    if (window.KiShopify && window.KiShopify.domainValid && !window.KiShopify.domainValid()) {
+      console.warn('[Shopify] Domaine de boutique non valide (' + (window.KiShopify.domain() || 'absent') + ') — il faut le sous-domaine .myshopify.com');
+    } else {
+      console.log('[Shopify] Non configuré — produits locaux uniquement');
+    }
     return;
   }
   try {

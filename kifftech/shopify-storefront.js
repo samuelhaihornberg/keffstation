@@ -19,7 +19,14 @@
   var PAGE_SIZE = CFG.pageSize || 100;
   var ID_PREFIX = CFG.idPrefix || "shopify-";
 
-  var ENDPOINT = DOMAIN
+  // Un identifiant (UUID, numerique) n'est PAS un sous-domaine de boutique :
+    // l'API renverrait 404 sur chaque appel. On le detecte pour ne pas
+    // declencher une erreur inutile cote navigateur.
+  var DOMAIN_OK =
+    /^[a-z0-9][a-z0-9-]*\.myshopify\.com$/i.test(DOMAIN) &&
+    !/^[0-9a-f]{16,}$/i.test(DOMAIN.split(".")[0]);
+
+  var ENDPOINT = DOMAIN_OK
     ? "https://" + DOMAIN + "/api/" + API_VERSION + "/graphql.json"
     : null;
 
@@ -199,6 +206,8 @@
 
   window.KiShopify = {
     isConfigured: function () { return Boolean(ENDPOINT && TOKEN); },
+    domainValid: function () { return DOMAIN_OK; },
+    domain: function () { return DOMAIN; },
     config: CFG,
     loadAllProducts: loadAllProducts,
     toKifftechProduct: toKifftechProduct,
