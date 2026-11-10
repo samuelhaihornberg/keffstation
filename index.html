@@ -17,6 +17,7 @@
       <img class="platform-logo" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/main/Logo-kiffstation.png" alt="KiffStation logo" width="48" height="48">
       <h1 class="platform-title">KiffStation</h1>
       <video class="platform-video" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/main/header.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de la plateforme KiffStation"></video>
+      <button class="platform-btn platform-btn-capture" id="btn-capture" type="button" aria-label="Voir la vitrine en plein écran">⛶</button>
     </div>
   </header>
   <div class="vitrine" id="vitrine">
@@ -361,6 +362,19 @@
 
 
 <script src="index-inline-06.js" ></script>
+
+  <!-- Overlay plein écran — vitrine complète (fenêtre screenshot) -->
+  <div class="vitrine-capture" id="vitrine-capture" role="dialog" aria-modal="true" aria-label="Vitrine KiffStation en plein écran">
+    <button class="capture-close" id="capture-close" type="button" aria-label="Fermer le plein écran">✕</button>
+    <div class="capture-inner">
+      <div class="capture-nav capture-nav-prev" id="capture-prev" aria-label="Application précédente">‹</div>
+      <div class="capture-viewport" id="capture-viewport">
+        <!-- La vitrine est injectée ici par JS quand le mode s'ouvre -->
+      </div>
+      <div class="capture-nav capture-nav-next" id="capture-next" aria-label="Application suivante">›</div>
+    </div>
+    <div class="capture-hint" id="capture-hint">Faites défiler • Flèches ◀ ▶ pour changer d’app • Échap pour fermer</div>
+  </div>
 
 </body>
 

@@ -205,6 +205,11 @@ class KeffStation {
     this.nav = document.getElementById('nav');
     this.appPrev = document.getElementById('vitrine-prev');
     this.appNext = document.getElementById('vitrine-next');
+    this.btnCapture = document.getElementById('btn-capture');
+    this.captureOverlay = document.getElementById('vitrine-capture');
+    this.captureClose = document.getElementById('capture-close');
+    this.capturePrev = document.getElementById('capture-prev');
+    this.captureNext = document.getElementById('capture-next');
     this.loading = document.getElementById('loading');
     this.loadingBar = document.getElementById('loading-bar-inner');
     this.appCount = document.getElementById('app-count');
@@ -368,6 +373,26 @@ class KeffStation {
     });
     this.appNext?.addEventListener('click', () => {
       this.setFocus((this.current + 1) % this.apps.length);
+    });
+
+    // Mode plein écran / fenêtre screenshot de la vitrine.
+    this.btnCapture?.addEventListener('click', () => this.openCapture());
+    this.captureClose?.addEventListener('click', () => this.closeCapture());
+
+    // Flèches du mode capture.
+    this.capturePrev?.addEventListener('click', () => {
+      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+    });
+    this.captureNext?.addEventListener('click', () => {
+      this.setFocus((this.current + 1) % this.apps.length);
+    });
+
+    // Échap ferme le mode capture.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.captureOverlay?.classList.contains('visible')) {
+        e.preventDefault();
+        this.closeCapture();
+      }
     });
 
     // Lecteur d'app : swipe gauche / droite sur la vitrine.
@@ -534,6 +559,19 @@ class KeffStation {
   closePanel() {
     this.panel.classList.remove('open');
     document.body.classList.remove('overlay-open');
+  }
+
+  // ---- Mode plein écran / fenêtre screenshot de la vitrine ----
+  openCapture() {
+    document.body.classList.add('capture-active');
+    this.captureOverlay?.classList.add('visible');
+    // Mettre le focus sur le bouton fermer pour l'accessibilité
+    setTimeout(() => this.captureClose?.focus(), 100);
+  }
+
+  closeCapture() {
+    document.body.classList.remove('capture-active');
+    this.captureOverlay?.classList.remove('visible');
   }
 
   // ---- PWA préchargement ----
