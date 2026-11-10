@@ -320,6 +320,23 @@ function pickArray(data, ...keys) {
 async function fetchImpactItems(sid, token, label) {
   const out = [];
 
+  // 0a) Media sites et campagnes : peuvent reveler le lien avec la boutique Shopify
+  for (const path of [
+    `https://api.impact.com/Advertisers/${sid}/Media`,
+    `https://api.impact.com/Advertisers/${sid}/Campaigns`,
+    `https://api.impact.com/Mediapartners/${sid}/Media`,
+  ]) {
+    try {
+      const data = await impactGet(path, token, sid);
+      const raw = JSON.stringify(data);
+      const shops = [...new Set((raw.match(/[a-z0-9-]+\.myshopify\.com/gi) || []))];
+      console.log(`[impact] ${label} — ${path.replace(/^https:\/\/api\.impact\.com/, "")} : ${raw.length} car., boutiques Shopify detectees : ${shops.join(", ") || "aucune"}`);
+      if (shops.length) console.log(`[impact] DOMAINE_SHOPIFY=${shops[0]}`);
+    } catch (e) {
+      console.warn(`[impact] ${label} — ${path.replace(/^https:\/\/api\.impact\.com/, "")} : ${e.message}${e.body ? " | " + e.body : ""}`);
+    }
+  }
+
   // 0) Produits directs de l'annonceur
   for (const path of [
     `https://api.impact.com/Advertisers/${sid}/Products?PageSize=200`,
