@@ -179,15 +179,12 @@ const LOCAL_DB = [
 // ============ STATE ============
 let products = [...LOCAL_DB];
 let filteredProducts = [...LOCAL_DB];
-let shopifyProducts = [];
-let shopifyReady = false;
-let shopifyCartId = null;
 let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort = 'relevance', activeEra = 'all', viewMode = 'all';
 let requestedRayon = '';   // rayon demande via l'URL (?rayon=...) — applique apres chargement du catalogue
 let activeSources = {official:true, social:true, reviews:true, community:true};
 let searchQuery = '', isFetching = false;
 
-let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], shopifyCartId: null, shopifyCheckoutUrl: null, get isPromoEligible() { return this.cartItems.reduce((n,i)=>n+(Number(i.qty)||1),0) >= 10; } };
+let userContext = { isSubscriber: false, tenureDays: 0, cartItems: [], checkoutUrl: null, get isPromoEligible() { return this.cartItems.reduce((n,i)=>n+(Number(i.qty)||1),0) >= 10; } };
 
 // ============ UTILITIES ============
 function $(sel, ctx=document){return ctx.querySelector(sel)}
@@ -610,10 +607,6 @@ function restoreCart(){
 function addToCart(id,qty=1){
   const p=products.find(x=>x.id===id);if(!p)return;
   // Produit Shopify : caisse geree par Shopify Storefront API (checkoutUrl)
-  if(p.shopify && window.KiShopify && window.KiShopify.isConfigured()){
-    addToShopifyCart(p.id, qty);
-    return;
-  }
   const line=userContext.cartItems.find(i=>i.id===id);
   if(line)line.qty=Math.min(99,(Number(line.qty)||1)+qty);
   else userContext.cartItems.push({...p,qty:Math.max(1,Math.min(99,qty))});
@@ -621,28 +614,6 @@ function addToCart(id,qty=1){
   toast(`${p.model} — ${line?'quantité mise à jour':'ajouté à la caisse'}`,'success');
 }
 
-async function addToShopifyCart(id,qty=1){
-  const p=products.find(x=>x.id===id);if(!p)return;
-  const v = p.defaultVariant || (p.variants && p.variants[0]);
-  if(!v){ toast('Aucune variante disponible pour ce produit','warning'); return; }
-  try {
-    const line = { variantId: v.shopifyVariantId, quantity: Number(qty)||1, attributes: [{key:'source',value:'KiffTech'},{key:'boutique',value:'KiffTech'}] };
-    let res;
-    if(userContext.shopifyCartId){
-      res = await window.KiShopify.addLinesToCart(userContext.shopifyCartId, [line]);
-    } else {
-      res = await window.KiShopify.createCart([line]);
-      userContext.shopifyCartId = res.cartId;
-    }
-    userContext.shopifyCheckoutUrl = res.checkoutUrl;
-    // Ne pas ajouter a la caisse locale KiffTech pour les produits Shopify (caisse separee)
-    toast(`${p.model} ajouté a la caisse Shopify`,'success');
-    updateCartBadge();
-  } catch(e){
-    console.warn('[Shopify] Echec ajout caisse:', e.message);
-    toast('Impossible d\'ajouter a la caisse Shopify — reessayez','error');
-  }
-}
 function removeFromCart(id){
   userContext.cartItems=userContext.cartItems.filter(i=>i.id!==id);
   refreshKiffTechPrices();renderProducts();updateCartPanel();updateCartBadge();saveCart();
@@ -1083,44 +1054,6 @@ async function loadPartnerProducts(){
 }
 
 // ============ SHOPIFY HEADLESS (Storefront API publique) ============
-async function loadShopifyProducts() {
-  if (!window.KiShopify || !window.KiShopify.isConfigured()) {
-    if (window.KiShopify && window.KiShopify.domainValid && !window.KiShopify.domainValid()) {
-      console.warn('[Shopify] Domaine de boutique non valide (' + (window.KiShopify.domain() || 'absent') + ') — il faut le sous-domaine .myshopify.com');
-    } else {
-      console.log('[Shopify] Non configuré — produits locaux uniquement');
-    }
-    return;
-  }
-  try {
-    toast('Chargement des produits Shopify…', 'info');
-    const nodes = await window.KiShopify.loadAllProducts();
-    const existingIds = new Set(products.map(p => p.id));
-    let added = 0;
-    for (const node of nodes) {
-      const kp = window.KiShopify.toKifftechProduct(node);
-      if (existingIds.has(kp.id)) continue; // évite les doublons
-      // Prix sous contrôle de Shopify : pas de remise KiffTech inventée ici
-      kp.kifftech = { official: kp.price.official, kifftech: kp.price.official, discount: 0, savings: 0, freeDelivery: false, reason: 'Prix Shopify', currency: kp.price.currency || 'EUR' };
-      products.push(kp);
-      existingIds.add(kp.id);
-      added++;
-    }
-    shopifyProducts = nodes;
-    shopifyReady = true;
-    filteredProducts = [...products];
-    if (added) {
-      renderFilters();
-      applyFilters();
-      toast(`${added} produits Shopify importés`, 'success');
-    } else {
-      toast('Shopify connecté — aucun nouveau produit', 'info');
-    }
-  } catch (e) {
-    console.warn('[Shopify] Échec chargement produits:', e.message);
-    toast('Shopify indisponible, produits locaux utilisés', 'warning');
-  }
-}
 
 // ============ FILTERS ============
 function applyFilters(){readerLimit=READER_CHUNK;gridPage=1;filteredProducts=products.filter(p=>{if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
@@ -1282,7 +1215,9 @@ function init(){
       }
     }, 6000);
     loadPartnerProducts();
-    loadShopifyProducts();
+    // Shopify : pas d'appel navigateur. Les produits de la boutique sont
+    // synchronises cote serveur (scripts/sync-boutique.mjs -> data/products.json)
+    // et affiches avec leurs vrais prix, photos et lien d'achat.
     initEvents();
     console.log('[KiffTech] initEvents done');
     // Ouverture directe de la caisse via l'ancre #caisse (liens depuis les rayons)

@@ -38,10 +38,8 @@
 <script defer src="../../../analytics-events.js"></script>
 <script defer src="../../../keff-stats.js"></script>
 <script defer src="../../../keff-stats.js"></script>
-<!-- Configuration Shopify Headless (à remplir : voir shopify-config.example.js) -->
-<script defer src="../../shopify-config.js" onerror="console.warn('[Shopify] shopify-config.js absent — copiez shopify-config.example.js et remplissez vos réglages')"></script>
-<!-- Client Storefront API publique (jeton public uniquement, aucun secret) -->
-<script defer src="../../shopify-storefront.js"></script>
+<!-- Catalogue boutique : synchronise cote serveur (data/products.json).
+     Aucune API Shopify n'est appelee depuis le navigateur. -->
 </head>
 <body>
 <div class="app" data-i18n="kifftech/index.html_agent_ia_0">

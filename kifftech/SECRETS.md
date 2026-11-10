@@ -27,12 +27,28 @@ Repo GitHub → `Settings` → `Secrets and variables` → `Actions` → `New re
 | Secret existant | Contenu | État |
 |---|---|---|
 | `PAYPAL_SECRET_ID` | Client ID public PayPal | ✅ injecté au déploiement → boutons PayPal actifs |
-| `SHOPIFY_KEY` | jeton **Storefront** `shpss_…` (public) | ✅ détecté, injecté au navigateur |
+| `SHOPIFY_KEY` | **Client Secret** `shpss_…` (jamais exposé) | ✅ utilisé côté serveur uniquement |
 | `SHOPIFY_ID` | **UUID de l'app** (`d1e0d09c-d9da-…-ecc0a`) | ⚠️ ce n'est pas le domaine de la boutique |
 | `IMPACT_ACCOUNT_SID` | SID de compte annonceur Impact | ✅ API répond |
 | `IMPACT_AUTH_TOKEN` | jeton d'authentification Impact | ✅ API répond |
 | `KIFFTECHSTORE` | 2ᵉ SID de compte Impact | ✅ API répond |
 | `TOKEN_KIFFTECHSTORE` | 2ᵉ jeton Impact | ✅ API répond |
+
+### Comment ça fonctionne maintenant
+
+- **Aucune API n'est appelée depuis le navigateur** : ni Shopify, ni Impact.
+- Le workflow `Boutique Sync` échange le couple Client ID + Client Secret contre un
+  jeton Admin **côté serveur**, lit les produits Shopify, les écrit dans
+  `kifftech/data/products.json` (public, sans secret) et **met les photos en
+  cache local** dans `kifftech/img/live/`.
+- La boutique affiche ensuite ce catalogue : vrais prix, vraies photos, lien
+  d'achat vers la page produit de la boutique Shopify.
+- Le paiement se fait dans la caisse KiffTech (PayPal) ; le panier Shopify
+  navigateur n'est plus utilisé.
+
+> `kifftech/shopify-storefront.js` et `kifftech/shopify-config.example.js` sont
+> conservés comme option (panier Shopify côté navigateur) mais ne sont plus
+> chargés par les pages.
 
 ### Ce qu'il manque
 
