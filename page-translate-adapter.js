@@ -1,8 +1,8 @@
 /*!
  * KeffStation Page Translate Adapter — Adaptateur de traduction de page
  *
- * Ajoute un bouton "Traduire cette page" qui utilise le traducteur intégré
- * du navigateur (Chrome, Edge, etc.) sans API externe payante.
+ * Ajoute un bouton "Traduire cette page" (globe 🌍 uniquement, sans texte)
+ * qui utilise le traducteur intégré du navigateur (Chrome, Edge, etc.)
  *
  * Compatible avec l'orchestrateur i18n existant (fr/en traduits humainement).
  * Pour les langues non couvertes, ce bouton déclenche la traduction native du
@@ -13,8 +13,6 @@
   "use strict";
 
   var ADAPTER_ID = "ks-page-translate";
-  var BTN_LABEL_FR = "Translate this page";
-  var BTN_LABEL_EN = "Translate this page";
   var GOOGLE_TRANSLATE_URL =
     "https://translate.google.com/translate?sl=auto&tl={lang}&u=" +
     encodeURIComponent(window.location.href);
@@ -44,26 +42,25 @@
     btn.style.background = "rgba(10,12,34,.9)";
     btn.style.border = "1px solid rgba(255,215,63,.4)";
     btn.style.borderRadius = "14px";
-    btn.style.padding = "10px 14px";
+    btn.style.padding = "0";
     btn.style.color = "#ffd700";
     btn.style.cursor = "pointer";
     btn.style.display = "inline-flex";
     btn.style.alignItems = "center";
+    btn.style.justifyContent = "center";
     btn.style.gap = "8px";
     btn.style.minWidth = "52px";
     btn.style.minHeight = "52px";
+    btn.style.width = "52px";
+    btn.style.height = "52px";
     btn.style.touchAction = "manipulation";
     btn.style.transition = "all .2s ease";
+    btn.setAttribute("aria-label", "Traduire cette page");
 
     var icon = document.createElement("span");
     icon.textContent = "🌍";
     icon.style.fontSize = "20px";
     btn.appendChild(icon);
-
-    var label = document.createElement("span");
-    label.textContent = currentLang === "fr" ? BTN_LABEL_FR : BTN_LABEL_EN;
-    label.style.fontWeight = "600";
-    btn.appendChild(label);
 
     btn.addEventListener("mouseenter", function () {
       btn.style.background = "rgba(255,215,63,.15)";
