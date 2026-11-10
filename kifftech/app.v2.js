@@ -183,6 +183,7 @@ let shopifyProducts = [];
 let shopifyReady = false;
 let shopifyCartId = null;
 let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort = 'relevance', activeEra = 'all', viewMode = 'all';
+let requestedRayon = '';   // rayon demande via l'URL (?rayon=...) — applique apres chargement du catalogue
 let activeSources = {official:true, social:true, reviews:true, community:true};
 let searchQuery = '', isFetching = false;
 
@@ -501,6 +502,16 @@ async function loadProducts(){
         }
         renderLiveStatus(res.meta);
       } catch(e){ console.warn('[KiffTech] catalogue etendu indisponible:', e.message); }
+
+      // Rayon demande dans l'URL : applique maintenant que le catalogue est complet
+      if (requestedRayon && products.some(p => p.category === requestedRayon)) {
+        activeCategory = requestedRayon;
+        renderRayons();
+        applyFilters();
+        const safeRayon = (window.CSS && CSS.escape) ? CSS.escape(requestedRayon) : requestedRayon;
+        const btn = document.querySelector('#rayon-selector .rayon-btn[data-category="' + safeRayon + '"]');
+        if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest' });
+      }
     }
 
     try {
@@ -1145,7 +1156,10 @@ function init(){
     try {
       const params = new URLSearchParams(window.location.search);
       const rayon = params.get('rayon');
-      if (rayon && products.some(p => p.category === rayon)) activeCategory = rayon;
+      if (rayon) {
+        requestedRayon = rayon;
+        if (products.some(p => p.category === rayon)) activeCategory = rayon;
+      }
       const sort = params.get('sort');
       if (sort && ['brand', 'price-asc', 'price-desc'].includes(sort)) activeSort = sort;
       const era = params.get('era');
