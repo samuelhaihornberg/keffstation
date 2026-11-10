@@ -25,12 +25,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inventaire des secrets du dépôt (noms uniquement, valeurs masquées)
-        run: echo '${{ toJSON(secrets) }}'
-
       - name: Inject PayPal public client ID
         env:
-          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID || secrets.paypal_secret_ID }}
+          PAYPAL_CLIENT_ID: >-
+            ${{ secrets.PAYPAL_CLIENT_ID || secrets.paypal_secret_ID || secrets.PAYPAL_PUBLIC_CLIENT_ID || secrets.PAYPAL_SANDBOX_CLIENT_ID }}
         run: |
           node - <<'NODE'
           const fs = require('fs');
@@ -48,9 +46,12 @@ jobs:
 
       - name: Injecter la configuration Shopify publique (Storefront)
         env:
-          SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
-          SHOPIFY_STOREFRONT_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_TOKEN }}
-          SHOPIFY_API_VERSION: ${{ secrets.SHOPIFY_API_VERSION }}
+          SHOPIFY_STORE_DOMAIN: >-
+            ${{ secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain || secrets.SHOP_DOMAIN }}
+          SHOPIFY_STOREFRONT_TOKEN: >-
+            ${{ secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_STOREFRONT_ACCESS_TOKEN || secrets.SHOPIFY_PUBLIC_TOKEN || secrets.shopify_storefront_token }}
+          SHOPIFY_API_VERSION: >-
+            ${{ secrets.SHOPIFY_API_VERSION || secrets.shopify_api_version }}
           SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
           DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY }}
         run: |

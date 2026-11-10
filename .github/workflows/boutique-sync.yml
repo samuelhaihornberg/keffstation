@@ -1,17 +1,18 @@
 name: Boutique Sync (Shopify + Impact)
 
 # Met à jour kifftech/data/products.json à partir des catalogues Shopify et
-# Impact.com. Les secrets ne quittent jamais le runner : seul le résultat
+# Impact.com. Les secrets ne quittent JAMAIS le runner : seul le résultat
 # public (produits, prix, liens) est commité et publié.
 #
-# Secrets requis (Settings > Secrets and variables > Actions) :
-#   SHOPIFY_STORE_DOMAIN, SHOPIFY_ADMIN_TOKEN (ou SHOPIFY_STOREFRONT_TOKEN)
-#   IMPACT_API_KEY, IMPACT_API_SECRET, IMPACT_CAMPAIGN_ID, IMPACT_BRAND_ID
-# Variables facultatives :
-#   SHOPIFY_API_VERSION, SITE_DOMAIN, DEFAULT_CURRENCY
+# Secrets attendus (Settings > Secrets and variables > Actions) :
+#   SHOPIFY_STORE_DOMAIN      ex. kifftech.myshopify.com
+#   SHOPIFY_ADMIN_TOKEN       jeton Admin API (read_products) — recommandé
+#   SHOPIFY_STOREFRONT_TOKEN  jeton Storefront PUBLIC (injecté au déploiement)
+#   IMPACT_API_KEY / IMPACT_API_SECRET / IMPACT_CAMPAIGN_ID / IMPACT_BRAND_ID
 #
-# Sans secret, le workflow écrit un catalogue vide et le site continue de
-# fonctionner avec son catalogue local (25+ produits par rayon).
+# Plusieurs alias sont acceptés pour chaque valeur (voir tableau ci-dessous) :
+# le premier secret non vide est utilisé. Sans secret, le catalogue local
+# (25+ produits par rayon) reste affiché et le site fonctionne normalement.
 
 on:
   schedule:
@@ -40,14 +41,27 @@ jobs:
     name: Synchroniser le catalogue live
     runs-on: ubuntu-latest
     env:
-      SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
-      SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
-      SHOPIFY_STOREFRONT_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_TOKEN }}
-      SHOPIFY_API_VERSION: ${{ secrets.SHOPIFY_API_VERSION }}
-      IMPACT_API_KEY: ${{ secrets.IMPACT_API_KEY }}
-      IMPACT_API_SECRET: ${{ secrets.IMPACT_API_SECRET }}
-      IMPACT_CAMPAIGN_ID: ${{ secrets.IMPACT_CAMPAIGN_ID }}
-      IMPACT_BRAND_ID: ${{ secrets.IMPACT_BRAND_ID }}
+      # --- Shopify : domaine de la boutique -------------------------------
+      SHOPIFY_STORE_DOMAIN: >-
+        ${{ secrets.SHOPIFY_STORE_DOMAIN || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.SHOPIFY_SHOP || secrets.shopify_domain || secrets.SHOP_DOMAIN || secrets.SHOPIFY_MYSHOPIFY_DOMAIN }}
+      # --- Shopify : jeton Admin API (serveur) -----------------------------
+      SHOPIFY_ADMIN_TOKEN: >-
+        ${{ secrets.SHOPIFY_ADMIN_TOKEN || secrets.SHOPIFY_ADMIN_API_TOKEN || secrets.SHOPIFY_PRIVATE_TOKEN || secrets.SHOPIFY_TOKEN || secrets.shopify_admin_token || secrets.shopify_token }}
+      # --- Shopify : jeton Storefront public (navigateur) -------------------
+      SHOPIFY_STOREFRONT_TOKEN: >-
+        ${{ secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_STOREFRONT_ACCESS_TOKEN || secrets.SHOPIFY_STOREFRONT || secrets.SHOPIFY_PUBLIC_TOKEN || secrets.shopify_storefront_token || secrets.STOREFRONT_TOKEN }}
+      SHOPIFY_API_VERSION: >-
+        ${{ secrets.SHOPIFY_API_VERSION || secrets.shopify_api_version }}
+      # --- Impact.com -----------------------------------------------------
+      IMPACT_API_KEY: >-
+        ${{ secrets.IMPACT_API_KEY || secrets.IMPACT_KEY || secrets.IMPACT_APIKEY || secrets.impact_api_key || secrets.impact_key }}
+      IMPACT_API_SECRET: >-
+        ${{ secrets.IMPACT_API_SECRET || secrets.IMPACT_SECRET || secrets.IMPACT_API_PASSWORD || secrets.impact_api_secret || secrets.impact_secret }}
+      IMPACT_CAMPAIGN_ID: >-
+        ${{ secrets.IMPACT_CAMPAIGN_ID || secrets.IMPACT_CAMPAIGN || secrets.impact_campaign_id || secrets.impact_campaign }}
+      IMPACT_BRAND_ID: >-
+        ${{ secrets.IMPACT_BRAND_ID || secrets.IMPACT_BRAND || secrets.impact_brand_id || secrets.impact_brand }}
+      # --- Site ------------------------------------------------------------
       SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
       DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY }}
     steps:
@@ -59,17 +73,46 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Inventaire des secrets du dépôt (noms uniquement, valeurs masquées)
-        run: echo '${{ toJSON(secrets) }}'
-
       - name: Diagnostic de la configuration
+        env:
+          A_SHOPIFY_DOMAIN_1: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          A_SHOPIFY_DOMAIN_2: ${{ secrets.SHOPIFY_DOMAIN }}
+          A_SHOPIFY_DOMAIN_3: ${{ secrets.SHOPIFY_SHOP_DOMAIN }}
+          A_SHOPIFY_DOMAIN_4: ${{ secrets.shopify_domain }}
+          A_SHOPIFY_ADMIN_1: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+          A_SHOPIFY_ADMIN_2: ${{ secrets.SHOPIFY_TOKEN }}
+          A_SHOPIFY_ADMIN_3: ${{ secrets.shopify_token }}
+          A_SHOPIFY_STOREFRONT_1: ${{ secrets.SHOPIFY_STOREFRONT_TOKEN }}
+          A_SHOPIFY_STOREFRONT_2: ${{ secrets.SHOPIFY_STOREFRONT_ACCESS_TOKEN }}
+          A_SHOPIFY_STOREFRONT_3: ${{ secrets.SHOPIFY_PUBLIC_TOKEN }}
+          A_IMPACT_KEY_1: ${{ secrets.IMPACT_API_KEY }}
+          A_IMPACT_KEY_2: ${{ secrets.IMPACT_KEY }}
+          A_IMPACT_KEY_3: ${{ secrets.impact_api_key }}
+          A_IMPACT_SECRET_1: ${{ secrets.IMPACT_API_SECRET }}
+          A_IMPACT_SECRET_2: ${{ secrets.IMPACT_SECRET }}
+          A_IMPACT_SECRET_3: ${{ secrets.impact_api_secret }}
+          A_IMPACT_CAMPAIGN_1: ${{ secrets.IMPACT_CAMPAIGN_ID }}
+          A_IMPACT_CAMPAIGN_2: ${{ secrets.IMPACT_CAMPAIGN }}
+          A_IMPACT_CAMPAIGN_3: ${{ secrets.impact_campaign_id }}
+          A_IMPACT_BRAND_1: ${{ secrets.IMPACT_BRAND_ID }}
+          A_IMPACT_BRAND_2: ${{ secrets.IMPACT_BRAND }}
+          A_IMPACT_BRAND_3: ${{ secrets.impact_brand_id }}
+          A_PAYPAL_1: ${{ secrets.PAYPAL_CLIENT_ID }}
+          A_PAYPAL_2: ${{ secrets.paypal_secret_ID }}
         run: |
-          echo "Shopify domaine   : ${SHOPIFY_STORE_DOMAIN:+configuré}${SHOPIFY_STORE_DOMAIN:-absent}"
-          echo "Shopify Admin     : ${SHOPIFY_ADMIN_TOKEN:+configuré}${SHOPIFY_ADMIN_TOKEN:-absent}"
-          echo "Shopify Storefront: ${SHOPIFY_STOREFRONT_TOKEN:+configuré}${SHOPIFY_STOREFRONT_TOKEN:-absent}"
-          echo "Impact API        : ${IMPACT_API_KEY:+configuré}${IMPACT_API_KEY:-absent}"
-          echo "Impact campagne   : ${IMPACT_CAMPAIGN_ID:+configuré}${IMPACT_CAMPAIGN_ID:-absent}"
-          echo "Domaine public    : ${SITE_DOMAIN:+configuré}${SITE_DOMAIN:-absent}"
+          echo "--- Secrets détectés (noms uniquement) ---"
+          for v in $(env | grep -oE '^A_[A-Z0-9_]+' | sort); do
+            if [ -n "${!v}" ]; then echo "  ✅ $v"; else echo "  ❌ $v"; fi
+          done
+          echo "--- Valeurs résolues ---"
+          echo "  Shopify domaine    : ${SHOPIFY_STORE_DOMAIN:-ABSENT}"
+          echo "  Shopify Admin      : ${SHOPIFY_ADMIN_TOKEN:+PRÉSENT}${SHOPIFY_ADMIN_TOKEN:-ABSENT}"
+          echo "  Shopify Storefront : ${SHOPIFY_STOREFRONT_TOKEN:+PRÉSENT}${SHOPIFY_STOREFRONT_TOKEN:-ABSENT}"
+          echo "  Impact clé API     : ${IMPACT_API_KEY:+PRÉSENT}${IMPACT_API_KEY:-ABSENT}"
+          echo "  Impact secret API  : ${IMPACT_API_SECRET:+PRÉSENT}${IMPACT_API_SECRET:-ABSENT}"
+          echo "  Impact campagne    : ${IMPACT_CAMPAIGN_ID:+PRÉSENT}${IMPACT_CAMPAIGN_ID:-ABSENT}"
+          echo "  Impact marque      : ${IMPACT_BRAND_ID:+PRÉSENT}${IMPACT_BRAND_ID:-ABSENT}"
+          echo "  Domaine public     : ${SITE_DOMAIN:-ABSENT}"
 
       - name: Synchroniser catalogue (Shopify + Impact)
         run: node scripts/sync-boutique.mjs
