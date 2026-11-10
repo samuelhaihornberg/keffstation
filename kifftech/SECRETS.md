@@ -87,7 +87,7 @@ Repo GitHub → `Settings` → `Secrets and variables` → `Actions` → `New re
 ## 2. Domaine personnalisé (kiffstation.com)
 
 **État actuel : le domaine est déjà en ligne et redirige vers le site.**
-`https://kiffstation.com` → redirection Cloudflare → `https://samuelhaihornberg.github.io/keffstation/`.
+`https://kiffstation.com` → redirection Cloudflare → `https://kiffstation.com/`.
 Les URL canoniques et le sitemap pointent volontairement vers l'adresse finale
 (`github.io`) tant que cette redirection existe : ce sont les URL servies.
 

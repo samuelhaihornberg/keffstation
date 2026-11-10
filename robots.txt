@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://samuelhaihornberg.github.io/keffstation/sitemap.xml
+Sitemap: https://kiffstation.com/sitemap.xml

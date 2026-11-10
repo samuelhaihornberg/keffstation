@@ -20,7 +20,7 @@ SEO optimization for Progressive Web Apps (PWA) follows specific principles whil
 ```
 User-agent: *
 Allow: /
-Sitemap: https://samuelhaihornberg.github.io/keffstation/sitemap.xml
+Sitemap: https://kiffstation.com/sitemap.xml
 ```
 This file allows search engines to index all accessible pages.
 
@@ -68,7 +68,7 @@ All significant images must have a descriptive `alt` text. Decorative icons can 
 
 ### Canonical URLs
 The canonical URL is the actual GitHub Pages URL:
-`https://samuelhaihornberg.github.io/keffstation/`
+`https://kiffstation.com/`
 
 No `<link rel="canonical">` tag is necessary since there is no duplicated content between different URLs.
 
