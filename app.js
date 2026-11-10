@@ -385,11 +385,6 @@ class KeffStation {
       }
 
       appName.textContent = app.title;
-
-      // Mettre à jour le grand article
-      this.updateFeaturedArticle(app);
-
-      // Terminer le retournement
       flip.classList.remove('flipping');
     }, 300);
   }
@@ -498,6 +493,26 @@ class KeffStation {
         this.closeCapture();
       }
     });
+
+    // Bouton "En savoir plus" — affiche le grand article de l'app sélectionnée.
+    const btnLearn = document.getElementById('core-btn-learnmore');
+    const featured = document.getElementById('core-featured-article');
+    const btnClose = document.getElementById('featured-close');
+    if (btnLearn && featured) {
+      btnLearn.addEventListener('click', () => {
+        this.updateFeaturedArticle(this.apps[this.current]);
+        featured.style.display = '';
+        featured.classList.add('visible');
+        btnLearn.style.display = 'none';
+      });
+    }
+    if (btnClose && featured && btnLearn) {
+      btnClose.addEventListener('click', () => {
+        featured.style.display = 'none';
+        featured.classList.remove('visible');
+        btnLearn.style.display = '';
+      });
+    }
 
     // Lecteur d'app : swipe gauche / droite sur la vitrine.
     let touchStartX = 0;

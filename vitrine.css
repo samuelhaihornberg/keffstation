@@ -653,6 +653,56 @@ body.capture-active body.overlay-open {
   transform: scale(0.96);
 }
 
+/* Bouton "En savoir plus" sous le cercle */
+.core-btn-learnmore {
+  margin-top: clamp(12px, 3vmin, 24px);
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+
+.core-btn-learnmore:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(255, 210, 63, 0.1);
+  transform: translateY(-1px);
+}
+
+.core-btn-learnmore:active {
+  transform: scale(0.96);
+}
+
+/* Bouton fermer l'article */
+.featured-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+
+.featured-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: var(--line-strong);
+}
+
 /* Pause au survol */
 .vitrine.paused .core::before,
 .vitrine.paused .core::after,

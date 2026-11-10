@@ -38,8 +38,11 @@
           <div class="core-app-face core-app-face-back" id="core-app-face-back"></div>
         </div>
 
-        <!-- Grand article de l'app sélectionnée -->
-        <div class="core-featured-article" id="core-featured-article">
+        <!-- Grand article de l'app sélectionnée (affiché sur clic "En savoir plus") -->
+        <button class="core-btn-learnmore" id="core-btn-learnmore" type="button">En savoir plus</button>
+
+        <div class="core-featured-article" id="core-featured-article" style="display:none;">
+          <button class="featured-close" id="featured-close" type="button" aria-label="Fermer">×</button>
           <div class="featured-card" id="featured-card">
             <div class="featured-content" id="featured-content"></div>
           </div>
