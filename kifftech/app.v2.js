@@ -182,7 +182,7 @@ let filteredProducts = [...LOCAL_DB];
 let shopifyProducts = [];
 let shopifyReady = false;
 let shopifyCartId = null;
-let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort = 'relevance', activeEra = 'all';
+let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort = 'relevance', activeEra = 'all', viewMode = 'all';
 let activeSources = {official:true, social:true, reviews:true, community:true};
 let searchQuery = '', isFetching = false;
 
@@ -212,7 +212,7 @@ function clearKiffTechCache(){
   }
   toast('Cache vidé','success');
 }
-function calcKiffTechPrice(officialPrice, context={}){const {isSubscriber=false,cartItems=[],isPromoEligible=false,tenureDays=0,promoBase=20}=context;const articleCount=(cartItems||[]).reduce((n,i)=>n+(Number(i.qty)||1),0);const cartBonus=Math.min(Math.max(0,articleCount),7);let discount=promoBase,freeDelivery=false,reason=`Prix officiels −${promoBase}%`;if(isSubscriber){discount=Math.min(20+Math.floor(tenureDays/30),25);freeDelivery=true;reason=`Abonne KiffTech (${discount}% + livraison offerte)`;}else{discount=Math.min(promoBase+cartBonus,27);if(cartBonus>0)reason=`Prix officiels −${promoBase}% + ${cartBonus}% caisse (${discount}% total)`;else if(articleCount>0)reason=`Prix officiels −${promoBase}%`;}const final=Math.round(officialPrice*(100-discount)/100);return{official:officialPrice,kifftech:final,discount,savings:officialPrice-final,freeDelivery,reason,currency:'EUR'};}
+function calcKiffTechPrice(officialPrice, context={}){const {isSubscriber=false,cartItems=[],isPromoEligible=false,tenureDays=0,promoBase=20}=context;const articleCount=(cartItems||[]).reduce((n,i)=>n+(Number(i.qty)||1),0);const cartBonus=Math.min(Math.max(0,articleCount),7);let discount=promoBase,freeDelivery=true,reason=`Prix officiels −${promoBase}%`;if(isSubscriber){discount=Math.min(20+Math.floor(tenureDays/30),25);reason=`Abonne KiffTech (${discount}% + livraison offerte)`;}else{discount=Math.min(promoBase+cartBonus,27);if(cartBonus>0)reason=`Prix officiels −${promoBase}% + ${cartBonus}% caisse (${discount}% total)`;else if(articleCount>0)reason=`Prix officiels −${promoBase}%`;}const final=Math.round(officialPrice*(100-discount)/100);return{official:officialPrice,kifftech:final,discount,savings:officialPrice-final,freeDelivery:true,reason,currency:'EUR'};}
 function refreshKiffTechPrices(){products.forEach(p=>{if(!p.partner)p.kifftech=calcKiffTechPrice(p.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});});filteredProducts.forEach(p=>{const o=products.find(x=>x.id===p.id);if(o&&!p.partner)p.kifftech=o.kifftech;});}
 
 // ============ CLICKWISE API ============
@@ -244,6 +244,51 @@ function generateMedia(p){const m={badges:[]};if(p.partner)m.badges.push({class:
 function hasOfficialPhoto(p){return !!(p.images&&p.images.length);}
 
 const CAT_EMOJI = {'Smartphones':'📱','Computers':'💻','Tablets':'📲','Audio & Wearables':'🎧','VR AR gadgets':'🥽','Garden & furnitures smart devices':'🪴','Composant electronic & informatic':'🔌','Company & studying Robots':'🤖','Consoles & Videogames':'🎮','Drones & Caméras':'🚁','Smart Home':'🏠'};
+
+/* Marques populaires (grandes marques) et marques peu connues (populace à faire connaître) */
+const POPULAR_BRANDS = ['Apple','Samsung','Sony','Microsoft','Google','Nintendo','Meta','Valve','DJI','GoPro','Canon','NVIDIA','AMD','Intel','LG','Huawei','OnePlus','Garmin','Bose','Beats','Shure','Xiaomi','OPPO','Honor'];
+const POPULACE_BRANDS = ['Nothing','Framework','Analogue','Panic','Unitree','ANYbotics','Ghost Robotics','PICO','Steam','Raspberry Pi','Arduino','Logitech','SanDisk','Realme','Razer','MSI','Twelve South','Bellroy','Ugreen','Baseus','Satechi','Keychron','Nuphy','CalDigit','StarTech','Hyper','Angelbird','Lamicall','amFilm','Zagg','Cable Matters','Spigen','ESR','OtterBox','Mous','Pitaka'];
+
+/* Détermine le rayon d'affichage d'un produit */
+function getTier(p){
+  const brand = p.brand || '';
+  const year = p.year || 0;
+  if (POPULAR_BRANDS.includes(brand) && year >= 2025) return 'popular';
+  if (POPULACE_BRANDS.includes(brand)) return 'populace';
+  return 'standard';
+}
+
+/* Bascule d'affichage : 'all' | 'popular' | 'populace' */
+function setViewMode(mode){
+  viewMode = mode;
+  try { localStorage.setItem('kifftech.viewMode', mode); } catch(e){}
+  renderViewModeButtons();
+  applyFilters();
+}
+function getViewMode(){
+  try { const s = localStorage.getItem('kifftech.viewMode'); if (s && ['all','popular','populace'].includes(s)) return s; } catch(e){}
+  return 'all';
+}
+
+/* Boutons toggle Afficher Populaire / Afficher Populace */
+function renderViewModeButtons(){
+  let container = $('#view-mode-toggle');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'view-mode-toggle';
+    container.className = 'view-mode-toggle';
+    const target = $('#rayon-selector') || $('#filter-category') || document.body;
+    target.parentNode.insertBefore(container, target.nextSibling);
+  }
+  const m = getViewMode();
+  const active = c => c === m ? ' active' : '';
+  container.innerHTML = `
+    <div class="view-mode-label">Affichage :</div>
+    <button type="button" class="view-btn vm-all${active('all')}" onclick="setViewMode('all')" aria-label="Tous les produits">Tous</button>
+    <button type="button" class="view-btn vm-popular${active('popular')}" onclick="setViewMode('popular')" aria-label="Afficher populaire marques connues 2025-2026">Populaire</button>
+    <button type="button" class="view-btn vm-populace${active('populace')}" onclick="setViewMode('populace')" aria-label="Afficher populace marques peu connues">Populace</button>
+  `;
+}
 function escXml(s){return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');}
 function brandHue(brand){let h = 0; for (const c of String(brand)) h = (h * 31 + c.charCodeAt(0)) % 360; return h;}
 // Aperçu image garanti pour chaque produit : photo si dispo, sinon visuel généré (marque + catégorie).
@@ -269,21 +314,27 @@ const KF_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/
 function escHtml(s){return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // Carte produit du lecteur horizontal : image, nom, marque, prix et actions (détails / caisse).
-function readerCard(p){
+// Style "cartes à jouer dans une main" : rotation et superposition légère.
+function readerCard(p, i = 0){
   if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official, {isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
   const kt = p.kifftech; const has = kt.discount > 0;
   const imgSrc = previewImage(p);
+  const tier = getTier(p);
   const badges = [];
   if (p.videos?.length) badges.push(`<span class="badge badge-video">Video</span>`);
   if (p.images?.length) badges.push(`<span class="badge badge-official">Photo</span>`);
   else badges.push(`<span class="badge badge-official">Aperçu généré</span>`);
   if (has) badges.push(`<span class="badge badge-promo">-${kt.discount}%</span>`);
-  return `<article class="reader-card" data-id="${escAttr(p.id)}">
+  if (tier === 'popular') badges.push(`<span class="badge badge-tier badge-popular">Populaire</span>`);
+  if (tier === 'populace') badges.push(`<span class="badge badge-tier badge-populace">Populace</span>`);
+  badges.push(`<span class="badge badge-delivery">Livraison gratuite</span>`);
+  const rot = (i % 7 - 3) * 5;
+  return `<article class="reader-card" data-id="${escAttr(p.id)}" style="--rot:${rot}deg;">
     <div class="reader-media"><img src="${escAttr(imgSrc)}" alt="${escAttr(p.brand + ' ' + p.model)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escAttr(KF_PLACEHOLDER)}'"><div class="media-badge">${badges.join('')}</div></div>
     <div class="reader-info">
       <span class="reader-brand">${escAttr(p.brand)}</span>
       <h3 class="reader-name">${escAttr(p.model)}</h3>
-      <div class="reader-meta"><span class="meta-item meta-year">${p.year}</span></div>
+      <div class="reader-meta"><span class="meta-item meta-year">${p.year}</span><span class="meta-item meta-tier">${tier === 'popular' ? '2025-2026' : tier === 'populace' ? 'À découvrir' : ''}</span></div>
       <div class="reader-prices">${has ? fmtPriceCrossed(kt.official) : ''}<span class="reader-price-kifftech ${has ? 'has-discount' : ''}" data-currency="${kt.kifftech}">${fmtPrice(kt.kifftech)}</span></div>
       ${has ? `<div class="reader-promo">${escHtml(kt.reason)}</div>` : ''}
       <div class="reader-actions">
@@ -362,7 +413,7 @@ function renderProducts(){
     return;
   }
   if (track) {
-    track.innerHTML = filteredProducts.map(readerCard).join('');
+    track.innerHTML = filteredProducts.map((p,i) => readerCard(p, i)).join('');
   } else if (grid) {
     const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";
     grid.innerHTML = filteredProducts.map(p => {
@@ -934,8 +985,8 @@ async function loadShopifyProducts() {
 }
 
 // ============ FILTERS ============
-function applyFilters(){filteredProducts=products.filter(p=>{if(!(p.images&&p.images.length))return false;if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
-function renderFilters(){const cats=['all',...new Set(products.map(p=>p.category))];$('#filter-category').innerHTML=cats.map(c=>`<button class="filter-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c==='all'?'Toutes':c}</button>`).join('');const ss=$('#sort-select');if(ss)ss.value=activeSort;const years=['all',...[...new Set(products.map(p=>p.year))].sort((a,b)=>b-a)];$('#filter-year').innerHTML=years.map(y=>`<button class="filter-btn ${y===activeYear?'active':''}" data-year="${y}">${y==='all'?'Toutes':y}</button>`).join('');const brands=['all',...[...new Set(products.map(p=>p.brand))].sort()];$('#filter-brand').innerHTML=brands.map(b=>`<button class="filter-btn ${b===activeBrand?'active':''}" data-brand="${b}">${b==='all'?'Toutes':b}</button>`).join('');const eras=[['all','Tous'],['retro','🕹️ Rétro'],['modern','🚀 Modernes']];const fe=$('#filter-era');if(fe)fe.innerHTML=eras.map(([v,l])=>`<button class="filter-btn ${v===activeEra?'active':''}" data-era="${v}">${l}</button>`).join('');}
+function applyFilters(){filteredProducts=products.filter(p=>{if(!(p.images&&p.images.length))return false;if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>`${a.brand} ${a.model}`.localeCompare(`${a.brand} ${a.model}`));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??a.price.official));renderProducts();}
+function renderFilters(){const cats=['all',...new Set(products.map(p=>p.category))];$('#filter-category').innerHTML=cats.map(c=>`<button class="filter-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c==='all'?'Toutes':c}</button>`).join('');const ss=$('#sort-select');if(ss)ss.value=activeSort;const years=['all',...[...new Set(products.map(p=>p.year))].sort((a,b)=>b-a)];$('#filter-year').innerHTML=years.map(y=>`<button class="filter-btn ${y===activeYear?'active':''}" data-year="${y}">${y==='all'?'Toutes':y}</button>`).join('');const brands=['all',...[...new Set(products.map(p=>p.brand))].sort()];$('#filter-brand').innerHTML=brands.map(b=>`<button class="filter-btn ${b===activeBrand?'active':''}" data-brand="${b}">${b==='all'?'Toutes':b}</button>`).join('');const eras=[['all','Tous'],['retro','🕹️ Rétro'],['modern','🚀 Modernes']];const fe=$('#filter-era');if(fe)fe.innerHTML=eras.map(([v,l])=>`<button class="filter-btn ${v===activeEra?'active':''}" data-era="${v}">${l}</button>`).join('');renderViewModeButtons();}
 
 // ============ PARTICLES ============
 function initParticles(){const c=$('#particules')||document.body.appendChild(Object.assign(document.createElement('div'),{id:'particules',className:'particules'}));const cols=['#1e6bff','#ff3d9a','#ffd23f','#27d17f','#00d4ff','#ff6b00'];for(let i=0;i<15;i++){const p=document.createElement('div');p.className='particule';const sx=(Math.random()-.5)*innerWidth*.8,sy=(Math.random()-.5)*innerHeight*.8,ex=(Math.random()-.5)*innerWidth*.8,ey=(Math.random()-.5)*innerHeight*.8,del=Math.random()*12,dur=10+Math.random()*8,op=.1+Math.random()*.2,clr=cols[Math.floor(Math.random()*cols.length)];p.style.cssText=`left:50%;top:50%;--sx:${sx}px;--sy:${sy}px;--ex:${ex}px;--ey:${ey}px;--op:${op};background:${clr};animation-duration:${dur}s;animation-delay:${del}s`;c.appendChild(p);}}
@@ -991,6 +1042,42 @@ function initEvents(){
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){const c=$('#caisse-overlay');if(c&&c.classList.contains('visible'))closeCaisse();else closeModal();}});
 }
 
+/* Style des cartes à jouer dans une main + boutons d'affichage */
+function injectCardStyle(){
+  if (document.getElementById('kifftech-card-style')) return;
+  const s = document.createElement('style');
+  s.id = 'kifftech-card-style';
+  s.textContent = `
+    .view-mode-toggle { display:flex; align-items:center; gap:8px; padding:8px 0 12px 0; font-size:.85rem; color:#ffd23f; flex-wrap:wrap; }
+    .view-mode-label { font-weight:800; text-transform:uppercase; letter-spacing:.1em; opacity:.8; }
+    .view-btn { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); color:#f4f6ff; border-radius:10px; padding:6px 12px; cursor:pointer; font-size:.8rem; font-weight:700; }
+    .view-btn.active { background:#ffd23f; color:#1a1400; border-color:#ffd23f; box-shadow:0 0 16px rgba(255,210,63,.4); }
+    .view-btn:hover { background:rgba(255,255,255,.14); }
+    .reader-track { display:flex; gap:-55px; overflow-x:auto; padding:8px 0 4px 0; scroll-snap-type:proximity; }
+    .reader-card { flex:0 0 auto; width:200px; margin-left:-42px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; position:relative; z-index:1; scroll-snap-align:start; border:1px solid rgba(255,255,255,.14); border-radius:14px; background:rgba(10,12,34,.85); backdrop-filter:blur(8px); box-shadow:0 8px 24px rgba(0,0,0,.45); transition:transform .18s, z-index .1s, box-shadow .18s; }
+    .reader-card:hover { transform:rotate(0deg) scale(1.04); z-index:10; margin-left:0; margin-right:-8px; box-shadow:0 12px 34px rgba(255,210,63,.22); border-color:#ffd23f; }
+    .reader-card:first-child { margin-left:0; }
+    .reader-media { position:relative; height:190px; overflow:hidden; border-radius:11px 11px 0 0; background:#000; }
+    .reader-media img { width:100%; height:100%; object-fit:cover; display:block; }
+    .reader-info { padding:9px 11px; }
+    .reader-brand { font-size:.68rem; text-transform:uppercase; letter-spacing:.09em; color:#9dc0ff; display:block; margin-bottom:3px; }
+    .reader-name { font-size:.92rem; font-weight:800; color:#fff; margin:0 0 5px; line-height:1.15; }
+    .reader-meta { display:flex; gap:7px; font-size:.62rem; color:#8f96bd; margin-bottom:5px; flex-wrap:wrap; }
+    .reader-prices { display:flex; align-items:baseline; gap:6px; margin-bottom:5px; }
+    .reader-price-kifftech { font-weight:800; color:#ffd23f; }
+    .reader-promo { font-size:.68rem; color:#27d17f; margin-bottom:5px; }
+    .reader-actions { display:flex; gap:6px; }
+    .reader-actions .btn-sm { flex:1; font-size:.72rem; padding:6px; }
+    .media-badge { position:absolute; top:8px; left:8px; display:flex; flex-wrap:wrap; gap:4px; z-index:4; }
+    .media-badge .badge { font-size:.6rem; padding:3px 8px; border-radius:6px; background:rgba(0,0,0,.65); color:#fff; border:1px solid rgba(255,255,255,.3); }
+    .badge-tier { color:#1a1400; font-weight:800; }
+    .badge-popular { background:#ffd23f; }
+    .badge-populace { background:#27d17f; color:#001a1a; }
+    .badge-delivery { background:#1e6bff; color:#fff; font-size:.58rem; }
+  `;
+  (document.head || document.documentElement).appendChild(s);
+}
+
 // ============ INIT ============
 function init(){
   console.log('[KiffTech] init() called');
@@ -1009,10 +1096,12 @@ function init(){
     } catch (e) { console.warn('[KiffTech] rayon param ignoré:', e.message); }
     console.log('[KiffTech] products assigned, length:', products.length);
     products.forEach(p => { if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official); });
+    viewMode = getViewMode();
     filteredProducts = [...products];
     const restoredCart = restoreCart();
     console.log('[KiffTech] filteredProducts assigned, length:', filteredProducts.length);
 
+    injectCardStyle();
     renderFilters();
     console.log('[KiffTech] renderFilters done');
     renderRayons();
