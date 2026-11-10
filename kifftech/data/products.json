@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T15:44:07.823Z",
+  "generatedAt": "2026-11-10T22:01:18.883Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
   "siteDomain": "kiffstation.com",
   "currency": "EUR",
@@ -90,7 +90,7 @@
       "year": 2026,
       "category": "Audio & Wearables",
       "price": {
-        "official": 50,
+        "official": 49,
         "currency": "EUR"
       },
       "specs": {},
@@ -156,7 +156,7 @@
       "year": 2026,
       "category": "Audio & Wearables",
       "price": {
-        "official": 50,
+        "official": 49,
         "currency": "EUR"
       },
       "specs": {},
