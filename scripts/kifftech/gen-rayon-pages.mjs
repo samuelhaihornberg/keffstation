@@ -139,13 +139,7 @@ const listHtml = `<!doctype html>
 <title>KiffTech — Tous les rayons</title>
 <meta name="description" content="Tous les rayons de la boutique KiffTech.">
 <link rel="stylesheet" href="../theme.css">
-<style>
- .ray-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:20px 0 60px}
- .ray-item{display:block;text-decoration:none;color:inherit;border:1px solid var(--kf-line);padding:16px;border-radius:14px;background:rgba(255,255,255,.03)}
- .ray-item:hover{border-color:rgba(216,255,62,.5);background:rgba(255,255,255,.06)}
- .ray-item strong{display:block;font-family:var(--kf-display);font-size:1.05rem;color:var(--kf-bone);margin-bottom:4px}
- .ray-item span{font:600 .7rem var(--kf-mono);color:var(--kf-acid-dim);letter-spacing:.1em;text-transform:uppercase}
-</style>
+<link rel="stylesheet" href="./rayons-index.css">
 </head>
 <body>
 <main style="max-width:1100px;margin:0 auto;padding:24px 16px">
@@ -159,6 +153,19 @@ ${manifest.map((m) => `<a class="ray-item" href="./${m.slug}/"><strong>${m.title
 </html>
 `;
 fs.writeFileSync(path.join(OUT_DIR, "index.html"), listHtml, "utf8");
+
+// CSS de l'index des rayons (fichier externe, pas de style inline)
+fs.writeFileSync(
+  path.join(OUT_DIR, "rayons-index.css"),
+  `/* KiffTech — index des rayons */
+.ray-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:20px 0 60px}
+.ray-item{display:block;text-decoration:none;color:inherit;border:1px solid var(--kf-line);padding:16px;border-radius:14px;background:rgba(255,255,255,.03)}
+.ray-item:hover{border-color:rgba(216,255,62,.5);background:rgba(255,255,255,.06)}
+.ray-item strong{display:block;font-family:var(--kf-display);font-size:1.05rem;color:var(--kf-bone);margin-bottom:4px}
+.ray-item span{font:600 .7rem var(--kf-mono);color:var(--kf-acid-dim);letter-spacing:.1em;text-transform:uppercase}
+`,
+  "utf8",
+);
 
 fs.writeFileSync(
   path.join(KIFF, "data", "rayons.json"),

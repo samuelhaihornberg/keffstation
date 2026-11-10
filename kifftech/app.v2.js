@@ -1180,38 +1180,6 @@ function initEvents(){
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){const c=$('#caisse-overlay');if(c&&c.classList.contains('visible'))closeCaisse();else closeModal();}});
 }
 
-/* Style des cartes à jouer dans une main + boutons d'affichage */
-function injectCardStyle(){
-  if (document.getElementById('kifftech-card-style')) return;
-  const s = document.createElement('style');
-  s.id = 'kifftech-card-style';
-  s.textContent = `
-    /* Style minimal : le theme (theme.css) definit deja les cartes, les
-       badges et la mise en page. On n'ajoute QUE l'effet "deck de cartes"
-       et les badges de niveau, sans ecraser le theme. */
-    .view-mode-toggle { display:flex; align-items:center; gap:8px; padding:8px 0 12px 0; font-size:.85rem; color:var(--kf-acid); flex-wrap:wrap; }
-    .view-mode-label { font-weight:800; text-transform:uppercase; letter-spacing:.1em; opacity:.8; }
-    .view-btn { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); color:var(--kf-bone); border-radius:10px; padding:6px 12px; cursor:pointer; font-size:.8rem; font-weight:700; }
-    .view-btn.active { background:var(--kf-acid); color:var(--kf-void); border-color:var(--kf-acid); box-shadow:0 0 16px rgba(216,255,62,.4); }
-    .view-btn:hover { background:rgba(255,255,255,.14); }
-
-    /* Deck de cartes : les cartes se chevauchent legerement et sont legerement
-       inclinees, comme des cartes a jouer dans une main. */
-    .reader-card { margin-left:-16px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; z-index:1; }
-    .reader-media, .product-media { background:#e9e4d7; }   /* placeholder clair pendant le chargement */
-    .reader-card:first-child { margin-left:0; }
-    .reader-card:hover { transform:rotate(0deg) scale(1.04); z-index:10; margin-left:0; margin-right:-4px; }
-    .reader-track::-webkit-scrollbar { height:6px; }
-    .reader-track::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:99px; }
-
-    .badge-tier { color:var(--kf-void)!important; font-weight:800; }
-    .badge-popular { background:var(--kf-acid)!important; color:var(--kf-void)!important; }
-    .badge-populace { background:#27d17f!important; color:#001a1a!important; }
-    .badge-delivery { background:#1e6bff!important; color:#fff!important; font-size:.58rem; }
-  `;
-  (document.head || document.documentElement).appendChild(s);
-}
-
 // ============ RESILIENCE ============
 // Erreur bloquante : banniere discrete (le catalogue reste affiche),
 // jamais d'overlay plein ecran qui masquerait la boutique.
@@ -1242,6 +1210,13 @@ window.addEventListener('error',function(ev){
 window.addEventListener('unhandledrejection',function(ev){
   console.error('[KiffTech] promesse rejetee:',ev.reason);
 });
+
+/* Style des cartes a jouer dans une main + boutons d'affichage */
+// Le style du lecteur vit dans theme.css (plus d'injection de CSS par le
+// JavaScript) : la page est donc stylisee meme si le script echoue.
+function injectCardStyle(){
+  /* Rien a injecter : voir kifftech/theme.css */
+}
 
 // ============ INIT ============
 function init(){
