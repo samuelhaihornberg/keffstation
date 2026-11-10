@@ -76,8 +76,8 @@ for (const cat of categories) {
 
   let html = template;
 
-  // 1) chemins d'assets : les pages de rayon sont un niveau plus bas.
-  //    On traite d'abord les references sans prefixe, puis le generique "./".
+  // 1) chemins d'assets : les pages de rayon sont DEUX niveaux plus bas
+  //    (/kifftech/rayon/<slug>/) -> il faut "../../" pour revenir a /kifftech/.
   const NO_PREFIX = [
     "index-inline-01.css",
     "index-inline-02.js",
@@ -89,13 +89,19 @@ for (const cat of categories) {
     "theme.css",
   ];
   for (const a of NO_PREFIX) {
-    html = html.split(`"${a}`).join(`"../${a}`);
+    html = html.split(`"${a}`).join(`"../../${a}`);
   }
-  html = html.replace(/(href|src)="\.\//g, '$1="../');
-  html = html.replace(/href="\.\.\/index\.html"/g, 'href="../index.html"');
-  html = html.replace(/href="\.\.\/rayons\.html"/g, 'href="../rayons.html"');
-  html = html.replace(/href="\.\.\/about\.html"/g, 'href="../about.html"');
-  html = html.replace(/href="\.\.\/credits\.html"/g, 'href="../credits.html"');
+  // Scripts a la racine du site (un niveau au-dessus de /kifftech/) :
+  // il faut trois niveaux pour y revenir depuis /kifftech/rayon/<slug>/.
+  const ROOT_LEVEL = ["i18n.js", "ga4.js", "analytics-events.js", "keff-stats.js", "refresh.js"];
+  for (const a of ROOT_LEVEL) {
+    html = html.split(`"../${a}`).join(`"../../../${a}`);
+  }
+  html = html.replace(/(href|src)="\.\//g, '$1="../../');
+  html = html.replace(/href="\.\.\/\.\.\/index\.html"/g, 'href="../../index.html"');
+  html = html.replace(/href="\.\.\/\.\.\/rayons\.html"/g, 'href="../../rayons.html"');
+  html = html.replace(/href="\.\.\/\.\.\/about\.html"/g, 'href="../../about.html"');
+  html = html.replace(/href="\.\.\/\.\.\/credits\.html"/g, 'href="../../credits.html"');
 
   // 2) rayon preselectionne
   html = html.replace(
@@ -159,6 +165,31 @@ fs.writeFileSync(
   JSON.stringify({ generatedAt: new Date().toISOString(), rayons: manifest }, null, 2),
   "utf8",
 );
+
+// Verification automatique : chaque reference locale doit exister sur le disque.
+let missing = 0;
+for (const m of manifest) {
+  const page = path.join(OUT_DIR, m.slug, "index.html");
+  const dir = path.dirname(page);
+  const html = fs.readFileSync(page, "utf8");
+  const refs = [...html.matchAll(/(?:href|src)="([^"#?][^"]*)"/g)].map((x) => x[1]);
+  for (const ref of refs) {
+    if (/^(https?:)?\/\//i.test(ref) || ref.startsWith("data:") || ref.startsWith("mailto:")) continue;
+    // Fichiers generes au deploiement (absents du depot)
+    if (["shopify-config.js", "paypal-config.js"].includes(ref.split("/").pop())) continue;
+    const clean = ref.split("?")[0].split("#")[0];
+    const target = path.resolve(dir, clean);
+    if (!fs.existsSync(target)) {
+      console.error(`  ❌ ${m.slug} -> ${ref} (introuvable : ${path.relative(ROOT, target)})`);
+      missing++;
+    }
+  }
+}
+if (missing) {
+  console.error(`[rayons] ${missing} reference(s) cassee(s) — generation corrigee avant commit.`);
+  process.exit(1);
+}
+console.log("[rayons] toutes les references locales sont valides.");
 
 console.log(`[rayons] ${manifest.length} pages generees dans kifftech/rayon/`);
 manifest.forEach((m) => console.log(`   /kifftech/rayon/${m.slug}/  — ${m.title} (${m.count})`));
