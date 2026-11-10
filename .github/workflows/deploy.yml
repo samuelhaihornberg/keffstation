@@ -135,3 +135,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # Artefact volumineux (images produits + catalogue) : le deploiement
+          # peut depasser le defaut de 10 minutes.
+          timeout: 1800000

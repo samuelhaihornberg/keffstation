@@ -120,9 +120,12 @@ async function cacheRemoteImages(products) {
   let cached = 0;
   let failed = 0;
   for (const p of targets) {
-    const remote = p.images.filter((u) => /^https?:\/\//i.test(u)).slice(0, 3);
+    const remote = p.images.filter((u) => /^https?:\/\//i.test(u));
     const local = p.images.filter((u) => !/^https?:\/\//i.test(u));
     const out = [];
+    // Seule la photo principale est mise en cache local (poids du depot) ;
+    // les autres restent distantes et ne se chargent qu'a l'ouverture de la fiche.
+    const toCache = Math.min(remote.length, 1);
     for (let i = 0; i < remote.length; i++) {
       const url = remote[i];
       let ext = ".jpg";
@@ -142,6 +145,10 @@ async function cacheRemoteImages(products) {
       const file = `${slugify(p.id)}${i ? "-" + i : ""}${ext}`;
       const dest = path.join(LIVE_IMG_DIR, file);
       try {
+        if (i >= toCache) {
+          out.push(url); // non mis en cache : on garde l'URL distante
+          continue;
+        }
         if (!fs.existsSync(dest)) {
           const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
           if (!res.ok) throw new Error("HTTP " + res.status);
@@ -194,6 +201,7 @@ function normalizeProduct(p) {
     price: { official: Number(p.price?.official || 0), currency: p.price?.currency || CURRENCY },
     specs: p.specs || {},
     images: (p.images || []).filter(Boolean).slice(0, 5),
+    remoteImages: p.remoteImages || undefined,
     description: p.description || "",
     url: p.url || "",
     checkoutUrl: p.checkoutUrl || "",
