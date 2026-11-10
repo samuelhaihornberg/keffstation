@@ -419,17 +419,16 @@
     CURRENT_PWA = detectPWA();
     var lang = getLang(CURRENT_PWA);
     applyDirection(lang);
-    injectSelector(lang, CURRENT_PWA);
+    // Sélecteur de langue avec drapeaux supprimé : seul le bouton Google Translate
+    // (page-translate-adapter.js) reste disponible, sans texte, emoji uniquement.
 
     // Appliquer immédiatement la langue sauvegardée ou par défaut
     if (!LOADED[lang]) {
       loadLang(lang, function () {
         applyTranslations(lang, CURRENT_PWA);
-        refreshSelector(lang, CURRENT_PWA);
       });
     } else {
       applyTranslations(lang, CURRENT_PWA);
-      refreshSelector(lang, CURRENT_PWA);
     }
   }
 

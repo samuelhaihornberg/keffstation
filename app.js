@@ -495,10 +495,13 @@ class KeffStation {
       });
     }
     if (btnClose && featured && btnLearn) {
-      btnClose.addEventListener('click', () => {
+      btnClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         featured.style.display = 'none';
         featured.classList.remove('visible');
         btnLearn.style.display = '';
+        btnLearn.style.removeProperty('display');
       });
     }
 
