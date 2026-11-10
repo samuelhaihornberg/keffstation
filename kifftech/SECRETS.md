@@ -55,18 +55,39 @@ Repo GitHub → `Settings` → `Secrets and variables` → `Actions` → `New re
 
 ## 2. Domaine personnalisé (kiffstation.com)
 
-La boutique fonctionne déjà sur `https://samuelhaihornberg.github.io/keffstation/`.
+**État actuel : le domaine est déjà en ligne et redirige vers le site.**
+`https://kiffstation.com` → redirection Cloudflare → `https://samuelhaihornberg.github.io/keffstation/`.
+Les URL canoniques et le sitemap pointent volontairement vers l'adresse finale
+(`github.io`) tant que cette redirection existe : ce sont les URL servies.
 
-Pour brancher `kiffstation.com` :
+### Option A — Garder la redirection (zéro risque, rien à faire)
+Le site est accessible sur `kiffstation.com` aujourd'hui. C'est l'état actuel.
 
-1. Dans le dépôt, ajouter un fichier `CNAME` contenant `kiffstation.com`.
-2. Dans `Settings` → `Pages` → *Custom domain*, saisir `kiffstation.com`.
-3. Chez ton registrar, ajouter les enregistrements DNS demandés par GitHub
-   (A/ALIAS vers `samuelhaihornberg.github.io`, ou CNAME selon le cas).
+### Option B — Servir directement sur kiffstation.com (recommandé pour le SEO et Shopify)
 
-⚠️ Le fichier `CNAME` n'est **pas** ajouté automatiquement : sans la
-configuration DNS, GitHub Pages ne pourra plus servir le site. Ajoute-le
-seulement quand le domaine est prêt.
+1. **GitHub** : `Settings` → `Pages` → *Custom domain* → saisir `kiffstation.com`
+   → *Save*. (Avec une publication par workflow Actions, le fichier `CNAME`
+   du dépôt est ignoré : c'est bien le réglage Pages qui fait foi.)
+2. **Cloudflare** (ton registrar) : remplace l'enregistrement actuel de
+   `kiffstation.com` par :
+
+   | Type | Nom | Valeur |
+   |---|---|---|
+   | A | `@` | `185.199.108.153` |
+   | A | `@` | `185.199.109.153` |
+   | A | `@` | `185.199.110.153` |
+   | A | `@` | `185.199.111.153` |
+   | CNAME | `www` | `samuelhaihornberg.github.io` |
+
+   (AAAA optionnels : `2606:50c0:8000::153`, `…8001::153`, `…8002::153`, `…8003::153`.)
+   Passe leenuage Cloudflare en **DNS uniquement** (gris) pour `@` et `www` :
+   Cloudflare en proxy orange + GitHub Pages exige un SSL "Full (strict)" avec
+   le domaine déclaré dans Pages, sinon le certificat ne correspond pas.
+3. Laisse GitHub émettre le certificat (quelques minutes, parfois 24 h).
+4. Vérifie que `https://kiffstation.com/` répond 200 et affiche le site.
+5. Bascule les URL canoniques : demande-moi de le faire (ou lance
+   `node scripts/kifftech/set-site-url.mjs kiffstation.com`) — le sitemap et
+   les balises `canonical` / JSON-LD passent alors sur le nouveau domaine.
 
 Pour Shopify, le domaine de la boutique (`xxx.myshopify.com` ou ton propre
 domaine) est celui renseigné dans `SHOPIFY_STORE_DOMAIN` : les produits et le
