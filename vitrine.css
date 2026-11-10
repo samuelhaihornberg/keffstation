@@ -618,6 +618,14 @@ body.capture-active body.overlay-open {
 .vitrine-nav-prev { left: 24px; }
 .vitrine-nav-next { right: 24px; }
 
+.app-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
 /* Infobulle accessible au survol / focus du nav (bas) */
 .nav button::after {
   content: attr(aria-label);

@@ -185,9 +185,9 @@ function orbitPosition(index, total, radius = 36) {
 }
 
 const APP_ICONS = {
-  'Kifftech': '🛍️',
+  'Kifftech': '<img class="app-icon-img" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20KeffTech.png" alt="Logo KiffTech" loading="lazy">',
   'Tricktrocjob': '🔄',
-  'ViArtificial labs': '🤖',
+  'ViArtificial labs': '<img class="app-icon-img" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20ViA.png" alt="Logo ViArtificial Labs" loading="lazy">',
   'Videogames': '🎮',
   'cos Editor': '🧩',
   'Linguistic Motors': '🧠'
