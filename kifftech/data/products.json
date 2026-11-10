@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T14:52:43.077Z",
+  "generatedAt": "2026-11-10T15:44:07.823Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
   "siteDomain": "kiffstation.com",
   "currency": "EUR",
@@ -194,7 +194,7 @@
       },
       "specs": {},
       "images": [
-        "./img/live/shopify-magnetic-wooden-airtag-keychain.png",
+        "https://cdn.shopify.com/s/files/1/0803/2210/1426/files/call_d3TGcvFewmZevNR5qSqNBF4r.png?v=1794113223",
         "https://cdn.shopify.com/s/files/1/0803/2210/1426/files/call_O92Nodar7kXM3QpDgD7CP8F0.png?v=1794113223",
         "https://cdn.shopify.com/s/files/1/0803/2210/1426/files/call_tftZNNQeYkzHmxb7cE7KxogO.png?v=1794113224",
         "https://cdn.shopify.com/s/files/1/0803/2210/1426/files/call_qRAKbYd8pqEf0BxPvtFHjv0g.png?v=1794113224",
