@@ -1,0 +1,39 @@
+{
+  "network": "impact.com",
+  "note": "Remplacez YOUR_IMPACT_CAMPAIGN_ID et YOUR_TRACKING_LINK par vos vrais identifiants d'affiliation Impact.",
+  "products": [
+    {
+      "catalogId": "keffstation",
+      "id": "galaxy-s24-ultra",
+      "brand": "Samsung",
+      "model": "Galaxy S24 Ultra",
+      "originalPrice": 1469,
+      "currency": "EUR",
+      "url": "https://impact.com/go/YOUR_TRACKING_LINK",
+      "description": "Samsung Galaxy S24 Ultra — Smartphone haut de gamme avec stylet S intégré.",
+      "images": ["./img/sp1.jpg", "./img/sp1b.jpg"]
+    },
+    {
+      "catalogId": "keffstation",
+      "id": "macbook-pro-m3-max",
+      "brand": "Apple",
+      "model": "MacBook Pro 16 M3 Max",
+      "originalPrice": 3999,
+      "currency": "EUR",
+      "url": "https://impact.com/go/YOUR_TRACKING_LINK",
+      "description": "Apple MacBook Pro 16 pouces avec puce M3 Max — pour créateurs et développeurs.",
+      "images": ["./img/cp1.jpg"]
+    },
+    {
+      "catalogId": "keffstation",
+      "id": "vision-pro",
+      "brand": "Apple",
+      "model": "Vision Pro",
+      "originalPrice": 3999,
+      "currency": "EUR",
+      "url": "https://impact.com/go/YOUR_TRACKING_LINK",
+      "description": "Apple Vision Pro — ordinateur spatial pour productivité et divertissement immersif.",
+      "images": ["./img/vr1.jpg"]
+    }
+  ]
+}
