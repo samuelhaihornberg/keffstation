@@ -495,6 +495,55 @@ body.capture-active body.overlay-open {
 
 .core-count #app-count { font-weight: 800; }
 
+/* Logo KeffStation au centre du noyau */
+.core-logo {
+  width: clamp(44px, 14vmin, 96px);
+  height: clamp(44px, 14vmin, 96px);
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 10px;
+  border: 2px solid rgba(255, 210, 63, .45);
+  box-shadow: 0 0 30px rgba(255, 210, 63, .4), 0 0 60px rgba(30, 107, 255, .25);
+  background: #000;
+}
+
+/* Titre pixel bleu / rouge / jaune en gros */
+.core-title {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.core-title-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+
+.core-title-value {
+  display: inline-block;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 6vmin, 3.2rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  /* Effet pixel : blocs de couleur décalés (bleu, jaune, rouge) */
+  text-shadow:
+    3px 3px 0 #1e6bff,
+    6px 6px 0 #ffd23f,
+    9px 9px 0 #ff3d6a,
+    4px 4px 10px rgba(0, 0, 0, .6);
+  filter: drop-shadow(0 0 14px rgba(255, 210, 63, .35));
+  user-select: none;
+}
+
 /* Pause au survol */
 .vitrine.paused .core::before,
 .vitrine.paused .core::after,
