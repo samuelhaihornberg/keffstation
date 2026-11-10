@@ -488,26 +488,49 @@ async function loadThree() {
 }
 
 function buildTerrain(THREE, w, d, h, hue) {
-  const res = 32;
+  const res = 40;
   const geo = new THREE.PlaneGeometry(w, d, res, res);
-  geo.rotateX(-Math.PI / 2);
   const pos = geo.attributes.position;
   const colors = [];
-  for (let y = 0; y <= res; y++) {
-    for (let x = 0; x <= res; x++) {
-      const u = x / res;
-      const v = y / res;
-      const n1 = Math.sin(u * 4 * Math.PI) * Math.cos(v * 4 * Math.PI);
-      const n2 = Math.sin(u * 7 * Math.PI + 1.3) * Math.cos(v * 5 * Math.PI + 2.1) * 0.6;
-      const n3 = Math.sin(u * 11 * Math.PI - 0.8) * 0.35;
-      let hh = (n1 + n2 + n3) / 2 + 0.5;
-      hh = Math.pow(Math.max(hh, 0), 1.35) * h;
-      pos.setZ(x * (w / res) - w / 2, y * (d / res) - d / 2, hh);
+
+  // 1) Champ de hauteur : dôme central (0 au bord, 1 au sommet) + ondulations douces
+  const heights = new Float32Array((res + 1) * (res + 1));
+  let maxH = 0;
+  for (let iy = 0; iy <= res; iy++) {
+    for (let ix = 0; ix <= res; ix++) {
+      const u = ix / res;
+      const v = iy / res;
+      const dx = u - 0.5;
+      const dy = v - 0.5;
+      const r = Math.min(1, Math.sqrt(dx * dx + dy * dy) / 0.55);
+      const dome = Math.cos(r * Math.PI * 0.5);
+      const ripple = 0.82 + 0.18 * (Math.sin(u * 3 * Math.PI + 1.3) * Math.cos(v * 2.5 * Math.PI + 2.1));
+      const hh = Math.pow(dome, 1.25) * ripple;
+      heights[iy * (res + 1) + ix] = hh;
+      if (hh > maxH) maxH = hh;
+    }
+  }
+
+  // 2) Normalisation : le sommet atteint exactement la hauteur h
+  const scale = maxH > 0 ? h / maxH : 0;
+
+  // 3) Écriture des sommets finaux : X = largeur, Y = hauteur, Z = profondeur
+  //    (PlaneGeometry : sommet (ix, iy) -> index = ix + (res + 1) * iy)
+  for (let iy = 0; iy <= res; iy++) {
+    for (let ix = 0; ix <= res; ix++) {
+      const u = ix / res;
+      const v = iy / res;
+      const i = iy * (res + 1) + ix;
+      const hh = heights[i] * scale;
+
+      pos.setXYZ(i, -w / 2 + u * w, hh, -d / 2 + v * d);
+
       const t = hh / Math.max(h, 0.001);
       const c = new THREE.Color().setHSL(hue.h0 + (hue.h1 - hue.h0) * t, hue.s, hue.l0 + (hue.l1 - hue.l0) * t);
       colors.push(c.r, c.g, c.b);
     }
   }
+
   geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
   geo.computeVertexNormals();
   return geo;
@@ -680,9 +703,9 @@ class MountainChart {
     this.items.forEach((item, i) => {
       const value = Number(item[this.metric] || 0);
       const norm = value / maxValue;
-      const h = 1.1 + Math.sqrt(norm) * 5.6;
-      const w = opts.uniform ? 3.4 : 2.6 + Math.sqrt(Number(item.clicks || 0) / maxClicks) * 1.8;
-      const d = opts.uniform ? 3.4 : 2.6 + Math.sqrt(Number(item.duration || 0) / maxDur) * 1.5;
+      const h = 0.8 + Math.sqrt(norm) * 3.6;
+      const w = opts.uniform ? 4.2 : 3.4 + Math.sqrt(Number(item.clicks || 0) / maxClicks) * 1.6;
+      const d = opts.uniform ? 4.2 : 3.4 + Math.sqrt(Number(item.duration || 0) / maxDur) * 1.4;
 
       const geo = buildTerrain(THREE, w, d, h, this.opts.hue);
       const mat = new THREE.MeshStandardMaterial({
@@ -718,8 +741,8 @@ class MountainChart {
     });
 
     const rows = Math.ceil(this.items.length / cols);
-    this.target.set(0, 1.8, 0);
-    this.dist = Math.max(16, Math.min(46, 12 + rows * 6));
+    this.target.set(0, 1.6, 0);
+    this.dist = Math.max(18, Math.min(70, 14 + rows * 7));
   }
 
   hideTooltip() {
