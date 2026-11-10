@@ -46,6 +46,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Verify files exist
+        run: |
+          ls -la index.html kifftech/index.html vitrine.css kifftech/app.v2.js
+          test -f index.html && echo "✅ index.html présent"
+          test -f kifftech/index.html && echo "✅ kifftech/index.html présent"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
