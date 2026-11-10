@@ -337,14 +337,94 @@ class KeffStation {
     this.setFocus(0, false);
   }
 
-  setFocus(index, open = false) {
+  setFocus(index, open = false, direction = 0) {
     this.current = index;
     this.nodes.forEach((node, i) => {
       node.classList.toggle('focused', i === index);
       node.setAttribute('aria-current', i === index ? 'true' : 'false');
     });
     this.dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    this.flipCoreLogo(direction);
     if (open) this.openApp(index);
+  }
+
+  // ---- Retourner le logo central comme une pièce de monnaie (coin flip) ----
+  flipCoreLogo(direction) {
+    const flip = document.getElementById('core-app-flip');
+    const logoImg = document.getElementById('core-app-logo-img');
+    const appName = document.getElementById('core-app-name');
+    const app = this.apps[this.current];
+    if (!flip || !logoImg || !appName || !app) return;
+
+    // Sens de rotation : 1 = droite/pièce qui part vers la droite, -1 = gauche
+    flip.style.setProperty('--flip-dir', direction >= 0 ? '1' : '-1');
+
+    // Démarrer le retournement
+    flip.classList.add('flipping');
+
+    // À mi-parcours (quand les faces sont tranchantes, invisibles), on change le contenu
+    setTimeout(() => {
+      // Nettoyer le contenu précédent
+      logoImg.style.display = 'none';
+      logoImg.src = '';
+      const existingFb = logoImg.parentElement.querySelector('.emoji-fallback');
+      if (existingFb) existingFb.remove();
+
+      const icon = APP_ICONS[app.num];
+
+      if (icon && typeof icon === 'object' && icon.src) {
+        logoImg.src = icon.src;
+        logoImg.alt = icon.alt || 'Logo ' + app.num;
+        logoImg.style.display = 'block';
+      } else {
+        const fallback = typeof icon === 'string' ? icon : app.num.slice(0, 1);
+        const fb = document.createElement('span');
+        fb.className = 'emoji-fallback';
+        fb.textContent = fallback;
+        logoImg.parentElement.appendChild(fb);
+      }
+
+      appName.textContent = app.title;
+
+      // Mettre à jour le grand article
+      this.updateFeaturedArticle(app);
+
+      // Terminer le retournement
+      flip.classList.remove('flipping');
+    }, 300);
+  }
+
+  // ---- Grand article de l'app sélectionnée ----
+  updateFeaturedArticle(app) {
+    const content = document.getElementById('featured-content');
+    const container = document.getElementById('core-featured-article');
+    if (!content || !container || !app) return;
+
+    const firstSub = (app.subArticles || [])[0];
+
+    content.innerHTML = `
+      <h2 class="featured-title">${sanitizeHTML(app.title)}</h2>
+      <p class="featured-desc">${sanitizeHTML(app.desc)}</p>
+      <div class="featured-tags">
+        ${(app.tags || []).map(t => `<span class="featured-tag">${sanitizeHTML(t)}</span>`).join('')}
+      </div>
+      ${firstSub ? `
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+          <div style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:8px;">À découvrir</div>
+          <h3 style="font-size:1.1rem;font-weight:700;color:#fff;margin:0 0 6px;">${sanitizeHTML(firstSub.title)}</h3>
+          <p style="font-size:0.9rem;line-height:1.5;color:#c3c9e8;margin:0;">${sanitizeHTML(firstSub.desc)}</p>
+        </div>
+      ` : ''}
+      <button class="featured-btn" type="button" onclick="window.keffStation.openApp(${this.current})">
+        Ouvrir ${sanitizeHTML(app.num)} →
+      </button>
+    `;
+
+    container.classList.remove('visible');
+    // Forcer le reflow puis réappliquer pour relancer la transition
+    requestAnimationFrame(() => {
+      container.classList.add('visible');
+    });
   }
 
   setupEventListeners() {
@@ -360,10 +440,10 @@ class KeffStation {
       }
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
-        this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+        this.setFocus((this.current - 1 + this.apps.length) % this.apps.length, false, -1);
       } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
-        this.setFocus((this.current + 1) % this.apps.length);
+        this.setFocus((this.current + 1) % this.apps.length, false, 1);
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         this.openApp(this.current);
@@ -393,10 +473,10 @@ class KeffStation {
 
     // Lecteur d'app : flèches gauche / droite.
     this.appPrev?.addEventListener('click', () => {
-      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length, false, -1);
     });
     this.appNext?.addEventListener('click', () => {
-      this.setFocus((this.current + 1) % this.apps.length);
+      this.setFocus((this.current + 1) % this.apps.length, false, 1);
     });
 
     // Mode plein écran / fenêtre screenshot de la vitrine.
@@ -405,10 +485,10 @@ class KeffStation {
 
     // Flèches du mode capture.
     this.capturePrev?.addEventListener('click', () => {
-      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length, false, -1);
     });
     this.captureNext?.addEventListener('click', () => {
-      this.setFocus((this.current + 1) % this.apps.length);
+      this.setFocus((this.current + 1) % this.apps.length, false, 1);
     });
 
     // Échap ferme le mode capture.
@@ -428,11 +508,11 @@ class KeffStation {
       const diff = touchStartX - e.changedTouches[0].screenX;
       if (Math.abs(diff) > 45) {
         if (diff > 0) {
-          // swipe vers la gauche -> app suivante
-          this.setFocus((this.current + 1) % this.apps.length);
+          // swipe vers la gauche -> app suivante (direction droite)
+          this.setFocus((this.current + 1) % this.apps.length, false, 1);
         } else {
-          // swipe vers la droite -> app précédente
-          this.setFocus((this.current - 1 + this.apps.length) % this.apps.length);
+          // swipe vers la droite -> app précédente (direction gauche)
+          this.setFocus((this.current - 1 + this.apps.length) % this.apps.length, false, -1);
         }
       }
     }, { passive: true });

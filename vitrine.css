@@ -495,53 +495,162 @@ body.capture-active body.overlay-open {
 
 .core-count #app-count { font-weight: 800; }
 
-/* Logo KeffStation au centre du noyau */
-.core-logo {
-  width: clamp(44px, 14vmin, 96px);
-  height: clamp(44px, 14vmin, 96px);
+/* ---------- Affichage de l'app sélectionnée avec effet "pièce de monnaie" ---------- */
+
+.core-app-flip {
+  position: relative;
+  width: clamp(110px, 28vmin, 190px);
+  height: clamp(110px, 28vmin, 190px);
+  perspective: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: clamp(8px, 2vmin, 16px);
+}
+
+.core-app-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.core-app-face-front {
+  transform: rotateY(0deg);
+}
+
+.core-app-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Rotation au milieu du flip */
+.core-app-flip.flipping .core-app-face-front {
+  transform: rotateY(calc(180deg * var(--flip-dir, 1)));
+}
+
+.core-app-flip.flipping .core-app-face-back {
+  transform: rotateY(calc(180deg + (180deg * var(--flip-dir, 1))));
+}
+
+.core-app-logo {
+  width: clamp(36px, 10vmin, 72px);
+  height: clamp(36px, 10vmin, 72px);
   border-radius: 50%;
   object-fit: cover;
-  display: block;
-  margin: 0 auto 10px;
-  border: 2px solid rgba(255, 210, 63, .45);
-  box-shadow: 0 0 30px rgba(255, 210, 63, .4), 0 0 60px rgba(30, 107, 255, .25);
+  margin-bottom: 8px;
+  border: 2px solid rgba(255, 210, 63, 0.45);
+  box-shadow: 0 0 30px rgba(255, 210, 63, 0.4), 0 0 60px rgba(30, 107, 255, 0.25);
   background: #000;
-}
-
-/* Titre pixel bleu / rouge / jaune en gros */
-.core-title {
-  margin-top: 12px;
-  text-align: center;
-}
-
-.core-title-label {
   display: block;
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 6px;
-  opacity: 0.85;
 }
 
-.core-title-value {
-  display: inline-block;
-  font-family: "Courier New", Courier, monospace;
+.core-app-logo:not([src]) {
+  display: none;
+}
+
+.core-app-name {
+  font-size: clamp(0.95rem, 2vmin, 1.5rem);
   font-weight: 900;
-  font-size: clamp(1.5rem, 6vmin, 3.2rem);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  color: #fff;
-  /* Effet pixel : blocs de couleur décalés (bleu, jaune, rouge) */
-  text-shadow:
-    3px 3px 0 #1e6bff,
-    6px 6px 0 #ffd23f,
-    9px 9px 0 #ff3d6a,
-    4px 4px 10px rgba(0, 0, 0, .6);
-  filter: drop-shadow(0 0 14px rgba(255, 210, 63, .35));
+  color: #d9dfff;
+  text-shadow: 0 0 20px rgba(30, 107, 255, 0.6);
+  letter-spacing: 0.05em;
   user-select: none;
+}
+
+.emoji-fallback {
+  font-size: clamp(2rem, 8vmin, 4rem);
+  line-height: 1;
+  display: block;
+}
+
+/* Grand article de l'app sélectionnée */
+.core-featured-article {
+  width: clamp(280px, 85vw, 600px);
+  margin-top: clamp(20px, 5vmin, 40px);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.core-featured-article.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.featured-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: clamp(16px, 4vmin, 28px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.featured-title {
+  font-size: clamp(1.4rem, 4vmin, 2.2rem);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #ffffff 8%, var(--gold) 48%, var(--gold-2) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.featured-desc {
+  font-size: clamp(0.95rem, 2vmin, 1.15rem);
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.featured-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.featured-tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 210, 63, 0.3);
+  background: rgba(255, 210, 63, 0.08);
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.featured-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 0;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(30, 107, 255, 0.35);
+  transition: filter 0.2s var(--ease), transform 0.2s var(--ease);
+  text-decoration: none;
+}
+
+.featured-btn:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.featured-btn:active {
+  transform: scale(0.96);
 }
 
 /* Pause au survol */
