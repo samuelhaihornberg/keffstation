@@ -298,6 +298,8 @@ function readerCard(p, i = 0){
   if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official, {isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});
   const kt = p.kifftech; const has = kt.discount > 0;
   const imgSrc = previewImage(p);
+  // Si l'image distante est indisponible : apercu genere (jamais un carre noir)
+  const fallbackImg = previewImage({ brand: p.brand, model: p.model, category: p.category });
   const tier = getTier(p);
   const badges = [];
   if (p.videos?.length) badges.push(`<span class="badge badge-video">Video</span>`);
@@ -312,7 +314,7 @@ function readerCard(p, i = 0){
   badges.push(`<span class="badge badge-delivery">Livraison gratuite</span>`);
   const rot = (i % 7 - 3) * 5;
   return `<article class="reader-card" data-id="${escAttr(p.id)}" style="--rot:${rot}deg;">
-    <div class="reader-media"><img src="${escAttr(imgSrc)}" alt="${escAttr(p.brand + ' ' + p.model)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escAttr(KF_PLACEHOLDER)}'"><div class="media-badge">${badges.join('')}</div></div>
+    <div class="reader-media"><img src="${escAttr(imgSrc)}" alt="${escAttr(p.brand + ' ' + p.model)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${escAttr(fallbackImg)}'"><div class="media-badge">${badges.join('')}</div></div>
     <div class="reader-info">
       <span class="reader-brand">${escAttr(p.brand)}</span>
       <h3 class="reader-name">${escAttr(p.model)}</h3>
@@ -402,12 +404,13 @@ function renderProducts(){
   if (track) {
     track.innerHTML = filteredProducts.map((p,i) => readerCard(p, i)).join('');
   } else if (grid) {
-    const placeholderImg = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%231a1d3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23444%22 text-anchor=%22middle%22%3E%3C/text%3E%3C/svg%3E";
     grid.innerHTML = filteredProducts.map(p => {
       if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official);
       const kt = p.kifftech; const has = kt.discount > 0; const med = generateMedia(p);
       const imgSrc = previewImage(p);
-      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${p.source === 'shopify' ? '<span class="badge badge-source">Boutique</span>' : p.source === 'impact' ? '<span class="badge badge-source badge-impact">Impact</span>' : ''}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
+      // Fallback : apercu genere (marque + initiales), jamais un carre noir
+      const fallbackGridImg = previewImage({ brand: p.brand, model: p.model, category: p.category });
+      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackGridImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${p.source === 'shopify' ? '<span class="badge badge-source">Boutique</span>' : p.source === 'impact' ? '<span class="badge badge-source badge-impact">Impact</span>' : ''}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
     }).join('');
   } else {
     console.warn('products reader/grid not found');
@@ -1119,7 +1122,7 @@ function injectCardStyle(){
     .reader-card { flex:0 0 auto; width:170px; margin-left:-26px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; position:relative; z-index:1; scroll-snap-align:start; border:1px solid rgba(255,255,255,.14); border-radius:12px; background:rgba(10,12,34,.85); backdrop-filter:blur(8px); box-shadow:0 6px 18px rgba(0,0,0,.45); transition:transform .18s, z-index .1s, box-shadow .18s; }
     .reader-card:hover { transform:rotate(0deg) scale(1.08); z-index:10; margin-left:0; margin-right:-4px; box-shadow:0 10px 28px rgba(255,210,63,.25); border-color:#ffd23f; }
     .reader-card:first-child { margin-left:0; }
-    .reader-media { position:relative; height:190px; overflow:hidden; border-radius:11px 11px 0 0; background:#000; }
+    .reader-media { position:relative; height:190px; overflow:hidden; border-radius:11px 11px 0 0; background:linear-gradient(160deg,#1a1f2e,#0d1018); }
     .reader-media img { width:100%; height:100%; object-fit:cover; display:block; }
     .reader-info { padding:9px 11px; }
     .reader-brand { font-size:.68rem; text-transform:uppercase; letter-spacing:.09em; color:#9dc0ff; display:block; margin-bottom:3px; }

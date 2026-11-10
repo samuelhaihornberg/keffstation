@@ -102,12 +102,12 @@ jobs:
 
       - name: Publier le catalogue mis à jour
         run: |
-          if git diff --quiet -- kifftech/data/products.json; then
+          if git diff --quiet -- kifftech/data/products.json kifftech/img/live; then
             echo "Catalogue déjà à jour — aucun commit nécessaire."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add kifftech/data/products.json
+          git add kifftech/data/products.json kifftech/img/live
           git commit -m "chore(boutique): catalogue live Shopify + Impact ($(node -e "const d=require('./kifftech/data/products.json');console.log(d.counts.total)") produits)"
           git push origin HEAD:main
