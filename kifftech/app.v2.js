@@ -320,7 +320,9 @@ function previewImage(p){
   const brand = p.brand || '?', model = p.model || '';
   const initials = escXml(((brand[0] || '?') + model.split(' ').map(w => w[0]).join('').slice(0, 2)).toUpperCase());
   const h = brandHue(brand), emoji = CAT_EMOJI[p.category] || '📦';
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='hsl(${h},70%,30%)'/><stop offset='1' stop-color='hsl(${(h + 60) % 360},70%,14%)'/></linearGradient></defs><rect width='400' height='400' fill='url(#g)'/><text x='200' y='175' font-size='110' text-anchor='middle'>${emoji}</text><text x='200' y='285' font-size='46' font-weight='bold' fill='#ffffff' text-anchor='middle' font-family='sans-serif'>${initials}</text><text x='200' y='325' font-size='24' fill='#ffd23f' text-anchor='middle' font-family='sans-serif'>${escXml(brand)}</text></svg>`;
+  // Apercu genere (produit sans photo) : fond CLAIR, coherent avec le theme
+  // creme — jamais de carre noir pendant le chargement des images.
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='hsl(${h},55%,92%)'/><stop offset='1' stop-color='hsl(${(h + 60) % 360},45%,84%)'/></linearGradient></defs><rect width='400' height='400' fill='url(#g)'/><text x='200' y='175' font-size='110' text-anchor='middle'>${emoji}</text><text x='200' y='285' font-size='46' font-weight='bold' fill='#22201c' text-anchor='middle' font-family='sans-serif'>${initials}</text><text x='200' y='325' font-size='24' fill='#6a6558' text-anchor='middle' font-family='sans-serif'>${escXml(brand)}</text></svg>`;
   return 'data:image/svg+xml,' + encodeURIComponent(svg).replace(/'/g, '%27');
 }
 
@@ -339,7 +341,7 @@ function kfImgFallback(el, brand, model, category){
 window.kfImgFallback = kfImgFallback;
 
 // Visuel de remplacement quand l'image produit est indisponible.
-const KF_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%23121316' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%238f8c82' text-anchor='middle'%3E%3C/text%3E%3C/svg%3E";
+const KF_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%23e9e4d7' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%238f8c82' text-anchor='middle'%3E%3C/text%3E%3C/svg%3E";
 
 // Échappement HTML pour les libellés affichés (noms de rayons, raisons, etc.)
 function escHtml(s){return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
