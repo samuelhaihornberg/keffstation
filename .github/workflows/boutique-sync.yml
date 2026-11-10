@@ -111,3 +111,22 @@ jobs:
           git add kifftech/data/products.json kifftech/img/live
           git commit -m "chore(boutique): catalogue live Shopify + Impact ($(node -e "const d=require('./kifftech/data/products.json');console.log(d.counts.total)") produits)"
           git push origin HEAD:main
+
+      # Un push fait avec le GITHUB_TOKEN ne declenche pas les autres workflows :
+      # on declenche donc explicitement le deploiement du site.
+      - name: Publier le site
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'deploy.yml',
+                ref: context.ref
+              });
+              console.log('Deploiement du site declenche.');
+            } catch (e) {
+              console.log('Deploiement non declenche : ' + e.message);
+            }
