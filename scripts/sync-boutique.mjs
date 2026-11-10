@@ -332,6 +332,8 @@ async function fetchImpactItems(sid, token, label) {
       const shops = [...new Set((raw.match(/[a-z0-9-]+\.myshopify\.com/gi) || []))];
       console.log(`[impact] ${label} — ${path.replace(/^https:\/\/api\.impact\.com/, "")} : ${raw.length} car., boutiques Shopify detectees : ${shops.join(", ") || "aucune"}`);
       if (shops.length) console.log(`[impact] DOMAINE_SHOPIFY=${shops[0]}`);
+      // Dump complet en base64 : le masque de secrets ne peut pas le tronquer
+      console.log(`[impact] ${label} DUMP ${path.includes("Campaigns") ? "CAMPAGNES" : "MEDIA"} (b64) : ${Buffer.from(raw).toString("base64")}`);
     } catch (e) {
       console.warn(`[impact] ${label} — ${path.replace(/^https:\/\/api\.impact\.com/, "")} : ${e.message}${e.body ? " | " + e.body : ""}`);
     }
