@@ -1,22 +1,55 @@
 /*!
- * KiffTech — Chargement du catalogue étendu + catalogue live
+ * KiffTech — Chargement du catalogue etendu + catalogue live
  * ============================================================================
- * Deux sources JSON publiques, servies par GitHub Pages :
+ * Trois flux de produits, UNE seule regle de priorite (aucun doublon) :
  *
- *  1. ./data/catalogue.json  — catalogue local enrichi (25+ produits par rayon),
- *                              généré par scripts/kifftech/build-catalogue.mjs
- *  2. ./data/products.json   — catalogue live (Shopify + Impact), écrit par
- *                              .github/workflows/boutique-sync.yml à partir des
- *                              secrets GitHub. Aucun secret dans ce fichier.
+ *   1. LOCAL  — LOCAL_DB (app.v2.js) + data/catalogue.json
+ *      Catalogue de fond : 25+ produits par rayon, photos CC, apercus generes.
+ *   2. LIVE   — data/products.json (Shopify + Impact + exports locaux)
+ *      Prix REELS, photos reelles, liens d'achat : c'est la source de verite.
+ *   3. IMPORT — exports CSV/JSON deposes dans kifftech/data/
  *
- * Règle : la base embarquée dans app.v2.js reste la repli hors-ligne.
- * Les produits live (prix réels, liens partenaires) passent en priorité.
+ * REGLE : quand un produit live correspond a un produit local (meme id ou
+ * meme marque + meme modele), c'est le produit LIVE qui gagne :
+ *   - son prix remplace le prix local (pas de remise inventee sur un prix reel)
+ *   - ses images remplacent les images locales
+ *   - il est marque "live" (badge Boutique / Impact dans le lecteur)
+ * Le produit local reste en secours si le flux live est indisponible.
+ *
+ * Aucune API ne "contredit" l'autre : Shopify et Impact alimentent le meme
+ * flux live, dedoublonne par identifiant, puis par marque + modele.
  */
 (function (window) {
   "use strict";
 
   var DATA_CATALOGUE = "./data/catalogue.json";
   var DATA_LIVE = "./data/products.json";
+
+  /* ---------------- normalisation des cles de rapprochement ---------------- */
+  function stripAccents(s) {
+    return String(s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  /* Cle stricte : marque + modele, sans accents ni ponctuation. */
+  function strictKey(p) {
+    return (
+      stripAccents(p.brand || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() +
+      "|" +
+      stripAccents(p.model || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+    );
+  }
+
+  /* Cle souple : on retire les tokens de volume / capacite / annee, pour que
+     "Apple AirPods 3 256Go" et "AirPods 3" se rejoignent. */
+  var NOISE = /\b(\d+\s?(go|to|gb|tb|ko|mo)\b|\b(19|20)\d{2}\b|\b(pro|max|plus|mini|air|lite|se|ultra)\b|\b(gen|generation|v\d)\b)/g;
+  function looseKey(p) {
+    var b = stripAccents(p.brand || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    var m = stripAccents(p.model || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    m = m.replace(NOISE, " ").replace(/\s+/g, " ").trim();
+    return b + "|" + m;
+  }
 
   function fetchJSON(url) {
     if (!url) return Promise.resolve(null);
@@ -31,52 +64,63 @@
       });
   }
 
-  function keyOf(p) {
-    return (
-      String(p.brand || "").trim().toLowerCase() +
-      "|" +
-      String(p.model || "").trim().toLowerCase()
-    );
-  }
-
   /**
-   * Fusionne des listes de produits sans doublon.
-   * Les produits déjà présents (par id ou marque+modèle) sont ignorés,
-   * sauf si la nouvelle occurrence est "live" (prix réel + lien d'achat).
+   * Fusionne une liste de produits entrants dans la liste cible.
+   * - si l'id existe deja          → mise a jour (prix, images, source)
+   * - si la cle marque|modele existe → mise a jour (le live gagne)
+   * - sinon                        → ajout
+   * Retourne { added, updated }.
    */
-  function merge(target, incoming) {
-    var ids = {};
-    var keys = {};
+  function merge(target, incoming, opts) {
+    opts = opts || {};
+    var live = !!opts.live;
+    var byId = {};
+    var byStrict = {};
+    var byLoose = {};
     target.forEach(function (p) {
-      if (p.id) ids[p.id] = true;
-      keys[keyOf(p)] = true;
+      if (p.id) byId[p.id] = p;
+      var ks = strictKey(p);
+      if (ks !== "|") byStrict[ks] = p;
+      var kl = looseKey(p);
+      if (kl !== "|") byLoose[kl] = p;
     });
+
     var added = 0;
+    var updated = 0;
     (incoming || []).forEach(function (p) {
       if (!p || !p.id || !p.model) return;
-      var k = keyOf(p);
-      if (ids[p.id]) {
-        // Déjà connu : on enrichit avec les infos live si disponibles.
-        var existing = target.find(function (x) { return x.id === p.id; });
-        if (existing && p.source && !existing.source) {
-          existing.source = p.source;
-          existing.partner = true;
+      var ks = strictKey(p);
+      var kl = looseKey(p);
+      var existing = byId[p.id] || byStrict[ks] || (kl !== "|" ? byLoose[kl] : null);
+
+      if (existing) {
+        if (live) {
+          // Le flux live est la source de verite : on applique ses donnees.
+          if (p.price && Number(p.price.official) > 0) existing.price = p.price;
+          if (p.images && p.images.length) existing.images = p.images;
+          if (p.description) existing.description = p.description;
           if (p.url) existing.url = p.url;
           if (p.checkoutUrl) existing.checkoutUrl = p.checkoutUrl;
-          if (p.impact && !existing.impact) existing.impact = p.impact;
-          if (p.images && p.images.length && (!existing.images || !existing.images.length)) {
-            existing.images = p.images;
-          }
+          if (p.impact) existing.impact = p.impact;
+          if (p.source) existing.source = p.source;
+          existing.live = true;
+          existing.partner = true;
+          updated++;
         }
         return;
       }
-      if (keys[k]) return;
-      ids[p.id] = true;
-      keys[k] = true;
+
+      p.live = live;
+      if (live) {
+        p.partner = true;
+      }
       target.push(p);
       added++;
+      if (p.id) byId[p.id] = p;
+      if (ks !== "|") byStrict[ks] = p;
+      if (kl !== "|") byLoose[kl] = p;
     });
-    return added;
+    return { added: added, updated: updated };
   }
 
   function loadLocal() {
@@ -93,14 +137,18 @@
     });
   }
 
-  /**
-   * Charge tout et renvoie { local, live, meta }.
-   */
   function load() {
     return Promise.all([loadLocal(), loadLive()]).then(function (res) {
       return { local: res[0], live: res[1].products, meta: res[1].meta };
     });
   }
 
-  window.KiCatalogue = { load: load, merge: merge, loadLocal: loadLocal, loadLive: loadLive };
+  window.KiCatalogue = {
+    load: load,
+    merge: merge,
+    loadLocal: loadLocal,
+    loadLive: loadLive,
+    strictKey: strictKey,
+    looseKey: looseKey,
+  };
 })(window);

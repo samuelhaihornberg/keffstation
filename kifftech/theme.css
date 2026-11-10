@@ -2166,3 +2166,7 @@ textarea.caisse-input{min-height:64px;resize:vertical}
 .live-status .live-off { color: #9aa2c8; }
 .live-status.live-on { border-color: rgba(39, 209, 127, .35); }
 .rayon-warn { font-size: .62rem; opacity: .9; }
+
+/* ============ KiffTech — source du produit (Boutique / Impact) ============ */
+.badge-source { background: #7c5cff; color: #fff; font-size: .58rem; font-weight: 700; }
+.badge-source.badge-impact { background: #ff8a00; color: #1a1400; }

@@ -325,6 +325,9 @@ function readerCard(p, i = 0){
   if (p.videos?.length) badges.push(`<span class="badge badge-video">Video</span>`);
   if (p.images?.length) badges.push(`<span class="badge badge-official">Photo</span>`);
   else badges.push(`<span class="badge badge-official">Aperçu généré</span>`);
+  // Source du produit : Boutique (Shopify) / Impact / KiffTech
+  if (p.source === 'shopify') badges.push(`<span class="badge badge-source">Boutique</span>`);
+  else if (p.source === 'impact') badges.push(`<span class="badge badge-source badge-impact">Impact</span>`);
   if (has) badges.push(`<span class="badge badge-promo">-${kt.discount}%</span>`);
   if (tier === 'popular') badges.push(`<span class="badge badge-tier badge-popular">Populaire</span>`);
   if (tier === 'populace') badges.push(`<span class="badge badge-tier badge-populace">Populace</span>`);
@@ -426,7 +429,7 @@ function renderProducts(){
       if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official);
       const kt = p.kifftech; const has = kt.discount > 0; const med = generateMedia(p);
       const imgSrc = previewImage(p);
-      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
+      return `<article class="product-card" data-id="${p.id}"><div class="product-media"><img src="${imgSrc}" alt="${p.brand} ${p.model}" loading="lazy" decoding="async" onerror="this.src='${placeholderImg}'"><div class="media-badge">${med.badges.map(b => `<span class="badge ${b.class}">${b.label}</span>`).join('')}${p.source === 'shopify' ? '<span class="badge badge-source">Boutique</span>' : p.source === 'impact' ? '<span class="badge badge-source badge-impact">Impact</span>' : ''}${has ? `<span class="badge badge-promo">-${kt.discount}%</span>` : ''}</div></div><div class="product-info"><span class="product-brand">${p.brand}</span><h3 class="product-name">${p.model}</h3><div class="product-meta"><span class="meta-item meta-year">${p.year || ''}</span><div class="meta-item meta-price-wrap">${has ? fmtPriceCrossed(kt.official) : ''}<span class="price-kifftech ${has ? 'has-discount' : ''}">${fmtPrice(kt.kifftech)}</span></div></div>${has ? `<div class="discount-badge">${kt.reason} • Economisez ${fmtPrice(kt.savings)}${kt.freeDelivery ? ' • Livraison offerte' : ''}</div>` : ''}<div class="product-specs">${Object.entries(p.specs || {}).slice(0, 3).map(([k, v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div><div class="product-actions"><button class="btn-sm primary" onclick="openModal('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Details</button><button class="btn-sm" onclick="event.stopPropagation();addToCart('${p.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>Ajouter</button></div></div></article>`;
     }).join('');
   } else {
     console.warn('products reader/grid not found');
@@ -447,6 +450,7 @@ function toast(m,t='info'){const e=$('#toast');e.textContent=m;e.className='toas
 // KiffTech inventée sur un prix piloté par la source.
 function applyLivePricing(list){
   (list||[]).forEach(p=>{
+    if (!p || !p.live) return;          // les produits locaux gardent la remise KiffTech
     p.partner = true;
     const off = Number(p.price?.official||0);
     p.kifftech = { official: off, kifftech: off, discount: 0, savings: 0, freeDelivery: false, reason: 'Prix ' + (p.source==='impact'?'Impact':'Shopify'), currency: p.price?.currency || 'EUR' };
@@ -485,10 +489,12 @@ async function loadProducts(){
     if (window.KiCatalogue && window.KiCatalogue.load) {
       try {
         const res = await window.KiCatalogue.load();
-        const addedLocal = window.KiCatalogue.merge(products, res.local || []);
-        const addedLive  = window.KiCatalogue.merge(products, res.live || []);
-        applyLivePricing(res.live || []);
-        if (addedLocal || addedLive) {
+        // 1) catalogue local (fond), 2) flux live (source de verite des prix)
+        const rLocal = window.KiCatalogue.merge(products, res.local || [], { live: false });
+        const rLive  = window.KiCatalogue.merge(products, res.live  || [], { live: true });
+        applyLivePricing(products);
+        const addedLocal = rLocal.added, addedLive = rLive.added;
+        if (addedLocal || addedLive || rLive.updated) {
           products.forEach(p=>{ if(!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official); });
           filteredProducts=[...products];
           renderFilters();
