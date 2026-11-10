@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070816">
-<meta name="description" content="KeffStation — statistiques publiques : vues et durée de consultation par page, clics par lien et par bouton, en graphiques 3D.">
+<meta name="description" content="KeffStation — statistiques publiques : un graphique 3D montagnes par statistique (vues, durée, clics), et vue détaillée par page sélectionnée.">
 <title>KeffStation — Statistiques publiques</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
@@ -21,7 +21,6 @@
   </div>
   <div class="topbar-actions">
     <a href="../index.html" class="btn ghost" data-t="back_vitrine">← Vitrine</a>
-    <a href="../index.html" class="btn ghost only-wide" data-t="back_vitrine2">Retour à la plateforme</a>
     <button type="button" class="btn outline" id="btnImport" data-t="import">Importer</button>
     <button type="button" class="btn outline" id="btnExport" data-t="export">Exporter JSON</button>
     <button type="button" class="btn primary" id="btnReset" data-t="reset">Réinitialiser</button>
@@ -34,7 +33,7 @@
 
   <section class="hero">
     <h1 data-t="title">Statistiques publiques</h1>
-    <p class="hero-sub" data-t="subtitle">Vues et durée de consultation par page, clics par lien et par bouton. Données de ton navigateur + base de référence du dépôt.</p>
+    <p class="hero-sub" data-t="subtitle">Un graphique 3D montagnes par statistique (vues, durée, clics), et le détail par page sélectionnée. Données de ton navigateur + base de référence du dépôt.</p>
     <div class="badges">
       <span class="badge" id="badgeSource" data-t="source_local">Source : ce navigateur</span>
       <span class="badge" id="badgeUpdated" data-t="updated">Mise à jour : —</span>
@@ -65,8 +64,32 @@
     </div>
   </section>
 
-  <section class="charts">
-    <div class="chart-card">
+  <!-- ============ Barre de sélection : mode + statistique ============ -->
+  <section class="toolbar">
+    <div class="toolbar-block">
+      <span class="toolbar-label" data-t="tb_mode">Affichage</span>
+      <div class="filters" role="group" aria-label="Mode d'affichage">
+        <button type="button" class="chip active" data-mode="global" data-t="mode_global">🌐 Plateforme</button>
+        <button type="button" class="chip" data-mode="page" data-t="mode_page">📄 Page sélectionnée</button>
+      </div>
+    </div>
+
+    <div class="toolbar-block">
+      <span class="toolbar-label" data-t="tb_stat">Statistique</span>
+      <div class="filters" role="group" aria-label="Statistique affichée">
+        <button type="button" class="chip active" data-stat="views" data-t="stat_views">📈 Vues</button>
+        <button type="button" class="chip" data-stat="duration" data-t="stat_duration">⏱️ Durée</button>
+        <button type="button" class="chip" data-stat="clicks" data-t="stat_clicks">👆 Clics</button>
+      </div>
+    </div>
+
+    <p class="toolbar-note" id="toolbarNote" data-t="tb_note">Clique une montagne ou une ligne du tableau pour ouvrir le détail de la page.</p>
+  </section>
+
+  <!-- ============ Un graphique 3D montagnes par statistique ============ -->
+  <section class="charts" id="globalCharts">
+
+    <div class="chart-card" data-stat-card="views">
       <div class="chart-head">
         <h2 data-t="chart_views">Montagnes des vues</h2>
         <span class="chart-hint" data-t="chart_views_hint">Hauteur = nombre de vues</span>
@@ -79,9 +102,10 @@
         <span><i class="sw sw-mid"></i><span data-t="legend_mid">Moyen</span></span>
         <span><i class="sw sw-high"></i><span data-t="legend_high">Élevé</span></span>
       </div>
+      <button type="button" class="card-pick" data-pick="views" data-t="card_pick">Voir cette statistique</button>
     </div>
 
-    <div class="chart-card">
+    <div class="chart-card" data-stat-card="duration">
       <div class="chart-head">
         <h2 data-t="chart_duration">Montagnes de la durée de vue</h2>
         <span class="chart-hint" data-t="chart_duration_hint">Hauteur = temps passé sur la page</span>
@@ -94,11 +118,73 @@
         <span><i class="sw sw-mid d"></i><span data-t="legend_mid">Moyen</span></span>
         <span><i class="sw sw-high d"></i><span data-t="legend_high">Élevé</span></span>
       </div>
+      <button type="button" class="card-pick" data-pick="duration" data-t="card_pick">Voir cette statistique</button>
+    </div>
+
+    <div class="chart-card" data-stat-card="clicks">
+      <div class="chart-head">
+        <h2 data-t="chart_clicks">Montagnes des clics</h2>
+        <span class="chart-hint" data-t="chart_clicks_hint">Hauteur = clics sur liens et boutons</span>
+      </div>
+      <div class="scene" id="sceneClicks">
+        <div class="scene-loading" data-t="loading">Chargement de la 3D…</div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-low c"></i><span data-t="legend_low">Faible</span></span>
+        <span><i class="sw sw-mid c"></i><span data-t="legend_mid">Moyen</span></span>
+        <span><i class="sw sw-high c"></i><span data-t="legend_high">Élevé</span></span>
+      </div>
+      <button type="button" class="card-pick" data-pick="clicks" data-t="card_pick">Voir cette statistique</button>
+    </div>
+
+  </section>
+
+  <p class="hint-line" data-t="scene_hint">Glisse pour tourner · molette pour zoomer · clique une montagne pour ouvrir le détail de la page</p>
+
+  <!-- ============ Vue par page sélectionnée ============ -->
+  <section class="panel page-panel" id="pagePanel" hidden>
+    <div class="panel-head">
+      <div class="page-head">
+        <h2 id="pageTitle">—</h2>
+        <div class="cell-sub" id="pagePath">—</div>
+      </div>
+      <div class="filters">
+        <button type="button" class="chip" id="btnClearPage" data-t="page_clear">✕ Revenir à la plateforme</button>
+      </div>
+    </div>
+
+    <div class="page-kpis" id="pageKpis"></div>
+
+    <div class="page-scene-wrap">
+      <div class="scene" id="scenePage">
+        <div class="scene-loading" data-t="loading">Chargement de la 3D…</div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-low p"></i><span data-t="legend_low">Faible</span></span>
+        <span><i class="sw sw-mid p"></i><span data-t="legend_mid">Moyen</span></span>
+        <span><i class="sw sw-high p"></i><span data-t="legend_high">Élevé</span></span>
+      </div>
+    </div>
+
+    <p class="hint-line" data-t="page_scene_hint">Chaque montagne = un lien ou un bouton de la page (hauteur = nombre de clics)</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-t="th_type">Type</th>
+            <th data-t="th_label">Libellé</th>
+            <th data-t="th_target">Cible</th>
+            <th class="num" data-t="th_hits">Occurrences</th>
+            <th class="bar-col" data-t="th_share">Part</th>
+          </tr>
+        </thead>
+        <tbody id="pageHitsBody"></tbody>
+      </table>
     </div>
   </section>
 
-  <p class="hint-line" data-t="scene_hint">Glisse pour tourner · molette pour zoomer · surligne une montagne pour voir le détail</p>
-
+  <!-- ============ Tableaux ============ -->
   <section class="panel">
     <div class="panel-head">
       <h2 data-t="pages_title">Pages suivies</h2>
@@ -123,6 +209,7 @@
         <tbody id="pagesBody"></tbody>
       </table>
     </div>
+    <p class="hint-line" data-t="pages_hint">Clique une ligne pour ouvrir le graphique 3D de la page.</p>
   </section>
 
   <section class="panel">
@@ -155,7 +242,7 @@
     <h2 data-t="how_title">Comment ces chiffres sont-ils produits ?</h2>
     <ul>
       <li data-t="how_1">Chaque page visitée enregistre une vue, la durée passée dessus et chaque clic sur un lien ou un bouton (compteur en direct dans la barre du navigateur).</li>
-      <li data-t="how_2">Les mesures sont stockées localement (localStorage) : elles reflètent ta navigation sur ce navigateur, et sont conservées en base de référence dans le dépôt.</li>
+      <li data-t="how_2">Les mesures sont stockées localement (localStorage) : elles reflètent ta navigation sur ce navigateur, et une base de référence est versionnée dans le dépôt.</li>
       <li data-t="how_3">Un export JSON permet de consolider plusieurs navigateurs : importe le fichier sur l'autre poste pour fusionner les totaux.</li>
       <li data-t="how_4">Les mêmes événements sont envoyés à Google Analytics quand le tag est présent sur la page.</li>
     </ul>

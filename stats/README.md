@@ -42,13 +42,41 @@ Opt-out sur un élément : `data-ks-track="off"`.
 
 ## Les graphiques 3D
 
-Deux scènes indépendantes, montées avec **Three.js** (CDN unpkg, repli jsDelivr) :
+Trois scenes indépendantes, montées avec **Three.js** (CDN unpkg, repli jsDelivr) —
+**un graphique « montagnes » par statistique** :
 
-1. **Montagnes des vues** — hauteur = nombre de vues, largeur = clics, profondeur = durée ;
-2. **Montagnes de la durée de vue** — hauteur = temps passé sur la page.
+| Carte | Hauteur | Largeur | Profondeur |
+|---|---|---|---|
+| **Montagnes des vues** | nombre de vues | clics | durée |
+| **Montagnes de la durée de vue** | temps passé sur la page | clics | durée |
+| **Montagnes des clics** | clics sur liens/boutons | clics | durée |
 
-Interactions : glisser pour tourner, molette pour zoomer, survol d'une montagne pour le détail
-(infobulle), clic pour mettre en évidence la ligne correspondante du tableau.
+Chaque sommet est une page de la plateforme : survol = infobulle (valeur de la statistique,
+clics, durée, durée moyenne), clic = ouverture du **détail de la page**.
+
+### Vue par page sélectionnée
+
+Quand une page est sélectionnée (clic sur une montagne, sur une ligne du tableau des pages,
+ou via le bouton **📄 Page sélectionnée**), un panneau dédié s'ouvre :
+
+- 4 KPI de la page (vues, clics, durée totale, durée moyenne) ;
+- une **scène 3D montagnes** où chaque sommet est un **lien ou un bouton** de la page
+  (hauteur = nombre de clics, couleur = intensité) ;
+- la table des clics de la page ;
+- le tableau global des clics se filtre automatiquement sur la page sélectionnée.
+
+Un bouton **✕ Revenir à la plateforme** referme la vue et rétablit la vue d'ensemble.
+
+### Barre de sélection
+
+- **Affichage** : `🌐 Plateforme` / `📄 Page sélectionnée`
+- **Statistique** : `📈 Vues` / `⏱️ Durée` / `👆 Clics` — la carte correspondante est mise en
+  évidence (liseré cyan), et chaque carte dispose de son bouton *Voir cette statistique*.
+
+### Interactions 3D
+
+Glisser pour tourner, molette pour zoomer, survol d'une montagne pour le détail (infobulle),
+clic pour sélectionner la page. Les scènes hors écran sont mises en pause (économie CPU/GPU).
 
 **Repli 2D** : si le CDN est bloqué ou si WebGL est indisponible, un histogramme 2D est affiché
 à la place — la page reste utilisable.

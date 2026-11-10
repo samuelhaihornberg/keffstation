@@ -1,7 +1,9 @@
 /* =============================================================
    KeffStation — Statistiques publiques
+   -------------------------------------------------------------
    - Sources : localStorage (ce navigateur) + data/stats.json (base)
-   - 3D : montagnes (Three.js) — hauteur = vues / durée de vue
+   - 3D : un graphique « montagnes » par statistique
+          (vues / durée / clics) + un graphique par page sélectionnée
    - Fallback 2D si Three.js est indisponible (CDN bloqué / hors ligne)
    ============================================================= */
 
@@ -10,12 +12,11 @@
 const T = {
   fr: {
     back_vitrine: '← Vitrine',
-    back_vitrine2: 'Retour à la plateforme',
     import: 'Importer',
     export: 'Exporter JSON',
     reset: 'Réinitialiser',
     title: 'Statistiques publiques',
-    subtitle: "Vues et durée de consultation par page, clics par lien et par bouton. Données de ton navigateur + base de référence du dépôt.",
+    subtitle: "Un graphique 3D montagnes par statistique (vues, durée, clics), et le détail par page sélectionnée. Données de ton navigateur + base de référence du dépôt.",
     source_local: 'Source : ce navigateur',
     source_merged: 'Source : Navigateur + base de référence',
     updated: 'Mise à jour : —',
@@ -25,16 +26,29 @@ const T = {
     kpi_duration: 'Durée totale',
     kpi_avg: 'Durée moyenne / page',
     kpi_top: 'Page la plus vue',
+    tb_mode: 'Affichage',
+    tb_stat: 'Statistique',
+    tb_note: 'Clique une montagne ou une ligne du tableau pour ouvrir le détail de la page.',
+    tb_note_active: 'Statistique active : {stat}. Clique une montagne pour ouvrir le détail de la page.',
+    mode_global: '🌐 Plateforme',
+    mode_page: '📄 Page sélectionnée',
+    stat_views: '📈 Vues',
+    stat_duration: '⏱️ Durée',
+    stat_clicks: '👆 Clics',
     chart_views: 'Montagnes des vues',
     chart_views_hint: 'Hauteur = nombre de vues',
     chart_duration: 'Montagnes de la durée de vue',
     chart_duration_hint: 'Hauteur = temps passé sur la page',
+    chart_clicks: 'Montagnes des clics',
+    chart_clicks_hint: 'Hauteur = clics sur liens et boutons',
+    card_pick: 'Voir cette statistique',
     loading: 'Chargement de la 3D…',
     legend_low: 'Faible',
     legend_mid: 'Moyen',
     legend_high: 'Élevé',
-    scene_hint: 'Glisse pour tourner · molette pour zoomer · surligne une montagne pour voir le détail',
+    scene_hint: 'Glisse pour tourner · molette pour zoomer · clique une montagne pour ouvrir le détail de la page',
     pages_title: 'Pages suivies',
+    pages_hint: 'Clique une ligne pour ouvrir le graphique 3D de la page.',
     sort_views: 'Vues',
     sort_duration: 'Durée',
     sort_clicks: 'Clics',
@@ -53,6 +67,13 @@ const T = {
     th_target: 'Cible',
     th_source_page: 'Page',
     th_hits: 'Occurrences',
+    page_clear: '✕ Revenir à la plateforme',
+    page_title: 'Statistiques de la page',
+    page_scene_hint: 'Chaque montagne = un lien ou un bouton de la page (hauteur = nombre de clics)',
+    page_kpi_views: 'Vues',
+    page_kpi_clicks: 'Clics',
+    page_kpi_duration: 'Durée totale',
+    page_kpi_avg: 'Durée moyenne',
     how_title: 'Comment ces chiffres sont-ils produits ?',
     how_1: 'Chaque page visitée enregistre une vue, la durée passée dessus et chaque clic sur un lien ou un bouton.',
     how_2: 'Les mesures sont stockées localement (localStorage) : elles reflètent ta navigation sur ce navigateur, et une base de référence est versionnée dans le dépôt.',
@@ -60,23 +81,22 @@ const T = {
     how_4: 'Les mêmes événements sont envoyés à Google Analytics quand le tag est présent sur la page.',
     footer: 'KeffStation — statistiques publiques',
     no_data: 'Aucune donnée — visite quelques pages puis reviens ici.',
+    no_hits: 'Aucun clic enregistré sur cette page.',
     link: 'Lien',
     button: 'Bouton',
     fallback: '3D indisponible (CDN bloqué) — vue 2D de secours',
     reset_done: 'Données locales réinitialisées.',
     import_done: 'Données importées et fusionnées.',
     import_error: 'Fichier invalide.',
-    views: 'vues',
-    clicks: 'clics'
+    filter_page: 'Filtre : {page}'
   },
   en: {
     back_vitrine: '← Showcase',
-    back_vitrine2: 'Back to the platform',
     import: 'Import',
     export: 'Export JSON',
     reset: 'Reset',
     title: 'Public statistics',
-    subtitle: 'Views and time spent per page, clicks per link and per button. Data from your browser + the repository baseline.',
+    subtitle: 'A 3D mountain chart per statistic (views, duration, clicks), plus a detail view for the selected page. Data from your browser + the repository baseline.',
     source_local: 'Source: this browser',
     source_merged: 'Source: browser + baseline',
     updated: 'Updated: —',
@@ -86,16 +106,29 @@ const T = {
     kpi_duration: 'Total duration',
     kpi_avg: 'Average time / page',
     kpi_top: 'Most viewed page',
+    tb_mode: 'Display',
+    tb_stat: 'Statistic',
+    tb_note: 'Click a mountain or a table row to open the page detail.',
+    tb_note_active: 'Active statistic: {stat}. Click a mountain to open the page detail.',
+    mode_global: '🌐 Platform',
+    mode_page: '📄 Selected page',
+    stat_views: '📈 Views',
+    stat_duration: '⏱️ Duration',
+    stat_clicks: '👆 Clicks',
     chart_views: 'View mountains',
     chart_views_hint: 'Height = number of views',
     chart_duration: 'View-duration mountains',
     chart_duration_hint: 'Height = time spent on the page',
+    chart_clicks: 'Click mountains',
+    chart_clicks_hint: 'Height = clicks on links and buttons',
+    card_pick: 'View this statistic',
     loading: 'Loading 3D…',
     legend_low: 'Low',
     legend_mid: 'Medium',
     legend_high: 'High',
-    scene_hint: 'Drag to rotate · scroll to zoom · hover a mountain for details',
+    scene_hint: 'Drag to rotate · scroll to zoom · click a mountain to open the page detail',
     pages_title: 'Tracked pages',
+    pages_hint: 'Click a row to open the 3D chart of that page.',
     sort_views: 'Views',
     sort_duration: 'Duration',
     sort_clicks: 'Clicks',
@@ -114,6 +147,13 @@ const T = {
     th_target: 'Target',
     th_source_page: 'Page',
     th_hits: 'Hits',
+    page_clear: '✕ Back to the platform',
+    page_title: 'Page statistics',
+    page_scene_hint: 'Each mountain = a link or a button of the page (height = number of clicks)',
+    page_kpi_views: 'Views',
+    page_kpi_clicks: 'Clicks',
+    page_kpi_duration: 'Total duration',
+    page_kpi_avg: 'Average duration',
     how_title: 'How are these numbers produced?',
     how_1: 'Each visited page records a view, the time spent on it and every click on a link or a button.',
     how_2: 'Metrics are stored locally (localStorage): they reflect your browsing in this browser, and a baseline is versioned in the repository.',
@@ -121,14 +161,14 @@ const T = {
     how_4: 'The same events are sent to Google Analytics when the tag is present on the page.',
     footer: 'KeffStation — public statistics',
     no_data: 'No data — visit a few pages then come back here.',
+    no_hits: 'No click recorded on this page.',
     link: 'Link',
     button: 'Button',
     fallback: '3D unavailable (CDN blocked) — fallback 2D view',
     reset_done: 'Local data reset.',
     import_done: 'Data imported and merged.',
     import_error: 'Invalid file.',
-    views: 'views',
-    clicks: 'clicks'
+    filter_page: 'Filter: {page}'
   }
 };
 
@@ -220,6 +260,7 @@ function merge(seedData) {
     if (rec.local) item.local = true;
     if (rec.seeded) item.seeded = true;
     if (!item.label && rec.label) item.label = rec.label;
+    if (!item.target && rec.target) item.target = rec.target;
     bucket[key] = item;
   };
 
@@ -236,15 +277,15 @@ function merge(seedData) {
   }
 
   const sources = [readLocal(), imported].filter(Boolean);
-  sources.forEach((src) => {
-    Object.keys(src.pages || {}).forEach((path) => {
-      addPage(path, Object.assign({}, src.pages[path], { local: true }));
+  sources.forEach((src2) => {
+    Object.keys(src2.pages || {}).forEach((path) => {
+      addPage(path, Object.assign({}, src2.pages[path], { local: true }));
     });
-    Object.keys(src.links || {}).forEach((k) => {
-      addHit(links, k, Object.assign({}, src.links[k], { local: true }), 'link');
+    Object.keys(src2.links || {}).forEach((k) => {
+      addHit(links, k, Object.assign({}, src2.links[k], { local: true }), 'link');
     });
-    Object.keys(src.buttons || {}).forEach((k) => {
-      addHit(buttons, k, Object.assign({}, src.buttons[k], { local: true }), 'button');
+    Object.keys(src2.buttons || {}).forEach((k) => {
+      addHit(buttons, k, Object.assign({}, src2.buttons[k], { local: true }), 'button');
     });
   });
 
@@ -315,11 +356,27 @@ function escapeHtml(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-/* ---------------- Rendu des tableaux ---------------- */
+function metricLabel(metric) {
+  if (metric === 'duration') return T[lang].kpi_duration;
+  if (metric === 'clicks') return T[lang].kpi_clicks;
+  return T[lang].kpi_views;
+}
+
+/* ---------------- État ---------------- */
+
+const STATS = [
+  { key: 'views', scene: 'sceneViews', hue: { h0: 0.52, h1: 0.76, s: 0.85, l0: 0.34, l1: 0.62 }, keyColor: 0x00d4ff, rimColor: 0x8a4dff },
+  { key: 'duration', scene: 'sceneDuration', hue: { h0: 0.06, h1: 0.95, s: 0.9, l0: 0.38, l1: 0.62 }, keyColor: 0xf59e0b, rimColor: 0xff3d9a },
+  { key: 'clicks', scene: 'sceneClicks', hue: { h0: 0.78, h1: 0.95, s: 0.9, l0: 0.36, l1: 0.64 }, keyColor: 0x8a4dff, rimColor: 0x00d4ff }
+];
 
 let sortKey = 'views';
 let filterKey = 'all';
+let activeStat = 'views';
+let selectedPage = null;
 let currentData = null;
+
+/* ---------------- Rendu des tableaux ---------------- */
 
 function renderPages(data) {
   const tbody = document.getElementById('pagesBody');
@@ -337,6 +394,7 @@ function renderPages(data) {
   rows.forEach((r) => {
     const tr = document.createElement('tr');
     tr.dataset.path = r.path;
+    if (r.path === selectedPage) tr.classList.add('selected');
     const share = Math.round(((r[sortKey] || 0) / max) * 100);
     tr.innerHTML = `
       <td>
@@ -348,8 +406,22 @@ function renderPages(data) {
       <td class="num">${fmtDuration(r.duration)}</td>
       <td class="num">${fmtDuration(r.avg)}</td>
       <td class="bar-col"><div class="bar"><i style="width:${share}%"></i></div></td>`;
+    tr.addEventListener('click', () => selectPage(r.path));
     tbody.appendChild(tr);
   });
+}
+
+function hitRow(h, withPage) {
+  const tr = document.createElement('tr');
+  const share = h.share !== undefined ? h.share : 0;
+  tr.innerHTML = `
+    <td><span class="tag ${h.kind}">${escapeHtml(h.kind === 'link' ? T[lang].link : T[lang].button)}</span></td>
+    <td><div class="cell-main">${escapeHtml(h.label)}</div></td>
+    <td><div class="cell-sub">${escapeHtml(h.target || '—')}</div></td>
+    ${withPage ? `<td><div class="cell-sub">${escapeHtml(pageLabel(h.page))}</div></td>` : ''}
+    <td class="num">${fmtInt(h.count)}</td>
+    <td class="bar-col"><div class="bar d"><i style="width:${share}%"></i></div></td>`;
+  return tr;
 }
 
 function renderHits(data) {
@@ -360,6 +432,7 @@ function renderHits(data) {
   let rows = data.hits;
   if (filterKey === 'links') rows = rows.filter((r) => r.kind === 'link');
   if (filterKey === 'buttons') rows = rows.filter((r) => r.kind === 'button');
+  if (selectedPage) rows = rows.filter((r) => r.page === selectedPage);
 
   if (!rows.length) {
     tbody.innerHTML = `<tr><td colspan="6" class="empty">${escapeHtml(T[lang].no_data)}</td></tr>`;
@@ -367,18 +440,9 @@ function renderHits(data) {
   }
 
   const max = Math.max(...rows.map((r) => r.count || 0), 1);
-
   rows.forEach((r) => {
-    const tr = document.createElement('tr');
     const share = Math.round(((r.count || 0) / max) * 100);
-    tr.innerHTML = `
-      <td><span class="tag ${r.kind}">${escapeHtml(r.kind === 'link' ? T[lang].link : T[lang].button)}</span></td>
-      <td><div class="cell-main">${escapeHtml(r.label)}</div></td>
-      <td><div class="cell-sub">${escapeHtml(r.target || '—')}</div></td>
-      <td><div class="cell-sub">${escapeHtml(pageLabel(r.page))}</div></td>
-      <td class="num">${fmtInt(r.count)}</td>
-      <td class="bar-col"><div class="bar d"><i style="width:${share}%"></i></div></td>`;
-    tbody.appendChild(tr);
+    tbody.appendChild(hitRow(Object.assign({}, r, { share }), true));
   });
 }
 
@@ -424,7 +488,7 @@ async function loadThree() {
 }
 
 function buildTerrain(THREE, w, d, h, hue) {
-  const res = 36;
+  const res = 32;
   const geo = new THREE.PlaneGeometry(w, d, res, res);
   geo.rotateX(-Math.PI / 2);
   const pos = geo.attributes.position;
@@ -454,11 +518,13 @@ class MountainChart {
     this.container = container;
     this.THREE = THREE;
     this.opts = opts || {};
+    this.metric = this.opts.metric || 'views';
     this.items = [];
     this.meshes = [];
     this.hovered = null;
     this.autoRotate = true;
     this.idleTimer = 0;
+    this.visible = true;
 
     const width = container.clientWidth || 600;
     const height = container.clientHeight || 380;
@@ -493,10 +559,9 @@ class MountainChart {
     ground.receiveShadow = true;
     this.scene.add(ground);
 
-    const grid = new THREE.GridHelper(80, 40, 0x1b2440, 0x0d1226);
-    this.scene.add(grid);
+    this.scene.add(new THREE.GridHelper(80, 40, 0x1b2440, 0x0d1226));
 
-    // caméra orbitale maison (pas de dépendance OrbitControls)
+    // caméra orbitale maison (aucune dépendance OrbitControls)
     this.yaw = Math.PI * 0.25;
     this.pitch = 0.62;
     this.dist = 26;
@@ -509,7 +574,19 @@ class MountainChart {
     this.scene.add(this.group);
 
     this.bindEvents();
+    this.observe();
     this.animate();
+  }
+
+  /* Pause le rendu quand la carte est hors écran (CPU/GPU) */
+  observe() {
+    if (typeof IntersectionObserver === 'undefined') return;
+    try {
+      this.observer = new IntersectionObserver((entries) => {
+        this.visible = entries.some((e) => e.isIntersecting);
+      }, { threshold: 0.05 });
+      this.observer.observe(this.container);
+    } catch (e) { /* ignore */ }
   }
 
   bindEvents() {
@@ -517,12 +594,14 @@ class MountainChart {
     let dragging = false;
     let lastX = 0;
     let lastY = 0;
+    let moved = false;
 
     el.addEventListener('pointerdown', (e) => {
       dragging = true;
+      moved = false;
       lastX = e.clientX;
       lastY = e.clientY;
-      el.setPointerCapture(e.pointerId);
+      try { el.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
     });
 
     el.addEventListener('pointermove', (e) => {
@@ -537,6 +616,7 @@ class MountainChart {
         this.pitch = Math.max(0.12, Math.min(1.35, this.pitch + (e.clientY - lastY) * 0.004));
         lastX = e.clientX;
         lastY = e.clientY;
+        moved = true;
         this.autoRotate = false;
         clearTimeout(this.idleTimer);
         this.idleTimer = setTimeout(() => { this.autoRotate = true; }, 4000);
@@ -545,9 +625,11 @@ class MountainChart {
 
     const stop = (e) => {
       dragging = false;
-      if (el.hasPointerCapture && e && e.pointerId != null && el.hasPointerCapture(e.pointerId)) {
-        el.releasePointerCapture(e.pointerId);
-      }
+      try {
+        if (e && e.pointerId != null && el.hasPointerCapture && el.hasPointerCapture(e.pointerId)) {
+          el.releasePointerCapture(e.pointerId);
+        }
+      } catch (err) { /* ignore */ }
     };
     el.addEventListener('pointerup', stop);
     el.addEventListener('pointercancel', stop);
@@ -559,7 +641,8 @@ class MountainChart {
     }, { passive: false });
 
     el.addEventListener('click', () => {
-      if (this.hovered && this.hovered.path) focusRow(this.hovered.path);
+      if (moved) return;               // simple rotation : pas une sélection
+      if (this.hovered && this.opts.onSelect) this.opts.onSelect(this.hovered);
     });
 
     this._resize = () => {
@@ -572,8 +655,10 @@ class MountainChart {
     window.addEventListener('resize', this._resize);
   }
 
-  setItems(items) {
+  setItems(items, metric, extra) {
     const THREE = this.THREE;
+    const opts = extra || {};
+    this.metric = metric || this.metric;
     this.items = items || [];
     this.meshes = [];
 
@@ -585,9 +670,7 @@ class MountainChart {
 
     if (!this.items.length) return;
 
-    const metric = this.opts.metric || 'views';
-    const values = this.items.map((it) => Number(it[metric] || 0));
-    const maxValue = Math.max(...values, 1);
+    const maxValue = Math.max(...this.items.map((it) => Number(it[this.metric] || 0)), 1);
     const maxClicks = Math.max(...this.items.map((it) => Number(it.clicks || 0)), 1);
     const maxDur = Math.max(...this.items.map((it) => Number(it.duration || 0)), 1);
 
@@ -595,11 +678,11 @@ class MountainChart {
     const spacing = 9;
 
     this.items.forEach((item, i) => {
-      const value = Number(item[metric] || 0);
+      const value = Number(item[this.metric] || 0);
       const norm = value / maxValue;
       const h = 1.1 + Math.sqrt(norm) * 5.6;
-      const w = 2.6 + Math.sqrt(Number(item.clicks || 0) / maxClicks) * 1.8;
-      const d = 2.6 + Math.sqrt(Number(item.duration || 0) / maxDur) * 1.5;
+      const w = opts.uniform ? 3.4 : 2.6 + Math.sqrt(Number(item.clicks || 0) / maxClicks) * 1.8;
+      const d = opts.uniform ? 3.4 : 2.6 + Math.sqrt(Number(item.duration || 0) / maxDur) * 1.5;
 
       const geo = buildTerrain(THREE, w, d, h, this.opts.hue);
       const mat = new THREE.MeshStandardMaterial({
@@ -634,7 +717,6 @@ class MountainChart {
       this.meshes.push(peak);
     });
 
-    // recentrage caméra sur l'ensemble
     const rows = Math.ceil(this.items.length / cols);
     this.target.set(0, 1.8, 0);
     this.dist = Math.max(16, Math.min(46, 12 + rows * 6));
@@ -649,15 +731,24 @@ class MountainChart {
   showTooltip(item, x, y) {
     const tip = document.getElementById('tooltip');
     if (!tip) return;
-    const metric = this.opts.metric || 'views';
-    const value = item[metric] || 0;
-    const valueLabel = metric === 'duration' ? fmtDuration(value) : fmtInt(value);
-    tip.innerHTML = `
-      <div class="tt-title">${escapeHtml(item.label)}</div>
-      <div class="tt-row"><span>${escapeHtml(this.opts.titleKey === 'duration' ? T[lang].kpi_duration : T[lang].kpi_views)}</span><b>${valueLabel}</b></div>
-      <div class="tt-row"><span>${escapeHtml(T[lang].kpi_clicks)}</span><b>${fmtInt(item.clicks)}</b></div>
-      <div class="tt-row"><span>${escapeHtml(T[lang].kpi_duration)}</span><b>${fmtDuration(item.duration)}</b></div>
-      <div class="tt-row"><span>${escapeHtml(T[lang].kpi_avg)}</span><b>${fmtDuration(item.avg)}</b></div>`;
+    const value = item[this.metric] || 0;
+    const valueLabel = this.metric === 'duration' ? fmtDuration(value) : fmtInt(value);
+
+    let rows = `
+      <div class="tt-row"><span>${escapeHtml(metricLabel(this.metric))}</span><b>${valueLabel}</b></div>`;
+
+    if (this.opts.detail === 'page') {
+      rows += `
+        <div class="tt-row"><span>${escapeHtml(T[lang].th_type)}</span><b>${escapeHtml(item.kind === 'link' ? T[lang].link : T[lang].button)}</b></div>
+        <div class="tt-row"><span>${escapeHtml(T[lang].th_target)}</span><b>${escapeHtml(item.target || '—')}</b></div>`;
+    } else {
+      rows += `
+        <div class="tt-row"><span>${escapeHtml(T[lang].kpi_clicks)}</span><b>${fmtInt(item.clicks)}</b></div>
+        <div class="tt-row"><span>${escapeHtml(T[lang].kpi_duration)}</span><b>${fmtDuration(item.duration)}</b></div>
+        <div class="tt-row"><span>${escapeHtml(T[lang].kpi_avg)}</span><b>${fmtDuration(item.avg)}</b></div>`;
+    }
+
+    tip.innerHTML = `<div class="tt-title">${escapeHtml(item.label)}</div>${rows}`;
     tip.hidden = false;
     const rect = tip.getBoundingClientRect();
     let left = x + 16;
@@ -670,7 +761,7 @@ class MountainChart {
 
   animate() {
     this.raf = requestAnimationFrame(() => this.animate());
-    const THREE = this.THREE;
+    if (!this.visible) return;
 
     if (this.autoRotate) this.yaw += 0.0018;
 
@@ -682,7 +773,6 @@ class MountainChart {
     );
     this.camera.lookAt(this.target);
 
-    // survol
     this.raycaster.setFromCamera(this.pointer, this.camera);
     const hits = this.raycaster.intersectObjects(this.meshes, false);
     if (hits.length) {
@@ -701,22 +791,24 @@ class MountainChart {
 
 /* ---------------- Vue 2D de secours ---------------- */
 
-function fallback2d(container, items, metric) {
+function fallback2d(container, items, metric, detail) {
   container.innerHTML = '';
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   const W = container.clientWidth || 600;
   const H = container.clientHeight || 380;
-  canvas.width = W * (window.devicePixelRatio || 1);
-  canvas.height = H * (window.devicePixelRatio || 1);
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
   canvas.style.width = '100%';
   canvas.style.height = '100%';
   container.appendChild(canvas);
-  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  ctx.scale(dpr, dpr);
 
   const max = Math.max(...items.map((i) => Number(i[metric] || 0)), 1);
   const pad = 34;
-  const bw = Math.max(12, (W - pad * 2) / Math.max(items.length, 1) - 14);
+  const step = (W - pad * 2) / Math.max(items.length, 1);
+  const bw = Math.max(10, step - 12);
 
   ctx.fillStyle = '#05070f';
   ctx.fillRect(0, 0, W, H);
@@ -726,16 +818,17 @@ function fallback2d(container, items, metric) {
   items.forEach((it, i) => {
     const v = Number(it[metric] || 0);
     const h = Math.max(4, ((H - 100) * v) / max);
-    const x = pad + 14 + i * ((W - pad * 2) / Math.max(items.length, 1));
+    const x = pad + 12 + i * step;
     const grad = ctx.createLinearGradient(0, H - 40 - h, 0, H - 40);
-    grad.addColorStop(0, metric === 'duration' ? '#fb7185' : '#22d3ee');
-    grad.addColorStop(1, metric === 'duration' ? '#f59e0b' : '#8a4dff');
+    if (metric === 'duration') { grad.addColorStop(0, '#fb7185'); grad.addColorStop(1, '#f59e0b'); }
+    else if (metric === 'clicks') { grad.addColorStop(0, '#c084fc'); grad.addColorStop(1, '#ff3d9a'); }
+    else { grad.addColorStop(0, '#22d3ee'); grad.addColorStop(1, '#8a4dff'); }
     ctx.fillStyle = grad;
     ctx.fillRect(x, H - 40 - h, bw, h);
     ctx.fillStyle = 'rgba(255,255,255,.75)';
     ctx.font = '600 11px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(it.label.slice(0, 14), x + bw / 2, H - 22);
+    ctx.fillText(String(it.label || '').slice(0, 14), x + bw / 2, H - 22);
     ctx.fillStyle = 'rgba(255,255,255,.5)';
     ctx.fillText(metric === 'duration' ? fmtDuration(v) : fmtInt(v), x + bw / 2, H - 44 - h);
   });
@@ -746,16 +839,140 @@ function fallback2d(container, items, metric) {
   container.appendChild(note);
 }
 
-/* ---------------- Focus ligne du tableau ---------------- */
+/* ---------------- Sélection ---------------- */
 
-function focusRow(path) {
-  const rows = document.querySelectorAll('#pagesBody tr');
-  rows.forEach((tr) => {
-    tr.classList.remove('flash');
-    if (tr.dataset.path === path) {
-      tr.classList.add('flash');
-      tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+function selectPage(path) {
+  if (!path) return;
+  selectedPage = path;
+  setMode('page');
+  renderPagePanel();
+  renderPages(currentData);
+  renderHits(currentData);
+  const panel = document.getElementById('pagePanel');
+  if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function deselectPage() {
+  selectedPage = null;
+  setMode('global');
+  const scene = document.getElementById('scenePage');
+  if (scene && pageChart) pageChart.setItems([], 'clicks', { uniform: true });
+  renderPagePanel();
+  renderPages(currentData);
+  renderHits(currentData);
+}
+
+function setMode(mode) {
+  document.querySelectorAll('[data-mode]').forEach((b) => {
+    b.classList.toggle('active', b.getAttribute('data-mode') === mode);
+  });
+  const panel = document.getElementById('pagePanel');
+  if (panel) panel.hidden = mode !== 'page';
+  const charts = document.getElementById('globalCharts');
+  if (charts) charts.classList.toggle('dimmed', mode === 'page');
+}
+
+function setActiveStat(key) {
+  activeStat = key;
+  document.querySelectorAll('[data-stat]').forEach((b) => {
+    b.classList.toggle('active', b.getAttribute('data-stat') === key);
+  });
+  document.querySelectorAll('[data-stat-card]').forEach((card) => {
+    card.classList.toggle('active', card.getAttribute('data-stat-card') === key);
+  });
+  const note = document.getElementById('toolbarNote');
+  if (note) {
+    const label = key === 'duration' ? T[lang].stat_duration : (key === 'clicks' ? T[lang].stat_clicks : T[lang].stat_views);
+    note.textContent = T[lang].tb_note_active.replace('{stat}', label);
+  }
+  if (pageChart && selectedPage) refreshPageScene();
+}
+
+function renderPagePanel() {
+  const panel = document.getElementById('pagePanel');
+  if (!panel) return;
+
+  if (!selectedPage) {
+    panel.hidden = true;
+    return;
+  }
+  panel.hidden = false;
+
+  const page = (currentData.pages || []).find((p) => p.path === selectedPage);
+  const title = document.getElementById('pageTitle');
+  const path = document.getElementById('pagePath');
+  const kpis = document.getElementById('pageKpis');
+
+  if (title) title.textContent = page ? page.label : selectedPage;
+  if (path) path.textContent = selectedPage;
+
+  if (kpis) {
+    kpis.innerHTML = '';
+    const cells = [
+      { label: T[lang].page_kpi_views, value: fmtInt(page ? page.views : 0) },
+      { label: T[lang].page_kpi_clicks, value: fmtInt(page ? page.clicks : 0) },
+      { label: T[lang].page_kpi_duration, value: fmtDuration(page ? page.duration : 0) },
+      { label: T[lang].page_kpi_avg, value: fmtDuration(page ? page.avg : 0) }
+    ];
+    cells.forEach((c) => {
+      const div = document.createElement('div');
+      div.className = 'kpi mini';
+      div.innerHTML = `<div class="kpi-value">${c.value}</div><div class="kpi-label">${escapeHtml(c.label)}</div>`;
+      kpis.appendChild(div);
+    });
+  }
+
+  refreshPageScene();
+  renderPageHits();
+}
+
+function pageHits() {
+  if (!currentData) return [];
+  return currentData.hits.filter((h) => h.page === selectedPage);
+}
+
+function refreshPageScene() {
+  const hits = pageHits();
+  const items = hits.map((h) => ({
+    label: h.label,
+    kind: h.kind,
+    target: h.target,
+    clicks: h.count,
+    duration: 0,
+    views: 0,
+    avg: 0
+  }));
+
+  const scene = document.getElementById('scenePage');
+  if (!scene) return;
+
+  if (!items.length) {
+    if (pageChart) pageChart.setItems([], 'clicks', { uniform: true });
+    const tbody = document.getElementById('pageHitsBody');
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="empty">${escapeHtml(T[lang].no_hits)}</td></tr>`;
+    return;
+  }
+
+  if (pageChart) {
+    pageChart.setItems(items, 'clicks', { uniform: true });
+  } else {
+    fallback2d(scene, items, 'clicks');
+  }
+}
+
+function renderPageHits() {
+  const tbody = document.getElementById('pageHitsBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  const hits = pageHits();
+  if (!hits.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">${escapeHtml(T[lang].no_hits)}</td></tr>`;
+    return;
+  }
+  const max = Math.max(...hits.map((h) => h.count || 0), 1);
+  hits.forEach((h) => {
+    const share = Math.round(((h.count || 0) / max) * 100);
+    tbody.appendChild(hitRow(Object.assign({}, h, { share }), false));
   });
 }
 
@@ -830,17 +1047,20 @@ function toast(msg) {
 
 /* ---------------- Rendu global ---------------- */
 
-let chartViews = null;
-let chartDuration = null;
+let statCharts = {};
+let pageChart = null;
 
 function render() {
   currentData = merge();
   renderKpis(currentData);
   renderPages(currentData);
   renderHits(currentData);
+  if (selectedPage) renderPagePanel();
 
-  if (chartViews) chartViews.setItems(currentData.pages);
-  if (chartDuration) chartDuration.setItems(currentData.pages);
+  STATS.forEach((s) => {
+    const chart = statCharts[s.key];
+    if (chart) chart.setItems(currentData.pages, s.key);
+  });
 }
 
 /* ---------------- Amorçage ---------------- */
@@ -854,8 +1074,10 @@ async function boot() {
   } catch (e) { seed = null; }
 
   render();
+  setActiveStat(activeStat);
+  setMode('global');
 
-  // Filtres et tris
+  // Tri du tableau des pages
   document.querySelectorAll('[data-sort]').forEach((btn) => {
     btn.addEventListener('click', () => {
       sortKey = btn.getAttribute('data-sort');
@@ -864,6 +1086,7 @@ async function boot() {
     });
   });
 
+  // Filtre liens / boutons
   document.querySelectorAll('[data-filter]').forEach((btn) => {
     btn.addEventListener('click', () => {
       filterKey = btn.getAttribute('data-filter');
@@ -872,12 +1095,47 @@ async function boot() {
     });
   });
 
+  // Mode d'affichage
+  document.querySelectorAll('[data-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-mode');
+      if (mode === 'page' && !selectedPage) {
+        const top = currentData.pages.slice().sort((a, b) => b.views - a.views)[0];
+        if (top) { selectPage(top.path); return; }
+      }
+      setMode(mode);
+    });
+  });
+
+  // Boutons « statistique »
+  document.querySelectorAll('[data-stat]').forEach((btn) => {
+    btn.addEventListener('click', () => setActiveStat(btn.getAttribute('data-stat')));
+  });
+
+  // Boutons « voir cette statistique » sur chaque carte
+  document.querySelectorAll('[data-pick]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-pick');
+      setActiveStat(key);
+      const card = document.querySelector(`[data-stat-card="${key}"]`);
+      if (card) {
+        card.classList.add('flash');
+        setTimeout(() => card.classList.remove('flash'), 1200);
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  const btnClear = document.getElementById('btnClearPage');
+  if (btnClear) btnClear.addEventListener('click', deselectPage);
+
   const btnLang = document.getElementById('btnLang');
   if (btnLang) {
     btnLang.addEventListener('click', () => {
       lang = lang === 'fr' ? 'en' : 'fr';
       try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
       applyLang();
+      setActiveStat(activeStat);
       render();
     });
   }
@@ -905,54 +1163,56 @@ async function boot() {
     });
   }
 
-  // 3D
+  // ---- Scènes 3D ----
   const THREE = await loadThree();
-  const cViews = document.getElementById('sceneViews');
-  const cDuration = document.getElementById('sceneDuration');
+  const use3D = !!THREE;
 
-  if (!THREE) {
-    [cViews, cDuration].forEach((c) => {
-      if (!c) return;
-      c.innerHTML = '';
-      fallback2d(c, currentData.pages, c === cViews ? 'views' : 'duration');
-    });
-    return;
+  STATS.forEach((s) => {
+    const c = document.getElementById(s.scene);
+    if (!c) return;
+    c.innerHTML = '';
+    if (use3D) {
+      try {
+        statCharts[s.key] = new MountainChart(c, THREE, {
+          metric: s.key,
+          hue: s.hue,
+          keyColor: s.keyColor,
+          rimColor: s.rimColor,
+          onSelect: (item) => { if (item && item.path) selectPage(item.path); }
+        });
+      } catch (e) {
+        statCharts[s.key] = null;
+      }
+    }
+  });
+
+  const cPage = document.getElementById('scenePage');
+  if (cPage && use3D) {
+    try {
+      pageChart = new MountainChart(cPage, THREE, {
+        metric: 'clicks',
+        hue: { h0: 0.13, h1: 0.92, s: 0.9, l0: 0.38, l1: 0.64 },
+        keyColor: 0xffd23f,
+        rimColor: 0xff3d9a,
+        detail: 'page',
+        onSelect: (item) => { if (item) toast(`${item.label} — ${fmtInt(item.clicks)} clic(s)`); }
+      });
+    } catch (e) {
+      pageChart = null;
+    }
   }
 
-  [cViews, cDuration].forEach((c) => { if (c) c.innerHTML = ''; });
+  // Repli 2D si la 3D n'est pas disponible
+  STATS.forEach((s) => {
+    const c = document.getElementById(s.scene);
+    if (!c) return;
+    if (!statCharts[s.key]) fallback2d(c, currentData.pages, s.key);
+  });
 
-  try {
-    chartViews = new MountainChart(cViews, THREE, {
-      metric: 'views',
-      hue: { h0: 0.52, h1: 0.76, s: 0.85, l0: 0.34, l1: 0.62 },
-      keyColor: 0x00d4ff,
-      rimColor: 0x8a4dff,
-      titleKey: 'views'
-    });
-
-    chartDuration = new MountainChart(cDuration, THREE, {
-      metric: 'duration',
-      hue: { h0: 0.06, h1: 0.95, s: 0.9, l0: 0.38, l1: 0.62 },
-      keyColor: 0xf59e0b,
-      rimColor: 0xff3d9a,
-      titleKey: 'duration'
-    });
-
-    chartViews.setItems(currentData.pages);
-    chartDuration.setItems(currentData.pages);
-  } catch (e) {
-    // WebGL indisponible (pilote, navigateur, machine) : repli 2D
-    chartViews = null;
-    chartDuration = null;
-    [cViews, cDuration].forEach((c) => {
-      if (!c) return;
-      c.innerHTML = '';
-      fallback2d(c, currentData.pages, c === cViews ? 'views' : 'duration');
-    });
-  }
+  render();
 }
 
-// Démarrage (promesse exposée pour les intégrations : window.KeffStatsReady)
+/* Démarrage (promesse exposée pour les intégrations : window.KeffStatsReady) */
 window.KeffStatsReady = boot().then(() => {
   document.dispatchEvent(new CustomEvent('ks-stats-ready'));
   return true;
