@@ -159,12 +159,63 @@ function orbitPosition(index, total, radius = 36) {
 }
 
 const APP_ICONS = {
-  'Kifftech': '<img class="app-icon-img" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20KeffTech.png" alt="Logo KiffTech" loading="lazy">',
-  'ViArtificial labs': '<img class="app-icon-img" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20ViA.png" alt="Logo ViArtificial Labs" loading="lazy">',
+  'Kifftech': {
+    src: 'https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20KeffTech.png',
+    alt: 'Logo KiffTech',
+    fallback: '🛍️'
+  },
+  'ViArtificial labs': {
+    src: 'https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20ViA.png',
+    alt: 'Logo ViArtificial Labs',
+    fallback: '🤖'
+  },
   'Videogames': '🎮',
   'cos Editor': '🧩',
   'Linguistic Motors': '🧠'
 };
+
+/* Rend une icône d'application dans un conteneur DOM.
+   - Si l'icône est un objet {src, alt, fallback} : crée un vrai élément <img>
+     avec un pictogramme de secours si l'image ne charge pas.
+   - Si l'icône est une chaîne (emoji) : l'insère en textContent (jamais d'HTML brut).
+   size : taille en px appliquée au conteneur et à l'image.
+*/
+function renderAppIcon(appNum, containerEl, size = 44) {
+  containerEl.innerHTML = '';
+  const icon = APP_ICONS[appNum];
+  const fallbackText = (icon && typeof icon === 'object') ? icon.fallback : (typeof icon === 'string' ? icon : appNum.slice(0, 1));
+
+  if (icon && typeof icon === 'object' && icon.src) {
+    const img = document.createElement('img');
+    img.className = 'app-icon-img';
+    img.src = icon.src;
+    img.alt = icon.alt || 'Logo ' + appNum;
+    img.loading = 'lazy';
+    img.width = size;
+    img.height = size;
+    img.style.width = size + 'px';
+    img.style.height = size + 'px';
+    img.style.objectFit = 'cover';
+    img.style.borderRadius = 'inherit';
+    img.style.display = 'block';
+    // Pictogramme de secours si l'image ne se charge pas
+    img.onerror = function () {
+      this.style.display = 'none';
+      const fb = document.createElement('span');
+      fb.textContent = fallbackText;
+      fb.style.fontSize = (size * 0.55) + 'px';
+      fb.style.lineHeight = '1';
+      this.parentNode.appendChild(fb);
+    };
+    containerEl.appendChild(img);
+  } else {
+    const text = document.createElement('span');
+    text.textContent = fallbackText;
+    text.style.fontSize = (size * 0.55) + 'px';
+    text.style.lineHeight = '1';
+    containerEl.appendChild(text);
+  }
+}
 
 // ============ VITRINE RONDE ============
 class KeffStation {
@@ -277,7 +328,7 @@ class KeffStation {
       dot.type = 'button';
       dot.dataset.index = i;
       dot.setAttribute('aria-label', `Ouvrir ${app.num}`);
-      dot.innerHTML = `<span class="app-dot-icon">${sanitizeHTML(APP_ICONS[app.num] || app.title.slice(0, 1))}</span>`;
+      renderAppIcon(app.num, dot, 44);
       dot.addEventListener('click', () => this.openApp(i));
       this.nav.appendChild(dot);
     });
@@ -406,7 +457,7 @@ class KeffStation {
     this.panelCard.style.setProperty('--accent', app.color || '#1e6bff');
     this.panelCard.innerHTML = `
       <div class="panel-head">
-        <div class="panel-badge" aria-hidden="true">${sanitizeHTML(APP_ICONS[app.num] || app.title.slice(0, 1))}</div>
+        <div class="panel-badge" aria-hidden="true"></div>
         <div class="panel-heading">
           <h2 class="panel-title">${sanitizeHTML(app.title)}</h2>
           <div class="face-tags panel-tags">${tags}</div>
@@ -421,6 +472,9 @@ class KeffStation {
         <span class="embed-preload-status" aria-hidden="true"></span>
       </button>
     `;
+
+    // Rendu du logo dans le badge du panneau détail (vrai élément , jamais de texte HTML échappé)
+    renderAppIcon(app.num, this.panelCard.querySelector('.panel-badge'), 56);
 
     this.panelCard.querySelector('.panel-close')?.addEventListener('click', () => this.closePanel());
     this.panelCard.querySelector('.embed-btn')?.addEventListener('click', (e) => {
