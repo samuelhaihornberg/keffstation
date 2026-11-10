@@ -422,11 +422,22 @@ function renderRayons(){
       activeCategory = b.dataset.category;
       // URL propre et partageable : /kifftech/rayon/<slug>/
       try {
-        const base = '/keffstation/kifftech';
+        // Dossier contenant le site KiffTech, deduit de l'URL courante.
+        // Fonctionne sur kiffstation.com (a la racine) comme dans un
+        // sous-dossier local (pas de chemin en dur).
+        const pathname = location.pathname;
+        let base = '';
+        const rayonMatch = pathname.match(/^(.*\/)rayon\/[^\/]*\/?$/);
+        if (rayonMatch) {
+          base = rayonMatch[1];
+        } else {
+          const i = pathname.lastIndexOf('/');
+          base = i > 0 ? pathname.slice(0, i + 1) : '/';
+        }
+        if (base === '/') base = '';
+        if (base.endsWith('/')) base = base.slice(0, -1);
         const slug = slugRayon(activeCategory);
-        const url = activeCategory === 'all'
-          ? base + '/index.html'
-          : base + '/rayon/' + slug + '/';
+        const url = base + (activeCategory === 'all' ? '/index.html' : '/rayon/' + slug + '/');
         history.replaceState({}, '', url);
       } catch (e) {}
       sel.querySelectorAll('.rayon-btn').forEach(x => {

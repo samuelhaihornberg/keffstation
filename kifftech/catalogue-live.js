@@ -38,7 +38,10 @@
     } catch (e) {}
     return "./";
   })();
-  window.KIFFTECH_BASE = "/keffstation/kifftech/";
+  // Chemin dynamique deduit de l'URL du script : fonctionne sur kiffstation.com
+  // (custom domain a la racine) comme dans un sous-dossier local. Plus de chemin
+  // en dur qui bloque le chargement de data/catalogue.json et data/products.json.
+  window.KIFFTECH_BASE = BASE;
 
   var DATA_CATALOGUE = window.KIFFTECH_BASE + "data/catalogue.json";
   var DATA_LIVE = window.KIFFTECH_BASE + "data/products.json";
