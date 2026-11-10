@@ -115,6 +115,37 @@ function sanitizeHTML(str) {
   return div.innerHTML;
 }
 
+/* Met en couleur certains mots clés du texte (design kikoulol). */
+function keywordify(text) {
+  const map = {
+    'IA': 'blue', 'intelligence': 'blue',
+    'web': 'cyan', 'navigateur': 'cyan',
+    'app': 'gold', 'appli': 'gold',
+    'code': 'violet', 'développeur': 'violet',
+    'data': 'green', 'donnée': 'green',
+    'cloud': 'pink', 'serveur': 'pink',
+    'jeu': 'orange', 'gaming': 'orange',
+    'mobile': 'violet', 'téléphone': 'violet',
+    'gratuit': 'green', 'gratuitement': 'green',
+    'premium': 'violet', 'pro': 'gold',
+    'rapide': 'green', 'vitesse': 'green',
+    'sécurisé': 'blue', 'sécurité': 'blue',
+    'nouveau': 'pink', 'nouveauté': 'pink',
+    'HTML': 'gold', 'CSS': 'blue', 'JS': 'cyan',
+    'Python': 'gold', 'React': 'blue',
+    'local': 'green', 'local-first': 'green',
+    'PWA': 'cyan', 'offline': 'green',
+    '3D': 'pink'
+  };
+  let out = text;
+  Object.keys(map).sort((a, b) => b.length - a.length).forEach(k => {
+    const color = map[k];
+    const regex = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    out = out.replace(regex, `<span class="keyword keyword-${color}">${k}</span>`);
+  });
+  return out;
+}
+
 // Position d'un satellite sur l'anneau (en % du conteneur carré).
 // index 0 = midi, puis sens horaire. Radius 38 = anneau à 38% du centre.
 function orbitPosition(index, total, radius = 36) {
@@ -365,28 +396,29 @@ class KeffStation {
     const container = document.getElementById('core-featured-article');
     if (!content || !container || !app) return;
 
+    const icon = APP_ICONS[app.num];
+    const emoji = (typeof icon === 'string') ? icon : (icon && icon.fallback ? icon.fallback : app.num.slice(0, 1));
+
     const firstSub = (app.subArticles || [])[0];
 
     content.innerHTML = `
-      <h2 class="featured-title">${sanitizeHTML(app.title)}</h2>
-      <p class="featured-desc">${sanitizeHTML(app.desc)}</p>
+      <h2 class="featured-title"><span class="emoji-big">${emoji}</span>${sanitizeHTML(app.title)}</h2>
+      <p class="featured-desc">${keywordify(sanitizeHTML(app.desc))}</p>
       <div class="featured-tags">
-        ${(app.tags || []).map(t => `<span class="featured-tag">${sanitizeHTML(t)}</span>`).join('')}
+        ${(app.tags || []).map(t => `<span class="featured-tag keyword-gold">${sanitizeHTML(t)}</span>`).join('')}
       </div>
       ${firstSub ? `
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
-          <div style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:8px;">À découvrir</div>
-          <h3 style="font-size:1.1rem;font-weight:700;color:#fff;margin:0 0 6px;">${sanitizeHTML(firstSub.title)}</h3>
-          <p style="font-size:0.9rem;line-height:1.5;color:#c3c9e8;margin:0;">${sanitizeHTML(firstSub.desc)}</p>
+        <div class="article-sub">
+          <h3><span class="emoji-big">🔍</span>${sanitizeHTML(firstSub.title)}</h3>
+          <p>${keywordify(sanitizeHTML(firstSub.desc))}</p>
         </div>
       ` : ''}
       <button class="featured-btn" type="button" onclick="window.keffStation.openApp(${this.current})">
-        Ouvrir ${sanitizeHTML(app.num)} →
+        Ouvrir ${sanitizeHTML(app.num)} <span class="emoji-big">🚀</span>
       </button>
     `;
 
     container.classList.remove('visible');
-    // Forcer le reflow puis réappliquer pour relancer la transition
     requestAnimationFrame(() => {
       container.classList.add('visible');
     });
