@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T09:56:18.406Z",
+  "generatedAt": "2026-11-10T09:59:10.856Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
   "siteDomain": "SITE_DOMAIN= kiffstation.com",
   "currency": "EUR",
@@ -11,7 +11,7 @@
     },
     "impact": {
       "ok": false,
-      "error": "Impact : aucune reponse exploitable"
+      "error": "Impact : aucun produit récupéré"
     }
   },
   "counts": {
