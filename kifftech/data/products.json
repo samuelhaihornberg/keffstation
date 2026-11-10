@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T10:58:25.404Z",
+  "generatedAt": "2026-11-10T11:01:37.509Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
   "siteDomain": "kiffstation.com",
   "currency": "EUR",
@@ -7,7 +7,7 @@
   "sources": {
     "shopify": {
       "ok": false,
-      "error": "SHOPIFY_ID/admin : Admin API 2024-01 -> HTTP 401 {\"errors\":\"[API] Invalid API key or access token (unrecognized login or wrong password)\"} | SHOPIFY_ID/storefront : Storefront API 401 | SITE_DOMAIN/admin : Admin API 2024-01 -> HTTP 404 {\"errors\":\"Not Found\"}"
+      "error": "identifiant « e1yerp-dm.myshopify.com » non exploitable en tant que domaine (.myshopify.com attendu)"
     },
     "impact": {
       "ok": false,
