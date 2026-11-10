@@ -154,6 +154,7 @@ async function cacheRemoteImages(products) {
           if (!res.ok) throw new Error("HTTP " + res.status);
           const buf = Buffer.from(await res.arrayBuffer());
           if (buf.length < 1200) throw new Error("image trop légère");
+          if (buf.length > 1500000) throw new Error("image trop lourde (>1,5 Mo), gardée distante");
           fs.writeFileSync(dest, buf);
         }
         out.push("./img/live/" + file);

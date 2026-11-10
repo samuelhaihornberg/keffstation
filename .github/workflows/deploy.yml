@@ -130,12 +130,24 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          # header.mp4 (7,3 Mo) n'est pas servi par le site (il est charge
+          # depuis raw.githubusercontent) : on l'exclut pour alleger l'artefact
+          # et rester sous la limite de temps du deploiement Pages.
+          path: |
+            .
+            !header.mp4
 
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
         with:
-          # Artefact volumineux (images produits + catalogue) : le deploiement
-          # peut depasser le defaut de 10 minutes.
-          timeout: 1800000
+          # GitHub plafonne ce delai a 10 minutes ; en cas de depassement
+          # (syncing_files), une seconde tentative est faite juste apres.
+          timeout: 600000
+
+      - name: Deploy to GitHub Pages (2e tentative)
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
