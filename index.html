@@ -28,29 +28,28 @@
 
     <div class="core" id="core" aria-hidden="true">
 
-      <div class="core-inner">
+        <!-- Deux grands cercles concentriques par dessus (un large, un long/oval) -->
+        <div class="core-orb core-orb-wide"></div>
+        <div class="core-orb core-orb-long"></div>
 
-        <div class="core-app-flip" id="core-app-flip">
-          <div class="core-app-face core-app-face-front" id="core-app-face-front">
-            <img class="core-app-logo" id="core-app-logo-img" alt="" loading="lazy">
-            <div class="core-app-name" id="core-app-name"></div>
+        <div class="core-inner">
+
+          <!-- 3 logos des apps sur le cercle central -->
+          <div class="core-apps-display" id="core-apps-display"></div>
+
+          <!-- Grand article de l'app sélectionnée (affiché sur clic "En savoir plus") -->
+          <button class="core-btn-learnmore" id="core-btn-learnmore" type="button">En savoir plus</button>
+
+          <div class="core-featured-article" id="core-featured-article" style="display:none;">
+            <button class="featured-close" id="featured-close" type="button" aria-label="Fermer">×</button>
+            <div class="featured-card" id="featured-card">
+              <div class="featured-content" id="featured-content"></div>
+            </div>
           </div>
-          <div class="core-app-face core-app-face-back" id="core-app-face-back"></div>
+
+          <div class="core-count"><span id="app-count">3</span> <span data-i18n="app_count">apps</span></div>
+
         </div>
-
-        <!-- Grand article de l'app sélectionnée (affiché sur clic "En savoir plus") -->
-        <button class="core-btn-learnmore" id="core-btn-learnmore" type="button">En savoir plus</button>
-
-        <div class="core-featured-article" id="core-featured-article" style="display:none;">
-          <button class="featured-close" id="featured-close" type="button" aria-label="Fermer">×</button>
-          <div class="featured-card" id="featured-card">
-            <div class="featured-content" id="featured-content"></div>
-          </div>
-        </div>
-
-        <div class="core-count" data-i18n="./index.html_7_apps_83"><span id="app-count">7</span> <span data-i18n="app_count">apps</span></div>
-
-      </div>
 
           </div>
 

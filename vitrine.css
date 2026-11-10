@@ -495,6 +495,104 @@ body.capture-active body.overlay-open {
 
 .core-count #app-count { font-weight: 800; }
 
+/* ---------- Deux grands cercles concentriques par dessus (large + long/oval) ---------- */
+
+.core-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  box-sizing: border-box;
+}
+
+.core-orb-wide {
+  /* Cercle large — anneau externe large */
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  border: 1px solid rgba(255, 255, 255, .14);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 210, 63, .09), transparent 58%),
+    radial-gradient(circle at 40% 30%, rgba(30, 107, 255, .07), transparent 50%);
+  animation: spin 22s linear infinite reverse;
+}
+
+.core-orb-long {
+  /* Cercle long / oval — anneau étiré */
+  width: 210%;
+  height: 115%;
+  top: -8%;
+  left: -55%;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(0, 212, 255, .09), transparent 55%),
+    radial-gradient(ellipse at 60% 40%, rgba(255, 61, 154, .07), transparent 50%);
+  animation: spin 16s linear infinite;
+}
+
+/* ---------- 3 logos des apps sur le cercle central ---------- */
+
+.core-apps-display {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 3vmin, 30px);
+}
+
+.core-app-item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform .35s var(--ease), opacity .3s var(--ease), filter .3s var(--ease);
+  opacity: .8;
+  transform: rotate(var(--rot, 0deg)) translate(0, -42%) rotate(calc(var(--rot, 0deg) * -1));
+  transform-origin: 50% 50%;
+}
+
+.core-app-item.active {
+  opacity: 1;
+  transform: rotate(var(--rot, 0deg)) translate(0, -42%) rotate(calc(var(--rot, 0deg) * -1)) scale(1.2);
+  z-index: 3;
+  filter: drop-shadow(0 0 24px rgba(255, 210, 63, .6));
+}
+
+.core-app-logo-wrap {
+  width: clamp(44px, 12vmin, 92px);
+  height: clamp(44px, 12vmin, 92px);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 210, 63, 0.5);
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(255, 210, 63, 0.45), 0 0 60px rgba(30, 107, 255, 0.3);
+}
+
+.core-app-logo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.core-app-name {
+  font-size: clamp(.7rem, 1.8vmin, 1rem);
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #d9dfff;
+  text-shadow: 0 0 16px rgba(30, 107, 255, .55);
+  white-space: nowrap;
+}
+
 /* ---------- Affichage de l'app sélectionnée avec effet "pièce de monnaie" ---------- */
 
 .core-app-flip {

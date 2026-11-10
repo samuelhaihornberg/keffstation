@@ -88,24 +88,6 @@ const APPS = [
       { title: "Mods & Tools", desc: "Nexus, Thunderstore, Vortex, MO2, r2modman — profils, déploiement, résolution conflits.", tags: ["Mods", "Tools", "Gestion"] }
     ]
   },
-  {
-    num: "Critiques Services",
-    title: "Critiques Services",
-    desc: "Plateforme de critiques de services avec preuves vidéo — Expériences personnelles réelles uniquement. Authentification, votes, commentaires, géolocalisation, galerie preuves, PWA hors-ligne.",
-    tags: ["PWA", "Critiques", "Vidéos", "Géolocalisation"],
-    appUrl: "https://samuelhaihornberg.github.io/critiques-services.com/",
-    embedUrl: "https://samuelhaihornberg.github.io/critiques-services.com/",
-    embedLabel: "Ouvrir Critiques Services",
-    color: "#e94560",
-    subArticles: [
-      { title: "Lire les critiques", desc: "Consultez les critiques de services avec preuves vidéo, filtres et recherche.", tags: ["Lecture", "Critiques", "Recherche"] },
-      { title: "Créer une critique", desc: "Publiez votre propre critique avec photos, vidéos, géolocalisation et prix.", tags: ["Création", "Preuves", "Géolocalisation"] },
-      { title: "Voter et commenter", desc: "Système de votes 👍/👎, réactions emoji, commentaires forum.", tags: ["Votes", "Commentaires", "Réactions"] },
-      { title: "Carte des services", desc: "Géolocalisation Leaflet + Nominatim, services en ligne.", tags: ["Carte", "Géolocalisation", "Leaflet"] },
-      { title: "Profil utilisateur", desc: "Infos, stats, onglets critiques et statistiques.", tags: ["Profil", "Stats", "Utilisateur"] },
-      { title: "PWA hors-ligne", desc: "Service Worker, manifest, mode hors-ligne, installation sur écran d'accueil.", tags: ["PWA", "Hors-ligne", "Installable"] }
-    ]
-  }
 ];
 
 // ============ UTILITIES ============
@@ -171,8 +153,7 @@ const APP_ICONS = {
     alt: 'Logo ViArtificial Labs',
     fallback: '🤖'
   },
-  'Videogames': '🎮',
-  'Critiques Services': '📝'
+  'Videogames': '🎮'
 };
 
 /* Rend une icône d'application dans un conteneur DOM.
@@ -263,6 +244,7 @@ class KeffStation {
 
     this.nodes = [];
     this.dots = [];
+    this.appItems = [];
   }
 
   async init() {
@@ -335,6 +317,30 @@ class KeffStation {
     });
 
     this.dots = Array.from(this.nav.querySelectorAll('button'));
+
+    // 3 logos des apps sur le cercle central (disposition circulaire)
+    const appsDisplay = document.getElementById('core-apps-display');
+    if (appsDisplay) {
+      this.apps.forEach((app, i) => {
+        const item = document.createElement('div');
+        item.className = 'core-app-item';
+        item.dataset.index = i;
+        item.style.setProperty('--rot', `${i * 120}deg`);
+        item.setAttribute('aria-label', `Sélectionner ${app.num}`);
+        const logoWrap = document.createElement('div');
+        logoWrap.className = 'core-app-logo-wrap';
+        renderAppIcon(app.num, logoWrap, 64);
+        const name = document.createElement('div');
+        name.className = 'core-app-name';
+        name.textContent = app.title;
+        item.appendChild(logoWrap);
+        item.appendChild(name);
+        item.addEventListener('click', () => this.setFocus(i, false, i > this.current ? 1 : -1));
+        appsDisplay.appendChild(item);
+      });
+      this.appItems = Array.from(appsDisplay.querySelectorAll('.core-app-item'));
+    }
+
     this.setFocus(0, false);
   }
 
@@ -345,6 +351,7 @@ class KeffStation {
       node.setAttribute('aria-current', i === index ? 'true' : 'false');
     });
     this.dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    this.appItems.forEach((item, i) => item.classList.toggle('active', i === index));
     this.flipCoreLogo(direction);
     if (open) this.openApp(index);
   }
