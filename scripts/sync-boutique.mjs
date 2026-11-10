@@ -53,7 +53,10 @@ function normalizeShopDomain(raw) {
   let d = String(raw || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
   if (!d) return "";
   if (/\.myshopify\.com$/i.test(d)) return d;
-  if (/^\d+$/.test(d)) return ""; // identifiant numerique : pas un domaine utilisable
+  // Un identifiant (UUID, numerique) n'est PAS un domaine : il faut le vrai
+  // sous-domaine .myshopify.com pour appeler l'API.
+  if (/^[0-9a-f-]{16,}$/i.test(d)) return "";
+  if (/^\d+$/.test(d)) return "";
   d = d.replace(/[^a-z0-9-]/gi, "").toLowerCase();
   if (!d) return "";
   return d + ".myshopify.com";
@@ -315,13 +318,32 @@ function pickArray(data, ...keys) {
 }
 
 async function fetchImpactItems(sid, token, label) {
-  const bases = ["Mediapartners", "Advertisers"];
   const out = [];
+
+  // 0) Produits directs de l'annonceur
+  for (const path of [
+    `https://api.impact.com/Advertisers/${sid}/Products?PageSize=200`,
+    `https://api.impact.com/Advertisers/${sid}/Products`,
+  ]) {
+    try {
+      const data = await impactGet(path, token, sid);
+      const items = pickArray(data, "Items", "items", "Products", "products", "Results", "results");
+      console.log(`[impact] ${label} — Advertisers/Products : ${items.length} produit(s)`);
+      if (items.length) return items;
+    } catch (e) {
+      console.warn(`[impact] ${label} — Advertisers/Products : ${e.message}${e.body ? " | " + e.body : ""}`);
+    }
+  }
+
+  const bases = ["Mediapartners", "Advertisers"];
   for (const base of bases) {
     // 1) Recherche directe dans tous les catalogues
     for (const [label2, path] of [
       ["ItemSearch", `https://api.impact.com/${base}/${sid}/Catalogs/ItemSearch?PageSize=200&Page=1`],
       ["ItemSearch+ACTIVE", `https://api.impact.com/${base}/${sid}/Catalogs/ItemSearch?PageSize=200&Status=ACTIVE`],
+      ...(base === "Mediapartners"
+        ? [["Marketplace", `https://api.impact.com/Mediapartners/${sid}/Marketplace/Products.json`]]
+        : []),
     ]) {
       try {
         const data = await impactGet(path, token, sid);
