@@ -420,14 +420,14 @@ function renderRayons(){
   sel.querySelectorAll('.rayon-btn').forEach(b => {
     b.addEventListener('click', () => {
       activeCategory = b.dataset.category;
-      // URL propre et partageable : /kifftech/rayon/<slug>/
+      // URL propre et partageable : /kifftech/rayons/<slug>/
       try {
         // Dossier contenant le site KiffTech, deduit de l'URL courante.
         // Fonctionne sur kiffstation.com (a la racine) comme dans un
         // sous-dossier local (pas de chemin en dur).
         const pathname = location.pathname;
         let base = '';
-        const rayonMatch = pathname.match(/^(.*\/)rayon\/[^\/]*\/?$/);
+        const rayonMatch = pathname.match(/^(.*\/)rayons\/[^\/]*\/?$/);
         if (rayonMatch) {
           base = rayonMatch[1];
         } else {
@@ -437,7 +437,7 @@ function renderRayons(){
         if (base === '/') base = '';
         if (base.endsWith('/')) base = base.slice(0, -1);
         const slug = slugRayon(activeCategory);
-        const url = base + (activeCategory === 'all' ? '/index.html' : '/rayon/' + slug + '/');
+        const url = base + (activeCategory === 'all' ? '/index.html' : '/rayons/' + slug + '/');
         history.replaceState({}, '', url);
       } catch (e) {}
       sel.querySelectorAll('.rayon-btn').forEach(x => {
@@ -1199,7 +1199,7 @@ function init(){
     try {
       const params = new URLSearchParams(window.location.search);
       // 1) parametre ?rayon=  2) variable injectee par la page de rayon
-      // 3) chemin /rayon/<slug>/  (URL propre, partageable)
+      // 3) chemin /rayons/<slug>/  (URL propre, partageable)
       let rayon = params.get('rayon');
       if (!rayon && window.KIFFTECH_RAYON) rayon = window.KIFFTECH_RAYON;
       if (!rayon) {
