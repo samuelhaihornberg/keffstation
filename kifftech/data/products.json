@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-10T09:55:25.302Z",
+  "generatedAt": "2026-11-10T09:56:18.406Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
-  "siteDomain": null,
+  "siteDomain": "SITE_DOMAIN= kiffstation.com",
   "currency": "EUR",
-  "shopifyDomain": null,
+  "shopifyDomain": "d1e0d09cd9dad806b591914d7e1ecc0a.myshopify.com",
   "sources": {
     "shopify": {
       "ok": false,
-      "error": "SHOPIFY_ID / SHOPIFY_KEY manquant"
+      "error": "Storefront API 404"
     },
     "impact": {
       "ok": false,
-      "error": "IMPACT_AUTH_TOKEN / IMPACT_ACCOUNT_SID manquant"
+      "error": "Impact : aucune reponse exploitable"
     }
   },
   "counts": {
