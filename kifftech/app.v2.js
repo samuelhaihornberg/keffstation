@@ -1053,9 +1053,9 @@ function injectCardStyle(){
     .view-btn { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); color:#f4f6ff; border-radius:10px; padding:6px 12px; cursor:pointer; font-size:.8rem; font-weight:700; }
     .view-btn.active { background:#ffd23f; color:#1a1400; border-color:#ffd23f; box-shadow:0 0 16px rgba(255,210,63,.4); }
     .view-btn:hover { background:rgba(255,255,255,.14); }
-    .reader-track { display:flex; gap:-55px; overflow-x:auto; padding:8px 0 4px 0; scroll-snap-type:proximity; }
-    .reader-card { flex:0 0 auto; width:200px; margin-left:-42px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; position:relative; z-index:1; scroll-snap-align:start; border:1px solid rgba(255,255,255,.14); border-radius:14px; background:rgba(10,12,34,.85); backdrop-filter:blur(8px); box-shadow:0 8px 24px rgba(0,0,0,.45); transition:transform .18s, z-index .1s, box-shadow .18s; }
-    .reader-card:hover { transform:rotate(0deg) scale(1.04); z-index:10; margin-left:0; margin-right:-8px; box-shadow:0 12px 34px rgba(255,210,63,.22); border-color:#ffd23f; }
+    .reader-track { display:flex; gap:-18px; overflow-x:auto; padding:10px 0 6px 0; scroll-snap-type:proximity; }
+    .reader-card { flex:0 0 auto; width:170px; margin-left:-26px; transform:rotate(var(--rot,0deg)); transform-origin:center bottom; position:relative; z-index:1; scroll-snap-align:start; border:1px solid rgba(255,255,255,.14); border-radius:12px; background:rgba(10,12,34,.85); backdrop-filter:blur(8px); box-shadow:0 6px 18px rgba(0,0,0,.45); transition:transform .18s, z-index .1s, box-shadow .18s; }
+    .reader-card:hover { transform:rotate(0deg) scale(1.08); z-index:10; margin-left:0; margin-right:-4px; box-shadow:0 10px 28px rgba(255,210,63,.25); border-color:#ffd23f; }
     .reader-card:first-child { margin-left:0; }
     .reader-media { position:relative; height:190px; overflow:hidden; border-radius:11px 11px 0 0; background:#000; }
     .reader-media img { width:100%; height:100%; object-fit:cover; display:block; }
