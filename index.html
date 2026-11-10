@@ -10,6 +10,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🪐%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="./vitrine.css">
 <script defer src="./i18n.js"></script>
+<script defer src="./keff-stats.js"></script>
 </head>
 <body>
   <header class="platform-header" role="banner">
@@ -17,6 +18,7 @@
       <img class="platform-logo" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/54a60611305ecfc6396b57d388783b40df0fc436/logo%20kiffstation.png" alt="KiffStation logo" width="48" height="48">
       <h1 class="platform-title">KiffStation</h1>
       <video class="platform-video" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/main/header.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de la plateforme KiffStation"></video>
+      <a class="platform-btn platform-btn-stats" id="btn-stats" href="./stats/" data-i18n-title="stats_open_title" data-i18n-aria="stats_open_title" title="Statistiques publiques — vues, durée de vue et clics" aria-label="Statistiques publiques"><span class="platform-btn-icon" aria-hidden="true">📊</span><span class="platform-btn-label" data-i18n="stats_open">Stats</span></a>
       <button class="platform-btn platform-btn-capture" id="btn-capture" type="button" aria-label="Voir la vitrine en plein écran">⛶</button>
     </div>
   </header>

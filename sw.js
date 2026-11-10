@@ -1,7 +1,9 @@
-const CACHE = 'keffstation-vitrine-v24';
+const CACHE = 'keffstation-vitrine-v25';
 const ASSETS = [
   './', './index.html', './articles.html', './vitrine.css', './manifest.json',
   './app.js', './refresh.js', './i18n.js', './i18n-locales.js', './page-translate-adapter.js',
+  './keff-stats.js',
+  './stats/index.html', './stats/css/style.css', './stats/js/script.js', './stats/data/stats.json',
   './locales/locales.json', './locales/fr.json', './locales/en.json',
   './locales/glossary.json', './locales/rtl.css'
 ];

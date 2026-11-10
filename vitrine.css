@@ -184,6 +184,46 @@ button { font: inherit; color: inherit; }
   transform: scale(0.95);
 }
 
+/* Bouton « Stats publiques » — lien vers /stats/ */
+.platform-btn-stats {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(0, 212, 255, .42);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 212, 255, .16), rgba(138, 77, 255, .2));
+  color: #eaf6ff;
+  font-size: .84rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+
+.platform-btn-stats:hover {
+  border-color: rgba(0, 212, 255, .9);
+  background: linear-gradient(135deg, rgba(0, 212, 255, .3), rgba(138, 77, 255, .34));
+  box-shadow: 0 0 22px rgba(0, 212, 255, .28);
+  transform: translateY(-1px);
+}
+
+.platform-btn-stats:active {
+  transform: translateY(0);
+}
+
+.platform-btn-stats .platform-btn-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .platform-btn-stats { padding: 0 11px; }
+  .platform-btn-stats .platform-btn-label { display: none; }
+}
+
 @media (max-width: 640px) {
   .platform-header { gap: 10px; padding: 8px 12px; height: 60px; }
   .platform-video { width: 120px; height: 68px; }

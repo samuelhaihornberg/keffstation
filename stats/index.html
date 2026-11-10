@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070816">
+<meta name="description" content="KeffStation — statistiques publiques : vues et durée de consultation par page, clics par lien et par bouton, en graphiques 3D.">
+<title>KeffStation — Statistiques publiques</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=SFMono-Regular:wght@400;600&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-logo" aria-hidden="true">📊</span>
+    <span>KeffStation <span class="sep">·</span> <span class="brand-sub">Stats</span></span>
+  </div>
+  <div class="topbar-actions">
+    <a href="../index.html" class="btn ghost" data-t="back_vitrine">← Vitrine</a>
+    <a href="../index.html" class="btn ghost only-wide" data-t="back_vitrine2">Retour à la plateforme</a>
+    <button type="button" class="btn outline" id="btnImport" data-t="import">Importer</button>
+    <button type="button" class="btn outline" id="btnExport" data-t="export">Exporter JSON</button>
+    <button type="button" class="btn primary" id="btnReset" data-t="reset">Réinitialiser</button>
+    <button type="button" class="btn lang" id="btnLang" aria-label="Changer de langue">EN</button>
+    <input type="file" id="fileImport" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="hero">
+    <h1 data-t="title">Statistiques publiques</h1>
+    <p class="hero-sub" data-t="subtitle">Vues et durée de consultation par page, clics par lien et par bouton. Données de ton navigateur + base de référence du dépôt.</p>
+    <div class="badges">
+      <span class="badge" id="badgeSource" data-t="source_local">Source : ce navigateur</span>
+      <span class="badge" id="badgeUpdated" data-t="updated">Mise à jour : —</span>
+      <span class="badge" id="badgePages" data-t="pages_count">Pages suivies : —</span>
+    </div>
+  </section>
+
+  <section class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-value" id="kpiViews">—</div>
+      <div class="kpi-label" data-t="kpi_views">Vues totales</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value" id="kpiClicks">—</div>
+      <div class="kpi-label" data-t="kpi_clicks">Clics totaux</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value" id="kpiDuration">—</div>
+      <div class="kpi-label" data-t="kpi_duration">Durée totale</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value" id="kpiAvg">—</div>
+      <div class="kpi-label" data-t="kpi_avg">Durée moyenne / page</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value" id="kpiTop">—</div>
+      <div class="kpi-label" data-t="kpi_top">Page la plus vue</div>
+    </div>
+  </section>
+
+  <section class="charts">
+    <div class="chart-card">
+      <div class="chart-head">
+        <h2 data-t="chart_views">Montagnes des vues</h2>
+        <span class="chart-hint" data-t="chart_views_hint">Hauteur = nombre de vues</span>
+      </div>
+      <div class="scene" id="sceneViews">
+        <div class="scene-loading" data-t="loading">Chargement de la 3D…</div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-low"></i><span data-t="legend_low">Faible</span></span>
+        <span><i class="sw sw-mid"></i><span data-t="legend_mid">Moyen</span></span>
+        <span><i class="sw sw-high"></i><span data-t="legend_high">Élevé</span></span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <h2 data-t="chart_duration">Montagnes de la durée de vue</h2>
+        <span class="chart-hint" data-t="chart_duration_hint">Hauteur = temps passé sur la page</span>
+      </div>
+      <div class="scene" id="sceneDuration">
+        <div class="scene-loading" data-t="loading">Chargement de la 3D…</div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-low d"></i><span data-t="legend_low">Faible</span></span>
+        <span><i class="sw sw-mid d"></i><span data-t="legend_mid">Moyen</span></span>
+        <span><i class="sw sw-high d"></i><span data-t="legend_high">Élevé</span></span>
+      </div>
+    </div>
+  </section>
+
+  <p class="hint-line" data-t="scene_hint">Glisse pour tourner · molette pour zoomer · surligne une montagne pour voir le détail</p>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2 data-t="pages_title">Pages suivies</h2>
+      <div class="filters" role="group" aria-label="Tri">
+        <button type="button" class="chip active" data-sort="views" data-t="sort_views">Vues</button>
+        <button type="button" class="chip" data-sort="duration" data-t="sort_duration">Durée</button>
+        <button type="button" class="chip" data-sort="clicks" data-t="sort_clicks">Clics</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-t="th_page">Page</th>
+            <th class="num" data-t="th_views">Vues</th>
+            <th class="num" data-t="th_clicks">Clics</th>
+            <th class="num" data-t="th_duration">Durée</th>
+            <th class="num" data-t="th_avg">Moyenne</th>
+            <th class="bar-col" data-t="th_share">Part</th>
+          </tr>
+        </thead>
+        <tbody id="pagesBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2 data-t="clicks_title">Clics par lien et par bouton</h2>
+      <div class="filters" role="group" aria-label="Filtre">
+        <button type="button" class="chip active" data-filter="all" data-t="f_all">Tous</button>
+        <button type="button" class="chip" data-filter="links" data-t="f_links">Liens</button>
+        <button type="button" class="chip" data-filter="buttons" data-t="f_buttons">Boutons</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-t="th_type">Type</th>
+            <th data-t="th_label">Libellé</th>
+            <th data-t="th_target">Cible</th>
+            <th data-t="th_source_page">Page</th>
+            <th class="num" data-t="th_hits">Occurrences</th>
+            <th class="bar-col" data-t="th_share">Part</th>
+          </tr>
+        </thead>
+        <tbody id="clicksBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel note">
+    <h2 data-t="how_title">Comment ces chiffres sont-ils produits ?</h2>
+    <ul>
+      <li data-t="how_1">Chaque page visitée enregistre une vue, la durée passée dessus et chaque clic sur un lien ou un bouton (compteur en direct dans la barre du navigateur).</li>
+      <li data-t="how_2">Les mesures sont stockées localement (localStorage) : elles reflètent ta navigation sur ce navigateur, et sont conservées en base de référence dans le dépôt.</li>
+      <li data-t="how_3">Un export JSON permet de consolider plusieurs navigateurs : importe le fichier sur l'autre poste pour fusionner les totaux.</li>
+      <li data-t="how_4">Les mêmes événements sont envoyés à Google Analytics quand le tag est présent sur la page.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <a href="../index.html" class="btn ghost" data-t="back_vitrine">← Vitrine</a>
+  <span data-t="footer">KeffStation — statistiques publiques</span>
+</footer>
+
+<div class="tooltip" id="tooltip" hidden></div>
+
+<script defer src="../keff-stats.js"></script>
+<script defer src="js/script.js"></script>
+</body>
+</html>

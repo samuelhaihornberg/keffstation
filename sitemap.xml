@@ -67,6 +67,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://samuelhaihornberg.github.io/keffstation/stats/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://samuelhaihornberg.github.io/keffstation/articles.html</loc>
     <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
