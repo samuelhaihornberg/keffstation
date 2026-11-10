@@ -244,7 +244,6 @@ class KeffStation {
 
     this.nodes = [];
     this.dots = [];
-    this.appItems = [];
   }
 
   async init() {
@@ -318,29 +317,6 @@ class KeffStation {
 
     this.dots = Array.from(this.nav.querySelectorAll('button'));
 
-    // 3 logos des apps sur le cercle central (disposition circulaire)
-    const appsDisplay = document.getElementById('core-apps-display');
-    if (appsDisplay) {
-      this.apps.forEach((app, i) => {
-        const item = document.createElement('div');
-        item.className = 'core-app-item';
-        item.dataset.index = i;
-        item.style.setProperty('--rot', `${i * 120}deg`);
-        item.setAttribute('aria-label', `Sélectionner ${app.num}`);
-        const logoWrap = document.createElement('div');
-        logoWrap.className = 'core-app-logo-wrap';
-        renderAppIcon(app.num, logoWrap, 64);
-        const name = document.createElement('div');
-        name.className = 'core-app-name';
-        name.textContent = app.title;
-        item.appendChild(logoWrap);
-        item.appendChild(name);
-        item.addEventListener('click', () => this.setFocus(i, false, i > this.current ? 1 : -1));
-        appsDisplay.appendChild(item);
-      });
-      this.appItems = Array.from(appsDisplay.querySelectorAll('.core-app-item'));
-    }
-
     this.setFocus(0, false);
   }
 
@@ -351,7 +327,6 @@ class KeffStation {
       node.setAttribute('aria-current', i === index ? 'true' : 'false');
     });
     this.dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-    this.appItems.forEach((item, i) => item.classList.toggle('active', i === index));
     this.flipCoreLogo(direction);
     if (open) this.openApp(index);
   }

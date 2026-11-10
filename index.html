@@ -34,8 +34,14 @@
 
         <div class="core-inner">
 
-          <!-- 3 logos des apps sur le cercle central -->
-          <div class="core-apps-display" id="core-apps-display"></div>
+          <!-- Cercle central concentrique : logo de l'app sélectionnée -->
+          <div class="core-app-flip" id="core-app-flip">
+            <div class="core-app-face core-app-face-front" id="core-app-face-front">
+              <img class="core-app-logo" id="core-app-logo-img" alt="" loading="lazy">
+              <div class="core-app-name" id="core-app-name"></div>
+            </div>
+            <div class="core-app-face core-app-face-back" id="core-app-face-back"></div>
+          </div>
 
           <!-- Grand article de l'app sélectionnée (affiché sur clic "En savoir plus") -->
           <button class="core-btn-learnmore" id="core-btn-learnmore" type="button">En savoir plus</button>
