@@ -536,7 +536,8 @@ async function main() {
   const sources = {};
   const products = [];
 
-  if (SHOPIFY_DOMAIN && SHOPIFY_ADMIN_TOKEN) {
+  const shopCandidates = shopifyDomainCandidates();
+  if (shopCandidates.length && SHOPIFY_ADMIN_TOKEN) {
     try {
       let list = [];
       let mode = "admin";
@@ -544,7 +545,7 @@ async function main() {
       // ce qui masque aussi le domaine derivé. L'base64 reste lisible ici.
       console.log(`[shopify] identifiant brut (b64) : ${Buffer.from(SHOPIFY_RAW).toString("base64")}`);
       console.log(`[shopify] format du jeton : ${tokenFormat(SHOPIFY_ADMIN_TOKEN)}`);
-      const candidates = shopifyDomainCandidates();
+      const candidates = shopCandidates;
       console.log(`[shopify] domaines candidats : ${candidates.map((c) => c.label + "=" + Buffer.from(c.domain).toString("base64")).join(", ") || "aucun"}`);
       const errors = [];
       for (const cand of candidates) {
