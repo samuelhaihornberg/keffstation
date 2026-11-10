@@ -1,23 +1,132 @@
-const CACHE='kifftech-agent-v28';
-var KEEP_RE=/transformers|onnx|webllm|mlc/i;
-const ASSETS=['./','./index.html','./rayons.html','./rayon/index.html','./rayon/smartphones/index.html','./rayon/tablets/index.html','./rayon/accessories/index.html','./rayon/audio-et-wearables/index.html','./rayon/vr-ar-gadgets/index.html','./rayon/drones-et-cameras/index.html','./rayon/computers/index.html','./rayon/smart-home/index.html','./rayon/garden-et-furnitures-smart-devices/index.html','./rayon/company-et-studying-robots/index.html','./rayon/consoles-et-videogames/index.html','./rayon/composant-electronic-et-informatic/index.html','./rayon/composant-electronic/index.html','./rayon/materiel-electronique-et-outillage/index.html','./catalog.html','./credits.html','./theme.css','./app.v2.js','./catalogue-live.js','./data/catalogue.json','./data/products.json','./manifest.json','./img/ac58.jpg','./img/ac60.jpg','./img/ac66.jpg','./img/ac67.jpg','./img/ac71.jpg','./img/ac84.jpg','./img/airpods-3.jpg','./img/airpods-max.jpg','./img/analogue-pocket.jpg','./img/apple-tv-4k.jpg','./img/arduino-uno-r4.jpg','./img/aw10.jpg','./img/aw3.jpg','./img/aw6.jpg','./img/aw9.jpg','./img/aw9b.png','./img/beats-fit-pro.jpg','./img/canon-eos-r5.jpg','./img/ce7.jpg','./img/co10.jpg','./img/co11.png','./img/co13.jpg','./img/co15.png','./img/co16.png','./img/co2.jpg','./img/co3.jpg','./img/co4.jpg','./img/co5.png','./img/co6.jpg','./img/co7.png','./img/co8.jpg','./img/co9.png','./img/cp1.jpg','./img/cp2.jpg','./img/cp3.jpg','./img/cp6.jpg','./img/cp9.jpg','./img/dji-air-2s.jpg','./img/dji-air-3.jpg','./img/dji-mavic-3.jpg','./img/dji-mini-2.jpg','./img/dji-mini-3-pro.jpg','./img/dji-mini-4-pro.jpg','./img/echo-dot-5-clock.jpg','./img/echo-show-5.jpg','./img/galaxy-a54.jpg','./img/galaxy-buds-2-pro.jpg','./img/galaxy-s20.jpg','./img/galaxy-s21.jpg','./img/galaxy-s22-ultra.jpg','./img/galaxy-s23-ultra.jpg','./img/galaxy-s25-ultra.jpg','./img/galaxy-tab-s8.jpg','./img/galaxy-watch-4.jpg','./img/galaxy-watch-5.jpg','./img/galaxy-watch-6.jpg','./img/galaxy-z-flip-5.jpg','./img/galaxy-z-fold-5.jpg','./img/garmin-forerunner-965.jpg','./img/gopro-hero-10.jpg','./img/gopro-hero-13.jpg','./img/gopro-hero-9.jpg','./img/homepod-mini.jpg','./img/huawei-p40-pro.jpg','./img/huawei-p60-pro.jpg','./img/i7-12700k.jpg','./img/insta360-one-x2.jpg','./img/ipad-10.jpg','./img/ipad-air-13-m2.jpg','./img/ipad-air-4.jpg','./img/ipad-mini-6.jpg','./img/ipad-pro-11-m4.jpg','./img/iphone-12.jpg','./img/iphone-13-pro.jpg','./img/iphone-14-pro.jpg','./img/iphone-14.jpg','./img/iphone-16-pro.jpg','./img/iphone-16.jpg','./img/iphone-17.jpg','./img/iphone-17-pro-max.jpg','./img/iphone-17-pro.jpg','./img/iphone-air.jpg','./img/iphone-16e.jpg','./img/macbook-pro-14-m5.jpg','./img/ipad-pro-11-m5.jpg','./img/mac-mini-m4.jpg','./img/apple-watch-ultra-3.jpg','./img/airpods-pro-3.jpg','./img/galaxy-s26-ultra.jpg','./img/galaxy-z-fold-8.jpg','./img/galaxy-s25-edge.jpg','./img/galaxy-watch-ultra-3.jpg','./img/surface-pro-11.jpg','./img/steam-machine.jpg','./img/steam-frame.jpg','./img/steam-controller.jpg','./img/legion-go.jpg','./img/mac-mini-m1.jpg','./img/macbook-air-15-m4.jpg','./img/macbook-air-m1.jpg','./img/macbook-air-m2.jpg','./img/macbook-pro-13-m1.jpg','./img/macbook-pro-14-m3.jpg','./img/matebook-x-pro.jpg','./img/nanoleaf-shapes.jpg','./img/nest-audio.jpg','./img/nothing-ear-2.jpg','./img/nothing-phone-1.jpg','./img/oneplus-13.jpg','./img/oneplus-8-pro.jpg','./img/oneplus-9-pro.jpg','./img/osmo-pocket-3.jpg','./img/pi-zero-2-w.jpg','./img/pico-4.jpg','./img/pixel-5.jpg','./img/pixel-6.jpg','./img/pixel-7.jpg','./img/playdate.jpg','./img/ps5-pro.jpg','./img/psvr2.jpg','./img/quest-2.jpg','./img/quest-3s.jpg','./img/raspberry-pi-5.jpg','./img/ray-ban-meta.jpg','./img/razr-40-ultra.jpg','./img/rb1.jpg','./img/rb2.jpg','./img/rb4.jpg','./img/rb8.jpg','./img/rb9.jpg','./img/rtx-4090.jpg','./img/rtx-5090.jpg','./img/rx-6800-xt.jpg','./img/rx-7900-xtx.jpg','./img/ryzen-5600x.jpg','./img/ryzen-5800x3d.jpg','./img/sandisk-extreme-ssd.jpg','./img/shure-mv7.jpg','./img/sony-a7-iv.jpg','./img/sony-wf-1000xm4.jpg','./img/sony-zv-1.jpg','./img/sp1.jpg','./img/sp11.png','./img/sp12.jpg','./img/sp13.jpg','./img/sp14.jpg','./img/sp15.jpg','./img/sp16.jpg','./img/sp17.png','./img/sp18.jpg','./img/sp1b.jpg','./img/sp2.png','./img/sp4.png','./img/sp6.jpg','./img/sp8.jpg','./img/steam-deck.jpg','./img/surface-go-3.jpg','./img/surface-laptop-7.jpg','./img/surface-pro-9.jpg','./img/tb1.jpg','./img/tb13.jpg','./img/tb2.jpg','./img/tb3.jpg','./img/tb6.png','./img/tb8.jpg','./img/vr1.jpg','./img/vr2.jpg','./img/vr5.jpg','./img/watch-series-10.jpg','./img/watch-series-7.jpg','./img/watch-series-8.jpg','./img/watch-series-9.jpg','./img/xiaomi-13.jpg','./img/xiaomi-pad-6.jpg','./img/xperia-1-v.jpg'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(ASSETS.map(a=>c.add(a).catch(()=>{})))));self.skipWaiting()});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE&&!KEEP_RE.test(x)).map(x=>caches.delete(x)))));self.clients.claim()});
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  const url=new URL(e.request.url);
-  if(url.origin!==self.location.origin)return;
-  if(e.request.mode==='navigate'){
-    e.respondWith(fetch(e.request).then(res=>{if(res.ok){const c=res.clone();caches.open(CACHE).then(ch=>ch.put(e.request,c))}return res}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));
+/*
+ * KiffTech — Service Worker
+ * ============================================================================
+ * Strategie de cache :
+ *   - navigation (HTML)  : RESEAU D'ABORD, cache en secours (mode hors ligne)
+ *   - JS / CSS / JSON    : RESEAU D'ABORD, cache en secours
+ *         -> un deploiement doit etre visible immediatement : servir un vieux
+ *            app.v2.js avec un nouveau HTML provoque des erreurs d'affichage.
+ *   - images / polices   : CACHE D'ABORD + mise a jour en arriere-plan
+ *         -> elles changent peu et sont volumineuses.
+ *
+ * Le catalogue (data/*.json) est conserve en localStorage par l'application
+ * (kifftech/catalogue-live.js) : double securite hors ligne.
+ */
+const CACHE = 'kifftech-agent-v29';
+var KEEP_RE = /transformers|onnx|webllm|mlc/i;
+
+const ASSETS = [
+  './',
+  './index.html',
+  './rayons.html',
+  './catalog.html',
+  './credits.html',
+  './about.html',
+  './theme.css',
+  './app.v2.js',
+  './catalogue-live.js',
+  './rayons.css',
+  './rayons.js',
+  './data/catalogue.json',
+  './data/products.json',
+  './manifest.json',
+  './rayon/index.html',
+  './rayon/smartphones/index.html',
+  './rayon/tablets/index.html',
+  './rayon/accessories/index.html',
+  './rayon/audio-et-wearables/index.html',
+  './rayon/vr-ar-gadgets/index.html',
+  './rayon/drones-et-cameras/index.html',
+  './rayon/computers/index.html',
+  './rayon/smart-home/index.html',
+  './rayon/garden-et-furnitures-smart-devices/index.html',
+  './rayon/company-et-studying-robots/index.html',
+  './rayon/consoles-et-videogames/index.html',
+  './rayon/composant-electronic-et-informatic/index.html',
+  './rayon/composant-electronic/index.html',
+  './rayon/materiel-electronique-et-outillage/index.html',
+];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE).then((c) => Promise.all(ASSETS.map((a) => c.add(a).catch(() => {})))),
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && !KEEP_RE.test(k)).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim()),
+  );
+});
+
+/* Reseau d'abord, cache en secours. */
+async function networkFirst(request, fallbackUrl) {
+  try {
+    const res = await fetch(request);
+    if (res && res.ok) {
+      const copy = res.clone();
+      caches.open(CACHE).then((ch) => ch.put(request, copy));
+    }
+    return res;
+  } catch (e) {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    if (fallbackUrl) {
+      const fb = await caches.match(fallbackUrl);
+      if (fb) return fb;
+    }
+    throw e;
+  }
+}
+
+/* Cache d'abord, mise a jour en arriere-plan. */
+function cacheFirst(request) {
+  return caches.match(request).then((cached) => {
+    const net = fetch(request)
+      .then((res) => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((ch) => ch.put(request, copy));
+        }
+        return res;
+      })
+      .catch(() => cached);
+    return cached || net;
+  });
+}
+
+self.addEventListener('fetch', (e) => {
+  if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) return;
+
+  // Navigation : HTML toujours a jour, cache en secours (hors ligne)
+  if (e.request.mode === 'navigate') {
+    e.respondWith(networkFirst(e.request, './index.html'));
     return;
   }
-  if(/\/paypal-config\.js$/.test(url.pathname)){e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));return;}
-  if(/\.(js|css|png|jpg|jpeg|gif|svg|webp|woff2?|ttf|ico|json)$/.test(url.pathname)){
-    e.respondWith(caches.match(e.request).then(cached=>{
-      const net=fetch(e.request).then(res=>{if(res.ok){const c=res.clone();caches.open(CACHE).then(ch=>ch.put(e.request,c))}return res}).catch(()=>cached);
-      return cached||net;
-    }));
+
+  // Config generees au deploiement : toujours depuis le reseau si possible
+  if (/\/(paypal|shopify)-config\.js$/.test(url.pathname)) {
+    e.respondWith(networkFirst(e.request));
     return;
   }
-  e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));
+
+  // Images / polices / video : cache d'abord
+  if (/\.(png|jpe?g|gif|svg|webp|avif|ico|woff2?|ttf|otf|eot|mp4|webm)$/i.test(url.pathname)) {
+    e.respondWith(cacheFirst(e.request));
+    return;
+  }
+
+  // JS / CSS / JSON : reseau d'abord (un push doit etre visible immediatement)
+  if (/\.(js|css|json|mjs|cjs)$/i.test(url.pathname)) {
+    e.respondWith(networkFirst(e.request));
+    return;
+  }
+
+  e.respondWith(networkFirst(e.request));
 });
