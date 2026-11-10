@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Inventaire des secrets du dépôt (noms uniquement, valeurs masquées)
+        run: echo '${{ toJSON(secrets) }}'
+
       - name: Inject PayPal public client ID
         env:
           PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID || secrets.paypal_secret_ID }}

@@ -59,6 +59,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Inventaire des secrets du dépôt (noms uniquement, valeurs masquées)
+        run: echo '${{ toJSON(secrets) }}'
+
       - name: Diagnostic de la configuration
         run: |
           echo "Shopify domaine   : ${SHOPIFY_STORE_DOMAIN:+configuré}${SHOPIFY_STORE_DOMAIN:-absent}"
