@@ -41,13 +41,31 @@
     );
   }
 
-  /* Cle souple : on retire les tokens de volume / capacite / annee, pour que
-     "Apple AirPods 3 256Go" et "AirPods 3" se rejoignent. */
-  var NOISE = /\b(\d+\s?(go|to|gb|tb|ko|mo)\b|\b(19|20)\d{2}\b|\b(pro|max|plus|mini|air|lite|se|ultra)\b|\b(gen|generation|v\d)\b)/g;
+  /* Jetons d'IDENTITE : volume, capacite, generation, edition.
+     Ils distinguent deux produits reellement differents :
+     "Xiaomi Pad 7 Ultra" (ultra) != "Xiaomi Pad 7" (rien)
+     "Samsung 990 PRO 4 To" (4to) != "Samsung 990 Pro 2To" (2to)
+     L'annee est ignoree : "AirPods 3" == "AirPods 3 (2023)". */
+  var IDENTITY_RE = /\b(\d+\s?(go|to|gb|tb|ko|mo)\b|\b(pro|max|plus|mini|ultra|lite|air|se)\b)/g;
+  function identityTokens(p) {
+    var t = stripAccents(p.model || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    var found = [];
+    var m;
+    var re = new RegExp(IDENTITY_RE.source, "g");
+    while ((m = re.exec(t)) !== null) found.push(m[0].replace(/\s+/g, ""));
+    return found.sort().join(",");
+  }
+
+  /* Deux produits ne sont le meme que si leurs jetons d'identite coincident. */
+  function sameIdentity(a, b) {
+    return identityTokens(a) === identityTokens(b);
+  }
+
+  /* Cle souple : modele sans les jetons d'identite ni l'annee. */
   function looseKey(p) {
     var b = stripAccents(p.brand || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     var m = stripAccents(p.model || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-    m = m.replace(NOISE, " ").replace(/\s+/g, " ").trim();
+    m = m.replace(IDENTITY_RE, " ").replace(/\b(19|20)\d{2}\b/g, " ").replace(/\s+/g, " ").trim();
     return b + "|" + m;
   }
 
@@ -66,10 +84,12 @@
 
   /**
    * Fusionne une liste de produits entrants dans la liste cible.
-   * - si l'id existe deja          → mise a jour (prix, images, source)
-   * - si la cle marque|modele existe → mise a jour (le live gagne)
-   * - sinon                        → ajout
-   * Retourne { added, updated }.
+   * Regles :
+   *  - meme id                    -> meme produit (mise a jour)
+   *  - meme cle stricte + memes jetons d'identite -> meme produit (mise a jour)
+   *  - cle souple unique + memes jetons d'identite -> correspondance (live uniquement)
+   *  - sinon                      -> produit distinct : il est AJOUTE (jamais perdu)
+   * Le flux LIVE remplace les prix / images / liens du produit local equivalent.
    */
   function merge(target, incoming, opts) {
     opts = opts || {};
@@ -82,7 +102,10 @@
       var ks = strictKey(p);
       if (ks !== "|") byStrict[ks] = p;
       var kl = looseKey(p);
-      if (kl !== "|") byLoose[kl] = p;
+      if (kl !== "|") {
+        byLoose[kl] = byLoose[kl] || [];
+        byLoose[kl].push(p);
+      }
     });
 
     var added = 0;
@@ -91,11 +114,17 @@
       if (!p || !p.id || !p.model) return;
       var ks = strictKey(p);
       var kl = looseKey(p);
-      var existing = byId[p.id] || byStrict[ks] || (kl !== "|" ? byLoose[kl] : null);
+      var looseHits = kl !== "|" ? byLoose[kl] : null;
+      var looseMatch = null;
+      if (looseHits && looseHits.length === 1 && sameIdentity(looseHits[0], p)) looseMatch = looseHits[0];
+      var strictMatch = byStrict[ks];
+      if (strictMatch && !sameIdentity(strictMatch, p)) strictMatch = null;
+
+      var existing = byId[p.id] || strictMatch || (live ? looseMatch : null);
 
       if (existing) {
         if (live) {
-          // Le flux live est la source de verite : on applique ses donnees.
+          // Le flux live est la source de verite pour les prix.
           if (p.price && Number(p.price.official) > 0) existing.price = p.price;
           if (p.images && p.images.length) existing.images = p.images;
           if (p.description) existing.description = p.description;
@@ -106,19 +135,26 @@
           existing.live = true;
           existing.partner = true;
           updated++;
+        } else {
+          // Catalogue local : on complete le produit existant, on ne le jette pas.
+          if ((!existing.images || !existing.images.length) && p.images && p.images.length) existing.images = p.images;
+          if (!existing.description && p.description) existing.description = p.description;
+          if ((!existing.specs || !Object.keys(existing.specs).length) && p.specs) existing.specs = p.specs;
+          updated++;
         }
         return;
       }
 
       p.live = live;
-      if (live) {
-        p.partner = true;
-      }
+      if (live) p.partner = true;
       target.push(p);
       added++;
       if (p.id) byId[p.id] = p;
       if (ks !== "|") byStrict[ks] = p;
-      if (kl !== "|") byLoose[kl] = p;
+      if (kl !== "|") {
+        byLoose[kl] = byLoose[kl] || [];
+        byLoose[kl].push(p);
+      }
     });
     return { added: added, updated: updated };
   }
@@ -150,5 +186,7 @@
     loadLive: loadLive,
     strictKey: strictKey,
     looseKey: looseKey,
+    identityTokens: identityTokens,
+    sameIdentity: sameIdentity,
   };
 })(window);

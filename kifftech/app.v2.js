@@ -217,28 +217,6 @@ function calcKiffTechPrice(officialPrice, context={}){const {isSubscriber=false,
 function refreshKiffTechPrices(){products.forEach(p=>{if(!p.partner)p.kifftech=calcKiffTechPrice(p.price.official,{isSubscriber:userContext.isSubscriber,cartItems:userContext.cartItems,tenureDays:userContext.tenureDays});});filteredProducts.forEach(p=>{const o=products.find(x=>x.id===p.id);if(o&&!p.partner)p.kifftech=o.kifftech;});}
 
 // ============ CLICKWISE API ============
-async function fetchFromClickwise() {
-  try {
-    toast('Connexion a ClickWise API...','info');
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(`${CLICKWISE_API_BASE}/products`, {
-      headers: { 'Authorization': `Bearer ${CLICKWISE_API_KEY}`, 'Content-Type': 'application/json' },
-      signal: controller.signal
-    });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`API ${res.status}`);
-    const contentType = res.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) throw new Error('Non-JSON response');
-    const data = await res.json();
-    if (!data || (!Array.isArray(data) && !data.products)) throw new Error('Invalid data format');
-    return data.products || data;
-  } catch (e) {
-    console.warn('ClickWise API failed, using local DB:', e.message);
-    toast('API indisponible, base locale utilisee','warning');
-    return LOCAL_DB;
-  }
-}
 
 // ============ RENDER ============
 function generateMedia(p){const m={badges:[]};if(p.partner)m.badges.push({class:'badge-official',label:'Partenaire'});if(p.videos?.length)m.badges.push({class:'badge-video',label:'Video'});if(p.images?.length)m.badges.push({class:'badge-official',label:'Photo CC'});else m.badges.push({class:'badge-official',label:'Aperçu généré'});return m;}
@@ -490,8 +468,11 @@ async function loadProducts(){
       try {
         const res = await window.KiCatalogue.load();
         // 1) catalogue local (fond), 2) flux live (source de verite des prix)
-        const rLocal = window.KiCatalogue.merge(products, res.local || [], { live: false });
-        const rLive  = window.KiCatalogue.merge(products, res.live  || [], { live: true });
+        const rawLocal = window.KiCatalogue.merge(products, res.local || [], { live: false });
+        const rawLive  = window.KiCatalogue.merge(products, res.live  || [], { live: true });
+        // compatibilite : une ancienne version de KiCatalogue renvoie un nombre
+        const rLocal = (rawLocal && typeof rawLocal === 'object') ? rawLocal : { added: rawLocal || 0, updated: 0 };
+        const rLive  = (rawLive  && typeof rawLive  === 'object') ? rawLive  : { added: rawLive  || 0, updated: 0 };
         applyLivePricing(products);
         const addedLocal = rLocal.added, addedLive = rLive.added;
         if (addedLocal || addedLive || rLive.updated) {
@@ -520,21 +501,8 @@ async function loadProducts(){
       }
     }
 
-    try {
-      const apiProducts = await fetchFromClickwise();
-      if (apiProducts && apiProducts.length) {
-        const apiMapped = apiProducts.map((p,i)=>({...p,id:p.id||`cw-${i}`,kifftech:calcKiffTechPrice(p.price?.official||p.price||0)}));
-        const existingIds = new Set(products.map(p=>p.id));
-        const newProducts = apiMapped.filter(p=>!existingIds.has(p.id));
-        if (newProducts.length) {
-          products = [...newProducts, ...products];
-          filteredProducts = [...products];
-          applyFilters();
-          renderRayons();
-          toast(`${newProducts.length} nouveaux produits via ClickWise`,`success`);
-        }
-      }
-    } catch(e) { console.log('ClickWise background fetch skipped'); }
+    // (plus d'appel ClickWise : source inexistante qui affichait un message
+    //  "API indisponible" alors que la boutique fonctionnait)
   } catch(e) {
     console.error(e);
     products=[...LOCAL_DB];products.forEach(p=>p.kifftech=calcKiffTechPrice(p.price.official));
@@ -1172,6 +1140,37 @@ function injectCardStyle(){
   (document.head || document.documentElement).appendChild(s);
 }
 
+// ============ RESILIENCE ============
+// Erreur bloquante : banniere discrete (le catalogue reste affiche),
+// jamais d'overlay plein ecran qui masquerait la boutique.
+function showFatalBanner(err){
+  try{
+    let b=document.getElementById('kf-error-banner');
+    if(!b){
+      b=document.createElement('div');
+      b.id='kf-error-banner';
+      b.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:rgba(20,8,8,.96);color:#ffd7d7;border:1px solid rgba(255,90,90,.5);border-radius:12px;padding:10px 12px;font:600 12px/1.45 system-ui,sans-serif;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 12px 40px rgba(0,0,0,.6)';
+      var msg=document.createElement('span');
+      msg.textContent='Chargement partiel — '+(err&&err.message?err.message:'erreur inconnue');
+      var btn=document.createElement('button');
+      btn.textContent='Recharger';
+      btn.style.cssText='flex:0 0 auto;background:#ffd23f;color:#1a1400;border:0;border-radius:8px;padding:8px 12px;font-weight:800;cursor:pointer';
+      btn.onclick=function(){ location.reload(); };
+      b.appendChild(msg); b.appendChild(btn);
+      document.body.appendChild(b);
+    }
+  }catch(e){ /* rien de plus a faire */ }
+}
+
+// Garde globale : une erreur non geree ne doit pas laisser la page noire.
+window.addEventListener('error',function(ev){
+  console.error('[KiffTech] erreur globale:',ev.message);
+  showFatalBanner({message:ev.message});
+});
+window.addEventListener('unhandledrejection',function(ev){
+  console.error('[KiffTech] promesse rejetee:',ev.reason);
+});
+
 // ============ INIT ============
 function init(){
   console.log('[KiffTech] init() called');
@@ -1210,6 +1209,20 @@ function init(){
     console.log('[KiffTech] applyFilters done');
     loadProducts();
     console.log('[KiffTech] loadProducts called');
+    // Garde-fou : si le lecteur reste vide (cache ancien, JSON indisponible),
+    // on le signale au lieu d'afficher une page noire.
+    setTimeout(function(){
+      const track=document.getElementById('reader-track');
+      const grid=document.getElementById('products-grid');
+      const empty=(track&&!track.children.length)||(grid&&!grid.children.length);
+      if(empty&&!document.getElementById('kf-empty-note')){
+        const n=document.createElement('div');
+        n.id='kf-empty-note';
+        n.style.cssText='margin:10px 0;padding:12px 14px;border:1px solid rgba(255,210,63,.35);background:rgba(255,210,63,.08);color:#ffd23f;border-radius:12px;font:600 13px/1.5 system-ui,sans-serif';
+        n.textContent='Catalogue en cours de rechargement… Si la liste reste vide, vide le cache du site (⚙︎ en bas à droite) puis recharge.';
+        (track||grid||document.body).appendChild(n);
+      }
+    }, 6000);
     loadPartnerProducts();
     loadShopifyProducts();
     initEvents();
@@ -1231,7 +1244,7 @@ function init(){
     console.log('[KiffTech] init() completed successfully');
   } catch(e) {
     console.error('[KiffTech] init() ERROR:', e);
-    document.body.innerHTML += '<pre style="color:red;padding:20px;background:#1a1d3a;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;overflow:auto">INIT ERROR: ' + e.message + '\n' + e.stack + '</pre>';
+    showFatalBanner(e);
   }
 }
 

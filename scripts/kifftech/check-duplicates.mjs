@@ -24,11 +24,29 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..",
 const KIFF = path.join(ROOT, "kifftech");
 const DETAIL = process.argv.includes("--detail");
 
-const NOISE = /\b(\d+\s?(go|to|gb|tb|ko|mo)\b|\b(19|20)\d{2}\b|\b(pro|max|plus|mini|air|lite|se|ultra)\b|\b(gen|generation|v\d)\b)/g;
+// Jetons d'identite : volume / generation / edition. Ils distinguent deux
+// produits differents ("Pad 7 Ultra" != "Pad 7", "990 PRO 4 To" != "2To").
+const IDENTITY_RE = /\b(\d+\s?(go|to|gb|tb|ko|mo)\b|\b(pro|max|plus|mini|ultra|lite|air|se)\b)/g;
 const strip = (s) =>
   String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const strictKey = (p) => strip(p.brand) + "|" + strip(p.model);
-const looseKey = (p) => strip(p.brand) + "|" + strip(p.model).replace(NOISE, " ").replace(/\s+/g, " ").trim();
+const identityTokens = (p) => {
+  const t = strip(p.model);
+  const found = [];
+  let m;
+  const re = new RegExp(IDENTITY_RE.source, "g");
+  while ((m = re.exec(t)) !== null) found.push(m[0].replace(/\s+/g, ""));
+  return found.sort().join(",");
+};
+const sameIdentity = (a, b) => identityTokens(a) === identityTokens(b);
+const looseKey = (p) =>
+  strip(p.brand) +
+  "|" +
+  strip(p.model)
+    .replace(new RegExp(IDENTITY_RE.source, "g"), " ")
+    .replace(/\b(19|20)\d{2}\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
 function loadLocalDb() {
   const src = fs.readFileSync(path.join(KIFF, "app.v2.js"), "utf8");
@@ -62,7 +80,9 @@ const byStrict = new Map();
 const byLoose = new Map();
 local.forEach((p) => {
   byStrict.set(strictKey(p), p);
-  byLoose.set(looseKey(p), p);
+  const kl = looseKey(p);
+  if (!byLoose.has(kl)) byLoose.set(kl, []);
+  byLoose.get(kl).push(p);
 });
 
 const conflicts = [];
@@ -72,7 +92,11 @@ const seenLive = new Set();
 for (const p of live) {
   const ks = strictKey(p);
   const kl = looseKey(p);
-  const match = byStrict.get(ks) || byLoose.get(kl);
+  const strictHit = byStrict.get(ks);
+  const looseHit = (byLoose.get(kl) || []).length === 1 ? byLoose.get(kl)[0] : null;
+  const match =
+    (strictHit && sameIdentity(strictHit, p) ? strictHit : null) ||
+    (looseHit && sameIdentity(looseHit, p) ? looseHit : null);
   if (match) {
     conflicts.push({
       id: p.id,
