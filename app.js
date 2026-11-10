@@ -153,7 +153,11 @@ const APP_ICONS = {
     alt: 'Logo ViArtificial Labs',
     fallback: '🤖'
   },
-  'Videogames': '🎮'
+  'Videogames': {
+    src: 'https://raw.githubusercontent.com/samuelhaihornberg/keffstation/c14e0e9b4ee41b51749c446840d4b19d6a88ce70/Logo%20videogames%20keffstation.png',
+    alt: 'Logo Videogames',
+    fallback: '🎮'
+  },
 };
 
 /* Rend une icône d'application dans un conteneur DOM.
