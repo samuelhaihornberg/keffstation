@@ -38,7 +38,7 @@
     } catch (e) {}
     return "./";
   })();
-  window.KIFFTECH_BASE = "/keffstation/";
+  window.KIFFTECH_BASE = "/keffstation/kifftech/";
 
   var DATA_CATALOGUE = window.KIFFTECH_BASE + "data/catalogue.json";
   var DATA_LIVE = window.KIFFTECH_BASE + "data/products.json";
