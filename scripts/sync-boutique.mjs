@@ -120,14 +120,18 @@ async function cacheRemoteImages(products) {
   let cached = 0;
   let failed = 0;
   for (const p of targets) {
-    const remote = p.images.filter((u) => /^https?:\/\//i.test(u));
+    const remote = p.images.filter((u) => /^https?:\/\//i.test(u)).slice(0, 3);
     const local = p.images.filter((u) => !/^https?:\/\//i.test(u));
     const out = [];
     for (let i = 0; i < remote.length; i++) {
       const url = remote[i];
       let ext = ".jpg";
       try {
-        const head = await fetch(url, { method: "GET", headers: { Range: "bytes=0-2047" } });
+        const head = await fetch(url, {
+          method: "GET",
+          headers: { Range: "bytes=0-2047" },
+          signal: AbortSignal.timeout(15000),
+        });
         const type = head.headers.get("content-type") || "";
         if (type.includes("png")) ext = ".png";
         else if (type.includes("webp")) ext = ".webp";
@@ -139,7 +143,7 @@ async function cacheRemoteImages(products) {
       const dest = path.join(LIVE_IMG_DIR, file);
       try {
         if (!fs.existsSync(dest)) {
-          const res = await fetch(url);
+          const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
           if (!res.ok) throw new Error("HTTP " + res.status);
           const buf = Buffer.from(await res.arrayBuffer());
           if (buf.length < 1200) throw new Error("image trop légère");
