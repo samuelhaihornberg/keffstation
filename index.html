@@ -4,219 +4,425 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070816">
-<meta name="description" content="KeffStation — 5 applications : Kifftech.store (accessoires & gadgets 2020-2026 en promotion), ViArtificial-Labs (superbots & agents IA), Videogames (Stick-Emoji), PAWAW Librarchy (MMOARPG vie fantastique), Blogum (réseau social & blog).">
-<meta name="keywords" content="keffstation, kiffstation, kifftech.store, viartificial-labs, videogames, pawaw, blogum, accessoires, gadgets, promotions, superbots, agents IA, stick-emoji, MMOARPG, blog, réseau social">
-<title>KeffStation — 5 Apps : Kifftech.store, ViArtificial-Labs, Videogames, PAWAW, Blogum</title>
+<meta name="description" content="KeffStation — vitrine des applications KiffTech, ViArtificial Labs, Videogames et Critiques Services.">
+<title>KeffStation — Vitrine</title>
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-size='56' font-family='monospace' fill='%23ffd23f' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🪐%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="./vitrine.css">
 <script defer src="./i18n.js"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WP6HC0CM9E"></script>
-<script defer src="./analytics-events.js"></script>
 <script defer src="./keff-stats.js"></script>
-<style>
-  .apps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    padding: 40px 16px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .app-card {
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 20px;
-    padding: 24px;
-    text-decoration: none;
-    color: inherit;
-    transition: transform .25s, box-shadow .25s, border-color .25s;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-  }
-  .app-card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, #1e6bff, #00d4ff, #27d17f, #ffd23f, #ff3d9a);
-  }
-  .app-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(30,107,255,.4);
-    box-shadow: 0 20px 50px rgba(30,107,255,.2);
-  }
-  .app-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    display: block;
-  }
-  .app-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin: 0 0 8px;
-    background: linear-gradient(90deg, #fff, #b9c0e6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .app-desc {
-    font-size: .95rem;
-    color: #b9c0e6;
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-  .app-tag {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: .75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin-bottom: 16px;
-  }
-  .tag-kifftech { background: rgba(30,107,255,.15); color: #1e6bff; border: 1px solid rgba(30,107,255,.3); }
-  .tag-viartificial { background: rgba(184,77,255,.15); color: #b84dff; border: 1px solid rgba(184,77,255,.3); }
-  .tag-videogames { background: rgba(255,138,0,.15); color: #ff8a00; border: 1px solid rgba(255,138,0,.3); }
-  .tag-pawaw { background: rgba(39,209,127,.15); color: #27d17f; border: 1px solid rgba(39,209,127,.3); }
-  .tag-blogum { background: rgba(255,61,154,.15); color: #ff3d9a; border: 1px solid rgba(255,61,154,.3); }
-  .app-btn {
-    margin-top: auto;
-    display: inline-block;
-    padding: 12px 24px;
-    border-radius: 12px;
-    border: none;
-    background: linear-gradient(135deg, #1e6bff, #00d4ff);
-    color: #05060a;
-    font-weight: 800;
-    cursor: pointer;
-    transition: transform .2s;
-    text-align: center;
-    width: 100%;
-  }
-  .app-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(30,107,255,.4);
-  }
-  .hero-banner {
-    background: linear-gradient(135deg, #0a0c1e 0%, #1a1d2e 100%);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 24px;
-    padding: 48px 32px;
-    text-align: center;
-    margin-bottom: 40px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-banner::before {
-    content: "";
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(30,107,255,.15) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-  }
-  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  .hero-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 900;
-    margin: 0 0 16px;
-    background: linear-gradient(90deg, #1e6bff, #00d4ff, #27d17f, #ffd23f, #ff3d9a);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-subtitle {
-    font-size: 1.2rem;
-    color: #b9c0e6;
-    margin: 0 0 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .section-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #fff;
-    margin: 40px 0 24px 16px;
-    border-left: 4px solid #1e6bff;
-    padding-left: 16px;
-  }
-  @media (max-width: 640px) {
-    .apps-grid { grid-template-columns: 1fr; padding: 24px 16px; }
-    .hero-banner { padding: 32px 20px; margin-bottom: 32px; }
-  }
-</style>
 </head>
 <body>
-  <header class="topbar" style="position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:clamp(12px,3vh,20px) clamp(12px,3vw,20px);background:rgba(10,12,34,.95);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;flex-shrink:0">
-    <div class="header-left" style="display:flex;align-items:center;gap:12px">
-      <span class="logo" style="font-size:clamp(28px,5vw,36px)">🪐</span>
-      <h1 class="platform-title" style="font-size:clamp(1.3rem,3.5vw,2rem);font-weight:800;background:linear-gradient(90deg,#1e6bff,#00d4ff,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent">KeffStation</h1>
-    </div>
-    <div class="header-right" style="display:flex;align-items:center;gap:10px">
-      <a href="./kifftech/catalogue.html" class="btn ghost" style="padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#ffd23f;cursor:pointer;transition:all .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-decoration:none">🛒 Kifftech.store</a>
-      <a href="./viartificial-labs/" class="btn ghost" style="padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#8ab4ff;cursor:pointer;transition:all .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-decoration:none">🤖 ViArtificial-Labs</a>
-      <a href="./videogames/" class="btn ghost" style="padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#ff8a00;cursor:pointer;transition:all .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-decoration:none">🎮 Videogames</a>
+  <header class="platform-header" role="banner">
+    <div class="header-inner">
+      <img class="platform-logo" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/54a60611305ecfc6396b57d388783b40df0fc436/logo%20kiffstation.png" alt="KiffStation logo" width="48" height="48">
+      <h1 class="platform-title">KiffStation</h1>
+      <video class="platform-video" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/main/header.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de la plateforme KiffStation"></video>
+      <a class="platform-btn platform-btn-stats" id="btn-stats" href="./stats/" data-i18n-title="stats_open_title" data-i18n-aria="stats_open_title" title="Statistiques publiques — vues, durée de vue et clics" aria-label="Statistiques publiques"><span class="platform-btn-icon" aria-hidden="true">📊</span><span class="platform-btn-label" data-i18n="stats_open">Stats</span></a>
+      <button class="platform-btn platform-btn-capture" id="btn-capture" type="button" aria-label="Voir la vitrine en plein écran">⛶</button>
     </div>
   </header>
+  <div class="vitrine" id="vitrine">
 
-  <div class="hero-banner">
-    <h1 class="hero-title">KeffStation — 5 Applications</h1>
-    <p class="hero-subtitle">Smart devices en promotion, Superbots IA, Stick-Emoji gaming, MMOARPG vie fantastique, et Blogum réseau social hybride.</p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <a href="./kifftech/catalogue.html" class="app-btn" style="display:inline-block;width:auto">🛒 Ouvrir Kifftech.store</a>
-      <a href="./viartificial-labs/" class="app-btn" style="display:inline-block;width:auto">🤖 Ouvrir ViArtificial-Labs</a>
-      <a href="./videogames/" class="app-btn" style="display:inline-block;width:auto">🎮 Ouvrir Videogames</a>
-      <a href="./videogames/pawaw/" class="app-btn" style="display:inline-block;width:auto">🌟 Ouvrir PAWAW</a>
-      <a href="./blogum/" class="app-btn" style="display:inline-block;width:auto">📝 Ouvrir Blogum</a>
+
+
+
+
+    <div class="core" id="core" aria-hidden="true">
+
+        <!-- Deux grands cercles concentriques par dessus (un large, un long/oval) -->
+        <div class="core-orb core-orb-wide"></div>
+        <div class="core-orb core-orb-long"></div>
+
+        <div class="core-inner">
+
+          <!-- Cercle central concentrique : logo de l'app sélectionnée -->
+          <div class="core-app-flip" id="core-app-flip">
+            <div class="core-app-face core-app-face-front" id="core-app-face-front">
+              <img class="core-app-logo" id="core-app-logo-img" alt="" loading="lazy">
+              <div class="core-app-name" id="core-app-name"></div>
+            </div>
+            <div class="core-app-face core-app-face-back" id="core-app-face-back"></div>
+          </div>
+
+          <!-- Grand article de l'app sélectionnée (affiché sur clic "En savoir plus") -->
+          <button class="core-btn-learnmore" id="core-btn-learnmore" type="button">En savoir plus</button>
+
+          <div class="core-featured-article" id="core-featured-article" style="display:none;">
+            <button class="featured-close" id="featured-close" type="button" aria-label="Fermer">×</button>
+            <div class="featured-card" id="featured-card">
+              <div class="featured-content" id="featured-content"></div>
+            </div>
+          </div>
+
+          <div class="core-count"><span id="app-count">8</span> <span data-i18n="app_count">apps</span></div>
+
+        </div>
+
+          </div>
+
+
+
+
+
+
+
+
+    
+    
+
+  </div>
+
+
+
+  <!-- Sélecteur d'articles avec petits ronds en bas de la vitrine -->
+
+  <div class="article-selector" aria-label="Sélecteur d'articles par app" style="display:none;">
+
+    <div class="article-selector-header">
+
+      <h3 id="selector-title" data-i18n="selector_articles">Articles liés</h3>
+
+      <button id="selector-close" class="selector-close" aria-label="Fermer">✕</button>
+
     </div>
+
+    <div class="article-pagination">
+
+      <span class="page-dot active" data-page="0" aria-label="Page 1"></span>
+
+      <span class="page-dot" data-page="1" aria-label="Page 2"></span>
+
+      <span class="page-dot" data-page="2" aria-label="Page 3"></span>
+
+      <span class="page-dot" data-page="3" aria-label="Page 4"></span>
+
+      <span class="page-dot" data-page="4" aria-label="Page 5"></span>
+
+      <span class="page-dot" data-page="5" aria-label="Page 6"></span>
+      <span class="page-dot" data-page="6" aria-label="Page 7"></span>
+      <span class="page-dot" data-page="7" aria-label="Page 8"></span>
+
+    </div>
+
+    <div class="article-pages">
+
+      <!-- Page 0 : ViArtificial Labs -->
+
+      <div class="article-page" data-page="0">
+
+        <div class="article-card">
+
+          <div class="article-icon">🧠</div>
+
+          <h4 data-i18n="article_via_title">ViArtificial Labs — Moteurs IA</h4>
+
+          <p data-i18n="article_via_desc">SuperBots, conversation, NLP/LLM local, assistants IA.</p>
+
+        </div>
+
+        <div class="article-card">
+
+          <div class="article-icon">💬</div>
+
+          <h4 data-i18n="article_conv_title">Conversation IA</h4>
+
+          <p data-i18n="article_conv_desc">Moteurs de conversation directe et assistants virtuels.</p>
+
+        </div>
+
+      </div>
+
+      <!-- Page 1 : cos Editor -->
+
+      <div class="article-page" data-page="1" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">🧩</div>
+
+          <h4 data-i18n="article_cos_title">cos Editor — Éditeur de syntaxe COS</h4>
+
+          <p data-i18n="article_cos_desc">Analyse locale, aperçu SPA, tutoriels et export JSON.</p>
+
+          <button class="article-open-btn" onclick="openApp('./cos-editor/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+
+        </div>
+
+        <div class="article-card">
+
+          <div class="article-icon">📘</div>
+
+          <h4 data-i18n="article_cos_tuto_title">Tutoriel COS</h4>
+
+          <p data-i18n="article_cos_tuto_desc">Balises &lt;cos&gt;, &lt;co&gt;, &lt;script_…&gt; et CSS alphanumérique.</p>
+
+          <button class="article-open-btn" onclick="openApp('./cos-editor/')" data-i18n="btn_open_app">Ouvrir →</button>
+
+        </div>
+
+      </div>
+
+      <!-- Page 2 : Linguistic Motors -->
+
+      <div class="article-page" data-page="2" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">🗣️</div>
+
+          <h4 data-i18n="article_lm_title">Linguistic Motors — NLP/LLM local</h4>
+
+          <p data-i18n="article_lm_desc">Moteurs linguistiques expérimentaux, NLP/LLM local.</p>
+
+          <button class="article-open-btn" onclick="openApp('./linguistic-motors/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+
+        </div>
+
+      </div>
+
+      <!-- Page 3 : Critiques-Services -->
+
+      <div class="article-page" data-page="3" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">📝</div>
+
+          <h4 data-i18n="article_cs_title">Critiques-Services — Avis & critiques</h4>
+
+          <p data-i18n="article_cs_desc">Espace consacré aux critiques et avis sur des services en ligne.</p>
+
+          <button class="article-open-btn" onclick="openApp('https://samuelhaihornberg.github.io/critiques-services.com/')" data-i18n="btn_open_app">Ouvrir →</button>
+
+        </div>
+
+      </div>
+
+      <!-- Page 4 : KiffTech -->
+
+      <div class="article-page" data-page="4" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">🤖</div>
+
+          <h4 data-i18n="article_kt_title">KiffTech — Objets connectés & gadgets</h4>
+
+          <p data-i18n="article_kt_desc">Boutique et gestion d'objets connectés, gadgets high-tech.</p>
+
+          <button class="article-open-btn" onclick="window.location.href='./kifftech/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
+
+        </div>
+
+      </div>
+
+      <!-- Page 5 : Videogames -->
+
+      <div class="article-page" data-page="5" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">🎮</div>
+
+          <h4 data-i18n="article_vg_title">Videogames — Jeux & émulation</h4>
+
+          <p data-i18n="article_vg_desc">Jeux rétro, émulation, configurations, roms.</p>
+
+          <button class="article-open-btn" onclick="openApp('./videogames/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
+
+        </div>
+
+      </div>
+
+      <!-- Page 6 : PAWAW Librarchy -->
+
+      <div class="article-page" data-page="6" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">🌟</div>
+
+          <h4 data-i18n="article_pawaw_title">PAWAW Librarchy — MMOARPG</h4>
+
+          <p data-i18n="article_pawaw_desc">Simulation de vie fictive fantastique, féerique, extraordinaire et créative.</p>
+
+          <button class="article-open-btn" onclick="window.location.href='./pawaw/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
+
+        </div>
+
+      </div>
+
+      <!-- Page 7 : Blogum -->
+
+      <div class="article-page" data-page="7" style="display:none;">
+
+        <div class="article-card">
+
+          <div class="article-icon">📝</div>
+
+          <h4 data-i18n="article_blogum_title">Blogum — Réseau Social &amp; Blog</h4>
+
+          <p data-i18n="article_blogum_desc">Blog maker, profil social network, rencontres, sphères d'audience, réactions émotionnelles.</p>
+
+          <button class="article-open-btn" onclick="window.location.href='./blogum/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="selector-footer">
+
+            <button id="selector-open-btn" class="selector-open-btn" type="button">Ouvrir l'app</button>
+
+    </div>
+
   </div>
 
-  <h2 class="section-title">Nos Applications</h2>
-  <div class="apps-grid">
-    <a href="./kifftech/catalogue.html" class="app-card">
-      <span class="app-icon">🛒</span>
-      <span class="app-tag tag-kifftech">Boutique 2020-2026</span>
-      <h3 class="app-title">Kifftech.store</h3>
-      <p class="app-desc">Accessoires &amp; gadgets 2020 à 2026. Promotions de −10 % à −25 % sur les prix officiels. File d'attente fournisseur grossiste, achat groupé et prix KiffTech.</p>
-      <button class="app-btn">Voir le catalogue →</button>
-    </a>
-    <a href="./viartificial-labs/" class="app-card">
-      <span class="app-icon">🤖</span>
-      <span class="app-tag tag-viartificial">Agents IA</span>
-      <h3 class="app-title">ViArtificial-Labs</h3>
-      <p class="app-desc">Plateforme IA local-first : Superbots, conversation, moteurs linguistiques, éditeur cos, tokenizer, embeddings, génération contrôlée, quantization GGUF. Inférence zéro serveur.</p>
-      <button class="app-btn">Ouvrir SuperBots →</button>
-    </a>
-    <a href="./videogames/" class="app-card">
-      <span class="app-icon">🎮</span>
-      <span class="app-tag tag-videogames">Stick-Emoji</span>
-      <h3 class="app-title">Videogames</h3>
-      <p class="app-desc">Jeux rétro et modernes avec Stick-Emoji : RollsPunch, Police-Criminal-homeoflaw. Émulation, configurations, roms et stickers emojis animés.</p>
-      <button class="app-btn">Ouvrir le gaming →</button>
-    </a>
-    <a href="./videogames/pawaw/" class="app-card">
-      <span class="app-icon">🌟</span>
-      <span class="app-tag tag-pawaw">MMOARPG</span>
-      <h3 class="app-title">PAWAW Librarchy</h3>
-      <p class="app-desc">Simulation de vie fictive fantastique, féerique, extraordinaire et créative. Parties rapides ou immersion totale dans un monde magique.</p>
-      <button class="app-btn">Entrer dans Librarchy →</button>
-    </a>
-    <a href="./blogum/" class="app-card">
-      <span class="app-icon">📝</span>
-      <span class="app-tag tag-blogum">Réseau Social</span>
-      <h3 class="app-title">Blogum</h3>
-      <p class="app-desc">Blog maker, profil social network, rencontres. Sphères d'audience, profils caméléons, échelle de proximité, espaces hybrides blog ↔ forum, réactions émotionnelles.</p>
-      <button class="app-btn">Créer mon Blogum →</button>
-    </a>
+
+
+  <button class="vitrine-nav vitrine-nav-prev" id="vitrine-prev" type="button" aria-label="Application précédente">‹</button>
+
+  <nav class="nav" id="nav" aria-label="Navigation des applications"></nav>
+
+  <button class="vitrine-nav vitrine-nav-next" id="vitrine-next" type="button" aria-label="Application suivante">›</button>
+
+
+
+  <!-- ===== Minifenetre découverte app (overlay par-dessus la vitrine) ===== -->
+
+  <div id="app-discover-overlay" class="discover-overlay" role="dialog" aria-modal="true" aria-label="Découvrir l'application" data-i18n="index_application_1">
+
+    <button id="discover-close" class="discover-close" type="button" aria-label="Fermer">×</button>
+
+    <div class="discover-modal">
+
+      <div class="discover-header">
+
+        <span id="discover-icon" class="discover-icon">📦</span>
+
+        <h2 id="discover-title" class="discover-title" data-i18n="./index.html_application_3">Application</h2>
+
+      </div>
+
+      <p id="discover-desc" class="discover-desc"></p>
+
+      <div class="discover-actions" data-i18n="index_d_couvrir_lapp_annuler_0">
+
+        <button id="discover-open" class="discover-btn-open" type="button" data-i18n="./index.html_découvrir_lapp_43">Découvrir l'app</button>
+
+        <button id="discover-cancel" class="discover-btn-cancel" type="button" data-i18n="./index.html_annuler_44">Annuler</button>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <footer class="footer" style="border-top:1px solid rgba(255,255,255,.1);padding:clamp(24px,4vw,40px) clamp(16px,3vw,24px);margin-top:40px;color:#b9c0e6;font-size:.82rem;text-align:center;line-height:1.6">
-    <p class="f-line" style="margin:0 0 8px">KeffStation — 5 applications : Kifftech.store, ViArtificial-Labs, Videogames, PAWAW Librarchy, Blogum.</p>
-    <p class="f-line" style="margin:0">Domaine : <a href="https://kiffstation.com" style="color:#1e6bff;text-decoration:none">kiffstation.com</a></p>
-  </footer>
+
+
+
+<script src="index-inline-01.js" ></script>
+
+
+
+<!-- Panneau détail application (injecté par app.js) -->
+
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Détail de l'application">
+
+  <div class="panel-card" id="panel-card"></div>
+
+</div>
+
+
+
+<!-- Overlay PWA intégrée -->
+
+<div class="embed-overlay" id="embed-overlay" role="dialog" aria-modal="true" aria-label="PWA intégrée">
+
+  <div class="embed-header">
+
+    <div class="embed-header-left">
+
+      <button class="embed-back" id="embed-back" type="button" aria-label="Retour à la vitrine">←</button>
+
+      <div>
+
+        <div class="embed-title" id="embed-title"></div>
+
+        <div class="embed-subtitle" id="embed-subtitle"></div>
+
+      </div>
+
+    </div>
+
+    <div class="embed-actions" data-i18n="./index.html__93">
+
+      <button class="embed-action newtab" id="embed-newtab" type="button" aria-label="Ouvrir dans un nouvel onglet" title="Ouvrir dans un nouvel onglet">⧉</button>
+
+      <button class="embed-action" id="embed-refresh" type="button" aria-label="Actualiser" title="Actualiser">↻</button>
+
+    </div>
+
+  </div>
+
+  <div class="embed-loading" id="embed-loading" data-i18n="./index.html_chargement_94">
+
+    <div>Chargement…</div>
+
+    <div class="embed-loading-bar" aria-hidden="true"><div class="embed-loading-bar-inner"></div></div>
+
+  </div>
+
+  <iframe class="embed-iframe" id="embed-iframe" allow="camera; microphone; geolocation; payment; clipboard-read; clipboard-write; fullscreen" loading="eager"></iframe>
+
+</div>
+
+
+
+<script type="module" src="app.js"></script>
+
+<script src="index-inline-02.js" ></script>
+
+<script src="./install.js"></script>
+
+<script src="./refresh.js"></script>
+
+<script src="index-inline-03.js" ></script>
+
+<script src="index-inline-04.js" ></script>
+
+
+
+<script src="index-inline-05.js" ></script>
+
+
+
+<script src="index-inline-06.js" ></script>
+
+  <!-- Overlay plein écran — vitrine complète (fenêtre screenshot) -->
+  <div class="vitrine-capture" id="vitrine-capture" role="dialog" aria-modal="true" aria-label="Vitrine KiffStation en plein écran">
+    <button class="capture-close" id="capture-close" type="button" aria-label="Fermer le plein écran">✕</button>
+    <div class="capture-inner">
+      <div class="capture-nav capture-nav-prev" id="capture-prev" aria-label="Application précédente">‹</div>
+      <div class="capture-viewport" id="capture-viewport">
+        <!-- La vitrine est injectée ici par JS quand le mode s'ouvre -->
+      </div>
+      <div class="capture-nav capture-nav-next" id="capture-next" aria-label="Application suivante">›</div>
+    </div>
+    <div class="capture-hint" id="capture-hint">Faites défiler • Flèches ◀ ▶ pour changer d’app • Échap pour fermer</div>
+  </div>
+
 </body>
+
+<!-- cache purge force v2 -->
+
 </html>
+
+<!-- forced-rebuild: 1794179356 -->
+
+
+
+
