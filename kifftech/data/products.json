@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T22:01:18.883Z",
+  "generatedAt": "2026-11-11T11:24:27.164Z",
   "note": "Catalogue live Shopify + Impact, genere par .github/workflows/boutique-sync.yml. Fichier public : aucun secret.",
   "siteDomain": "kiffstation.com",
   "currency": "EUR",
@@ -253,7 +253,7 @@
       "year": 2026,
       "category": "Tablets",
       "price": {
-        "official": 147,
+        "official": 140,
         "currency": "EUR"
       },
       "specs": {},
@@ -404,7 +404,7 @@
       "year": 2026,
       "category": "Tablets",
       "price": {
-        "official": 88,
+        "official": 84,
         "currency": "EUR"
       },
       "specs": {},
@@ -559,7 +559,7 @@
       "year": 2026,
       "category": "Accessories",
       "price": {
-        "official": 90,
+        "official": 91,
         "currency": "EUR"
       },
       "specs": {},
