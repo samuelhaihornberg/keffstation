@@ -22,7 +22,7 @@ const RAYONS = [
 /* Nombre de produits par rayon (catalogue JSON versionné) */
 const RAYON_COUNTS = {};
 function chargerComptes(){
-  return fetch('./data/catalogue.json', { cache:'no-cache' })
+  return fetch('/kifftech/data/catalogue.json', { cache:'no-cache' })
     .then(r => r.ok ? r.json() : null)
     .then(j => {
       const list = Array.isArray(j) ? j : (j && j.products) || [];
