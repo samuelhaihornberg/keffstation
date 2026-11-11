@@ -27,9 +27,18 @@
   ]
 }
 </script>
-<link rel="stylesheet" href="index-inline-01.css?v=27" >
-<link rel="stylesheet" href="./theme.css?v=27">
-<script src="index-inline-02.js" ></script>
+<link rel="stylesheet" href="index-inline-01.css?v=28" >
+<link rel="stylesheet" href="./theme.css?v=28">
+<script src="index-inline-02.js?v=28" ></script>
+
+<!-- Désenregistrement automatique du Service Worker (pas besoin de F12) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(reg){ reg.unregister(); });
+    });
+  }
+</script>
 
 <script defer src="../i18n.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WP6HC0CM9E"></script>
@@ -214,8 +223,8 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="paypal-config.js"></script>
-<script defer src="./catalogue-live.js?v=27"></script>
-<script src="app.v2.js?v=27"></script>
+<script defer src="./catalogue-live.js?v=28"></script>
+<script src="app.v2.js?v=28"></script>
 <script>
   // Routage : activer le rayon demandé depuis l'URL (?rayon=smartphones)
   (function(){

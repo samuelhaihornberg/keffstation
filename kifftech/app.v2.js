@@ -180,7 +180,7 @@ const LOCAL_DB = [
 // Si le build a change (nouveau deploiement), on purge le cache du site
 // et on recharge une seule fois : le telephone ne peut plus rester bloque
 // sur un ancien app.v2.js.
-const APP_BUILD = '2026-11-10.27';
+const APP_BUILD = '2026-11-10.28';
 (function checkBuild(){
   try{
     var prev = localStorage.getItem('kifftech.build');
