@@ -420,26 +420,8 @@ function renderRayons(){
   sel.querySelectorAll('.rayon-btn').forEach(b => {
     b.addEventListener('click', () => {
       activeCategory = b.dataset.category;
-      // URL propre et partageable : /kifftech/rayons/<slug>/
-      try {
-        // Dossier contenant le site KiffTech, deduit de l'URL courante.
-        // Fonctionne sur kiffstation.com (a la racine) comme dans un
-        // sous-dossier local (pas de chemin en dur).
-        const pathname = location.pathname;
-        let base = '';
-        const rayonMatch = pathname.match(/^(.*\/)rayons\/[^\/]*\/?$/);
-        if (rayonMatch) {
-          base = rayonMatch[1];
-        } else {
-          const i = pathname.lastIndexOf('/');
-          base = i > 0 ? pathname.slice(0, i + 1) : '/';
-        }
-        if (base === '/') base = '';
-        if (base.endsWith('/')) base = base.slice(0, -1);
-        const slug = slugRayon(activeCategory);
-        const url = base + (activeCategory === 'all' ? '/index.html' : '/rayons/' + slug + '/');
-        history.replaceState({}, '', url);
-      } catch (e) {}
+      // Pas de changement d'URL pour eviter les boucles de redirection
+      // avec le Service Worker et les pages rayons.
       sel.querySelectorAll('.rayon-btn').forEach(x => {
         x.classList.toggle('active', x === b);
         x.setAttribute('aria-checked', x === b);
