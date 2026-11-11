@@ -1185,7 +1185,7 @@ function init(){
       let rayon = params.get('rayon');
       if (!rayon && window.KIFFTECH_RAYON) rayon = window.KIFFTECH_RAYON;
       if (!rayon) {
-        const m = /\/rayon\/([a-z0-9-]+)\/?$/i.exec(window.location.pathname || '');
+        const m = /\/rayons?\/([a-z0-9-]+)\/?$/i.exec(window.location.pathname || '');
         if (m) {
           const wanted = m[1];
           const hit = products.find(p => slugRayon(p.category) === wanted);

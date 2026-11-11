@@ -65,10 +65,7 @@ rendreRayons();
 rayonGrid.querySelectorAll('.rayon-card').forEach(el => {
   el.addEventListener('click',(e)=>{
     if (e.metaKey || e.ctrlKey || e.shiftKey) return; // laisse le nouvel onglet fonctionner
-    e.preventDefault(); // empêche le suivi du lien <a> (double navigation qui fait clignoter)
-    const i = +el.dataset.rayon;
-    // Clic direct sur une carte rayon : ouvre la boutique avec ce rayon filtre
-    window.location.href = '../../index.html?rayon=' + slugRayon(RAYONS[i].cat);
+    // Lien naturel vers la page dédiée du rayon (./rayons/<slug>/)
   });
 });
 
