@@ -12,6 +12,94 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' font-family='monospace' fill='%23ffd23f' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="./vitrine.css">
+<style>
+  /* Bannière cookies RGPD */
+  #cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(7, 8, 22, 0.97);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    padding: 20px 24px;
+    display: none;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  #cookie-banner.visible {
+    display: block;
+  }
+  #cookie-banner .cookie-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  #cookie-banner .cookie-title {
+    font-weight: 800;
+    color: #ffd23f;
+    font-size: 1.05rem;
+  }
+  #cookie-banner .cookie-text {
+    color: #b9c0e6;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  #cookie-banner .cookie-links {
+    color: #1e6bff;
+    text-decoration: underline;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+  #cookie-banner .cookie-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  #cookie-banner .cookie-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  #cookie-banner .cookie-btn-accept {
+    background: linear-gradient(135deg, #1e6bff, #00d4ff);
+    color: #05060a;
+  }
+  #cookie-banner .cookie-btn-accept:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+  }
+  #cookie-banner .cookie-btn-decline {
+    background: rgba(255, 255, 255, 0.08);
+    color: #b9c0e6;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  #cookie-banner .cookie-btn-decline:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  @media (max-width: 640px) {
+    #cookie-banner .cookie-content {
+      padding: 0 8px;
+    }
+    #cookie-banner .cookie-actions {
+      flex-direction: column;
+    }
+    #cookie-banner .cookie-btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
 <script defer src="./i18n.js"></script>
 <script defer src="./keff-stats.js"></script>
 </head>
@@ -317,10 +405,64 @@
     <div class="capture-hint" id="capture-hint">Faites défiler • Flèches ◀ ▶ pour changer d’app • Échap pour fermer</div>
   </div>
 
+  <!-- Bannière cookies RGPD -->
+  <div id="cookie-banner">
+    <div class="cookie-content">
+      <div class="cookie-title">Cookies et droits d'utilisation KiffStation</div>
+      <p class="cookie-text">KiffStation utilise des cookies pour mémoriser vos préférences, analyser le trafic et vous proposer une expérience personnalisée. En continuant, vous acceptez l'utilisation des cookies et les <a class="cookie-links" href="#">conditions d'utilisation</a>.</p>
+      <div class="cookie-actions">
+        <button class="cookie-btn cookie-btn-decline" id="cookie-btn-decline">Refuser</button>
+        <button class="cookie-btn cookie-btn-accept" id="cookie-btn-accept">J'accepte</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Gestion des cookies RGPD */
+    (function(){
+      const banner = document.getElementById('cookie-banner');
+      const acceptBtn = document.getElementById('cookie-btn-accept');
+      const declineBtn = document.getElementById('cookie-btn-decline');
+
+      function isAccepted() {
+        return localStorage.getItem('kiffstation_cookies_accepted') === 'true';
+      }
+
+      function showBanner() {
+        if (!isAccepted()) {
+          banner.classList.add('visible');
+        }
+      }
+
+      function acceptCookies() {
+        localStorage.setItem('kiffstation_cookies_accepted', 'true');
+        localStorage.setItem('kiffstation_cookies_accepted_at', Date.now().toString());
+        banner.classList.remove('visible');
+        // Recharger la page à la dernière version après acceptation
+        window.location.reload();
+      }
+
+      function declineCookies() {
+        localStorage.setItem('kiffstation_cookies_accepted', 'false');
+        banner.classList.remove('visible');
+      }
+
+      acceptBtn.addEventListener('click', acceptCookies);
+      declineBtn.addEventListener('click', declineCookies);
+
+      // Afficher au chargement si pas encore accepté
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showBanner);
+      } else {
+        showBanner();
+      }
+    })();
+  </script>
+
 </body>
 
 <!-- cache purge force v3 -->
 
 </html>
 
-<!-- forced-rebuild: 1794180000 -->
+<!-- forced-rebuild: 1794180001 -->
