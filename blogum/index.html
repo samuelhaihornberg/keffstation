@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff3d9a">
+<meta name="description" content="Blogum — Blog maker, profil social network, rencontres. Sphères d'audience, profils caméléons, échelle de proximité, espaces hybrides blog ↔ forum, réactions émotionnelles.">
+<meta name="keywords" content="blogum, blog, réseau social, rencontres, sphère audience, profils caméléons, réactions émotionnelles, like dislike, feedback">
+<title>Blogum — Réseau Social & Blog Hybride</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-size='56' font-family='monospace' fill='%23ff3d9a' text-anchor='middle'%3E📝%3C/text%3E%3C/svg%3E">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:16px}
+  body{min-height:100vh;min-height:100dvh;background:#070816;color:#f4f6ff;font:1rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  input,textarea,select{font:inherit;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;color:#fff;width:100%}
+  header{position:sticky;top:0;z-index:60;padding:clamp(12px,3vh,20px) clamp(12px,3vw,20px);background:rgba(10,12,34,.95);border-bottom:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .logo{font-size:clamp(28px,5vw,36px)}
+  h1{font-size:clamp(1.3rem,3.5vw,2rem);font-weight:800;background:linear-gradient(90deg,#ff3d9a,#ffd23f,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent}
+  main{flex:1;padding:clamp(16px,3vw,24px);max-width:1200px;margin:0 auto}
+  .hero{text-align:center;padding:40px 0}
+  .hero h2{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:900;margin-bottom:16px;background:linear-gradient(90deg,#ff3d9a,#ffd23f,#27d17f);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:#b9c0e6;font-size:clamp(1rem,2vw,1.2rem);max-width:64ch;margin:0 auto 24px}
+  .create-post{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:24px;margin-bottom:32px}
+  .create-post h3{color:#fff;font-weight:800;margin-bottom:16px;font-size:1.1rem}
+  .sphere-selector{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .sphere-btn{padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#b9c0e6;font-size:.85rem;cursor:pointer;transition:all .2s}
+  .sphere-btn.active{border-color:#ff3d9a;background:rgba(255,61,154,.2);color:#ff3d9a}
+  .post-input{width:100%;min-height:100px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;color:#fff;font-size:1rem;resize:vertical;margin-bottom:16px}
+  .post-btn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#ff3d9a,#ffd23f);color:#05060a;font-weight:800;cursor:pointer}
+  .post-btn:hover{filter:brightness(1.1)}
+  .feed{display:flex;flex-direction:column;gap:20px}
+  .post-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;transition:transform .2s}
+  .post-card:hover{transform:translateY(-2px)}
+  .post-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .post-avatar{font-size:2rem}
+  .post-user{font-weight:800;color:#ffd23f}
+  .post-sphere{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#ff3d9a;font-weight:700;background:rgba(255,61,154,.15);padding:4px 8px;border-radius:999px}
+  .post-content{color:#fff;line-height:1.6;margin-bottom:16px}
+  .post-meta{color:#8a92b8;font-size:.8rem;margin-bottom:16px}
+  .reactions{display:flex;gap:10px}
+  .reaction-btn{padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#b9c0e6;font-size:1.1rem;cursor:pointer;transition:all .2s}
+  .reaction-btn.active{border-color:#ff3d9a;background:rgba(255,61,154,.2);color:#ff3d9a}
+  .reaction-btn.liked{border-color:#27d17f;background:rgba(39,209,127,.2);color:#27d17f}
+  .reaction-btn.disliked{border-color:#ff3d9a;background:rgba(255,61,154,.2);color:#ff3d9a}
+  .reaction-count{margin-left:6px;font-weight:700;color:#fff}
+  .comments{margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:16px}
+  .comment{display:flex;gap:10px;margin-top:12px}
+  .comment-avatar{font-size:1.5rem}
+  .comment-content{color:#e8ecf5;font-size:.9rem}
+  .comment-user{font-weight:700;color:#1e6bff}
+  .comment-reactions{margin-top:4px}
+  .empty-feed{text-align:center;padding:40px;color:#8a92b8}
+  .empty-avatar{font-size:4rem;margin-bottom:16px}
+  .feedback-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,12,34,.95);border-top:1px solid rgba(255,255,255,.1);padding:16px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);z-index:100}
+  .feedback-bar h4{color:#fff;font-size:.9rem;margin-bottom:12px}
+  .feedback-reactions{display:flex;gap:8px;flex-wrap:wrap}
+  .feedback-btn{padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#b9c0e6;font-size:.9rem;cursor:pointer;transition:all .2s}
+  .feedback-btn.active{border-color:#ff3d9a;background:rgba(255,61,154,.2);color:#ff3d9a}
+  @media (max-width:640px){main{padding:16px}}
+</style>
+</head>
+<body>
+  <header>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="logo">📝</span>
+      <h1>Blogum</h1>
+    </div>
+    <a href="../" style="padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;transition:all .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-decoration:none">← KeffStation</a>
+  </header>
+  <main>
+    <section class="hero">
+      <h2>Blogum — Blog &amp; Réseau Social</h2>
+      <p>Créez votre blog, partagez vos pensées, rencontrez des personnes. Sphères d'audience, profils caméléons, réactions émotionnelles.</p>
+    </section>
+
+    <div class="create-post">
+      <h3>Nouvelle publication</h3>
+      <div class="sphere-selector" id="sphereSelector">
+        <button class="sphere-btn active" data-sphere="public">Public</button>
+        <button class="sphere-btn" data-sphere="pro">Pro</button>
+        <button class="sphere-btn" data-sphere="famille">Famille</button>
+        <button class="sphere-btn" data-sphere="amis">Amis</button>
+        <button class="sphere-btn" data-sphere="love">Love</button>
+        <button class="sphere-btn" data-sphere="connaissances">Connaissances</button>
+        <button class="sphere-btn" data-sphere="loisirs">Loisirs</button>
+      </div>
+      <textarea id="postInput" class="post-input" placeholder="Qu'avez-vous à partager ? Écrivez votre article, votre pensée ou lancez un débat..."></textarea>
+      <button class="post-btn" id="publishBtn">Publier</button>
+    </div>
+
+    <h3 style="color:#fff;font-weight:800;margin-bottom:16px">Fil d'actualité</h3>
+    <div class="feed" id="feed">
+      <div class="empty-feed">
+        <div class="empty-avatar">📝</div>
+        <p>Aucune publication pour le moment. Soyez le premier à publier !</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="feedback-bar">
+    <h4>Votre avis sur Blogum</h4>
+    <div class="feedback-reactions">
+      <button class="feedback-btn" data-reaction="like">👍 J'aime</button>
+      <button class="feedback-btn" data-reaction="dislike">👎 Je n'aime pas</button>
+      <button class="feedback-btn" data-reaction="love">❤️ J'adore</button>
+      <button class="feedback-btn" data-reaction="revolte">🤬 Révolté</button>
+      <button class="feedback-btn" data-reaction="surkiffe">🥵 Surkiffe</button>
+      <button class="feedback-btn" data-reaction="froid">🥶 Froid</button>
+      <button class="feedback-btn" data-reaction="malade">🤒 Malade</button>
+      <button class="feedback-btn" data-reaction="glace">🥳 Briser la glace</button>
+    </div>
+  </div>
+
+  <script>
+    // État de l'application
+    let currentSphere = 'public';
+    let posts = [];
+    let feedback = {};
+
+    // Sélecteur de sphère dynamique
+    const sphereBtns = document.querySelectorAll('.sphere-btn');
+    sphereBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sphereBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSphere = btn.dataset.sphere;
+      });
+    });
+
+    // Publications initiales de démo
+    const demoPosts = [
+      {
+        user: 'Alex',
+        content: 'Bonjour Blogum ! Premier post sur ma nouvelle sphère pro.',
+        sphere: 'pro',
+        reactions: { like: 3, love: 1 },
+        userReaction: null,
+        comments: [
+          { user: 'Marie', content: 'Bienvenue ! 🎉', reactions: { like: 1 } }
+        ]
+      },
+      {
+        user: 'Sophie',
+        content: 'Qui veut discuter de littérature fantastique ? Ma sphère loisirs est ouverte !',
+        sphere: 'loisirs',
+        reactions: { like: 5, surkiffe: 2 },
+        userReaction: null,
+        comments: []
+      }
+    ];
+
+    posts = demoPosts;
+
+    // Rendu du feed
+    const feed = document.getElementById('feed');
+    const emptyFeed = feed.querySelector('.empty-feed');
+
+    function renderFeed() {
+      feed.innerHTML = '';
+      if (posts.length === 0) {
+        feed.appendChild(emptyFeed.cloneNode(true));
+        return;
+      }
+      posts.forEach((post, index) => {
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.innerHTML = `
+          <div class="post-header">
+            <div class="post-avatar">${getAvatarEmoji(post.user)}</div>
+            <div>
+              <div class="post-user">${post.user}</div>
+              <div class="post-sphere">${post.sphere}</div>
+            </div>
+          </div>
+          <div class="post-content">${escapeHtml(post.content)}</div>
+          <div class="post-meta">${post.reactions.like || 0} 👍 • ${post.reactions.love || 0} ❤️</div>
+          <div class="reactions">
+            <button class="reaction-btn ${post.userReaction === 'like' ? 'liked' : ''}" data-action="like" data-index="${index}">👍 <span class="reaction-count">${post.reactions.like || 0}</span></button>
+            <button class="reaction-btn ${post.userReaction === 'dislike' ? 'disliked' : ''}" data-action="dislike" data-index="${index}">👎 <span class="reaction-count">${post.reactions.dislike || 0}</span></button>
+            <button class="reaction-btn" data-action="love" data-index="${index}">❤️ <span class="reaction-count">${post.reactions.love || 0}</span></button>
+            <button class="reaction-btn" data-action="revolte" data-index="${index}">🤬 <span class="reaction-count">${post.reactions.revolte || 0}</span></button>
+            <button class="reaction-btn" data-action="surkiffe" data-index="${index}">🥵 <span class="reaction-count">${post.reactions.surkiffe || 0}</span></button>
+            <button class="reaction-btn" data-action="froid" data-index="${index}">🥶 <span class="reaction-count">${post.reactions.froid || 0}</span></button>
+            <button class="reaction-btn" data-action="malade" data-index="${index}">🤒 <span class="reaction-count">${post.reactions.malade || 0}</span></button>
+            <button class="reaction-btn" data-action="glace" data-index="${index}">🥳 <span class="reaction-count">${post.reactions.glace || 0}</span></button>
+          </div>
+          <div class="comments" id="comments-${index}">
+            ${post.comments.map(c => `
+              <div class="comment">
+                <div class="comment-avatar">${getAvatarEmoji(c.user)}</div>
+                <div>
+                  <div class="comment-user">${c.user}</div>
+                  <div class="comment-content">${escapeHtml(c.content)}</div>
+                  <div class="comment-reactions">${c.reactions.like || 0} 👍</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+        // Gestion des réactions
+        card.querySelectorAll('.reaction-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const action = btn.dataset.action;
+            const idx = parseInt(btn.dataset.index);
+            handleReaction(idx, action, btn);
+          });
+        });
+
+        feed.appendChild(card);
+      });
+    }
+
+    function handleReaction(postIdx, action, btn) {
+      const post = posts[postIdx];
+      if (!post.reactions) post.reactions = {};
+
+      // Reset reaction utilisateur
+      Object.keys(post.reactions).forEach(key => {
+        if (key !== 'userReaction') post.reactions[key] = Math.max(0, (post.reactions[key] || 0) - (post.userReaction === key ? 1 : 0));
+      });
+
+      // Nouvelle réaction
+      if (post.userReaction === action) {
+        post.userReaction = null;
+        post.reactions[action] = Math.max(0, (post.reactions[action] || 0) - 1);
+        btn.classList.remove('liked', 'disliked', 'active');
+      } else {
+        post.userReaction = action;
+        post.reactions[action] = (post.reactions[action] || 0) + 1;
+        btn.classList.add('liked', 'disliked', 'active');
+      }
+
+      renderFeed();
+    }
+
+    function getAvatarEmoji(username) {
+      const emojis = ['👨','👩','🧑','👴','👵','👲','👳','🧔','👱','👼','👸','🧛','🧜','🧝','🧞','🧟'];
+      let hash = 0;
+      for (let i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return emojis[Math.abs(hash) % emojis.length];
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Publier un post
+    document.getElementById('publishBtn').addEventListener('click', () => {
+      const input = document.getElementById('postInput');
+      const content = input.value.trim();
+      if (!content) return;
+
+      const newPost = {
+        user: 'Vous',
+        content: content,
+        sphere: currentSphere,
+        reactions: {},
+        userReaction: null,
+        comments: []
+      };
+
+      posts.unshift(newPost);
+      input.value = '';
+      renderFeed();
+    });
+
+    // Feedback barre
+    const feedbackBtns = document.querySelectorAll('.feedback-btn');
+    feedbackBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        feedbackBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const reaction = btn.dataset.reaction;
+        feedback.current = reaction;
+        console.log('Feedback Blogum:', reaction);
+      });
+    });
+
+    // Initialiser
+    renderFeed();
+  </script>
+</body>
+</html>
