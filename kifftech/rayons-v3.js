@@ -64,10 +64,7 @@ rendreRayons();
 
 rayonGrid.querySelectorAll('.rayon-card').forEach(el => {
   el.addEventListener('click',(e)=>{
-    if (e.metaKey || e.ctrlKey || e.shiftKey) return; // laisse le nouvel onglet fonctionner
-    e.preventDefault();
-    const i = +el.dataset.rayon;
-    window.location.href = urlRayon(RAYONS[i].cat);
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
   });
 });
 
@@ -115,6 +112,7 @@ document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); })
 modalAdd.addEventListener('click',()=>{
   if(!currentRayon) return;
   closeModal();
+  window.location.href = urlRayon(currentRayon.cat);
 });
 
 /* ==================== LA CAISSE (compteur réel) ==================== */
