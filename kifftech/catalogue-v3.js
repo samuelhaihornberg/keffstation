@@ -41,7 +41,7 @@ function slugCatalogue(cat){
   return String(cat || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
 }
-function urlCatalogue(cat){ return '/kifftech/index.html?catalogue=' + slugCatalogue(cat); }
+function urlCatalogue(cat){ return './index.html?catalogue=' + slugCatalogue(cat); }
 
 function rendreCatalogue(){
   catalogueGrid.innerHTML = CATALOGUES.map((r,i) => `
