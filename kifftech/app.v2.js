@@ -414,7 +414,7 @@ function renderRayons(){
   html += cats.filter(c => c !== 'all').map(c => {
     const n = counts[c] || 0;
     const warn = n < MIN_PAR_RAYON ? ' <span class="rayon-warn" title="Rayon incomplet" aria-label="Rayon incomplet">⚠️</span>' : '';
-    return `<button type="button" class="rayon-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}${warn}<span class="rayon-count">${n}${pl(n)}</span></button>`;
+    return `<button type="button" class="rayon-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" data-slug="${slugRayon(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}${warn}<span class="rayon-count">${n}${pl(n)}</span></button>`;
   }).join('');
   sel.innerHTML = html;
   sel.querySelectorAll('.rayon-btn').forEach(b => {

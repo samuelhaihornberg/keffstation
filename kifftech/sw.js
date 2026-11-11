@@ -12,7 +12,7 @@
  * Le catalogue (data/*.json) est conserve en localStorage par l'application
  * (kifftech/catalogue-live.js) : double securite hors ligne.
  */
-const CACHE = 'kifftech-agent-v29';
+const CACHE = 'kifftech-agent-v30';
 var KEEP_RE = /transformers|onnx|webllm|mlc/i;
 
 const ASSETS = [

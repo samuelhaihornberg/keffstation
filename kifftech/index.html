@@ -222,11 +222,10 @@
     var params = new URLSearchParams(location.search);
     var rayon = params.get('rayon');
     if (!rayon) return;
-    var cat = rayon.split('-').map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
     function tryClick(){
-      var btns = document.querySelectorAll('.rayon-btn[data-category]');
+      var btns = document.querySelectorAll('.rayon-btn[data-slug]');
       var target = null;
-      btns.forEach(function(b){ if (b.dataset.category === cat) target = b; });
+      btns.forEach(function(b){ if (b.dataset.slug === rayon) target = b; });
       if (target) { target.click(); }
       else { setTimeout(tryClick, 100); }
     }

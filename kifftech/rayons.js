@@ -65,9 +65,9 @@ rendreRayons();
 rayonGrid.querySelectorAll('.rayon-card').forEach(el => {
   el.addEventListener('click',(e)=>{
     if (e.metaKey || e.ctrlKey || e.shiftKey) return; // laisse le nouvel onglet fonctionner
-    e.preventDefault();
     const i = +el.dataset.rayon;
-    openModal(RAYONS[i]);
+    // Clic direct sur une carte rayon : ouvre la boutique avec ce rayon filtre
+    window.location.href = '../../index.html?rayon=' + slugRayon(RAYONS[i].cat);
   });
 });
 
