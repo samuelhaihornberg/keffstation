@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070816">
-<meta name="description" content="KeffStation — vitrine des applications KiffTech, ViArtificial Labs, Videogames et Critiques Services.">
+<meta name="description" content="KeffStation — vitrine des applications Kifftech.store, ViArtificial Labs, Videogames et Blogum.">
 <title>KeffStation — Vitrine</title>
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🪐%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' font-family='monospace' fill='%23ffd23f' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="./vitrine.css">
 <script defer src="./i18n.js"></script>
 <script defer src="./keff-stats.js"></script>
@@ -55,7 +55,7 @@
             </div>
           </div>
 
-          <div class="core-count"><span id="app-count">8</span> <span data-i18n="app_count">apps</span></div>
+          <div class="core-count"><span id="app-count">4</span> <span data-i18n="app_count">apps</span></div>
 
         </div>
 
@@ -81,7 +81,7 @@
 
     <div class="article-selector-header">
 
-      <h3 id="selector-title" data-i18n="selector_articles">Articles liés</h3>
+      <h3 id="selector-title" data-i18n="selector_articles">Applications</h3>
 
       <button id="selector-close" class="selector-close" aria-label="Fermer">✕</button>
 
@@ -90,136 +90,53 @@
     <div class="article-pagination">
 
       <span class="page-dot active" data-page="0" aria-label="Page 1"></span>
-
       <span class="page-dot" data-page="1" aria-label="Page 2"></span>
-
       <span class="page-dot" data-page="2" aria-label="Page 3"></span>
-
       <span class="page-dot" data-page="3" aria-label="Page 4"></span>
-
-      <span class="page-dot" data-page="4" aria-label="Page 5"></span>
-
-      <span class="page-dot" data-page="5" aria-label="Page 6"></span>
-      <span class="page-dot" data-page="6" aria-label="Page 7"></span>
-      <span class="page-dot" data-page="7" aria-label="Page 8"></span>
 
     </div>
 
     <div class="article-pages">
 
-      <!-- Page 0 : ViArtificial Labs -->
+      <!-- Page 0 : Kifftech.store -->
 
       <div class="article-page" data-page="0">
 
         <div class="article-card">
 
-          <div class="article-icon">🧠</div>
+          <div class="article-icon">🛒</div>
 
-          <h4 data-i18n="article_via_title">ViArtificial Labs — Moteurs IA</h4>
+          <h4 data-i18n="article_kt_title">Kifftech.store — Objets connectés & gadgets</h4>
 
-          <p data-i18n="article_via_desc">SuperBots, conversation, NLP/LLM local, assistants IA.</p>
+          <p data-i18n="article_kt_desc">Accessoires & gadgets 2020 à 2026. Promotions de −10 % à −25 % sur les prix officiels. File d'attente fournisseur grossiste.</p>
 
-        </div>
-
-        <div class="article-card">
-
-          <div class="article-icon">💬</div>
-
-          <h4 data-i18n="article_conv_title">Conversation IA</h4>
-
-          <p data-i18n="article_conv_desc">Moteurs de conversation directe et assistants virtuels.</p>
+          <button class="article-open-btn" onclick="window.location.href='./kifftech/catalogue.html'" data-i18n="btn_open_app">Ouvrir l'app →</button>
 
         </div>
 
       </div>
 
-      <!-- Page 1 : cos Editor -->
+      <!-- Page 1 : ViArtificial Labs -->
 
       <div class="article-page" data-page="1" style="display:none;">
 
         <div class="article-card">
 
-          <div class="article-icon">🧩</div>
-
-          <h4 data-i18n="article_cos_title">cos Editor — Éditeur de syntaxe COS</h4>
-
-          <p data-i18n="article_cos_desc">Analyse locale, aperçu SPA, tutoriels et export JSON.</p>
-
-          <button class="article-open-btn" onclick="openApp('./cos-editor/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
-
-        </div>
-
-        <div class="article-card">
-
-          <div class="article-icon">📘</div>
-
-          <h4 data-i18n="article_cos_tuto_title">Tutoriel COS</h4>
-
-          <p data-i18n="article_cos_tuto_desc">Balises &lt;cos&gt;, &lt;co&gt;, &lt;script_…&gt; et CSS alphanumérique.</p>
-
-          <button class="article-open-btn" onclick="openApp('./cos-editor/')" data-i18n="btn_open_app">Ouvrir →</button>
-
-        </div>
-
-      </div>
-
-      <!-- Page 2 : Linguistic Motors -->
-
-      <div class="article-page" data-page="2" style="display:none;">
-
-        <div class="article-card">
-
-          <div class="article-icon">🗣️</div>
-
-          <h4 data-i18n="article_lm_title">Linguistic Motors — NLP/LLM local</h4>
-
-          <p data-i18n="article_lm_desc">Moteurs linguistiques expérimentaux, NLP/LLM local.</p>
-
-          <button class="article-open-btn" onclick="openApp('./linguistic-motors/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
-
-        </div>
-
-      </div>
-
-      <!-- Page 3 : Critiques-Services -->
-
-      <div class="article-page" data-page="3" style="display:none;">
-
-        <div class="article-card">
-
-          <div class="article-icon">📝</div>
-
-          <h4 data-i18n="article_cs_title">Critiques-Services — Avis & critiques</h4>
-
-          <p data-i18n="article_cs_desc">Espace consacré aux critiques et avis sur des services en ligne.</p>
-
-          <button class="article-open-btn" onclick="openApp('https://samuelhaihornberg.github.io/critiques-services.com/')" data-i18n="btn_open_app">Ouvrir →</button>
-
-        </div>
-
-      </div>
-
-      <!-- Page 4 : KiffTech -->
-
-      <div class="article-page" data-page="4" style="display:none;">
-
-        <div class="article-card">
-
           <div class="article-icon">🤖</div>
 
-          <h4 data-i18n="article_kt_title">KiffTech — Objets connectés & gadgets</h4>
+          <h4 data-i18n="article_via_title">ViArtificial Labs — Moteurs IA</h4>
 
-          <p data-i18n="article_kt_desc">Boutique et gestion d'objets connectés, gadgets high-tech.</p>
+          <p data-i18n="article_via_desc">Superbots, conversation, NLP/LLM local, assistants IA.</p>
 
-          <button class="article-open-btn" onclick="window.location.href='./kifftech/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
+          <button class="article-open-btn" onclick="window.location.href='./viartificial-labs/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
 
         </div>
 
       </div>
 
-      <!-- Page 5 : Videogames -->
+      <!-- Page 2 : Videogames -->
 
-      <div class="article-page" data-page="5" style="display:none;">
+      <div class="article-page" data-page="2" style="display:none;">
 
         <div class="article-card">
 
@@ -227,35 +144,17 @@
 
           <h4 data-i18n="article_vg_title">Videogames — Jeux & émulation</h4>
 
-          <p data-i18n="article_vg_desc">Jeux rétro, émulation, configurations, roms.</p>
+          <p data-i18n="article_vg_desc">Jeux rétro, émulation, configurations, roms. Stick-Emoji : RollsPunch, Police-Criminal-homeoflaw.</p>
 
-          <button class="article-open-btn" onclick="openApp('./videogames/')" data-i18n="btn_open_app">Ouvrir l'app →</button>
-
-        </div>
-
-      </div>
-
-      <!-- Page 6 : PAWAW Librarchy -->
-
-      <div class="article-page" data-page="6" style="display:none;">
-
-        <div class="article-card">
-
-          <div class="article-icon">🌟</div>
-
-          <h4 data-i18n="article_pawaw_title">PAWAW Librarchy — MMOARPG</h4>
-
-          <p data-i18n="article_pawaw_desc">Simulation de vie fictive fantastique, féerique, extraordinaire et créative.</p>
-
-          <button class="article-open-btn" onclick="window.location.href='./pawaw/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
+          <button class="article-open-btn" onclick="window.location.href='./videogames/'" data-i18n="btn_open_app">Ouvrir l'app →</button>
 
         </div>
 
       </div>
 
-      <!-- Page 7 : Blogum -->
+      <!-- Page 3 : Blogum -->
 
-      <div class="article-page" data-page="7" style="display:none;">
+      <div class="article-page" data-page="3" style="display:none;">
 
         <div class="article-card">
 
@@ -320,7 +219,6 @@
     </div>
 
   </div>
-
 
 
 
@@ -417,12 +315,8 @@
 
 </body>
 
-<!-- cache purge force v2 -->
+<!-- cache purge force v3 -->
 
 </html>
 
-<!-- forced-rebuild: 1794179356 -->
-
-
-
-
+<!-- forced-rebuild: 1794180000 -->
