@@ -93,8 +93,8 @@ const APPS = [
     title: "Blogum",
     desc: "Blog maker, profil social network, rencontres, sphères d'audience, profils caméléons, échelle de proximité, espaces hybrides blog ↔ forum, réactions émotionnelles.",
     tags: ["Blog", "Réseau social", "Rencontres", "Feedback"],
-    appUrl: "https://kiffstation.com/blogum/",
-    embedUrl: "https://kiffstation.com/blogum/",
+    appUrl: "https://www.kiffstation.com/blogum/",
+    embedUrl: "https://www.kiffstation.com/blogum/",
     embedLabel: "Ouvrir Blogum",
     color: "#ff3d9a",
     subArticles: [
