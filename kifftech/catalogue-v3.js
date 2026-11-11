@@ -1,150 +1,320 @@
-/* KiffTech — Rayons : logique (extraite de catalogue.html) */
-(function () {
-'use strict';
-/* ==================== DATA CATALOGUES ==================== */
-// Chaque catalogue pointe vers une catégorie canonique du catalogue (app.v2.js).
-// Clic = ouverture du lecteur de produits filtré sur ce catalogue.
-const CATALOGUES = [
-  { id:'Accessoires & Gadgets', cat:'Accessories', icon:'🧰', color:'var(--kf-blue)', desc:'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
-  { id:'Smartphones', cat:'Smartphones', icon:'📱', color:'var(--kf-cyan)', desc:'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google.' },
-  { id:'Tablets', cat:'Tablets', icon:'📲', color:'var(--kf-pink)', desc:'Tablettes pro et famille — stylet, clavier, grand écran.' },
-  { id:'Laptop, tour & mini PC', cat:'Computers', icon:'💻', color:'var(--kf-emerald)', desc:'Ultrabooks, PC de bureau, mini PC — Apple Silicon, Intel Core Ultra, Ryzen.' },
-  { id:'Consoles & accessoires vidéo games', cat:'Consoles & Videogames', icon:'🎮', color:'var(--kf-orange)', desc:'Consoles rétro et modernes — PS5, Switch, Xbox, Steam Deck, accessoires.' },
-  { id:'Immobilier & logement connecté', cat:'Smart Home', icon:'🏢', color:'var(--kf-violet)', desc:'Objets connectés du logement : maison intelligente, sécurité, énergie.' },
-  { id:'Garden', cat:'Garden & furnitures smart devices', icon:'🪴', color:'var(--kf-emerald)', desc:'Jardin et maison connectés — robots tondeuses, éclairage, arrosage.' },
-  { id:'Robots de compagnie & éducatifs', cat:'Company & studying Robots', icon:'🤖', color:'var(--kf-blue)', desc:'Robots compagnons et éducatifs — programmation, IA embarquée.' },
-  { id:'Sport & électronique', cat:'Audio & Wearables', icon:'⌚', color:'var(--kf-pink)', desc:'Montres connectées, bracelets fitness, matériel sport électronique.' },
-  { id:'Composants informatiques', cat:'Composant electronic & informatic', icon:'🔌', color:'var(--kf-cyan)', desc:'Composants informatique — cartes graphiques, CPU, SSD, cartes mères.' },
-  { id:'Composants électroniques', cat:'Composant electronic', icon:'⚡', color:'var(--kf-orange)', desc:'Composants électroniques — résistances, condensateurs, modules, capteurs.' },
-  { id:'Matière & outillage électronique', cat:'Materiel electronique & outillage', icon:'⚙️', color:'var(--kf-violet)', desc:'Pièces et matière pour électronique et/ou mécanique — soudure, boîtiers, outillage.' }
-];
+/* ============================================================================
+   KiffTech — Catalogue v3 : affichage des produits avec filtres, tri et recherche
+   Charge les produits depuis data/catalogue.json et affiche une grille interactive
+   ============================================================================ */
 
-/* Nombre de produits par catalogue (catalogue JSON versionné) */
-const CATALOGUE_COUNTS = {};
-function chargerComptes(){
-  return fetch('/kifftech/data/catalogue.json', { cache:'no-cache' })
-    .then(r => r.ok ? r.json() : null)
-    .then(j => {
-      const list = Array.isArray(j) ? j : (j && j.products) || [];
-      list.forEach(p => {
-        const c = p.category || 'Accessories';
-        CATALOGUE_COUNTS[c] = (CATALOGUE_COUNTS[c] || 0) + 1;
+(function(){
+  'use strict';
+
+  /* ---------- État ---------- */
+  let allProducts = [];
+  let filteredProducts = [];
+  let currentCategory = null;
+  let currentSort = 'name';
+  let currentSearch = '';
+
+  /* ---------- Éléments DOM ---------- */
+  const catalogueGrid = document.getElementById('catalogueGrid');
+  const categoryFilters = document.getElementById('categoryFilters');
+  const catalogueSearch = document.getElementById('catalogueSearch');
+  const catalogueSort = document.getElementById('catalogueSort');
+  const catalogueCount = document.getElementById('catalogueCount');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalSub = document.getElementById('modalSub');
+  const modalMedia = document.getElementById('modalMedia');
+  const modalSpecs = document.getElementById('modalSpecs');
+  const modalClose = document.getElementById('modalClose');
+  const modalCancel = document.getElementById('modalCancel');
+  const modalAdd = document.getElementById('modalAdd');
+
+  /* ---------- Chargement des données ---------- */
+  async function loadCatalogue(){
+    try {
+      const response = await fetch('./data/catalogue.json', { cache:'no-cache' });
+      if (!response.ok) throw new Error('Impossible de charger le catalogue');
+      const data = await response.json();
+
+      const products = Array.isArray(data.products) ? data.products : [];
+      const categories = data.categories || {};
+
+      allProducts = products.map(p => ({
+        id: p.id,
+        brand: p.brand || 'Sans marque',
+        model: p.model || 'Sans nom',
+        year: p.year || 2024,
+        category: p.category || 'Accessories',
+        price: (p.price && p.price.official) || 0,
+        specs: p.specs || {},
+        images: (p.images && p.images.length) ? p.images : ['./img/no-image.jpg'],
+        usage: p.usage || [],
+        impact: p.impact || null,
+        source: p.source || 'local'
+      }));
+
+      // Détecter la catégorie depuis l'URL ?catalogue=
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlCat = urlParams.get('catalogue');
+      if (urlCat) {
+        // Trouver la catégorie qui correspond au slug
+        const matched = allProducts.find(p => {
+          const slug = String(p.category || '')
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/&/g, ' et ')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+          return slug === urlCat;
+        });
+        if (matched) {
+          currentCategory = matched.category;
+        }
+      }
+
+      // Initialiser les filtres de catégorie
+      renderCategoryFilters(categories);
+
+      // Afficher les produits
+      applyFiltersAndSort();
+
+      // Écouter les changements de filtres
+      catalogueSearch.addEventListener('input', (e) => {
+        currentSearch = e.target.value.toLowerCase();
+        applyFiltersAndSort();
       });
-      return list;
-    })
-    .catch(() => []);
-}
 
-const catalogueGrid = document.getElementById('catalogueGrid');
-// URL propre par catalogue : page statique dediee (durable et partageable).
-function slugCatalogue(cat){
-  return String(cat || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
-}
-function urlCatalogue(cat){ return './index.html?catalogue=' + slugCatalogue(cat); }
+      catalogueSort.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        applyFiltersAndSort();
+      });
 
-function rendreCatalogue(){
-  catalogueGrid.innerHTML = CATALOGUES.map((r,i) => `
-  <a class="catalogue-card" href="${urlCatalogue(r.cat)}" data-catalogue="${i}" role="listitem" aria-label="Rayon ${r.id}">
-    <div class="catalogue-media">
-      <span style="font-size:3.2rem">${r.icon}</span>
-    </div>
-    <div class="catalogue-body">
-      <div class="catalogue-name">${r.id}</div>
-      <div class="catalogue-desc">${r.desc}</div>
-    </div>
-    <div class="catalogue-footer">
-      <span class="catalogue-count">${CATALOGUE_COUNTS[r.cat] != null ? CATALOGUE_COUNTS[r.cat] + ' produits' : '25+ produits'}</span>
-      <span class="catalogue-arrow">▸</span>
-    </div>
-  </a>
-`).join('');
-}
-rendreCatalogue();
+    } catch (err) {
+      console.error('[KiffTech] Erreur chargement catalogue:', err);
+      catalogueGrid.innerHTML = '<div style="text-align:center;padding:40px;color:#ff3d9a;">Impossible de charger le catalogue. Vérifiez votre connexion.</div>';
+    }
+  }
 
-catalogueGrid.querySelectorAll('.catalogue-card').forEach(el => {
-  el.addEventListener('click',(e)=>{
-    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-  });
-});
+  /* ---------- Rendu des filtres de catégorie ---------- */
+  function renderCategoryFilters(categories){
+    if (!categoryFilters) return;
 
-/* Chargement du catalogue pour afficher le nombre de produits par catalogue */
-chargerComptes().then(() => { rendreCatalogue(); });
+    const uniqueCats = [...new Set(allProducts.map(p => p.category))].sort();
 
-/* ==================== MODAL ==================== */
-const modalOverlay = document.getElementById('modalOverlay');
-const modalTitle = document.getElementById('modalTitle');
-const modalSub = document.getElementById('modalSub');
-const modalMedia = document.getElementById('modalMedia');
-const modalSpecs = document.getElementById('modalSpecs');
-const modalClose = document.getElementById('modalClose');
-const modalCancel = document.getElementById('modalCancel');
-const modalAdd = document.getElementById('modalAdd');
+    let html = '<span class="filter-chip filter-active" data-cat="all">Tous</span>';
+    uniqueCats.forEach(cat => {
+      const count = allProducts.filter(p => p.category === cat).length;
+      const isActive = (currentCategory === cat);
+      html += `<span class="filter-chip ${isActive ? 'filter-active' : ''}" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)} (${count})</span>`;
+    });
 
-let currentRayon = null;
+    categoryFilters.innerHTML = html;
 
-function openModal(r){
-  currentRayon = r;
-  modalTitle.textContent = r.id;
-  modalSub.textContent = r.desc;
-  modalMedia.textContent = r.icon;
-  modalSpecs.innerHTML = `
-    <div class="spec-item"><span class="spec-label">Rayon</span><span class="spec-value">${r.id}</span></div>
-    <div class="spec-item"><span class="spec-label">Produits</span><span class="spec-value">${CATALOGUE_COUNTS[r.cat] != null ? CATALOGUE_COUNTS[r.cat] : '25+'}</span></div>
-    <div class="spec-item"><span class="spec-label">Statut</span><span class="spec-value">Disponible en file d’attente</span></div>
-    <div class="spec-item"><span class="spec-label">Intermédiaire</span><span class="spec-value">KiffTech.store</span></div>
-    <div class="spec-item"><span class="spec-label">Promotion</span><span class="spec-value">Multi-articles (−20 % +1 % / article)</span></div>
-  `;
-  modalAdd.setAttribute('href', urlCatalogue(r.cat));
-  modalOverlay.classList.add('open');
-  modalClose.focus();
-}
+    categoryFilters.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const cat = chip.dataset.cat;
+        currentCategory = (cat === 'all') ? null : cat;
 
-function closeModal(){
-  modalOverlay.classList.remove('open');
-  currentRayon = null;
-}
+        // Mettre à jour l'état actif des chips
+        categoryFilters.querySelectorAll('.filter-chip').forEach(c => {
+          c.classList.toggle('filter-active', c.dataset.cat === cat || (cat === 'all' && c.dataset.cat === 'all'));
+        });
 
-modalClose.addEventListener('click',closeModal);
-modalCancel.addEventListener('click',closeModal);
-modalOverlay.addEventListener('click',(e)=>{ if(e.target===modalOverlay) closeModal(); });
-document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
-modalAdd.addEventListener('click',()=>{
-  if(!currentRayon) return;
-  closeModal();
-  window.location.href = urlCatalogue(currentRayon.cat);
-});
+        applyFiltersAndSort();
+      });
+    });
+  }
 
-/* ==================== LA CAISSE (compteur réel) ==================== */
-const cartBadge = document.getElementById('cartBadge');
-const cartBtn = document.getElementById('cartBtn');
-const CART_KEY = 'kifftech.cart.v1';
+  /* ---------- Filtrage et tri ---------- */
+  function applyFiltersAndSort(){
+    let result = [...allProducts];
 
-function majCompteurCaisse(){
-  let n = 0;
-  try {
-    const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-    n = saved.reduce((a,i)=>a + (Number(i && i.qty) || 1), 0);
-  } catch(e){ n = 0; }
-  if (cartBadge) cartBadge.textContent = n;
-}
-majCompteurCaisse();
-window.addEventListener('storage', majCompteurCaisse);
+    // Filtre par catégorie
+    if (currentCategory) {
+      result = result.filter(p => p.category === currentCategory);
+    }
 
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.querySelector('.t-emoji').textContent = type==='success'?'✅':'⚠️';
-  t.querySelector('#toastMsg').textContent = msg;
-  t.className = 'toast show '+type;
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
+    // Filtre par recherche
+    if (currentSearch) {
+      result = result.filter(p => {
+        const text = (p.brand + ' ' + p.model + ' ' + p.category).toLowerCase();
+        return text.includes(currentSearch);
+      });
+    }
 
-function filterCart(n){
-  showToast(`Promotion de caisse active dès ${n} article(s) sélectionné(s)`,'warn');
-}
+    // Tri
+    result.sort((a, b) => {
+      switch (currentSort) {
+        case 'name':
+          return a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model);
+        case 'price-asc':
+          return a.price - b.price;
+        case 'price-desc':
+          return b.price - a.price;
+        case 'year-desc':
+          return (b.year || 0) - (a.year || 0);
+        case 'brand':
+          return a.brand.localeCompare(b.brand);
+        default:
+          return 0;
+      }
+    });
 
-/* Compteur simple affiché dans les cartes catalogue (démo) */
-catalogueGrid.querySelectorAll('.catalogue-count').forEach(el=>{
-  el.textContent = Math.floor(Math.random()*40)+5 + '+';
-});
+    filteredProducts = result;
+    renderProducts();
+  }
+
+  /* ---------- Rendu des produits ---------- */
+  function renderProducts(){
+    if (!catalogueGrid) return;
+
+    catalogueCount.textContent = `${filteredProducts.length} produit${filteredProducts.length > 1 ? 's' : ''}`;
+
+    if (filteredProducts.length === 0) {
+      catalogueGrid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#b9c0e6;">
+          <div style="font-size:3rem;margin-bottom:16px;">📦</div>
+          <p>Aucun produit trouvé</p>
+        </div>
+      `;
+      return;
+    }
+
+    catalogueGrid.innerHTML = filteredProducts.map(p => `
+      <article class="product-card" data-id="${p.id}">
+        <div class="product-media">
+          <img src="${escapeHtml(p.images[0])}" alt="${escapeHtml(p.brand + ' ' + p.model)}" loading="lazy">
+          ${p.discount ? `<div class="product-badge">-${p.discount}%</div>` : ''}
+          <div class="product-source">${p.source === 'shopify' ? 'Boutique' : p.source === 'impact' ? 'Impact' : 'Local'}</div>
+        </div>
+        <div class="product-info">
+          <span class="product-brand">${escapeHtml(p.brand)}</span>
+          <h3 class="product-name">${escapeHtml(p.model)}</h3>
+          <div class="product-meta">
+            <span class="meta-year">${p.year || ''}</span>
+            <span class="meta-category">${escapeHtml(p.category)}</span>
+          </div>
+          <div class="product-prices">
+            <span class="price-kifftech">${p.price.toLocaleString('fr-FR')} €</span>
+            ${p.price > 0 ? `<span class="price-crossed">${Math.round(p.price * 1.25).toLocaleString('fr-FR')} €</span>` : ''}
+          </div>
+        </div>
+        <div class="product-actions">
+          <button class="btn-sm primary" onclick="openProductModal('${escapeHtml(p.id)}')">Détails</button>
+          <button class="btn-sm" onclick="addToCart('${escapeHtml(p.id)}')">Ajouter</button>
+        </div>
+      </article>
+    `).join('');
+
+    // Re-attacher les événements (nécessaire car innerHTML recrée les éléments)
+    attachProductEvents();
+  }
+
+  function attachProductEvents(){
+    catalogueGrid.querySelectorAll('.product-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        const id = card.dataset.id;
+        openProductModal(id);
+      });
+    });
+  }
+
+  /* ---------- Modal produit ---------- */
+  window.openProductModal = function(id){
+    const p = allProducts.find(prod => prod.id === id);
+    if (!p) return;
+
+    modalTitle.textContent = p.brand + ' ' + p.model;
+    modalSub.textContent = p.category + ' • ' + (p.year || '');
+    modalMedia.innerHTML = `<img src="${escapeHtml(p.images[0])}" alt="${escapeHtml(p.brand + ' ' + p.model)}" style="width:100%;height:100%;object-fit:cover;">`;
+
+    let specsHtml = '';
+    if (p.specs && Object.keys(p.specs).length) {
+      specsHtml = '<h4>Caractéristiques</h4>' +
+        Object.entries(p.specs).map(([k, v]) =>
+          `<div class="spec-item"><span class="spec-label">${escapeHtml(k)}</span><span class="spec-value">${escapeHtml(v)}</span></div>`
+        ).join('');
+    } else {
+      specsHtml = '<p>Aucune caractéristique détaillée.</p>';
+    }
+
+    modalSpecs.innerHTML = specsHtml;
+
+    const btn = document.getElementById('modalAdd');
+    btn.onclick = () => {
+      addToCart(p.id);
+      closeModal();
+    };
+
+    modalOverlay.classList.add('open');
+  };
+
+  window.addToCart = function(id){
+    const p = allProducts.find(prod => prod.id === id);
+    if (!p) return;
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      const existing = saved.find(i => i.id === p.id);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        saved.push({ id: p.id, qty: 1, brand: p.brand, model: p.model, price: p.price });
+      }
+      localStorage.setItem(CART_KEY, JSON.stringify(saved));
+      majCompteurCaisse();
+      showToast(p.model + ' ajouté à la caisse', 'success');
+    } catch(e){
+      console.error('Erreur ajout caisse:', e);
+    }
+  };
+
+  function closeModal(){
+    modalOverlay.classList.remove('open');
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modalCancel.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  /* ---------- Utilitaires ---------- */
+  function escapeHtml(text){
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
+  function fmtPrice(price, currency='EUR'){
+    return new Intl.NumberFormat('fr-FR', { style:'currency', currency }).format(price);
+  }
+
+  /* ---------- Caisse ---------- */
+  const CART_KEY = 'kifftech.cart.v1';
+  const cartBadge = document.getElementById('cartBadge');
+
+  function majCompteurCaisse(){
+    let n = 0;
+    try {
+      const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      n = saved.reduce((a,i)=>a + (Number(i && i.qty) || 1), 0);
+    } catch(e){ n = 0; }
+    if (cartBadge) cartBadge.textContent = n;
+  }
+  majCompteurCaisse();
+  window.addEventListener('storage', majCompteurCaisse);
+
+  function showToast(msg,type='success'){
+    const t=document.getElementById('toast');
+    if(!t) return;
+    t.querySelector('.t-emoji').textContent = type==='success'?'✅':'⚠️';
+    t.querySelector('#toastMsg').textContent = msg;
+    t.className = 'toast show '+type;
+    setTimeout(()=>t.classList.remove('show'),2500);
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener('DOMContentLoaded', loadCatalogue);
+
 })();
