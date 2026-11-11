@@ -16,30 +16,34 @@
     const btn = document.createElement('button');
     btn.id = 'clear-cache-btn';
     btn.className = 'clear-cache-btn';
-    btn.innerHTML = '🗑️ Vider le cache';
+    btn.innerHTML = '🗑️';
     btn.title = 'Vider tous les caches (Service Worker, localStorage, sessionStorage, cache HTTP) et recharger';
     btn.style.cssText = [
       'position:fixed',
       'top:10px',
       'right:10px',
       'z-index:9999',
-      'padding:8px 14px',
-      'border-radius:8px',
+      'padding:10px',
+      'border-radius:12px',
       'border:1px solid rgba(255,255,255,.3)',
-      'background:rgba(255,61,154,.2)',
+      'background:rgba(255,61,154,.25)',
       'color:#ff3d9a',
-      'font-weight:700',
-      'font-size:.85rem',
+      'font-size:1.5rem',
       'cursor:pointer',
       'backdrop-filter:blur(6px)',
-      'transition:all .2s'
+      'transition:all .2s',
+      'width:48px',
+      'height:48px',
+      'display:flex',
+      'align-items:center',
+      'justify-content:center'
     ].join(';');
 
-    btn.onmouseover = function(){ this.style.background = 'rgba(255,61,154,.4)'; this.style.borderColor = '#ff3d9a'; };
-    btn.onmouseout = function(){ this.style.background = 'rgba(255,61,154,.2)'; this.style.borderColor = 'rgba(255,255,255,.3)'; };
+    btn.onmouseover = function(){ this.style.background = 'rgba(255,61,154,.45)'; this.style.borderColor = '#ff3d9a'; this.style.transform = 'scale(1.1)'; };
+    btn.onmouseout = function(){ this.style.background = 'rgba(255,61,154,.25)'; this.style.borderColor = 'rgba(255,255,255,.3)'; this.style.transform = 'scale(1)'; };
 
     btn.onclick = async function(){
-      btn.textContent = 'Vidage en cours...';
+      btn.innerHTML = '⏳';
       btn.style.background = '#ffd23f';
       btn.style.color = '#05060a';
 
@@ -71,8 +75,9 @@
         window.location.reload(true);
       } catch(e){
         console.error('[ClearCache] Erreur :', e);
-        btn.textContent = 'Erreur — essayez F5';
-        setTimeout(()=>{ btn.textContent = '🗑️ Vider le cache'; btn.style.background = 'rgba(255,61,154,.2)'; btn.style.color = '#ff3d9a'; }, 2000);
+        btn.innerHTML = '🗑️';
+        btn.style.background = 'rgba(255,61,154,.25)';
+        btn.style.color = '#ff3d9a';
       }
     };
 
