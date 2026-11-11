@@ -102,6 +102,14 @@
 <!-- Toast -->
 <div class="toast" id="toast" aria-live="polite"><span class="t-emoji">✅</span><span id="toastMsg">Caisse mise à jour</span></div>
 
+<!-- Désenregistrement automatique du Service Worker (pas besoin de F12) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(reg){ reg.unregister(); });
+    });
+  }
+</script>
 <script src="./rayons.js?v=28"></script>
 </body>
 </html>

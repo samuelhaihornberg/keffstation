@@ -41,7 +41,7 @@ function slugRayon(cat){
   return String(cat || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
 }
-function urlRayon(cat){ return './rayons/' + slugRayon(cat) + '/'; }
+function urlRayon(cat){ return '../../index.html?rayon=' + slugRayon(cat); }
 
 function rendreRayons(){
   rayonGrid.innerHTML = RAYONS.map((r,i) => `
