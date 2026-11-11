@@ -119,8 +119,12 @@
       // Ignorer si la touche Ctrl/Cmd est pressée (nouvel onglet)
       if (e.metaKey || e.ctrlKey || e.shiftKey) return;
 
+      // Ignorer si l'élément a déjà un onclick (évite le double chargement)
+      if (link.onclick || link.getAttribute('onclick')) return;
+
       // Empêcher le comportement par défaut
       e.preventDefault();
+      e.stopImmediatePropagation();
 
       // Lancer la transition
       showOverlay();
