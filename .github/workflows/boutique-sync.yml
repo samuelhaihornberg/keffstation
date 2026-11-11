@@ -12,7 +12,7 @@ name: Boutique Sync (Shopify + Impact)
 #
 # Plusieurs alias sont acceptés pour chaque valeur (voir tableau ci-dessous) :
 # le premier secret non vide est utilisé. Sans secret, le catalogue local
-# (25+ produits par rayon) reste affiché et le site fonctionne normalement.
+# (25+ produits par catalogue) reste affiché et le site fonctionne normalement.
 
 on:
   schedule:

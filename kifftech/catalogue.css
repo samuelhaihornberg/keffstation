@@ -1,4 +1,4 @@
-/* KiffTech — Rayons : feuille de style (extraite de rayons.html le 2026-11-10) */
+/* KiffTech — Rayons : feuille de style (extraite de catalogue.html le 2026-11-10) */
 
 /* ==========================================================================
    KIFFTECH BOUTIQUE — Classy, épuré, post-moderne, futuriste
@@ -124,40 +124,40 @@ h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:900;line-height:1.05;letter-spac
   margin-left:auto;padding:6px 14px;border-radius:999px;background:var(--kf-acid);color:#05060a;font-weight:900;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 24px rgba(216,255,62,.45);
 }
 
-/* ============ RAYONS ============ */
+/* ============ CATALOGUES ============ */
 .sections-title{
   font-size:clamp(1.2rem,3vw,1.7rem);font-weight:900;letter-spacing:-.02em;margin:0 0 14px;color:var(--kf-ink);
 }
 .sections-title .accent{color:var(--kf-acid)}
-.rayon-grid{
+.catalogue-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
   gap:clamp(16px,3vw,24px);margin-bottom:34px;
 }
-.rayon-card{
+.catalogue-card{
   position:relative;border-radius:var(--radius);border:1px solid var(--kf-line);
   background:linear-gradient(180deg,var(--kf-card),rgba(255,255,255,.02));
   overflow:hidden;display:flex;flex-direction:column;transition:all .3s var(--ease);
   text-decoration:none;color:inherit;cursor:pointer;
 }
-.rayon-card:hover{
+.catalogue-card:hover{
   border-color:var(--kf-line-strong);transform:translateY(-6px);box-shadow:var(--kf-shadow);
 }
-.rayon-media{
+.catalogue-media{
   position:relative;aspect-ratio:1;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.08),transparent 70%);
 }
-.rayon-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
-.rayon-card:hover .rayon-media img{transform:scale(1.08)}
-.rayon-tag{
+.catalogue-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.catalogue-card:hover .catalogue-media img{transform:scale(1.08)}
+.catalogue-tag{
   position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;
   padding:6px 10px;border-radius:999px;background:rgba(5,6,10,.85);border:1px solid var(--kf-line);color:var(--kf-acid);font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
 }
-.rayon-body{padding:clamp(16px,3vw,20px);display:flex;flex-direction:column;gap:8px;flex:1}
-.rayon-name{font-size:clamp(1rem,2.4vw,1.25rem);font-weight:800;color:var(--kf-ink);line-height:1.2}
-.rayon-desc{font-size:clamp(.82rem,1.8vw,.95rem);color:var(--kf-ink-dim);line-height:1.5}
-.rayon-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--kf-line)}
-.rayon-count{font-family:monospace;font-size:.72rem;color:var(--kf-ink-dim);font-weight:700}
-.rayon-arrow{width:32px;height:32px;border-radius:50%;border:1px solid var(--kf-line);background:rgba(255,255,255,.05);color:var(--kf-ink);display:grid;place-items:center;font-size:1rem;transition:all .18s}
-.rayon-card:hover .rayon-arrow{border-color:var(--kf-acid);color:var(--kf-acid);transform:translateX(4px);background:rgba(216,255,62,.15)}
+.catalogue-body{padding:clamp(16px,3vw,20px);display:flex;flex-direction:column;gap:8px;flex:1}
+.catalogue-name{font-size:clamp(1rem,2.4vw,1.25rem);font-weight:800;color:var(--kf-ink);line-height:1.2}
+.catalogue-desc{font-size:clamp(.82rem,1.8vw,.95rem);color:var(--kf-ink-dim);line-height:1.5}
+.catalogue-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--kf-line)}
+.catalogue-count{font-family:monospace;font-size:.72rem;color:var(--kf-ink-dim);font-weight:700}
+.catalogue-arrow{width:32px;height:32px;border-radius:50%;border:1px solid var(--kf-line);background:rgba(255,255,255,.05);color:var(--kf-ink);display:grid;place-items:center;font-size:1rem;transition:all .18s}
+.catalogue-card:hover .catalogue-arrow{border-color:var(--kf-acid);color:var(--kf-acid);transform:translateX(4px);background:rgba(216,255,62,.15)}
 
 /* ============ PROMOTIONS ============ */
 .promo-banner{

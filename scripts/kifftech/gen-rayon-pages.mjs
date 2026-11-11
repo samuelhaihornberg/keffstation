@@ -1,24 +1,24 @@
 #!/usr/bin/env node
 /**
- * KiffTech — Generation des pages de rayon (URL propres)
+ * KiffTech — Generation des pages de catalogue (URL propres)
  * ============================================================================
- * Chaque rayon de la boutique devient une vraie page statique, avec une URL
+ * Chaque catalogue de la boutique devient une vraie page statique, avec une URL
  * propre, stable et partageable :
  *
- *   https://…/keffstation/kifftech/rayon/smartphones/
- *   https://…/keffstation/kifftech/rayon/audio-et-wearables/
- *   https://…/keffstation/kifftech/rayon/vr-ar-gadgets/
+ *   https://…/keffstation/kifftech/catalogue/smartphones/
+ *   https://…/keffstation/kifftech/catalogue/audio-et-wearables/
+ *   https://…/keffstation/kifftech/catalogue/vr-ar-gadgets/
  *   …
  *
  * La page est une copie de index.html avec :
  *   - les chemins d'assets corriges (../ au lieu de ./) ;
- *   - une variable globale KIFFTECH_RAYON qui preselectionne le rayon ;
- *   - un <title> et un <link rel="canonical"> propres au rayon.
+ *   - une variable globale KIFFTECH_RAYON qui preselectionne le catalogue ;
+ *   - un <title> et un <link rel="canonical"> propres au catalogue.
  *
  * Regenération :
- *   node scripts/kifftech/gen-rayon-pages.mjs
+ *   node scripts/kifftech/gen-catalogue-pages.mjs
  *
- * Le catalogue.json est lu pour connaitre les rayons existants.
+ * Le catalogue.json est lu pour connaitre les catalogues existants.
  */
 
 import fs from "node:fs";
@@ -26,10 +26,10 @@ import path from "node:path";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..");
 const KIFF = path.join(ROOT, "kifftech");
-const OUT_DIR = path.join(KIFF, "rayon");
+const OUT_DIR = path.join(KIFF, "catalogue");
 
-/* Slug : meme regle que slugRayon() dans kifftech/app.v2.js */
-export function slugRayon(cat) {
+/* Slug : meme regle que slugCatalogue() dans kifftech/app.v2.js */
+export function slugCatalogue(cat) {
   return String(cat || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -54,7 +54,7 @@ const categories = Object.keys(catalogue.categories || {}).sort((a, b) =>
 );
 
 if (!categories.length) {
-  console.error("[rayons] aucun rayon trouve dans kifftech/data/catalogue.json");
+  console.error("[catalogues] aucun catalogue trouve dans kifftech/data/catalogue.json");
   process.exit(1);
 }
 
@@ -70,14 +70,14 @@ fs.mkdirSync(OUT_DIR, { recursive: true });
 
 const manifest = [];
 for (const cat of categories) {
-  const slug = slugRayon(cat);
+  const slug = slugCatalogue(cat);
   const dir = path.join(OUT_DIR, slug);
   fs.mkdirSync(dir, { recursive: true });
 
   let html = template;
 
-  // 1) chemins d'assets : les pages de rayon sont DEUX niveaux plus bas
-  //    (/kifftech/rayon/<slug>/) -> il faut "../../" pour revenir a /kifftech/.
+  // 1) chemins d'assets : les pages de catalogue sont DEUX niveaux plus bas
+  //    (/kifftech/catalogue/<slug>/) -> il faut "../../" pour revenir a /kifftech/.
   const NO_PREFIX = [
     "index-inline-01.css",
     "index-inline-02.js",
@@ -92,18 +92,18 @@ for (const cat of categories) {
     html = html.split(`"${a}`).join(`"../../${a}`);
   }
   // Scripts a la racine du site (un niveau au-dessus de /kifftech/) :
-  // il faut trois niveaux pour y revenir depuis /kifftech/rayon/<slug>/.
+  // il faut trois niveaux pour y revenir depuis /kifftech/catalogue/<slug>/.
   const ROOT_LEVEL = ["i18n.js", "ga4.js", "analytics-events.js", "keff-stats.js", "refresh.js"];
   for (const a of ROOT_LEVEL) {
     html = html.split(`"../${a}`).join(`"../../../${a}`);
   }
   html = html.replace(/(href|src)="\.\//g, '$1="../../');
   html = html.replace(/href="\.\.\/\.\.\/index\.html"/g, 'href="../../index.html"');
-  html = html.replace(/href="\.\.\/\.\.\/rayons\.html"/g, 'href="../../rayons.html"');
+  html = html.replace(/href="\.\.\/\.\.\/catalogues\.html"/g, 'href="../../catalogue.html"');
   html = html.replace(/href="\.\.\/\.\.\/about\.html"/g, 'href="../../about.html"');
   html = html.replace(/href="\.\.\/\.\.\/credits\.html"/g, 'href="../../credits.html"');
 
-  // 2) rayon preselectionne
+  // 2) catalogue preselectionne
   html = html.replace(
     "<script defer src=\"../catalogue-live.js\"></script>",
     `<script>window.KIFFTECH_RAYON=${JSON.stringify(cat)};</script>\n<script defer src="../catalogue-live.js"></script>`,
@@ -119,7 +119,7 @@ for (const cat of categories) {
     `<meta name="description" content="Rayon ${titleOf(cat)} — ${catalogue.categories[cat]} produits KiffTech : prix officiels, avis, photos et achat en ligne.">`,
   );
   // lien canonique
-  const CANON = "https://samuelhaihornberg.github.io/keffstation/kifftech/rayon/" + slug + "/";
+  const CANON = "https://samuelhaihornberg.github.io/keffstation/kifftech/catalogue/" + slug + "/";
   html = html.replace(/<link rel="canonical"[^>]*>/, "");
   html = html.replace(
     "<title>",
@@ -130,16 +130,16 @@ for (const cat of categories) {
   manifest.push({ category: cat, slug, title: titleOf(cat), count: catalogue.categories[cat] });
 }
 
-// index du dossier rayon : liste des rayons (page d'acces rapide)
+// index du dossier catalogue : liste des catalogues (page d'acces rapide)
 const listHtml = `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>KiffTech — Tous les rayons</title>
-<meta name="description" content="Tous les rayons de la boutique KiffTech.">
+<title>KiffTech — Tous les catalogues</title>
+<meta name="description" content="Tous les catalogues de la boutique KiffTech.">
 <link rel="stylesheet" href="../theme.css">
-<link rel="stylesheet" href="./rayons-index.css">
+<link rel="stylesheet" href="./catalogue-index.css">
 </head>
 <body>
 <main style="max-width:1100px;margin:0 auto;padding:24px 16px">
@@ -154,10 +154,10 @@ ${manifest.map((m) => `<a class="ray-item" href="./${m.slug}/"><strong>${m.title
 `;
 fs.writeFileSync(path.join(OUT_DIR, "index.html"), listHtml, "utf8");
 
-// CSS de l'index des rayons (fichier externe, pas de style inline)
+// CSS de l'index des catalogues (fichier externe, pas de style inline)
 fs.writeFileSync(
-  path.join(OUT_DIR, "rayons-index.css"),
-  `/* KiffTech — index des rayons */
+  path.join(OUT_DIR, "catalogue-index.css"),
+  `/* KiffTech — index des catalogues */
 .ray-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:20px 0 60px}
 .ray-item{display:block;text-decoration:none;color:inherit;border:1px solid var(--kf-line);padding:16px;border-radius:14px;background:rgba(255,255,255,.03)}
 .ray-item:hover{border-color:rgba(216,255,62,.5);background:rgba(255,255,255,.06)}
@@ -168,8 +168,8 @@ fs.writeFileSync(
 );
 
 fs.writeFileSync(
-  path.join(KIFF, "data", "rayons.json"),
-  JSON.stringify({ generatedAt: new Date().toISOString(), rayons: manifest }, null, 2),
+  path.join(KIFF, "data", "catalogues.json"),
+  JSON.stringify({ generatedAt: new Date().toISOString(), catalogues: manifest }, null, 2),
   "utf8",
 );
 
@@ -193,10 +193,10 @@ for (const m of manifest) {
   }
 }
 if (missing) {
-  console.error(`[rayons] ${missing} reference(s) cassee(s) — generation corrigee avant commit.`);
+  console.error(`[catalogues] ${missing} reference(s) cassee(s) — generation corrigee avant commit.`);
   process.exit(1);
 }
-console.log("[rayons] toutes les references locales sont valides.");
+console.log("[catalogues] toutes les references locales sont valides.");
 
-console.log(`[rayons] ${manifest.length} pages generees dans kifftech/rayon/`);
-manifest.forEach((m) => console.log(`   /kifftech/rayon/${m.slug}/  — ${m.title} (${m.count})`));
+console.log(`[catalogues] ${manifest.length} pages generees dans kifftech/catalogue/`);
+manifest.forEach((m) => console.log(`   /kifftech/catalogue/${m.slug}/  — ${m.title} (${m.count})`));

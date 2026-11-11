@@ -191,7 +191,7 @@ const APP_BUILD = '2026-11-10.29';
 let products = [...LOCAL_DB];
 let filteredProducts = [...LOCAL_DB];
 let activeCategory = 'all', activeYear = 'all', activeBrand = 'all', activeSort = 'relevance', activeEra = 'all', viewMode = 'all';
-let requestedRayon = '';   // rayon demande via l'URL (?rayon=...) — applique apres chargement du catalogue
+let requestedCatalogue = '';   // catalogue demande via l'URL (?catalogue=...) — applique apres chargement du catalogue
 let activeSources = {official:true, social:true, reviews:true, community:true};
 let searchQuery = '', isFetching = false;
 
@@ -230,12 +230,12 @@ function refreshKiffTechPrices(){products.forEach(p=>{if(!p.partner)p.kifftech=c
 function generateMedia(p){const m={badges:[]};if(p.partner)m.badges.push({class:'badge-official',label:'Partenaire'});if(p.videos?.length)m.badges.push({class:'badge-video',label:'Video'});if(p.images?.length)m.badges.push({class:'badge-official',label:'Photo CC'});else m.badges.push({class:'badge-official',label:'Aperçu généré'});return m;}
 function hasOfficialPhoto(p){return !!(p.images&&p.images.length);}
 
-// Slug d'un rayon : regle identique a scripts/kifftech/gen-rayon-pages.mjs
-function slugRayon(cat){
+// Slug d'un catalogue : regle identique a scripts/kifftech/gen-catalogue-pages.mjs
+function slugCatalogue(cat){
   return String(cat || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
 }
-window.slugRayon = slugRayon;
+window.slugCatalogue = slugCatalogue;
 
 const CAT_EMOJI = {'Smartphones':'📱','Computers':'💻','Tablets':'📲','Audio & Wearables':'🎧','VR AR gadgets':'🥽','Garden & furnitures smart devices':'🪴','Composant electronic & informatic':'🔌','Company & studying Robots':'🤖','Consoles & Videogames':'🎮','Drones & Caméras':'🚁','Smart Home':'🏠','Accessories':'🧰','Composant electronic':'⚡','Materiel electronique & outillage':'🧰'};
 
@@ -243,7 +243,7 @@ const CAT_EMOJI = {'Smartphones':'📱','Computers':'💻','Tablets':'📲','Aud
 const POPULAR_BRANDS = ['Apple','Samsung','Sony','Microsoft','Google','Nintendo','Meta','Valve','DJI','GoPro','Canon','NVIDIA','AMD','Intel','LG','Huawei','OnePlus','Garmin','Bose','Beats','Shure','Xiaomi','OPPO','Honor'];
 const POPULACE_BRANDS = ['Nothing','Framework','Analogue','Panic','Unitree','ANYbotics','Ghost Robotics','PICO','Steam','Raspberry Pi','Arduino','Logitech','SanDisk','Realme','Razer','MSI','Twelve South','Bellroy','Ugreen','Baseus','Satechi','Keychron','Nuphy','CalDigit','StarTech','Hyper','Angelbird','Lamicall','amFilm','Zagg','Cable Matters','Spigen','ESR','OtterBox','Mous','Pitaka'];
 
-/* Détermine le rayon d'affichage d'un produit */
+/* Détermine le catalogue d'affichage d'un produit */
 function getTier(p){
   const brand = p.brand || '';
   const year = p.year || 0;
@@ -271,7 +271,7 @@ function renderViewModeButtons(){
     container = document.createElement('div');
     container.id = 'view-mode-toggle';
     container.className = 'view-mode-toggle';
-    const target = $('#rayon-selector') || $('#filter-category') || document.body;
+    const target = $('#catalogue-selector') || $('#filter-category') || document.body;
     target.parentNode.insertBefore(container, target.nextSibling);
   }
   const m = getViewMode();
@@ -329,7 +329,7 @@ window.kfImgFallback = kfImgFallback;
 // Visuel de remplacement quand l'image produit est indisponible.
 const KF_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%23e9e4d7' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%238f8c82' text-anchor='middle'%3E%3C/text%3E%3C/svg%3E";
 
-// Échappement HTML pour les libellés affichés (noms de rayons, raisons, etc.)
+// Échappement HTML pour les libellés affichés (noms de catalogues, raisons, etc.)
 function escHtml(s){return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // Carte produit du lecteur horizontal : image, nom, marque, prix et actions (détails / caisse).
@@ -387,28 +387,28 @@ function renderHero(){
   if ($('#hero-promo')) var __el = $('#hero-promo'); if (__el) __el.innerHTML = 'Prix officiels −20 % de base sur tous les produits • +1 % par article dans la caisse (jusqu\'à +7 %) • Livraison offerte aux abonnés KiffTech Club';
 }
 
-// Sélecteur vertical des rayons : catégories réelles du catalogue, chacune filtre le lecteur horizontal.
+// Sélecteur vertical des catalogues : catégories réelles du catalogue, chacune filtre le lecteur horizontal.
 function renderRayons(){
-  const sel = $('#rayon-selector');
+  const sel = $('#catalogue-selector');
   if (!sel) return;
   const counts = {};
   products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
   const cats = ['all', ...new Set(products.map(p => p.category))];
   const pl = n => n > 1 ? ' articles' : ' article';
-  let html = `<button type="button" class="rayon-btn ${activeCategory === 'all' ? 'active' : ''}" data-category="all" role="radio" aria-checked="${activeCategory === 'all'}">Tous les produits<span class="rayon-count">${products.length}${pl(products.length)}</span></button>`;
-  const MIN_PAR_RAYON = 25;
+  let html = `<button type="button" class="catalogue-btn ${activeCategory === 'all' ? 'active' : ''}" data-category="all" role="radio" aria-checked="${activeCategory === 'all'}">Tous les produits<span class="catalogue-count">${products.length}${pl(products.length)}</span></button>`;
+  const MIN_PAR_CATALOGUE = 25;
   html += cats.filter(c => c !== 'all').map(c => {
     const n = counts[c] || 0;
-    const warn = n < MIN_PAR_RAYON ? ' <span class="rayon-warn" title="Rayon incomplet" aria-label="Rayon incomplet">⚠️</span>' : '';
-    return `<button type="button" class="rayon-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" data-slug="${slugRayon(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}${warn}<span class="rayon-count">${n}${pl(n)}</span></button>`;
+    const warn = n < MIN_PAR_CATALOGUE ? ' <span class="catalogue-warn" title="Rayon incomplet" aria-label="Rayon incomplet">⚠️</span>' : '';
+    return `<button type="button" class="catalogue-btn ${activeCategory === c ? 'active' : ''}" data-category="${escAttr(c)}" data-slug="${slugCatalogue(c)}" role="radio" aria-checked="${activeCategory === c}">${CAT_EMOJI[c] || '📦'} ${escHtml(c)}${warn}<span class="catalogue-count">${n}${pl(n)}</span></button>`;
   }).join('');
   sel.innerHTML = html;
-  sel.querySelectorAll('.rayon-btn').forEach(b => {
+  sel.querySelectorAll('.catalogue-btn').forEach(b => {
     b.addEventListener('click', () => {
       activeCategory = b.dataset.category;
       // Pas de changement d'URL pour eviter les boucles de redirection
-      // avec le Service Worker et les pages rayons.
-      sel.querySelectorAll('.rayon-btn').forEach(x => {
+      // avec le Service Worker et les pages catalogues.
+      sel.querySelectorAll('.catalogue-btn').forEach(x => {
         x.classList.toggle('active', x === b);
         x.setAttribute('aria-checked', x === b);
       });
@@ -451,7 +451,7 @@ function renderProducts(){
   const grid = $('#products-grid');
   if (filteredProducts.length === 0) {
     if (track) {
-      track.innerHTML = '<div class="reader-empty">Aucun produit dans ce rayon</div>';
+      track.innerHTML = '<div class="reader-empty">Aucun produit dans ce catalogue</div>';
     } else if (grid) {
       grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;padding:40px;text-align:center"><span style="font-size:48px">🔍</span><p>Aucun produit</p></div>';
     }
@@ -570,12 +570,12 @@ async function loadProducts(){
       } catch(e){ console.warn('[KiffTech] catalogue etendu indisponible:', e.message); }
 
       // Rayon demande dans l'URL : applique maintenant que le catalogue est complet
-      if (requestedRayon && products.some(p => p.category === requestedRayon)) {
-        activeCategory = requestedRayon;
+      if (requestedCatalogue && products.some(p => p.category === requestedCatalogue)) {
+        activeCategory = requestedCatalogue;
         renderRayons();
         applyFilters();
-        const safeRayon = (window.CSS && CSS.escape) ? CSS.escape(requestedRayon) : requestedRayon;
-        const btn = document.querySelector('#rayon-selector .rayon-btn[data-category="' + safeRayon + '"]');
+        const safeRayon = (window.CSS && CSS.escape) ? CSS.escape(requestedCatalogue) : requestedCatalogue;
+        const btn = document.querySelector('#catalogue-selector .catalogue-btn[data-category="' + safeRayon + '"]');
         if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest' });
       }
     }
@@ -1166,28 +1166,28 @@ function init(){
     if (!products?.length) products = [...LOCAL_DB];
     try {
       const params = new URLSearchParams(window.location.search);
-      // 1) parametre ?rayon=  2) variable injectee par la page de rayon
-      // 3) chemin /rayons/<slug>/  (URL propre, partageable)
-      let rayon = params.get('rayon');
-      if (!rayon && window.KIFFTECH_RAYON) rayon = window.KIFFTECH_RAYON;
-      if (!rayon) {
-        const m = /\/rayons?\/([a-z0-9-]+)\/?$/i.exec(window.location.pathname || '');
+      // 1) parametre ?catalogue=  2) variable injectee par la page de catalogue
+      // 3) chemin /catalogue/<slug>/  (URL propre, partageable)
+      let catalogue = params.get('catalogue');
+      if (!catalogue && window.KIFFTECH_RAYON) catalogue = window.KIFFTECH_RAYON;
+      if (!catalogue) {
+        const m = /\/catalogues?\/([a-z0-9-]+)\/?$/i.exec(window.location.pathname || '');
         if (m) {
           const wanted = m[1];
-          const hit = products.find(p => slugRayon(p.category) === wanted);
-          if (hit) rayon = hit.category;
+          const hit = products.find(p => slugCatalogue(p.category) === wanted);
+          if (hit) catalogue = hit.category;
         }
       } else {
         // Convertir le slug de l'URL en categorie reelle
-        const hit = products.find(p => slugRayon(p.category) === rayon);
-        if (hit) rayon = hit.category;
+        const hit = products.find(p => slugCatalogue(p.category) === catalogue);
+        if (hit) catalogue = hit.category;
       }
-      if (rayon) {
-        requestedRayon = rayon;
-        if (products.some(p => p.category === rayon)) activeCategory = rayon;
+      if (catalogue) {
+        requestedCatalogue = catalogue;
+        if (products.some(p => p.category === catalogue)) activeCategory = catalogue;
       }
-      // Mode rayon unique : masquer la sidebar et n'afficher que les produits de ce rayon
-      if (requestedRayon) {
+      // Mode catalogue unique : masquer la sidebar et n'afficher que les produits de ce catalogue
+      if (requestedCatalogue) {
         setTimeout(() => {
           const sidebar = document.querySelector('.sidebar');
           const main = document.querySelector('main');
@@ -1195,7 +1195,7 @@ function init(){
           if (main) main.style.gridTemplateColumns = '1fr';
           const title = document.createElement('h2');
           title.style.cssText = 'grid-column:1/-1;margin:0 0 16px;padding:12px 0;font-size:clamp(1.5rem,4vw,2rem);color:var(--kf-ink);border-bottom:1px solid var(--kf-line);';
-          title.textContent = 'Rayon : ' + requestedRayon;
+          title.textContent = 'Rayon : ' + requestedCatalogue;
           const productsSection = document.getElementById('products-section');
           if (productsSection && productsSection.parentNode) {
             productsSection.parentNode.insertBefore(title, productsSection);
@@ -1206,7 +1206,7 @@ function init(){
       if (sort && ['brand', 'price-asc', 'price-desc'].includes(sort)) activeSort = sort;
       const era = params.get('era');
       if (era && ['retro', 'modern'].includes(era)) activeEra = era;
-    } catch (e) { console.warn('[KiffTech] rayon param ignoré:', e.message); }
+    } catch (e) { console.warn('[KiffTech] catalogue param ignoré:', e.message); }
     console.log('[KiffTech] products assigned, length:', products.length);
     products.forEach(p => { if (!p.kifftech) p.kifftech = calcKiffTechPrice(p.price.official); });
     viewMode = getViewMode();
@@ -1246,7 +1246,7 @@ function init(){
     // et affiches avec leurs vrais prix, photos et lien d'achat.
     initEvents();
     console.log('[KiffTech] initEvents done');
-    // Ouverture directe de la caisse via l'ancre #caisse (liens depuis les rayons)
+    // Ouverture directe de la caisse via l'ancre #caisse (liens depuis les catalogues)
     try {
       if ((window.location.hash || '').replace('#', '') === 'caisse') {
         setTimeout(() => { if (typeof openCaisse === 'function') openCaisse(); }, 350);

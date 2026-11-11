@@ -1050,9 +1050,9 @@ header{
 .spinner{border-color:var(--kf-line)!important;border-top-color:var(--kf-acid)!important}
 
 /* ==========================================================================
-   PAGE RAYONS — INDEX ÉDITORIAL
+   PAGE CATALOGUES — INDEX ÉDITORIAL
    ========================================================================== */
-.page-rayons{background:var(--kf-void)}
+.page-catalogues{background:var(--kf-void)}
 .kf-shell{
   position:relative;
   z-index:1;
@@ -1221,7 +1221,7 @@ header{
 }
 .kf-index-head span:last-child{text-align:right}
 .kf-index-list{display:flex;flex-direction:column}
-.kf-rayon{
+.kf-catalogue{
   position:relative;
   display:grid;
   grid-template-columns:56px minmax(0,1fr) 96px 34px;
@@ -1233,7 +1233,7 @@ header{
   text-decoration:none;
   transition:padding-left .2s,background .2s;
 }
-.kf-rayon::before{
+.kf-catalogue::before{
   content:"";
   position:absolute;
   left:calc(-1 * var(--kf-pad));
@@ -1245,19 +1245,19 @@ header{
   transform-origin:top;
   transition:transform .2s;
 }
-.kf-rayon:hover{
+.kf-catalogue:hover{
   padding-left:14px;
   background:linear-gradient(90deg,rgba(216,255,62,.055),transparent 55%);
 }
-.kf-rayon:hover::before{transform:scaleY(1)}
-.kf-rayon-num{
+.kf-catalogue:hover::before{transform:scaleY(1)}
+.kf-catalogue-num{
   color:var(--kf-acid);
   font-family:var(--kf-mono);
   font-size:.62rem;
   letter-spacing:.12em;
 }
-.kf-rayon-main{display:flex;flex-direction:column;gap:4px;min-width:0}
-.kf-rayon-name{
+.kf-catalogue-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.kf-catalogue-name{
   color:var(--kf-bone);
   font-family:var(--kf-display);
   font-size:clamp(1.05rem,2.4vw,1.6rem);
@@ -1266,13 +1266,13 @@ header{
   line-height:1.05;
   text-transform:uppercase;
 }
-.kf-rayon-desc{
+.kf-catalogue-desc{
   max-width:72ch;
   color:var(--kf-muted);
   font-size:.76rem;
   line-height:1.5;
 }
-.kf-rayon-count{
+.kf-catalogue-count{
   color:var(--kf-champagne);
   font-family:var(--kf-mono);
   font-size:.62rem;
@@ -1280,20 +1280,20 @@ header{
   text-align:right;
   white-space:nowrap;
 }
-.kf-rayon-count::after{content:" OBJ.";color:var(--kf-muted)}
-.kf-rayon-cta{
+.kf-catalogue-count::after{content:" OBJ.";color:var(--kf-muted)}
+.kf-catalogue-cta{
   color:var(--kf-muted);
   font-family:var(--kf-mono);
   font-size:1rem;
   text-align:right;
   transition:color .18s,transform .18s;
 }
-.kf-rayon:hover .kf-rayon-cta{color:var(--kf-acid);transform:translate(2px,-2px)}
-.kf-rayon.is-all .kf-rayon-name{color:var(--kf-acid)}
-.kf-rayon.is-all .kf-rayon-num{color:var(--kf-champagne)}
-.kf-rayon.is-all{background:linear-gradient(90deg,rgba(216,255,62,.04),transparent 60%)}
-.kf-rayon.is-partner .kf-rayon-name{color:var(--kf-champagne)}
-.kf-rayon.is-partner .kf-rayon-num{color:var(--kf-acid)}
+.kf-catalogue:hover .kf-catalogue-cta{color:var(--kf-acid);transform:translate(2px,-2px)}
+.kf-catalogue.is-all .kf-catalogue-name{color:var(--kf-acid)}
+.kf-catalogue.is-all .kf-catalogue-num{color:var(--kf-champagne)}
+.kf-catalogue.is-all{background:linear-gradient(90deg,rgba(216,255,62,.04),transparent 60%)}
+.kf-catalogue.is-partner .kf-catalogue-name{color:var(--kf-champagne)}
+.kf-catalogue.is-partner .kf-catalogue-num{color:var(--kf-acid)}
 
 .kf-footer{
   display:flex;
@@ -1370,9 +1370,9 @@ footer{color:var(--kf-muted)!important}
 footer a{color:var(--kf-bone-dim)!important}
 
 /* ==========================================================================
-   VITRINE — MISE EN AVANT, RAYONS, LECTEUR HORIZONTAL (index.html)
+   VITRINE — MISE EN AVANT, CATALOGUES, LECTEUR HORIZONTAL (index.html)
    ========================================================================== */
-.shop-title,.hero,.rayons{grid-column:1 / -1}
+.shop-title,.hero,.catalogues{grid-column:1 / -1}
 
 .shop-title{
   background:none!important;
@@ -1501,9 +1501,9 @@ footer a{color:var(--kf-bone-dim)!important}
   margin-top:16px;
 }
 
-/* Sélecteur vertical des rayons */
-.rayons{padding:clamp(18px,4vw,32px) 0;}
-.rayons-title{
+/* Sélecteur vertical des catalogues */
+.catalogues{padding:clamp(18px,4vw,32px) 0;}
+.catalogues-title{
   margin:0 0 14px;
   color:var(--kf-bone);
   font-family:var(--kf-display);
@@ -1512,8 +1512,8 @@ footer a{color:var(--kf-bone-dim)!important}
   letter-spacing:-.03em;
   text-transform:uppercase;
 }
-.rayon-selector{display:flex;flex-direction:column;gap:8px;}
-.rayon-btn{
+.catalogue-selector{display:flex;flex-direction:column;gap:8px;}
+.catalogue-btn{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -1533,20 +1533,20 @@ footer a{color:var(--kf-bone-dim)!important}
   min-height:52px;
   transition:background .18s,border-color .18s,color .18s;
 }
-.rayon-btn:hover{background:var(--kf-ink-2);border-color:var(--kf-line-soft);color:var(--kf-bone);}
-.rayon-btn:focus-visible{outline:2px solid var(--kf-acid);outline-offset:3px;}
-.rayon-btn.active{
+.catalogue-btn:hover{background:var(--kf-ink-2);border-color:var(--kf-line-soft);color:var(--kf-bone);}
+.catalogue-btn:focus-visible{outline:2px solid var(--kf-acid);outline-offset:3px;}
+.catalogue-btn.active{
   border-color:var(--kf-acid);
   background:rgba(216,255,62,.1);
   color:var(--kf-acid);
 }
-.rayon-btn .rayon-count{
+.catalogue-btn .catalogue-count{
   color:var(--kf-muted);
   font-family:var(--kf-mono);
   font-size:.62rem;
   letter-spacing:.08em;
 }
-.rayon-btn.active .rayon-count{color:var(--kf-champagne);}
+.catalogue-btn.active .catalogue-count{color:var(--kf-champagne);}
 
 /* Lecteur horizontal de produits */
 .reader-wrap{position:relative;display:flex;flex-direction:column;gap:10px;}
@@ -1684,9 +1684,9 @@ footer a{color:var(--kf-bone-dim)!important}
   .kf-hero-aside{border-left:0;border-top:1px solid var(--kf-line);padding-left:0;padding-top:14px}
   .kf-index-head{grid-template-columns:38px minmax(0,1fr) 30px}
   .kf-index-head span:nth-child(3){display:none}
-  .kf-rayon{grid-template-columns:38px minmax(0,1fr) 28px;gap:12px}
-  .kf-rayon-count{display:none}
-  .kf-rayon-desc{font-size:.7rem}
+  .kf-catalogue{grid-template-columns:38px minmax(0,1fr) 28px;gap:12px}
+  .kf-catalogue-count{display:none}
+  .kf-catalogue-desc{font-size:.7rem}
   .modal-specs{grid-template-columns:1fr!important}
 }
 @media (max-width:520px){
@@ -2165,7 +2165,7 @@ textarea.caisse-input{min-height:64px;resize:vertical}
 .live-status .live-on { color: #27d17f; font-weight: 700; }
 .live-status .live-off { color: #9aa2c8; }
 .live-status.live-on { border-color: rgba(39, 209, 127, .35); }
-.rayon-warn { font-size: .62rem; opacity: .9; }
+.catalogue-warn { font-size: .62rem; opacity: .9; }
 
 /* ============ KiffTech — source du produit (Boutique / Impact) ============ */
 .badge-source { background: #7c5cff; color: #fff; font-size: .58rem; font-weight: 700; }

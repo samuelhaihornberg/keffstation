@@ -132,7 +132,7 @@ lien de paiement utilisent ce domaine.
    nombre de produits récupérés.
 3. Le fichier `kifftech/data/products.json` est commité automatiquement → le
    déploiement GitHub Pages se relance.
-4. Sur la boutique, le bandeau **« Sources live actives »** (sous les rayons)
+4. Sur la boutique, le bandeau **« Sources live actives »** (sous les catalogues)
    affiche `Shopify <domaine> (N)` et/ou `Impact (N)`.
 
 ## 4. Reconstruction du catalogue local

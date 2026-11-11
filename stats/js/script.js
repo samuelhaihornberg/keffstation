@@ -219,7 +219,7 @@ function applyLang() {
 const PAGE_LABELS = {
   'index.html': 'Vitrine KeffStation',
   'kifftech/index.html': 'KiffTech',
-  'kifftech/rayons.html': 'KiffTech — Rayons',
+  'kifftech/catalogue.html': 'KiffTech — Rayons',
   'kifftech/catalog.html': 'KiffTech — Catalogue',
   'kifftech/about.html': 'KiffTech — À propos',
   'kifftech/credits.html': 'KiffTech — Crédits',
@@ -264,7 +264,7 @@ function readLocal() {
 let imported = null; // import manuel d'un export JSON
 let live = null;     // stats/data/live.json — données RÉELLES collectées par GitHub Actions
 
-/* Cible normalisée : '/keffstation/kifftech/rayons.html' -> 'kifftech/rayons.html'
+/* Cible normalisée : '/keffstation/kifftech/catalogue.html' -> 'kifftech/catalogue.html'
    Les cibles déjà relatives à la racine du site (produites par le tracker)
    sont conservées telles quelles. */
 function shortTarget(t) {

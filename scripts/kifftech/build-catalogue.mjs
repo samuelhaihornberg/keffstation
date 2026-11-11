@@ -350,12 +350,12 @@ async function main() {
 
   console.log(`[catalogue] ${clean.length} produits écrits dans ${path.relative(ROOT, OUT)}`);
   console.log(`[catalogue] images récupérées : ${fetched} — sans photo : ${failed}`);
-  console.log("[catalogue] produits par rayon :");
+  console.log("[catalogue] produits par catalogue :");
   Object.entries(byCat)
     .sort((a, b) => b[1] - a[1])
     .forEach(([c, n]) => console.log(`   ${n >= MIN_PER_CATEGORY ? "✅" : "⚠️ "} ${n.toString().padStart(3)} — ${c}`));
   if (short.length) {
-    console.log(`[catalogue] rayons sous ${MIN_PER_CATEGORY} produits : ${short.map(([c]) => c).join(", ")}`);
+    console.log(`[catalogue] catalogues sous ${MIN_PER_CATEGORY} produits : ${short.map(([c]) => c).join(", ")}`);
   }
 }
 

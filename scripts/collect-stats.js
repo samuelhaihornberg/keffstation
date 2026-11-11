@@ -364,7 +364,7 @@ function normalizePath(raw, site) {
 const PAGE_LABELS = {
   'index.html': 'Vitrine KeffStation',
   'kifftech/index.html': 'KiffTech',
-  'kifftech/rayons.html': 'KiffTech — Rayons',
+  'kifftech/catalogue.html': 'KiffTech — Rayons',
   'kifftech/catalog.html': 'KiffTech — Catalogue',
   'kifftech/about.html': 'KiffTech — À propos',
   'kifftech/credits.html': 'KiffTech — Crédits',

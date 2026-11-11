@@ -7,8 +7,8 @@ const APPS = [
     title: "Kifftech",
     desc: "Boutique PWA : Samsung, Xiaomi, prix sous officiels, livraison mondiale. Backend Node unique, zéro dépendance, données JSON.",
     tags: ["PWA", "Node", "E-commerce", "Smart tech"],
-    appUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/rayons.html",
-    embedUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/rayons.html",
+    appUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/catalogue.html",
+    embedUrl: "https://samuelhaihornberg.github.io/keffstation/kifftech/catalogue.html",
     embedLabel: "Ouvrir Kifftech",
     embedded: true,
     color: "#1e6bff",
@@ -565,7 +565,7 @@ class KeffStation {
     this.panelCard.querySelector('.panel-close')?.addEventListener('click', () => this.closePanel());
     this.panelCard.querySelector('.embed-btn')?.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Kifftech : navigation directe vers la page rayons (pas d'iframe)
+      // Kifftech : navigation directe vers la page catalogues (pas d'iframe)
       if (app.num === 'Kifftech') {
         window.location.href = app.appUrl || app.embedUrl;
       } else if (app.embedUrl) {

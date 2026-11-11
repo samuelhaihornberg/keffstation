@@ -35,7 +35,7 @@ const TARGETS = [
   "sw.js",
   "kifftech/index.html",
   "kifftech/catalog.html",
-  "kifftech/rayons.html",
+  "kifftech/catalogue.html",
   "kifftech/about.html",
   "kifftech/credits.html",
   "kifftech/admin-caisse.html",

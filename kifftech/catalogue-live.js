@@ -4,7 +4,7 @@
  * Trois flux de produits, UNE seule regle de priorite (aucun doublon) :
  *
  *   1. LOCAL  — LOCAL_DB (app.v2.js) + data/catalogue.json
- *      Catalogue de fond : 25+ produits par rayon, photos CC, apercus generes.
+ *      Catalogue de fond : 25+ produits par catalogue, photos CC, apercus generes.
  *   2. LIVE   — data/products.json (Shopify + Impact + exports locaux)
  *      Prix REELS, photos reelles, liens d'achat : c'est la source de verite.
  *   3. IMPORT — exports CSV/JSON deposes dans kifftech/data/
@@ -23,8 +23,8 @@
   "use strict";
 
   // URL de base du site KiffTech, deduite de l'URL du script lui-meme :
-  // fonctionne aussi bien a la racine (/kifftech/) que dans une page de rayon
-  // (/kifftech/rayon/tablettes/).
+  // fonctionne aussi bien a la racine (/kifftech/) que dans une page de catalogue
+  // (/kifftech/catalogue/tablettes/).
   var BASE = (function () {
     try {
       var s = document.currentScript;

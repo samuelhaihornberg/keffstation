@@ -7,7 +7,7 @@
  *
  *   - les produits présents dans les DEUX sources (conflit de prix)
  *   - les produits présents dans une seule source
- *   - le nombre de produits par rayon et par source
+ *   - le nombre de produits par catalogue et par source
  *
  * Usage :
  *   node scripts/kifftech/check-duplicates.mjs
@@ -145,7 +145,7 @@ console.log("\n=== PAR RAYON ===");
 const lc = count(local);
 const lvc = count(live);
 const cats = [...new Set([...Object.keys(lc), ...Object.keys(lvc)])].sort();
-console.log("  rayon                              local  live  total");
+console.log("  catalogue                              local  live  total");
 cats.forEach((c) => {
   const a = lc[c] || 0;
   const b = lvc[c] || 0;

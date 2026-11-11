@@ -5,7 +5,7 @@ d_products (les prix et les photos viennent de ta boutique).
 
 | Fichier | Rôle | Qui le remplit |
 |---|---|---|
-| `catalogue.json` | catalogue local enrichi (454 produits, 25+ par rayon) | `node scripts/kifftech/build-catalogue.mjs` |
+| `catalogue.json` | catalogue local enrichi (454 produits, 25+ par catalogue) | `node scripts/kifftech/build-catalogue.mjs` |
 | `products.json` | catalogue **live** (Shopify / Impact / exports) | le workflow `Boutique Sync` |
 | `shopify-export.csv` | **ton export produits Shopify** | toi (ou le workflow, si le domaine est configuré) |
 | `impact-export.csv` | ton export produits Impact (facultatif) | toi |
@@ -35,7 +35,7 @@ Le CSV est lu colonne par colonne :
 |---|---|
 | `Title` | nom du produit KiffTech |
 | `Vendor` | marque |
-| `Product Category` / `Type` / `Tags` | affectation au rayon (automatique) |
+| `Product Category` / `Type` / `Tags` | affectation au catalogue (automatique) |
 | `Variant Price` | prix KiffTech affiché |
 | `Variant Compare At Price` | prix officiel barré |
 | `Image Src` | photo du produit |

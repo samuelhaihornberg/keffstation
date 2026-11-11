@@ -3,8 +3,8 @@
 ## État
 - **173 produits** dans `LOCAL_DB` (`app.v2.js`), tous avec au moins une photo réelle.
 - **100 gadgets populaires 2020-2026** ajoutés (smartphones, PC, tablettes, audio, VR, consoles, drones, smart home, accessoires, composants, robots), puis **17 derniers modèles 2024-2026** (Apple, Samsung, Microsoft, Valve).
-- **11 rayons visibles** : Smartphones 47, Audio & Wearables 21, Consoles & Videogames 20, Computers 16, Tablets 16, Drones & Caméras 14, Composant electronic & informatic 11, VR AR gadgets 9, Accessories 8, Smart Home 6, Company & studying Robots 5.
-- Le rayon « Garden & furnitures smart devices » n'a aucune photo libre : il est filtré de `rayons.html` tant qu'il n'est pas illustré.
+- **11 catalogues visibles** : Smartphones 47, Audio & Wearables 21, Consoles & Videogames 20, Computers 16, Tablets 16, Drones & Caméras 14, Composant electronic & informatic 11, VR AR gadgets 9, Accessories 8, Smart Home 6, Company & studying Robots 5.
+- Le catalogue « Garden & furnitures smart devices » n'a aucune photo libre : il est filtré de `catalogue.html` tant qu'il n'est pas illustré.
 - **175 fichiers image** dans `img/`, tous utilisés, tous crédités dans `img/CREDITS.txt`.
 - Page **`credits.html`** : attribution visible, lien vers chaque fichier Wikimedia Commons.
 
@@ -32,7 +32,7 @@ La base complète comptait 216 fiches, dont 160 sans photo libre (74 %). Plutôt
 1. Trouver une photo sur Wikimedia Commons (CC0, CC BY ou CC BY-SA).
 2. Télécharger, redimensionner 500 px, nommer `img/{id}.jpg`.
 3. Ajouter l'entrée dans `LOCAL_DB` avec `images:['./img/{id}.jpg']`.
-4. Ajouter la ligne dans `img/CREDITS.txt`, régénérer `credits.html`, ajouter le fichier aux `ASSETS` de `sw.js` et mettre à jour `COUNTS` dans `rayons.html`.
+4. Ajouter la ligne dans `img/CREDITS.txt`, régénérer `credits.html`, ajouter le fichier aux `ASSETS` de `sw.js` et mettre à jour `COUNTS` dans `catalogue.html`.
 5. Vérifier : `npm test` + `node --check kifftech/app.v2.js`.
 
 ## Vérif

@@ -22,7 +22,7 @@
  *   { generatedAt, sources: { shopify: {...}, impact: {...} }, products: [...] }
  *
  * Aucune erreur ne fait échouer le build : si une source est absente ou en
- * panne, le catalogue local (25+ produits/rayon) reste affiché.
+ * panne, le catalogue local (25+ produits/catalogue) reste affiché.
  */
 
 import fs from "node:fs";
@@ -72,7 +72,7 @@ const CURRENCY = (ENV.DEFAULT_CURRENCY || "EUR").trim().toUpperCase();
 /* ------------------------------------------------------------------ */
 /* Rayons KiffTech : mot-clé -> catégorie canonique                     */
 /* ------------------------------------------------------------------ */
-const RAYONS = [
+const CATALOGUES = [
   { cat: "Smartphones", kw: ["smartphone", "phone", "iphone", "galaxy s", "pixel", "oneplus", "nothing phone", "redmi", "moto", "motorola", "oppo", "realme", "poco", "honor", "huawei p", "find x", "razr", "zenfone", " Xperia"] },
   { cat: "Computers", kw: ["laptop", "notebook", "macbook", "mac mini", "mac studio", "imac", "desktop", "tower", "mini pc", "workstation", "chromebook", "thinkpad", "ideapad", "zenbook", "vivobook", "matebook", "xps", "latitude", "elitebook", "omnibook", "framework"] },
   { cat: "Tablets", kw: ["tablet", "ipad", "galaxy tab", "matepad", "pad ", "kindle fire", "surface go", "surface pro", "lenovo tab", "redmi pad", "xiaomi pad"] },
@@ -93,7 +93,7 @@ function guessCategory(text, fallback = "Accessories") {
   const t = String(text || "").toLowerCase();
   let best = null;
   let bestScore = 0;
-  for (const r of RAYONS) {
+  for (const r of CATALOGUES) {
     let score = 0;
     for (const k of r.kw) {
       if (t.includes(k)) score += k.trim().length >= 6 ? 2 : 1;

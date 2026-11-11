@@ -1,10 +1,10 @@
-/* KiffTech — Rayons : logique (extraite de rayons.html) */
+/* KiffTech — Rayons : logique (extraite de catalogue.html) */
 (function () {
 'use strict';
-/* ==================== DATA RAYONS ==================== */
-// Chaque rayon pointe vers une catégorie canonique du catalogue (app.v2.js).
-// Clic = ouverture du lecteur de produits filtré sur ce rayon.
-const RAYONS = [
+/* ==================== DATA CATALOGUES ==================== */
+// Chaque catalogue pointe vers une catégorie canonique du catalogue (app.v2.js).
+// Clic = ouverture du lecteur de produits filtré sur ce catalogue.
+const CATALOGUES = [
   { id:'Accessoires & Gadgets', cat:'Accessories', icon:'🧰', color:'var(--kf-blue)', desc:'Chargeurs GaN, batteries, câbles, coques, claviers, souris, hubs, stockage.' },
   { id:'Smartphones', cat:'Smartphones', icon:'📱', color:'var(--kf-cyan)', desc:'Flagships, pliables, milieu de gamme — Samsung, Xiaomi, Apple, Google.' },
   { id:'Tablets', cat:'Tablets', icon:'📲', color:'var(--kf-pink)', desc:'Tablettes pro et famille — stylet, clavier, grand écran.' },
@@ -19,8 +19,8 @@ const RAYONS = [
   { id:'Matière & outillage électronique', cat:'Materiel electronique & outillage', icon:'⚙️', color:'var(--kf-violet)', desc:'Pièces et matière pour électronique et/ou mécanique — soudure, boîtiers, outillage.' }
 ];
 
-/* Nombre de produits par rayon (catalogue JSON versionné) */
-const RAYON_COUNTS = {};
+/* Nombre de produits par catalogue (catalogue JSON versionné) */
+const CATALOGUE_COUNTS = {};
 function chargerComptes(){
   return fetch('/kifftech/data/catalogue.json', { cache:'no-cache' })
     .then(r => r.ok ? r.json() : null)
@@ -28,48 +28,48 @@ function chargerComptes(){
       const list = Array.isArray(j) ? j : (j && j.products) || [];
       list.forEach(p => {
         const c = p.category || 'Accessories';
-        RAYON_COUNTS[c] = (RAYON_COUNTS[c] || 0) + 1;
+        CATALOGUE_COUNTS[c] = (CATALOGUE_COUNTS[c] || 0) + 1;
       });
       return list;
     })
     .catch(() => []);
 }
 
-const rayonGrid = document.getElementById('rayonGrid');
-// URL propre par rayon : page statique dediee (durable et partageable).
-function slugRayon(cat){
+const catalogueGrid = document.getElementById('catalogueGrid');
+// URL propre par catalogue : page statique dediee (durable et partageable).
+function slugCatalogue(cat){
   return String(cat || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
 }
-function urlRayon(cat){ return '/kifftech/index.html?rayon=' + slugRayon(cat); }
+function urlCatalogue(cat){ return '/kifftech/index.html?catalogue=' + slugCatalogue(cat); }
 
-function rendreRayons(){
-  rayonGrid.innerHTML = RAYONS.map((r,i) => `
-  <a class="rayon-card" href="${urlRayon(r.cat)}" data-rayon="${i}" role="listitem" aria-label="Rayon ${r.id}">
-    <div class="rayon-media">
+function rendreCatalogue(){
+  catalogueGrid.innerHTML = CATALOGUES.map((r,i) => `
+  <a class="catalogue-card" href="${urlCatalogue(r.cat)}" data-catalogue="${i}" role="listitem" aria-label="Rayon ${r.id}">
+    <div class="catalogue-media">
       <span style="font-size:3.2rem">${r.icon}</span>
     </div>
-    <div class="rayon-body">
-      <div class="rayon-name">${r.id}</div>
-      <div class="rayon-desc">${r.desc}</div>
+    <div class="catalogue-body">
+      <div class="catalogue-name">${r.id}</div>
+      <div class="catalogue-desc">${r.desc}</div>
     </div>
-    <div class="rayon-footer">
-      <span class="rayon-count">${RAYON_COUNTS[r.cat] != null ? RAYON_COUNTS[r.cat] + ' produits' : '25+ produits'}</span>
-      <span class="rayon-arrow">▸</span>
+    <div class="catalogue-footer">
+      <span class="catalogue-count">${CATALOGUE_COUNTS[r.cat] != null ? CATALOGUE_COUNTS[r.cat] + ' produits' : '25+ produits'}</span>
+      <span class="catalogue-arrow">▸</span>
     </div>
   </a>
 `).join('');
 }
-rendreRayons();
+rendreCatalogue();
 
-rayonGrid.querySelectorAll('.rayon-card').forEach(el => {
+catalogueGrid.querySelectorAll('.catalogue-card').forEach(el => {
   el.addEventListener('click',(e)=>{
     if (e.metaKey || e.ctrlKey || e.shiftKey) return;
   });
 });
 
-/* Chargement du catalogue pour afficher le nombre de produits par rayon */
-chargerComptes().then(() => { rendreRayons(); });
+/* Chargement du catalogue pour afficher le nombre de produits par catalogue */
+chargerComptes().then(() => { rendreCatalogue(); });
 
 /* ==================== MODAL ==================== */
 const modalOverlay = document.getElementById('modalOverlay');
@@ -90,12 +90,12 @@ function openModal(r){
   modalMedia.textContent = r.icon;
   modalSpecs.innerHTML = `
     <div class="spec-item"><span class="spec-label">Rayon</span><span class="spec-value">${r.id}</span></div>
-    <div class="spec-item"><span class="spec-label">Produits</span><span class="spec-value">${RAYON_COUNTS[r.cat] != null ? RAYON_COUNTS[r.cat] : '25+'}</span></div>
+    <div class="spec-item"><span class="spec-label">Produits</span><span class="spec-value">${CATALOGUE_COUNTS[r.cat] != null ? CATALOGUE_COUNTS[r.cat] : '25+'}</span></div>
     <div class="spec-item"><span class="spec-label">Statut</span><span class="spec-value">Disponible en file d’attente</span></div>
     <div class="spec-item"><span class="spec-label">Intermédiaire</span><span class="spec-value">KiffTech.store</span></div>
     <div class="spec-item"><span class="spec-label">Promotion</span><span class="spec-value">Multi-articles (−20 % +1 % / article)</span></div>
   `;
-  modalAdd.setAttribute('href', urlRayon(r.cat));
+  modalAdd.setAttribute('href', urlCatalogue(r.cat));
   modalOverlay.classList.add('open');
   modalClose.focus();
 }
@@ -112,7 +112,7 @@ document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); })
 modalAdd.addEventListener('click',()=>{
   if(!currentRayon) return;
   closeModal();
-  window.location.href = urlRayon(currentRayon.cat);
+  window.location.href = urlCatalogue(currentRayon.cat);
 });
 
 /* ==================== LA CAISSE (compteur réel) ==================== */
@@ -143,8 +143,8 @@ function filterCart(n){
   showToast(`Promotion de caisse active dès ${n} article(s) sélectionné(s)`,'warn');
 }
 
-/* Compteur simple affiché dans les cartes rayon (démo) */
-rayonGrid.querySelectorAll('.rayon-count').forEach(el=>{
+/* Compteur simple affiché dans les cartes catalogue (démo) */
+catalogueGrid.querySelectorAll('.catalogue-count').forEach(el=>{
   el.textContent = Math.floor(Math.random()*40)+5 + '+';
 });
 })();

@@ -73,7 +73,7 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
       <span data-i18n="kifftech_vider_le_cache_kifftech" class="sr-only">Vider le cache KiffTech</span>
     </button>
-<a data-i18n="kifftech_rayons" href="./rayons.html" class="nav-link nav-link--accent">Rayons</a>
+<a data-i18n="kifftech_catalogues" href="./catalogue.html" class="nav-link nav-link--accent">Rayons</a>
 <a data-i18n="kifftech_crdits" href="./credits.html" class="nav-link">Crédits</a>
 <a data-i18n="kifftech__propos" href="./about.html" class="nav-link">À propos</a>
 </div>
@@ -104,9 +104,9 @@
 </section>
 
 <aside class="sidebar">
-<section class="rayons" id="rayons" aria-label="Rayons de la boutique">
-  <h3 data-i18n="kifftech_rayons" class="rayons-title" id="rayons-title">Rayons</h3>
-  <nav class="rayon-selector" id="rayon-selector" role="radiogroup" aria-label="Choisir un rayon de produits">
+<section class="catalogues" id="catalogues" aria-label="Rayons de la boutique">
+  <h3 data-i18n="kifftech_catalogues" class="catalogues-title" id="catalogues-title">Rayons</h3>
+  <nav class="catalogue-selector" id="catalogue-selector" role="radiogroup" aria-label="Choisir un catalogue de produits">
   </nav>
   <p class="live-status" id="live-status" role="status" aria-live="polite"></p>
 </section>
@@ -229,15 +229,15 @@
 <script defer src="./catalogue-live.js?v=30"></script>
 <script src="app.v2.js?v=30"></script>
 <script>
-  // Routage : activer le rayon demandé depuis l'URL (?rayon=smartphones)
+  // Routage : activer le catalogue demandé depuis l'URL (?catalogue=smartphones)
   (function(){
     var params = new URLSearchParams(location.search);
-    var rayon = params.get('rayon');
-    if (!rayon) return;
+    var catalogue = params.get('catalogue');
+    if (!catalogue) return;
     function tryClick(){
-      var btns = document.querySelectorAll('.rayon-btn[data-slug]');
+      var btns = document.querySelectorAll('.catalogue-btn[data-slug]');
       var target = null;
-      btns.forEach(function(b){ if (b.dataset.slug === rayon) target = b; });
+      btns.forEach(function(b){ if (b.dataset.slug === catalogue) target = b; });
       if (target) { target.click(); }
       else { setTimeout(tryClick, 100); }
     }
