@@ -1063,15 +1063,6 @@ async function loadPartnerProducts(){
 
 // ============ FILTERS ============
 function applyFilters(){readerLimit=READER_CHUNK;gridPage=1;filteredProducts=products.filter(p=>{if(searchQuery&&!`${p.brand} ${p.model} ${p.category}`.toLowerCase().includes(searchQuery.toLowerCase()))return false;if(activeCategory!=='all'&&p.category!==activeCategory)return false;if(activeYear!=='all'&&p.year!==parseInt(activeYear))return false;if(activeBrand!=='all'&&p.brand!==activeBrand)return false;if(activeEra!=='all'&&p.era!==activeEra)return false;if(viewMode==='popular'&&getTier(p)!=='popular')return false;if(viewMode==='populace'&&getTier(p)!=='populace')return false;return true;});if(activeSort==='brand')filteredProducts.sort((a,b)=>(`${a.brand} ${a.model}`).localeCompare((`${b.brand} ${b.model}`)));else if(activeSort==='price-asc')filteredProducts.sort((a,b)=>(a.kifftech?.kifftech??a.price.official)-(b.kifftech?.kifftech??b.price.official));else if(activeSort==='price-desc')filteredProducts.sort((a,b)=>(b.kifftech?.kifftech??b.price.official)-(a.kifftech?.kifftech??b.price.official));renderProducts();
-  if (activeCategory && activeCategory !== 'all') {
-    const slug = slugRayon(activeCategory);
-    const newUrl = './rayons/' + slug + '/';
-    if (window.location.pathname !== newUrl) {
-      history.pushState({}, '', newUrl);
-    }
-  } else if (window.location.pathname.indexOf('index.html') === -1 && window.location.pathname.indexOf('rayons') === -1) {
-    history.pushState({}, '', './index.html');
-  }
 function renderFilters(){const cats=['all',...new Set(products.map(p=>p.category))];var __el = $('#filter-category'); if (__el) __el.innerHTML =cats.map(c=>`<button class="filter-btn ${c===activeCategory?'active':''}" data-cat="${c}">${c==='all'?'Toutes':c}</button>`).join('');const ss=$('#sort-select');if(ss)ss.value=activeSort;const years=['all',...[...new Set(products.map(p=>p.year))].sort((a,b)=>b-a)];var __el = $('#filter-year'); if (__el) __el.innerHTML =years.map(y=>`<button class="filter-btn ${y===activeYear?'active':''}" data-year="${y}">${y==='all'?'Toutes':y}</button>`).join('');const brands=['all',...[...new Set(products.map(p=>p.brand))].sort()];var __el = $('#filter-brand'); if (__el) __el.innerHTML =brands.map(b=>`<button class="filter-btn ${b===activeBrand?'active':''}" data-brand="${b}">${b==='all'?'Toutes':b}</button>`).join('');const eras=[['all','Tous'],['retro','🕹️ Rétro'],['modern','🚀 Modernes']];const fe=$('#filter-era');if(fe)fe.innerHTML=eras.map(([v,l])=>`<button class="filter-btn ${v===activeEra?'active':''}" data-era="${v}">${l}</button>`).join('');renderViewModeButtons();}
 
 // ============ PARTICLES ============
@@ -1186,6 +1177,10 @@ function init(){
           const hit = products.find(p => slugRayon(p.category) === wanted);
           if (hit) rayon = hit.category;
         }
+      } else {
+        // Convertir le slug de l'URL en categorie reelle
+        const hit = products.find(p => slugRayon(p.category) === rayon);
+        if (hit) rayon = hit.category;
       }
       if (rayon) {
         requestedRayon = rayon;
