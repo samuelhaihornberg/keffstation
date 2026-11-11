@@ -3,7 +3,7 @@
    Charge les produits depuis data/catalogue.json et affiche une grille interactive
    ============================================================================ */
 
-(function(){
+(function() {
   'use strict';
 
   /* ---------- État ---------- */
@@ -14,7 +14,7 @@
   let currentSearch = '';
 
   /* ---------- Éléments DOM ---------- */
-  const catalogueGrid = document.getElementById('catalogueGrid');
+  const catalogueGrid = document.getElementById('productsGrid');
   const categoryFilters = document.getElementById('categoryFilters');
   const catalogueSearch = document.getElementById('catalogueSearch');
   const catalogueSort = document.getElementById('catalogueSort');
@@ -29,7 +29,7 @@
   const modalAdd = document.getElementById('modalAdd');
 
   /* ---------- Chargement des données ---------- */
-  async function loadCatalogue(){
+  async function loadCatalogue() {
     try {
       const response = await fetch('./data/catalogue.json', { cache:'no-cache' });
       if (!response.ok) throw new Error('Impossible de charger le catalogue');
@@ -56,7 +56,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const urlCat = urlParams.get('catalogue');
       if (urlCat) {
-        // Trouver la catégorie qui correspond au slug
         const matched = allProducts.find(p => {
           const slug = String(p.category || '')
             .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -95,7 +94,7 @@
   }
 
   /* ---------- Rendu des filtres de catégorie ---------- */
-  function renderCategoryFilters(categories){
+  function renderCategoryFilters(categories) {
     if (!categoryFilters) return;
 
     const uniqueCats = [...new Set(allProducts.map(p => p.category))].sort();
@@ -125,7 +124,7 @@
   }
 
   /* ---------- Filtrage et tri ---------- */
-  function applyFiltersAndSort(){
+  function applyFiltersAndSort() {
     let result = [...allProducts];
 
     // Filtre par catégorie
@@ -164,7 +163,7 @@
   }
 
   /* ---------- Rendu des produits ---------- */
-  function renderProducts(){
+  function renderProducts() {
     if (!catalogueGrid) return;
 
     catalogueCount.textContent = `${filteredProducts.length} produit${filteredProducts.length > 1 ? 's' : ''}`;
@@ -205,11 +204,11 @@
       </article>
     `).join('');
 
-    // Re-attacher les événements (nécessaire car innerHTML recrée les éléments)
+    // Re-attacher les événements
     attachProductEvents();
   }
 
-  function attachProductEvents(){
+  function attachProductEvents() {
     catalogueGrid.querySelectorAll('.product-card').forEach(card => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('button')) return;
@@ -220,7 +219,7 @@
   }
 
   /* ---------- Modal produit ---------- */
-  window.openProductModal = function(id){
+  window.openProductModal = function(id) {
     const p = allProducts.find(prod => prod.id === id);
     if (!p) return;
 
@@ -249,27 +248,27 @@
     modalOverlay.classList.add('open');
   };
 
-  window.addToCart = function(id){
+  window.addToCart = function(id) {
     const p = allProducts.find(prod => prod.id === id);
     if (!p) return;
 
     try {
-      const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      const saved = JSON.parse(localStorage.getItem('kifftech.cart.v1') || '[]');
       const existing = saved.find(i => i.id === p.id);
       if (existing) {
         existing.qty = (existing.qty || 1) + 1;
       } else {
         saved.push({ id: p.id, qty: 1, brand: p.brand, model: p.model, price: p.price });
       }
-      localStorage.setItem(CART_KEY, JSON.stringify(saved));
+      localStorage.setItem('kifftech.cart.v1', JSON.stringify(saved));
       majCompteurCaisse();
       showToast(p.model + ' ajouté à la caisse', 'success');
-    } catch(e){
+    } catch(e) {
       console.error('Erreur ajout caisse:', e);
     }
   };
 
-  function closeModal(){
+  function closeModal() {
     modalOverlay.classList.remove('open');
   }
 
@@ -279,14 +278,14 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
   /* ---------- Utilitaires ---------- */
-  function escapeHtml(text){
+  function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
     div.textContent = String(text);
     return div.innerHTML;
   }
 
-  function fmtPrice(price, currency='EUR'){
+  function fmtPrice(price, currency='EUR') {
     return new Intl.NumberFormat('fr-FR', { style:'currency', currency }).format(price);
   }
 
@@ -294,7 +293,7 @@
   const CART_KEY = 'kifftech.cart.v1';
   const cartBadge = document.getElementById('cartBadge');
 
-  function majCompteurCaisse(){
+  function majCompteurCaisse() {
     let n = 0;
     try {
       const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
@@ -305,8 +304,8 @@
   majCompteurCaisse();
   window.addEventListener('storage', majCompteurCaisse);
 
-  function showToast(msg,type='success'){
-    const t=document.getElementById('toast');
+  function showToast(msg,type='success') {
+    const t = document.getElementById('toast');
     if(!t) return;
     t.querySelector('.t-emoji').textContent = type==='success'?'✅':'⚠️';
     t.querySelector('#toastMsg').textContent = msg;

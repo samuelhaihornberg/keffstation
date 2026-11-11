@@ -7,19 +7,20 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="description" content="KiffTech Boutique — Catalogue smart devices, high tech et gadgets. Achetez plusieurs articles d’un coup et profitez des promotions. File d’attente fournisseur grossiste — intermédiaire KiffTech.store.">
+<meta name="description" content="KiffTech Boutique — Catalogue smart devices, high tech et gadgets. Achetez plusieurs articles d'un coup et profitez des promotions. File d'attente fournisseur grossiste — intermédiaire KiffTech.store.">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2305060a'/%3E%3Ctext x='50' y='68' font-size='56' font-family='monospace' fill='%23ffd23f' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <title>KiffTech — Catalogue & Promotions | KeffStation</title>
 <link rel="stylesheet" href="../common.css">
-<link rel="stylesheet" href="./catalogue.css?v=31">
+<link rel="stylesheet" href="./catalogue.css">
 </head>
 <body>
 
   <!-- Navigation entre applications -->
   <nav class="apps-nav">
     <a href="../" class="app-link app-home">← KeffStation</a>
-    <a href="./catalogue.html" class="app-link app-active">🛒 Kifftech.store</a>
+    <a href="./index.html" class="app-link app-active">🛒 Kifftech.store</a>
+    <a href="./catalogue.html" class="app-link">📦 Catalogue</a>
     <a href="../viartificial-labs/" class="app-link">🤖 ViArtificial-Labs</a>
     <a href="../videogames/" class="app-link">🎮 Videogames</a>
     <a href="../blogum/" class="app-link">📝 Blogum</a>
@@ -42,14 +43,14 @@
   </header>
 
   <section class="hero">
-    <span class="kicker">File d’attente fournisseur grossiste</span>
-    <h1>Boutique <span class="accent">KiffTech</span><br>Smart devices &amp; gadgets</h1>
-    <p class="lede">Passez dans la <strong>file d’attente fournisseur grossiste</strong> et commandez par l’intermédiaire de <em>KiffTech.store</em>. Achetez <strong>plusieurs articles d’un coup, en une fois</strong>, et les <strong>promotions</strong> s’appliquent automatiquement. Une boutique <strong>sérieuse, classy, classe, classique, hybride, post-moderne et futuriste</strong>.</p>
+    <span class="kicker">File d'attente fournisseur grossiste</span>
+    <h1>Boutique <span class="accent">KiffTech</span><br>Smart devices & gadgets</h1>
+    <p class="lede">Passez dans la <strong>file d'attente fournisseur grossiste</strong> et commandez par l'intermédiaire de <em>KiffTech.store</em>. Achetez <strong>plusieurs articles d'un coup, en une fois</strong>, et les <strong>promotions</strong> s'appliquent automatiquement. Une boutique <strong>sérieuse, classy, classe, classique, hybride, post-moderne et futuriste</strong>.</p>
 
     <div class="queue-band">
       <span class="q-icon">⏳</span>
       <div class="q-text">
-        <strong>Votre commande rejoint la file d’attente fournisseur grossiste.</strong><br>
+        <strong>Votre commande rejoint la file d'attente fournisseur grossiste.</strong><br>
         KiffTech.store prépare, vérifie et expédie vos articles entre le grossiste et vous.
       </div>
       <span class="q-badge">Intermédiaire officiel</span>
@@ -60,7 +61,7 @@
   <section class="catalogue-toolbar">
     <div class="toolbar-search">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="search" id="catalogueSearch" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
+      <input type="search" id="catalogueSearch" placeholder="Rechercher un produit..." aria-label="Rechercher un produit">
     </div>
     <div class="toolbar-filters" id="categoryFilters"></div>
     <div class="toolbar-sort">
@@ -78,37 +79,37 @@
 
   <!-- Grille de produits -->
   <section class="products-section" id="productsSection">
-    <h2 class="sections-title">Produits <span class="accent">&amp; promotions</span></h2>
+    <h2 class="sections-title">Produits <span class="accent">& promotions</span></h2>
     <div class="products-grid" id="productsGrid"></div>
   </section>
 
   <section class="promo-banner">
     <div class="promo-head">
       <span class="promo-badge">🔥 Promotions multi-articles</span>
-      <h2 class="promo-title">Achetez plusieurs articles <span class="kw">d’un coup, en une fois</span></h2>
+      <h2 class="promo-title">Achetez plusieurs articles <span class="kw">d'un coup, en une fois</span></h2>
     </div>
-    <p class="promo-desc">Plus vous cochez d’articles dans la caisse, plus la promotion s’applique : −20 % de base sur les prix officiels, puis +1 % par article dans la caisse, jusqu’à +7 % (−27 % au maximum).</p>
+    <p class="promo-desc">Plus vous cochez d'articles dans la caisse, plus la promotion s'applique : −20 % de base sur les prix officiels, puis +1 % par article dans la caisse, jusqu'à +7 % (−27 % au maximum).</p>
     <div class="promo-row">
       <div class="promo-col">
         <div class="col-title"><span class="emoji">🛒</span>1 article</div>
-        <p>Remise appliquée sur l’ensemble de la caisse : <strong class="price"><span class="old">-0 %</span> <span class="new">-20 %</span></strong></p>
+        <p>Remise appliquée sur l'ensemble de la caisse : <strong class="price"><span class="old">-0 %</span> <span class="new">-20 %</span></strong></p>
         <a class="btn secondary" href="./index.html">Voir la boutique</a>
       </div>
       <div class="promo-col">
         <div class="col-title"><span class="emoji">📦</span>2 à 3 articles</div>
-        <p>Remise appliquée sur l’ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-21 à -23 %</span></strong></p>
+        <p>Remise appliquée sur l'ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-21 à -23 %</span></strong></p>
         <a class="btn secondary" href="./index.html">Voir la boutique</a>
       </div>
       <div class="promo-col">
         <div class="col-title"><span class="emoji">🚀</span>4 articles et +</div>
-        <p>Remise appliquée sur l’ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-24 à -27 %</span></strong></p>
+        <p>Remise appliquée sur l'ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-24 à -27 %</span></strong></p>
         <a class="btn secondary" href="./index.html">Voir la boutique</a>
       </div>
     </div>
   </section>
 
   <footer class="footer">
-    <p class="f-line">KiffTech® — Boutique catalogue &amp; promotions. File d’attente fournisseur grossiste via KiffTech.store.</p>
+    <p class="f-line">KiffTech® — Boutique catalogue & promotions. File d'attente fournisseur grossiste via KiffTech.store.</p>
     <p class="f-line">KeffStation &middot; Sérieuse, classy, classe, classique, hybride, post-moderne, futuriste.</p>
   </footer>
 
@@ -144,7 +145,7 @@
       });
     }
   </script>
-  <script src="./catalogue-v3.js?v=30"></script>
+  <script src="./catalogue-v3.js"></script>
   <script src="../clear-cache.js"></script>
   <script defer src="../page-transition.js"></script>
 </body>

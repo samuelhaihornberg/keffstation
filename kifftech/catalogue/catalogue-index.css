@@ -1,6 +1,0 @@
-/* KiffTech — index des catalogues */
-.ray-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:20px 0 60px}
-.ray-item{display:block;text-decoration:none;color:inherit;border:1px solid var(--kf-line);padding:16px;border-radius:14px;background:rgba(255,255,255,.03)}
-.ray-item:hover{border-color:rgba(216,255,62,.5);background:rgba(255,255,255,.06)}
-.ray-item strong{display:block;font-family:var(--kf-display);font-size:1.05rem;color:var(--kf-bone);margin-bottom:4px}
-.ray-item span{font:600 .7rem var(--kf-mono);color:var(--kf-acid-dim);letter-spacing:.1em;text-transform:uppercase}
