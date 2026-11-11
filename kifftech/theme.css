@@ -38,29 +38,6 @@ body{
   text-rendering:optimizeLegibility;
 }
 
-/* Texture : grille fine + grain, purement décorative. */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background-image:
-    linear-gradient(var(--kf-line-soft) 1px,transparent 1px),
-    linear-gradient(90deg,var(--kf-line-soft) 1px,transparent 1px);
-  background-size:72px 72px;
-  mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 78%);
-  -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 78%);
-  opacity:.45;
-}
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  opacity:.05;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
 }
 
 :focus-visible{outline:2px solid var(--kf-acid);outline-offset:3px}
