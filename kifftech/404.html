@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KiffTech — Redirection rayon</title>
+<script>
+  // Gestion du rafraîchissement direct sur /kifftech/rayons/<slug>/
+  // Extrait le slug du pathname et redirige vers index.html avec le parametre ?rayon=
+  (function(){
+    var m = window.location.pathname.match(/\/rayons\/([a-z0-9-]+)\/?$/i);
+    if (m) {
+      var slug = m[1];
+      window.location.replace('../../index.html?rayon=' + slug);
+    } else {
+      window.location.replace('../../index.html');
+    }
+  })();
+</script>
+</head>
+<body>
+<p>Redirection…</p>
+</body>
+</html>
