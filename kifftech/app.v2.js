@@ -1186,6 +1186,22 @@ function init(){
         requestedRayon = rayon;
         if (products.some(p => p.category === rayon)) activeCategory = rayon;
       }
+      // Mode rayon unique : masquer la sidebar et n'afficher que les produits de ce rayon
+      if (requestedRayon) {
+        setTimeout(() => {
+          const sidebar = document.querySelector('.sidebar');
+          const main = document.querySelector('main');
+          if (sidebar) sidebar.style.display = 'none';
+          if (main) main.style.gridTemplateColumns = '1fr';
+          const title = document.createElement('h2');
+          title.style.cssText = 'grid-column:1/-1;margin:0 0 16px;padding:12px 0;font-size:clamp(1.5rem,4vw,2rem);color:var(--kf-ink);border-bottom:1px solid var(--kf-line);';
+          title.textContent = 'Rayon : ' + requestedRayon;
+          const productsSection = document.getElementById('products-section');
+          if (productsSection && productsSection.parentNode) {
+            productsSection.parentNode.insertBefore(title, productsSection);
+          }
+        }, 100);
+      }
       const sort = params.get('sort');
       if (sort && ['brand', 'price-asc', 'price-desc'].includes(sort)) activeSort = sort;
       const era = params.get('era');
