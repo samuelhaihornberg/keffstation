@@ -88,6 +88,23 @@ const APPS = [
       { title: "Mods & Tools", desc: "Nexus, Thunderstore, Vortex, MO2, r2modman — profils, déploiement, résolution conflits.", tags: ["Mods", "Tools", "Gestion"] }
     ]
   },
+  {
+    num: "Blogum",
+    title: "Blogum",
+    desc: "Blog maker, profil social network, rencontres, sphères d'audience, profils caméléons, échelle de proximité, espaces hybrides blog ↔ forum, réactions émotionnelles.",
+    tags: ["Blog", "Réseau social", "Rencontres", "Feedback"],
+    appUrl: "https://kiffstation.com/blogum/",
+    embedUrl: "https://kiffstation.com/blogum/",
+    embedLabel: "Ouvrir Blogum",
+    color: "#ff3d9a",
+    subArticles: [
+      { title: "Sphères d'audience", desc: "Pro, Famille, Amis, Love, Connaissances, Loisirs — choisissez qui voit quoi.", tags: ["Sphère", "Audience", "Vie privée"] },
+      { title: "Profils caméléons", desc: "Un seul compte, une bio et un avatar qui s'adaptent selon le visiteur.", tags: ["Profil", "Multi-facettes", "Caméléon"] },
+      { title: "Échelle de proximité", desc: "Définissez le lien avec chaque contact, modifiable dans le temps.", tags: ["Proximité", "Connexion", "Relation"] },
+      { title: "Espaces hybrides", desc: "Blog ↔ Forum : vitrine éditoriale + espace communautaire lié.", tags: ["Blog", "Forum", "Hybride"] },
+      { title: "Réactions émotionnelles", desc: "👍👎❤️🤬🥵🥶🤒🥳 — feedback par contenu et commentaire.", tags: ["Réaction", "Émotion", "Feedback"] }
+    ]
+  }
 ];
 
 // ============ UTILITIES ============
@@ -157,6 +174,11 @@ const APP_ICONS = {
     src: 'https://raw.githubusercontent.com/samuelhaihornberg/keffstation/c14e0e9b4ee41b51749c446840d4b19d6a88ce70/Logo%20videogames%20keffstation.png',
     alt: 'Logo Videogames',
     fallback: '🎮'
+  },
+  'Blogum': {
+    src: 'https://raw.githubusercontent.com/samuelhaihornberg/keffstation/faf852a98bfec55a20c5bcbec2b15c19da72b980/1794400646339.jpg',
+    alt: 'Logo Blogum',
+    fallback: '📝'
   },
 };
 
