@@ -180,23 +180,9 @@ const LOCAL_DB = [
 // Si le build a change (nouveau deploiement), on purge le cache du site
 // et on recharge une seule fois : le telephone ne peut plus rester bloque
 // sur un ancien app.v2.js.
-const APP_BUILD = '2026-11-10.28';
+const APP_BUILD = '2026-11-10.29';
 (function checkBuild(){
   try{
-    var prev = localStorage.getItem('kifftech.build');
-    if (prev && prev !== APP_BUILD && !sessionStorage.getItem('kifftech.reloaded')){
-      sessionStorage.setItem('kifftech.reloaded','1');
-      var wipe = function(){
-        if (window.caches && window.caches.keys){
-          return caches.keys().then(function(names){
-            return Promise.all(names.map(function(n){ return n.indexOf('kifftech-agent-') === 0 ? caches.delete(n) : null; }));
-          });
-        }
-        return Promise.resolve();
-      };
-      wipe().then(function(){ location.reload(); });
-      return;
-    }
     localStorage.setItem('kifftech.build', APP_BUILD);
   }catch(e){}
 })();
