@@ -24,7 +24,7 @@
   (function () {
     var scriptEl = document.querySelector('script[src*="i18n.js"]');
     if (scriptEl && scriptEl.src) {
-      // ex: https://kiffstation.com/i18n.js
+      // ex: https://samuelhaihornberg.github.io/keffstation/i18n.js
       // ou depuis sous-dossier: .../kifftech/../i18n.js -> résolu par le navigateur en .../keffstation/i18n.js
       BASE_PATH = scriptEl.src.replace(/\/[^\/]*$/, '/');
     }

@@ -28,9 +28,9 @@ The site is composed of several sub-projects:
 ## Direct access
 
 All categories are accessible from the home page:
-- `https://kiffstation.com/`
-- `https://kiffstation.com/kifftech/`
-- `https://kiffstation.com/viartificial-labs/`
+- `https://samuelhaihornberg.github.io/keffstation/`
+- `https://samuelhaihornberg.github.io/keffstation/kifftech/`
+- `https://samuelhaihornberg.github.io/keffstation/viartificial-labs/`
 - and other subfolders
 
 ## Key features

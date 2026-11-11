@@ -2,7 +2,7 @@
 /**
  * KeffStation — Bascule des URL canoniques vers un nouveau domaine
  * ============================================================================
- * Remplace https://kiffstation.com par le domaine
+ * Remplace https://samuelhaihornberg.github.io/keffstation par le domaine
  * cible dans : sitemap.xml, balises <link rel="canonical">, JSON-LD "url",
  * manifest.json (start_url / scope), et URLs de service worker.
  *
@@ -17,7 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..");
-const OLD_BASE = "https://kiffstation.com";
+const OLD_BASE = "https://samuelhaihornberg.github.io/keffstation";
 
 const domain = String(process.argv[2] || "").trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
 const DRY = process.argv.includes("--dry-run");

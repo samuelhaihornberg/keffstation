@@ -119,7 +119,7 @@ for (const cat of categories) {
     `<meta name="description" content="Rayon ${titleOf(cat)} — ${catalogue.categories[cat]} produits KiffTech : prix officiels, avis, photos et achat en ligne.">`,
   );
   // lien canonique
-  const CANON = "https://kiffstation.com/kifftech/rayon/" + slug + "/";
+  const CANON = "https://samuelhaihornberg.github.io/keffstation/kifftech/rayon/" + slug + "/";
   html = html.replace(/<link rel="canonical"[^>]*>/, "");
   html = html.replace(
     "<title>",

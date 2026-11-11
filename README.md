@@ -26,7 +26,7 @@ Les 6 faces renvoient vers :
 - **KiffTech** — https://samuelhaihornberg.github.io/Kiff-Tech/
 - **Tricktrocjob** — https://samuelhaihornberg.github.io/keffjobtrictrocc/
 - **ViArtificial labs** — https://samuelhaihornberg.github.io/ViArtificial/
-- **cos Editor** — https://kiffstation.com/cos-editor/
+- **cos Editor** — https://samuelhaihornberg.github.io/keffstation/cos-editor/
 - **Linguistic Motors** — https://samuelhaihornberg.github.io/linguistic-motors/
 - **Videogames** — https://samuelhaihornberg.github.io/videogames/
 
@@ -34,7 +34,7 @@ Les 6 faces renvoient vers :
 
 GitHub Pages activé, site servi depuis la branche `main`.
 
-GitHub Pages : https://kiffstation.com/
+GitHub Pages : https://samuelhaihornberg.github.io/keffstation/
 
 ## Licence
 

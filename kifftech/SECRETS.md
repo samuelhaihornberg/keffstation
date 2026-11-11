@@ -87,7 +87,7 @@ Repo GitHub → `Settings` → `Secrets and variables` → `Actions` → `New re
 ## 2. Domaine personnalisé (kiffstation.com)
 
 **État actuel : le domaine est déjà en ligne et redirige vers le site.**
-`https://kiffstation.com` → redirection Cloudflare → `https://kiffstation.com/`.
+`https://samuelhaihornberg.github.io/keffstation` → redirection Cloudflare → `https://samuelhaihornberg.github.io/keffstation/`.
 Les URL canoniques et le sitemap pointent volontairement vers l'adresse finale
 (`github.io`) tant que cette redirection existe : ce sont les URL servies.
 
@@ -115,7 +115,7 @@ Le site est accessible sur `kiffstation.com` aujourd'hui. C'est l'état actuel.
    Cloudflare en proxy orange + GitHub Pages exige un SSL "Full (strict)" avec
    le domaine déclaré dans Pages, sinon le certificat ne correspond pas.
 3. Laisse GitHub émettre le certificat (quelques minutes, parfois 24 h).
-4. Vérifie que `https://kiffstation.com/` répond 200 et affiche le site.
+4. Vérifie que `https://samuelhaihornberg.github.io/keffstation/` répond 200 et affiche le site.
 5. Bascule les URL canoniques : demande-moi de le faire (ou lance
    `node scripts/kifftech/set-site-url.mjs kiffstation.com`) — le sitemap et
    les balises `canonical` / JSON-LD passent alors sur le nouveau domaine.

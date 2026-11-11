@@ -3,7 +3,7 @@
 Page de statistiques de la plateforme : **vues** et **durée de consultation par page**,
 **clics par lien et par bouton**, en graphiques 3D « montagnes ».
 
-🔗 URL publique : <https://kiffstation.com/stats/>
+🔗 URL publique : <https://samuelhaihornberg.github.io/keffstation/stats/>
 
 > **Les données sont réelles.** Aucun chiffre n'est simulé : la page consomme
 > `data/live.json`, produit par le workflow *Collect Real Stats* à partir des API

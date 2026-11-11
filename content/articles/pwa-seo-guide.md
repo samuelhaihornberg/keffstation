@@ -18,7 +18,7 @@ L'optimisation SEO pour les Progressive Web Apps (PWA) suit des principes spéci
 ```
 User-agent: *
 Allow: /
-Sitemap: https://kiffstation.com/sitemap.xml
+Sitemap: https://samuelhaihornberg.github.io/keffstation/sitemap.xml
 ```
 Ce fichier permet aux moteurs de recherche d'indexer l'ensemble des pages accessibles.
 
@@ -66,7 +66,7 @@ Toutes les images significatives doivent avoir un texte `alt` descriptif. Les ic
 
 ### URL canoniques
 L'URL canonique est l'URL réelle du site GitHub Pages :
-`https://kiffstation.com/`
+`https://samuelhaihornberg.github.io/keffstation/`
 
 Aucune balise `<link rel="canonical">` n'est nécessaire car il n'y a pas de contenu dupliqué entre différentes URLs.
 

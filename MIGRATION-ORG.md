@@ -45,7 +45,7 @@ git remote set-url origin git@github.com:KeffStation/keffstation.git
 - [ ] **Adresse du dépôt distant** : `git remote -v` doit pointer vers
       `git@github.com:KeffStation/keffstation.git`.
 - [ ] **Ancienne URL** : GitHub redirige normalement l'ancien dépôt ; vérifier
-      que `https://kiffstation.com/` ne casse pas les
+      que `https://samuelhaihornberg.github.io/keffstation/` ne casse pas les
       applications qui utilisent encore l'ancien domaine.
 
 ## Notes

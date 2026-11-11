@@ -101,7 +101,7 @@ Deux méthodes possibles :
    pour un site au niveau du domaine).
 4. Crée le secret **`GSC_SITE_URL`** avec l'identifiant du site :
    - site au niveau du domaine : `sc-domain:samuelhaihornberg.github.io`
-   - préfixe d'URL : `https://kiffstation.com/`
+   - préfixe d'URL : `https://samuelhaihornberg.github.io/keffstation/`
 
 ### B. OAuth2 (si tu préfères un compte Google personnel)
 
