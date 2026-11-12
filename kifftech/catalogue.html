@@ -3,131 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05060a">
+<meta name="theme-color" content="#0d0d1a">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="description" content="KiffTech Boutique — Catalogue smart devices, high tech et gadgets. Achetez plusieurs articles d'un coup et profitez des promotions. File d'attente fournisseur grossiste — intermédiaire KiffTech.store.">
+<meta name="description" content="KiffTech Catalogue multicolor — 454 produits avec filtres, tri et recherche">
+<title>KiffTech — Catalogue Multicolor | kiffstation.com</title>
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2305060a'/%3E%3Ctext x='50' y='68' font-size='56' font-family='monospace' fill='%23ffd23f' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
-<title>KiffTech — Catalogue & Promotions | KeffStation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230d0d1a'/%3E%3Ctext x='50' y='65' font-size='60' font-family='monospace' fill='%23bf5700' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../common.css">
-<link rel="stylesheet" href="./catalogue.css">
+<link rel="stylesheet" href="./catalogue-multicolor.css">
 </head>
 <body>
 
-  <!-- Navigation entre applications -->
-  <nav class="apps-nav">
-    <a href="../" class="app-link app-home">← KeffStation</a>
-    <a href="./index.html" class="app-link app-active">🛒 Kifftech.store</a>
-    <a href="./catalogue.html" class="app-link">📦 Catalogue</a>
-    <a href="../viartificial-labs/" class="app-link">🤖 ViArtificial-Labs</a>
-    <a href="../videogames/" class="app-link">🎮 Videogames</a>
-    <a href="../blogum/" class="app-link">📝 Blogum</a>
+  <!-- Background wave pattern -->
+  <div class="bg-pattern">
+    <svg width="100%" height="100%" viewBox="0 0 1440 800" preserveAspectRatio="none" class="wave-svg">
+      <path d="M0,40 L31,46 C62,52,94,50,125,55 C156,60,188,65,220,68 C252,72,284,75,316,77 C348,80,380,82,412,82 C444,82,476,80,508,77 C540,74,572,70,604,67 C636,64,668,60,700,57 C732,54,764,50,796,47 C828,44,860,40,892,37 C924,34,956,32,988,31 C1020,30,1052,28,1084,27 C1116,26,1148,25,1180,24 C1212,23,1244,22,1276,22 L1280,22 L1280,800 L0,800 Z" fill="var(-- bg-pattern-color)"/>
+    </svg>
+    <svg width="100%" height="100%" viewBox="0 0 1440 800" preserveAspectRatio="none" class="wave-svg two">
+      <path d="M0,350 L31,356 C62,362,94,368,125,373 C156,378,188,383,220,388 C252,393,284,398,316,403 C348,408,380,412,412,416 C444,416,476,413,508,410 C540,407,572,403,604,399 C636,395,668,390,700,386 C732,382,764,378,796,374 C828,370,860,366,892,363 C924,360,956,357,988,355 C1020,353,1052,351,1084,349 C1116,347,1148,346,1180,344 C1212,342,1244,341,1276,340 L1280,340 L1280,800 L0,800 Z" fill="var(-- bg-pattern-color-two)"/>
+    </svg>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="app-nav">
+    <div class="nav-container">
+      <a href="../" class="nav-logo">← KiffStation</a>
+      <a href="./index.html" class="nav-active">KiffTech</a>
+      <a href="./catalogue.html" class="nav-link">Catalogue</a>
+      <a href="../viartificial-labs/" class="nav-link">ViArtificial</a>
+      <a href="../videogames/" class="nav-link">Videogames</a>
+      <a href="../blogum/" class="nav-link">Blogum</a>
+    </div>
   </nav>
 
-  <header class="topbar">
-    <div class="brand">
-      <span class="logo">📱</span>
-      <h1>KiffTech<span>®</span></h1>
-    </div>
-    <div class="nav-gap"></div>
-    <div class="nav">
-      <a class="btn ghost" href="../">← Cube</a>
-      <a class="btn ghost" href="./index.html">Boutique</a>
-      <a class="btn primary" href="./index.html#caisse">La Caisse</a>
-      <a class="cart-btn" id="cartBtn" href="./index.html#caisse" aria-label="La Caisse — articles sélectionnés">
-        🛒 <span class="badge" id="cartBadge">0</span>
-      </a>
-    </div>
-  </header>
-
-  <section class="hero">
-    <span class="kicker">File d'attente fournisseur grossiste</span>
-    <h1>Boutique <span class="accent">KiffTech</span><br>Smart devices & gadgets</h1>
-    <p class="lede">Passez dans la <strong>file d'attente fournisseur grossiste</strong> et commandez par l'intermédiaire de <em>KiffTech.store</em>. Achetez <strong>plusieurs articles d'un coup, en une fois</strong>, et les <strong>promotions</strong> s'appliquent automatiquement. Une boutique <strong>sérieuse, classy, classe, classique, hybride, post-moderne et futuriste</strong>.</p>
-
-    <div class="queue-band">
-      <span class="q-icon">⏳</span>
-      <div class="q-text">
-        <strong>Votre commande rejoint la file d'attente fournisseur grossiste.</strong><br>
-        KiffTech.store prépare, vérifie et expédie vos articles entre le grossiste et vous.
+  <!-- Main Content -->
+  <main class="kifftech-main">
+    <!-- Toolbar -->
+    <section class="kifftech-toolbar">
+      <div class="toolbar-left">
+        <h2 class="toolbar-title">KiffTech Catalogue</h2>
+        <span class="toolbar-count" id="catalogueCount">0 produits</span>
       </div>
-      <span class="q-badge">Intermédiaire officiel</span>
-    </div>
-  </section>
-
-  <!-- Barre de filtres et tri -->
-  <section class="catalogue-toolbar">
-    <div class="toolbar-search">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="search" id="catalogueSearch" placeholder="Rechercher un produit..." aria-label="Rechercher un produit">
-    </div>
-    <div class="toolbar-filters" id="categoryFilters"></div>
-    <div class="toolbar-sort">
-      <label for="catalogueSort">Trier :</label>
-      <select id="catalogueSort">
-        <option value="name">Nom (A-Z)</option>
-        <option value="price-asc">Prix croissant</option>
-        <option value="price-desc">Prix décroissant</option>
-        <option value="year-desc">Année décroissante</option>
-        <option value="brand">Marque (A-Z)</option>
-      </select>
-    </div>
-    <div class="toolbar-count" id="catalogueCount">0 produits</div>
-  </section>
-
-  <!-- Grille de produits -->
-  <section class="products-section" id="productsSection">
-    <h2 class="sections-title">Produits <span class="accent">& promotions</span></h2>
-    <div class="products-grid" id="productsGrid"></div>
-  </section>
-
-  <section class="promo-banner">
-    <div class="promo-head">
-      <span class="promo-badge">🔥 Promotions multi-articles</span>
-      <h2 class="promo-title">Achetez plusieurs articles <span class="kw">d'un coup, en une fois</span></h2>
-    </div>
-    <p class="promo-desc">Plus vous cochez d'articles dans la caisse, plus la promotion s'applique : −20 % de base sur les prix officiels, puis +1 % par article dans la caisse, jusqu'à +7 % (−27 % au maximum).</p>
-    <div class="promo-row">
-      <div class="promo-col">
-        <div class="col-title"><span class="emoji">🛒</span>1 article</div>
-        <p>Remise appliquée sur l'ensemble de la caisse : <strong class="price"><span class="old">-0 %</span> <span class="new">-20 %</span></strong></p>
-        <a class="btn secondary" href="./index.html">Voir la boutique</a>
-      </div>
-      <div class="promo-col">
-        <div class="col-title"><span class="emoji">📦</span>2 à 3 articles</div>
-        <p>Remise appliquée sur l'ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-21 à -23 %</span></strong></p>
-        <a class="btn secondary" href="./index.html">Voir la boutique</a>
-      </div>
-      <div class="promo-col">
-        <div class="col-title"><span class="emoji">🚀</span>4 articles et +</div>
-        <p>Remise appliquée sur l'ensemble de la caisse : <strong class="price"><span class="old">-20 %</span> <span class="new">-24 à -27 %</span></strong></p>
-        <a class="btn secondary" href="./index.html">Voir la boutique</a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <p class="f-line">KiffTech® — Boutique catalogue & promotions. File d'attente fournisseur grossiste via KiffTech.store.</p>
-    <p class="f-line">KeffStation &middot; Sérieuse, classy, classe, classique, hybride, post-moderne, futuriste.</p>
-  </footer>
-
-  <!-- Modal produit -->
-  <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title" id="modalTitle"></div>
-          <div class="modal-sub" id="modalSub"></div>
+      <div class="toolbar-center">
+        <div class="toolbar-filters" id="categoryFilters">
+          <span class="filter-chip filter-active" data-cat="all">Tous</span>
         </div>
-        <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
       </div>
-      <div class="modal-body">
-        <div class="modal-media" id="modalMedia">📦</div>
-        <div class="modal-specs" id="modalSpecs"></div>
+      <div class="toolbar-right">
+        <input type="search" id="catalogueSearch" placeholder="Rechercher un produit...">
+        <select id="catalogueSort">
+          <option value="name">Nom (A-Z)</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+          <option value="year-desc">Année décroissante</option>
+        </select>
       </div>
-      <div class="modal-actions">
+    </section>
+
+    <!-- Products Grid -->
+    <section class="kifftech-products">
+      <h2 class="section-title produits-title">Produits <span class="accent">amp; promotions</span></h2>
+      <div class="products-grid" id="productsGrid">
+        <!-- Products injected by JS -->
+      </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="kifftech-promo">
+      <div class="promo-container">
+        <div class="promo-badge pulse">🔥 Promo Multi-articles</div>
+        <div class="promo-content">
+          <h3 class="promo-title">Achetez plusieurs articles <span class="accent">d'un coup, en une fois</span></h3>
+          <p class="promo-desc">Plus vous cochez d'articles dans la caisse, plus la promotion s'applique : −20 % de base, puis +1 % par article, jusqu'à +7 % (−27 % au maximum).</p>
+        </div>
+        <div class="promo-rows">
+          <div class="promo-row">
+            <div class="promo-col">
+              <div class="col-title"><span class="emoji">🛒</span>1 article</div>
+              <p>Remise : −0 % à −20 %</p>
+            </div>
+            <div class="promo-col">
+              <div class="col-title"><span class="emoji">📦</span>2 à 3 articles</div>
+              <p>Remise : −20 % à −23 %</p>
+            </div>
+            <div class="promo-col">
+              <div class="col-title"><span class="emoji">🚀</span>4 articles et +</div>
+              <p>Remise : −20 % à −27 %</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-kifftech" role="dialog" aria-modal="true">
+    <div class="modal-kifftech-content">
+      <div class="modal-kifftech-header">
+        <span class="modal-kifftech-brand" id="modalTitle"></span>
+        <button class="modal-kifftech-close" aria-label="Fermer">×</button>
+      </div>
+      <div class="modal-kifftech-body">
+        <div class="modal-kifftech-media" id="modalMedia"></div>
+        <div class="modal-kifftech-specs" id="modalSpecs"></div>
+      </div>
+      <div class="modal-kifftech-footer">
         <button class="btn-cancel" id="modalCancel">Fermer</button>
         <button class="btn-primary" id="modalAdd">Ajouter à la caisse</button>
       </div>
@@ -135,18 +117,12 @@
   </div>
 
   <!-- Toast -->
-  <div class="toast" id="toast" aria-live="polite"><span class="t-emoji">✅</span><span id="toastMsg">Caisse mise à jour</span></div>
+  <div class="toast-kifftech" role="alert" aria-live="polite">
+    <span class="toast-kifftext-icon">✅</span>
+    <span class="toast-kifftext-msg">Caisse mise à jour</span>
+  </div>
 
-  <!-- Désenregistrement automatique du Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs){
-        regs.forEach(function(reg){ reg.unregister(); });
-      });
-    }
-  </script>
   <script src="./catalogue-v3.js"></script>
-  <script src="../clear-cache.js"></script>
-  <script defer src="../page-transition.js"></script>
+  <script src="./app-multicolor.js"></script>
 </body>
 </html>
