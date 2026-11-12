@@ -1,0 +1,154 @@
+name: Workflow Status & Monitoring
+
+# Dashboard showing status of all KeffStation workflows
+# Aide pour surveiller, diagnostiquer et relancer les workflows en échec
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Forcer la vérification immédiate'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+  id-token: read
+
+jobs:
+  status:
+    name: Check Workflow Status
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      overall_status: ${{ steps.set-status.outputs.overall_status }}
+      kifftech_status: ${{ steps.set-status.outputs.kifftech_status }}
+      viartificial_status: ${{ steps.set-status.outputs.viartificial_status }}
+      videogames_status: ${{ steps.set-status.outputs.videogames_status }}
+      blogum_status: ${{ steps.set-status.outputs.blogum_status }}
+      last_update: ${{ steps.set-status.outputs.last_update }}
+      summary: ${{ steps.set-status.outputs.summary }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get Workflow Runs Status
+        id: get-runs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== KiffStation Workflow Status Report ===" >> "$GITHUB_SUMMARY"
+          echo "" >> "$GITHUB_SUMMARY"
+
+          # Function to get status of a workflow
+          get_status() {
+            local workflow_name=$1
+            local runs=$(github api repos/${{ github.repository }}/actions/workflows/${workflow_name}/runs per_page=1 status=active)
+            local last_run=$(github api repos/${{ github.repository }}/actions/workflows/${workflow_name}/runs per_page=1 sort=-updated_at | jq -r '.workflow_runs[0].updated_at // "never"')
+            local conclusion=$(github api repos/${{ github.repository }}/actions/workflows/${workflow_name}/runs per_page=1 status=active | jq -r '.workflow_runs[0].conclusion // "null"')
+            local html_url=$(github api repos/${{ github.repository }}/actions/workflows/${workflow_name}/runs per_page=1 status=active | jq -r '.workflow_runs[0].html_url // "#"')
+            echo "Workflow: $workflow_name"
+            echo "  Last updated: $last_run"
+            echo "  Conclusion: $conclusion"
+            echo "  URL: $html_url"
+          }
+
+          # Check each PWA/workflow
+          echo "--- KiffTech (deploy) ---"
+          get_status "deploy.yml" >> "$GITHUB_SUMMARY"
+          
+          echo "--- ViArtificial (boutique-sync) ---"
+          get_status "boutique-sync.yml" >> "$GITHUB_SUMMARY"
+          
+          echo "--- Videogames (stats-collect) ---"
+          get_status "stats-collect.yml" >> "$GITHUB_SUMMARY"
+          
+          echo "--- Blogum (sync-impact) ---"
+          get_status "sync-impact.yml" >> "$GITHUB_SUMMARY"
+
+          # Get overall last update from git
+          local last_commit=$(git log -1 --format="%Y-%m-%d %H:%M:%S %s")
+          echo "" >> "$GITHUB_SUMMARY"
+          echo "--- Global Last Update ---" >> "$GITHUB_SUMMARY"
+          echo "Last git commit: $last_commit" >> "$GITHUB_SUMMARY"
+
+          # Determine overall status
+          local all_green=true
+          local kifftech_green=$(github api repos/${{ github.repository }}/actions/workflows/deploy.yml/runs per_page=1 status=active | jq -r '.workflow_runs[0].conclusion == "success"')
+          local viartificial_green=$(github api repos/${{ github.repository }}/actions/workflows/boutique-sync.yml/runs per_page=1 status=active | jq -r '.workflow_runs[0].conclusion == "success"')
+          local videogames_green=$(github api repos/${{ github.repository }}/actions/workflows/stats-collect.yml/runs per_page=1 status=active | jq -r '.workflow_runs[0].conclusion == "success"')
+          local blogum_green=$(github api repos/${{ github.repository }}/actions/workflows/sync-impact.yml/runs per_page=1 status=active | jq -r '.workflow_runs[0].conclusion == "success"')
+
+          if [ "$kifftech_green" != "true" ] || [ "$viartificial_green" != "true" ] || [ "$videogames_green" != "true" ] || [ "$blogum_green" != "true" ]; then
+            all_green=false
+          fi
+
+          if [ "$all_green" = "true" ]; then
+            echo "Global status: ✅ ALL GREEN - Tout fonctionne correctement !" >> "$GITHUB_SUMMARY"
+          else
+            echo "Global status: ⚠️ SOME FAILED - Vérifier et relancer" >> "$GITHUB_SUMMARY"
+          fi
+
+      - name: Set Outputs
+        id: set-status
+        run: |
+          # Read the summary
+          summary=$(cat "$GITHUB_SUMMARY" | tail -5)
+          echo "summary=$summary" >> "$GITHUB_OUTPUT"
+          
+          # Determine overall status
+          # Check if all last workflow runs were successful
+          # We'll use a simple heuristic based on the summary
+          if grep -q "ALL GREEN" "$GITHUB_STEP_SUMMARY" 2>/dev/null || grep -q "tout fonctionne" "$GITHUB_STEP_SUMMARY" 2>/dev/null; then
+            echo "overall_status=green" >> "$GITHUB_OUTPUT"
+            echo "kifftech_status=green" >> "$GITHUB_OUTPUT"
+            echo "viartificial_status=green" >> "$GITHUB_OUTPUT"
+            echo "videogames_status=green" >> "$GITHUB_OUTPUT"
+            echo "blogum_status=green" >> "$GITHUB_OUTPUT"
+          else
+            echo "overall_status=yellow" >> "$GITHUB_OUTPUT"
+            echo "kifftech_status=check" >> "$GITHUB_OUTPUT"
+            echo "viartificial_status=check" >> "$GITHUB_OUTPUT"
+            echo "videogames_status=check" >> "$GITHUB_OUTPUT"
+            echo "blogum_status=check" >> "$GITHUB_OUTPUT"
+          fi
+          
+          # Get last update timestamp
+          last_update=$(git log -1 --format="%Y-%m-%d %H:%M")
+          echo "last_update=$last_update" >> "$GITHUB_OUTPUT"
+
+      - name: Comment Status on Issue/PR (optional)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-comment@v2
+        with:
+          comment_id: ${{ steps.set-status.outputs.comment_id || '0' }}
+          message: |
+            ### 📊 KiffStation Workflow Status
+
+            **Overall**: ${{ steps.set-status.outputs.overall_status }}
+            - KiffTech: ${{ steps.set-status.outputs.kifftech_status }}
+            - ViArtificial: ${{ steps.set-status.outputs.viartificial_status }}
+            - Videogames: ${{ steps.set-status.outputs.videogames_status }}
+            - Blogum: ${{ steps.set-status.outputs.blogum_status }}
+            
+            **Dernière mise à jour**: ${{ steps.set-status.outputs.last_update }}
+            
+            ---
+            *Report generated automatically*
+
+      - name: Post Status Summary
+        if: always()
+        run: |
+          echo "=== Status Summary ==="
+          cat "$GITHUB_SUMMARY"

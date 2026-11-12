@@ -1,7 +1,7 @@
 {
   "name": "KeffStation",
   "short_name": "KeffStation",
-  "description": "Vitrine ronde animée — KiffTech, Tricktrocjob, ViArtificial, Videogames, cos Editor, Linguistic Motors",
+  "description": "Vitrine ronde animée — KiffTech, ViArtificial, Videogames, Blogum",
   "start_url": "./",
   "display": "standalone",
   "orientation": "any",
@@ -28,13 +28,6 @@
       "description": "Smart devices & gadgets e-commerce",
       "url": "./kifftech/catalogue.html",
       "icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E📱%3C/text%3E%3C/svg%3E" }]
-    },
-    {
-      "name": "Tricktrocjob",
-      "short_name": "Tricktroc",
-      "description": "Plateforme Trix / Trox / Services",
-      "url": "./tricktrocjob/",
-      "icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🔄%3C/text%3E%3C/svg%3E" }]
     },
     {
       "name": "ViArtificial labs",
