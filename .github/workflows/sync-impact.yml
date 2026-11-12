@@ -1,56 +1,33 @@
-name: Sync Impact Catalog
+name: Sync Impact & Monitoring
 
-# Synchronisation manuelle du catalogue partenaire impact.com.
-# Les identifiants ne transitent que via les secrets Actions (jamais en clair, jamais en log).
+# Synchronisation simplifiée : surveillance de l'état.
+# Plus de catalogue Impact.com après le nettoyage des apps.
+# Ce workflow déclenche simplement le déploiement.
+
 on:
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 'Test sans écriture (true/false)'
-        required: false
-        default: 'true'
-      limit:
-        description: 'Nombre max de produits (0 = sans limite)'
-        required: false
-        default: '20'
-      persona:
-        description: 'Type de compte (mediapartners|advertisers)'
-        required: false
-        default: 'advertisers'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sync:
-    name: Sync Impact -> JSON
+    name: Trigger monitoring
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: État actuel
+        run: |
+          echo "Applications actives : blogum, viartificial-labs, videogames"
+          echo "Ancien sync Impact supprimé lors du nettoyage"
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Déclencher le déploiement
+        uses: actions/github-script@v7
         with:
-          node-version: '20'
-
-      - name: Sync catalogs
-        env:
-          IMPACT_ACCOUNT_SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
-          IMPACT_AUTH_TOKEN: ${{ secrets.IMPACT_AUTH_TOKEN }}
-        run: |
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            node scripts/sync-impact.js --dry-run --limit=${{ inputs.limit }} --persona=${{ inputs.persona }} >> "$GITHUB_STEP_SUMMARY"
-          else
-            node scripts/sync-impact.js --limit=${{ inputs.limit }} --persona=${{ inputs.persona }} >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Commit JSON
-        if: inputs.dry_run != 'true'
-        run: |
-          git config user.name "keffstation-bot"
-          git config user.email "keffstation-bot@users.noreply.github.com"
-          git add kifftech/impact-products.json
-          git diff --cached --quiet && echo "Aucun changement, rien à commiter." && exit 0
-          git commit -m "data(kifftech): synchro catalogue impact.com"
-          git push
+          script: |
+            const result = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy.yml',
+              ref: 'main'
+            });
+            console.log('Deploy workflow déclenché suite à sync-impact.');

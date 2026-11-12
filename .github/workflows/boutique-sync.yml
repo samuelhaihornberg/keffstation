@@ -1,121 +1,27 @@
-name: Boutique Sync (Shopify + Impact)
+name: Boutique Sync & Deploy
 
-# Met à jour kifftech/data/products.json à partir des catalogues Shopify et
-# Impact.com. Les secrets ne quittent JAMAIS le runner : seul le résultat
-# public (produits, prix, liens) est commité et publié.
-#
-# Secrets attendus (Settings > Secrets and variables > Actions) :
-#   SHOPIFY_STORE_DOMAIN      ex. kifftech.myshopify.com
-#   SHOPIFY_ADMIN_TOKEN       jeton Admin API (read_products) — recommandé
-#   SHOPIFY_STOREFRONT_TOKEN  jeton Storefront PUBLIC (injecté au déploiement)
-#   IMPACT_API_KEY / IMPACT_API_SECRET / IMPACT_CAMPAIGN_ID / IMPACT_BRAND_ID
-#
-# Plusieurs alias sont acceptés pour chaque valeur (voir tableau ci-dessous) :
-# le premier secret non vide est utilisé. Sans secret, le catalogue local
-# (25+ produits par catalogue) reste affiché et le site fonctionne normalement.
+# Synchronisation simplifiée : déclenche le déploiement du site.
+# Les secrets Shopify/Impact ne sont plus requis depuis le nettoyage des apps.
+# Ce workflow se contente de déclencher le déploiement deploy.yml.
 
 on:
-  schedule:
-    - cron: '23 4 * * *'   # chaque jour à 04:23 UTC
   workflow_dispatch:
-    inputs:
-      force:
-        description: 'Forcer la synchronisation même si rien ne change'
-        type: boolean
-        default: false
-  push:
-    branches: ['main']
-    paths:
-      - 'scripts/sync-boutique.mjs'
-      - 'scripts/kifftech/import-products.mjs'
-      - 'kifftech/data/shopify-export.csv'
-      - 'kifftech/data/impact-export.csv'
-      - 'kifftech/data/shopify-export.json'
-      - 'kifftech/data/impact-export.json'
-      - '.github/workflows/boutique-sync.yml'
 
 permissions:
-  contents: write
-
-concurrency:
-  group: 'boutique-sync'
-  cancel-in-progress: true
+  contents: read
 
 jobs:
   sync:
-    name: Synchroniser le catalogue live
+    name: Trigger deployment
     runs-on: ubuntu-latest
-    env:
-      # --- Shopify : identifiant de la boutique ---------------------------
-      # (le secret peut contenir "nom" ou "nom.myshopify.com" : le script normalise)
-      SHOPIFY_STORE_DOMAIN: >-
-        ${{ secrets.SHOPIFY_STORE_DOMAIN || vars.SHOPIFY_DOMAIN || secrets.SHOPIFY_ID || secrets.SHOPIFY_DOMAIN || secrets.SHOPIFY_SHOP_DOMAIN || secrets.shopify_domain }}
-      # --- Shopify : jeton Admin direct (shpat_...) si disponible ---------
-      SHOPIFY_ADMIN_TOKEN: >-
-        ${{ secrets.SHOPIFY_ADMIN_TOKEN || secrets.SHOPIFY_TOKEN }}
-      # --- Shopify : couple Client ID + Client Secret (echange OAuth) ------
-      SHOPIFY_CLIENT_ID: >-
-        ${{ secrets.SHOPIFY_ID }}
-      SHOPIFY_CLIENT_SECRET: >-
-        ${{ secrets.SHOPIFY_KEY }}
-      SHOPIFY_STOREFRONT_TOKEN: >-
-        ${{ secrets.SHOPIFY_STOREFRONT_TOKEN || secrets.SHOPIFY_PUBLIC_TOKEN }}
-      SHOPIFY_API_VERSION: >-
-        ${{ secrets.SHOPIFY_API_VERSION || secrets.shopify_api_version }}
-      # --- Impact.com : SID de compte + jeton d'authentification -----------
-      IMPACT_ACCOUNT_SID: >-
-        ${{ secrets.IMPACT_ACCOUNT_SID || secrets.IMPACT_API_KEY || secrets.IMPACT_BRAND_ID }}
-      IMPACT_AUTH_TOKEN: >-
-        ${{ secrets.IMPACT_AUTH_TOKEN || secrets.IMPACT_API_SECRET || secrets.IMPACT_API_KEY }}
-      IMPACT_CAMPAIGN_ID: >-
-        ${{ secrets.IMPACT_CAMPAIGN_ID || secrets.IMPACT_CAMPAIGN }}
-      IMPACT_BRAND_ID: >-
-        ${{ secrets.KIFFTECHSTORE || secrets.IMPACT_BRAND_ID || secrets.IMPACT_BRAND }}
-      IMPACT_STORE_TOKEN: >-
-        ${{ secrets.TOKEN_KIFFTECHSTORE || secrets.IMPACT_STORE_TOKEN }}
-      # --- Site ------------------------------------------------------------
-      SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
-      DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Diagnostic de la configuration
+      - name: Vérifier l'état current
         run: |
-          echo "Shopify identifiant : ${SHOPIFY_STORE_DOMAIN:-ABSENT}"
-          echo "Shopify cle         : ${SHOPIFY_ADMIN_TOKEN:+PRESENT}${SHOPIFY_ADMIN_TOKEN:-ABSENT}"
-          echo "Impact SID          : ${IMPACT_ACCOUNT_SID:+PRESENT}${IMPACT_ACCOUNT_SID:-ABSENT}"
-          echo "Impact jeton        : ${IMPACT_AUTH_TOKEN:+PRESENT}${IMPACT_AUTH_TOKEN:-ABSENT}"
-          echo "Impact campagne     : ${IMPACT_CAMPAIGN_ID:+PRESENT}${IMPACT_CAMPAIGN_ID:-ABSENT}"
-          echo "Impact marque       : ${IMPACT_BRAND_ID:+PRESENT}${IMPACT_BRAND_ID:-ABSENT}"
-          echo "Impact store jeton  : ${IMPACT_STORE_TOKEN:+PRESENT}${IMPACT_STORE_TOKEN:-ABSENT}"
-          echo "Domaine public      : ${SITE_DOMAIN:-ABSENT}"
-          echo "Devise              : ${DEFAULT_CURRENCY:-EUR (defaut)}"
+          echo "Structure actuelle : blogum, viartificial-labs, videogames"
+          echo "Workflow deploy prêt à être déclenché"
 
-      - name: Synchroniser catalogue (Shopify + Impact)
-        run: node scripts/sync-boutique.mjs
-
-      - name: Publier le catalogue mis à jour
-        run: |
-          if git diff --quiet -- kifftech/data/products.json kifftech/img/live; then
-            echo "Catalogue déjà à jour — aucun commit nécessaire."
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add kifftech/data/products.json kifftech/img/live
-          git commit -m "chore(boutique): catalogue live Shopify + Impact ($(node -e "const d=require('./kifftech/data/products.json');console.log(d.counts.total)") produits)"
-          git push origin HEAD:main
-
-      # Un push fait avec le GITHUB_TOKEN ne declenche pas les autres workflows :
-      # on declenche donc explicitement le deploiement du site.
-      - name: Publier le site
-        if: success()
+      - name: Déclencher le déploiement
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
@@ -124,9 +30,9 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 workflow_id: 'deploy.yml',
-                ref: context.ref
+                ref: 'main'
               });
-              console.log('Deploiement du site declenche.');
+              console.log('Deplaiement du site déclenché avec succès.');
             } catch (e) {
-              console.log('Deploiement non declenche : ' + e.message);
+              console.log('Erreur déclenchement : ' + e.message);
             }
