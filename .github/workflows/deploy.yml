@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: 'pages'
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -25,6 +25,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js 20 (compatibilité)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (si nécessaire)
+        run: |
+          cd kifftech
+          npm install --omit=dev 2>/dev/null || echo "No npm needed"
+
       - name: Inject PayPal public client ID
         env:
           PAYPAL_CLIENT_ID: >-
@@ -35,9 +46,6 @@ jobs:
           const fs = require('fs');
           const id = String(process.env.PAYPAL_CLIENT_ID || '').trim();
           const safe = /^[A-Za-z0-9_-]{10,200}$/.test(id);
-          // Boutons de paiement personnalises (style, financement, message).
-          // Personnalisation : variable GitHub PAYPAL_BUTTONS (JSON) ou
-          // edition directe de window.KIFFTECH_PAYPAL_BUTTONS apres generation.
           let buttons = {
             style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'paypal', height: 44 },
             funding: ['paypal'],
@@ -62,38 +70,32 @@ jobs:
           NODE
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v1
 
       - name: Verify files exist
         run: |
-          ls -la index.html kifftech/index.html vitrine.css kifftech/app.v2.js
+          ls -la index.html kifftech/index.html 2>&1
           test -f index.html && echo "✅ index.html présent"
           test -f kifftech/index.html && echo "✅ kifftech/index.html présent"
 
       - name: Preparer l'artefact (alleger)
         run: |
-          # header.mp4 (7,3 Mo) n'est pas servi par le site : il est charge
-          # depuis raw.githubusercontent. On le retire de l'artefact pour rester
-          # sous la limite de temps du deploiement Pages.
           rm -f header.mp4
           echo "Taille de l'artefact : $(du -sh --exclude=.git . | cut -f1)"
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
           path: .
 
       - name: Deploy to GitHub Pages
         id: deployment
-        continue-on-error: true
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v3
         with:
-          # GitHub plafonne ce delai a 10 minutes ; en cas de depassement
-          # (syncing_files), une seconde tentative est faite juste apres.
           timeout: 600000
 
       - name: Deploy to GitHub Pages (2e tentative)
         if: steps.deployment.outcome == 'failure'
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v3
         with:
           timeout: 600000
