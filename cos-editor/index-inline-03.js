@@ -1,1 +1,0 @@
-window.COSRegistre=window.module.exports;window.module={exports:{}};

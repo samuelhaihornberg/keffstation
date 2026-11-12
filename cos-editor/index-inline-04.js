@@ -1,1 +1,0 @@
-window.COSDefaut=window.module.exports;window.module={exports:{}};

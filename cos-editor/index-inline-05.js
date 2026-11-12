@@ -1,1 +1,0 @@
-window.COSLangage=window.module.exports;
