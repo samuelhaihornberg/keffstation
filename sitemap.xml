@@ -1,53 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kiffstation.com/</loc>
-    <lastmod>2026-11-07</lastmod>
+    <loc>https://samuelhaihornberg.github.io/keffstation/</loc>
+    <lastmod>2026-11-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://kiffstation.com/viartificial-labs/</loc>
-    <lastmod>2026-11-07</lastmod>
+    <loc>https://samuelhaihornberg.github.io/keffstation/viartificial-labs/</loc>
+    <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kiffstation.com/tricktrocjob/</loc>
-    <lastmod>2026-11-07</lastmod>
+    <loc>https://samuelhaihornberg.github.io/keffstation/videogames/</loc>
+    <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kiffstation.com/videogames/</loc>
-    <lastmod>2026-11-07</lastmod>
+    <loc>https://samuelhaihornberg.github.io/keffstation/blogum/</loc>
+    <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kiffstation.com/cos-editor/</loc>
-    <lastmod>2026-11-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://kiffstation.com/linguistic-motors/</loc>
-    <lastmod>2026-11-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://kiffstation.com/stats/</loc>
-    <lastmod>2026-11-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://kiffstation.com/articles.html</loc>
-    <lastmod>2026-11-08</lastmod>
+    <loc>https://samuelhaihornberg.github.io/keffstation/articles.html</loc>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://kiffstation.com/articles.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kiffstation.com/articles.html?lang=en"/>
   </url>
 </urlset>

@@ -2,7 +2,7 @@
 let deferredPrompt = null;
 const installBtn = document.createElement('button');
 installBtn.id = 'install-btn';
-installBtn.textContent = 'Installer KeffStation';
+installBtn.textContent = 'Installer KiffStation';
 installBtn.style.cssText = `
   position: fixed;
   bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
@@ -23,7 +23,7 @@ installBtn.style.cssText = `
   touch-action: manipulation;
   min-height: 48px;
 `;
-installBtn.innerHTML = '<span>Installer KeffStation</span> <span id="install-dismiss" role="button" aria-label="Masquer" style="margin-left:8px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(0,0,0,.3)">✕</span>';
+installBtn.innerHTML = '<span>Installer KiffStation</span> <span id="install-dismiss" role="button" aria-label="Masquer" style="margin-left:8px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(0,0,0,.3)">✕</span>';
 document.body.appendChild(installBtn);
 function syncBodyPad(){ document.body.style.paddingBottom = (installBtn.style.display === 'block') ? 'calc(76px + env(safe-area-inset-bottom, 0px))' : ''; }
 installBtn.querySelector('#install-dismiss').addEventListener('click', (ev) => {

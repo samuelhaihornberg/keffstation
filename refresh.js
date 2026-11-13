@@ -9,7 +9,7 @@
 // Zéro dépendance. Formats téléphone / tablette / ordinateur via CSS.
 (function () {
   var SCOPE = {
-    keff: { label: 'KeffStation', re: /^keffstation-/i, path: '/keffstation/' },
+    keff: { label: 'KiffStation', re: /^keffstation-/i, path: '/keffstation/' },
     via: { label: 'ViArtificial Labs', re: /^viartificial-labs-/i, path: '/keffstation/viartificial-labs/' }
   };
   var KEEP = /transformers|onnx|webllm|mlc/i; // caches du modèle local : jamais vidés
@@ -94,11 +94,11 @@
     var panel = document.createElement('div');
     panel.id = 'ks-panel';
     panel.setAttribute('role', 'toolbar');
-    panel.setAttribute('aria-label', 'Rafraîchissement et caches KeffStation et ViArtificial Labs');
-    panel.appendChild(boutonIcone('ks-r-keff', ICONS.refresh, 'Rafraîchir KeffStation (vide le cache et recharge)', 'keff', function () { rafraichir('keff', true); }));
+    panel.setAttribute('aria-label', 'Rafraîchissement et caches KiffStation et ViArtificial Labs');
+    panel.appendChild(boutonIcone('ks-r-keff', ICONS.refresh, 'Rafraîchir KiffStation (vide le cache et recharge)', 'keff', function () { rafraichir('keff', true); }));
     panel.appendChild(boutonIcone('ks-r-via', ICONS.refresh, 'Rafraîchir ViArtificial Labs (vide le cache et recharge)', 'via', function () { rafraichir('via', true); }));
-    panel.appendChild(boutonIcone('ks-c-keff', ICONS.trash, 'Vider le cache KeffStation', 'keff', async function () {
-      var n = await viderCache('keff'); toast('Cache KeffStation vidé (' + n + ') — historique et modèle gardés');
+    panel.appendChild(boutonIcone('ks-c-keff', ICONS.trash, 'Vider le cache KiffStation', 'keff', async function () {
+      var n = await viderCache('keff'); toast('Cache KiffStation vidé (' + n + ') — historique et modèle gardés');
     }));
     panel.appendChild(boutonIcone('ks-c-via', ICONS.trash, 'Vider le cache ViArtificial Labs', 'via', async function () {
       var n = await viderCache('via'); toast('Cache ViArtificial Labs vidé (' + n + ') — historique et modèle gardés');

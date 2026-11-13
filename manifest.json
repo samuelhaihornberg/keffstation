@@ -1,7 +1,7 @@
 {
-  "name": "KeffStation",
-  "short_name": "KeffStation",
-  "description": "Vitrine ronde animée — KiffTech, ViArtificial, Videogames, Blogum",
+  "name": "KiffStation",
+  "short_name": "KiffStation",
+  "description": "KiffStation est une vitrine multi-apps qui réunit notamment KiffTech (démonstration de boutique high-tech), ViArtificial Labs, Videogames et Blogum.",
   "start_url": "./",
   "display": "standalone",
   "orientation": "any",

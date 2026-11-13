@@ -282,7 +282,7 @@ class KeffStation {
 
       this.setProgress(95, '🎯 Presque prêt…');
       this.hideLoading();
-      this.setProgress(100, '✅ KeffStation prêt');
+      this.setProgress(100, '✅ KiffStation prêt');
 
       this.initialized = true;
       console.log('KeffStation initialisée');
@@ -837,7 +837,7 @@ function initApp() {
     window.keffStation.init().then(() => {
       clearTimeout(timeoutId);
       clearTimeout(watchdogId);
-      setLoadingText(loading, '✅ KeffStation prêt', '#27d17f');
+      setLoadingText(loading, '✅ KiffStation prêt', '#27d17f');
       if (loading) setTimeout(() => loading.classList.add('hidden'), 1000);
     }).catch(e => {
       clearTimeout(timeoutId);
