@@ -92,7 +92,7 @@
 
     'https://samuelhaihornberg.github.io/critiques-services.com/',
 
-    './kifftech/',
+    'https://samuelhaihornberg.github.io/Kifftech.store/',
 
     './tricktrocjob/',
 

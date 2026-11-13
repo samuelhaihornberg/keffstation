@@ -5,28 +5,16 @@ const APPS = [
   {
     num: "Kifftech",
     title: "Kifftech",
-    desc: "Boutique PWA : Samsung, Xiaomi, prix sous officiels, livraison mondiale. Backend Node unique, zéro dépendance, données JSON.",
-    tags: ["PWA", "Node", "E-commerce", "Smart tech"],
-    appUrl: "./kifftech/catalogue.html",
-    embedUrl: "./kifftech/catalogue.html",
+    desc: "Application de démonstration (catalogue fictif) : produits, prix, réductions et stocks sont fictifs. Aucun paiement ni commande réelle.",
+    tags: ["PWA", "Démonstration", "Catalogue fictif"],
+    appUrl: "https://samuelhaihornberg.github.io/Kifftech.store/",
+    embedUrl: "https://samuelhaihornberg.github.io/Kifftech.store/",
     embedLabel: "Ouvrir Kifftech",
     embedded: true,
     color: "#1e6bff",
     subArticles: [
-      { title: "Catalogue Samsung", desc: "Galaxy Buds, SmartTag, chargeurs rapides — fiches complètes.", tags: ["Samsung", "Audio", "Accessoires"] },
-      { title: "Catalogue Xiaomi", desc: "Redmi Buds, Smart Band, caméras Wi-Fi — specs et prix.", tags: ["Xiaomi", "Fitness", "Maison"] },
-      { title: "Guide d'achat", desc: "Comment choisir vos écouteurs, bracelets, gadgets selon votre usage.", tags: ["Guide", "Conseil", "Achat"] },
-      { title: "Offres VIP", desc: "Accès anticipé, remises exclusives, abonnements mensuels.", tags: ["VIP", "Promo", "Abonnement"] },
-      { title: "Galaxy Buds 3 Pro : ANC adaptatif", desc: "Nouveaux écouteurs Samsung avec réduction de bruit IA, 30h autonomie, boîtier sans fil. Prix compétitif vs AirPods Pro 2.", tags: ["Samsung", "Audio", "ANC", "Nouveauté"] },
-      { title: "Xiaomi Smart Band 9 Pro : AMOLED 1.74\"", desc: "Écran AMOLED 1.74\", GPS intégré, 21 jours autonomie, 150+ modes sport. Meilleur rapport qualité/prix fitness 2024.", tags: ["Xiaomi", "Fitness", "AMOLED", "GPS"] },
-      { title: "Samsung Galaxy SmartTag 3 : UWB + Thread", desc: "Tracker nouvelle génération avec Ultra Wideband précis, compatibilité Matter/Thread, 1 an autonomie.", tags: ["Samsung", "Tracker", "UWB", "Matter"] },
-      { title: "Chargeur 65W GaN 3 ports : ultra-compact", desc: "Charge rapide 65W (2x USB-C + 1x USB-A), nitrure de gallium, taille carte crédit. Idéal voyage multi-appareils.", tags: ["Chargeur", "GaN", "Voyage", "Multi-port"] },
-      { title: "Xiaomi Redmi Buds 6 Pro : LDAC + ANC 55dB", desc: "Écouteurs Hi-Res LDAC, ANC hybride 55dB, 38h autonomie, 3 micros IA. Qualité audiophile sous 100€.", tags: ["Xiaomi", "Audio", "LDAC", "ANC"] },
-      { title: "Samsung Galaxy Watch 7 : BioActive + IA", desc: "Capteur BioActive 2.0, analyse sommeil IA, ECG/TA, 40h autonomie, Wear OS 5. Santé complète au poignet.", tags: ["Samsung", "Montre", "Santé", "IA"] },
-      { title: "Robot aspirateur Xiaomi X20 Pro : LDS + IA", desc: "Navigation LDS 360°, reconnaissance objets IA, serpillière auto-lift, station vidage 60 jours.", tags: ["Xiaomi", "Robot", "IA", "Maison"] },
-      { title: "Chargeur sans fil 50W MagSafe compatible", desc: "Charge magnétique 50W (iPhone 15+), ventilation active, indicateur LED, 30 min pour 50%.", tags: ["Chargeur", "MagSafe", "Sans-fil", "Rapide"] },
-      { title: "Xiaomi 14 Ultra : photo Leica 1\"", desc: "Capteur 1 pouce, optique Leica Summilux, ouverture variable, 8K vidéo. Photographie mobile niveau pro.", tags: ["Xiaomi", "Photo", "Leica", "Pro"] },
-      { title: "Samsung Galaxy Z Fold 6 : pliable pro", desc: "Écran 7.6\" QXGA+, Snapdragon 8 Gen 3, S-Pen, IP48, 7 ans mises à jour. Productivité pliable ultime.", tags: ["Samsung", "Foldable", "Productivité", "Flagship"] }
+      { title: "Catalogue en démonstration", desc: "Produits, prix, réductions et stocks affichés sont fictifs. Aucune offre réelle n'est proposée.", tags: ["Démo", "Fictif"] },
+      { title: "Panier et abonnement de test", desc: "Le panier et l'abonnement fonctionnent dans le navigateur, sans paiement ni commande réelle.", tags: ["Panier", "Abonnement", "Sans paiement"] }
     ]
   },
   {
@@ -161,7 +149,7 @@ function orbitPosition(index, total, radius = 36) {
 
 const APP_ICONS = {
   'Kifftech': {
-    src: 'https://raw.githubusercontent.com/samuelhaihornberg/keffstation/d7b744f05c7760d84efe1988d02e3df1a09e74ad/Logo%20KeffTech.png',
+    src: './Logo%20KeffTech.png',
     alt: 'Logo KiffTech',
     fallback: '🛍️'
   },
@@ -587,7 +575,7 @@ class KeffStation {
     this.panelCard.querySelector('.panel-close')?.addEventListener('click', () => this.closePanel());
     this.panelCard.querySelector('.embed-btn')?.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Kifftech : navigation directe vers la page catalogues (pas d'iframe)
+      // Kifftech : navigation directe vers l'application autonome (pas d'iframe)
       if (app.num === 'Kifftech') {
         window.location.href = app.appUrl || app.embedUrl;
       } else if (app.embedUrl) {
