@@ -16,7 +16,7 @@ Interface "cube des applications" en HTML/CSS/JS pur (sans framework). Chaque fa
 
 | Face | PWA | URL | Description |
 |------|-----|-----|-------------|
-| **KiffTech** | KiffTech.store | https://samuelhaihornberg.github.io/Kiff-Tech/ | Objets connectés & gadgets (2020-2026). Promotions de −10 % à −25 % sur les prix officiels. File d'attente fournisseur grossiste. |
+| **KiffTech** | KiffTech.store | https://samuelhaihornberg.github.io/Kifftech.store/ | Catalogue de démonstration : produits, prix, réductions et stocks fictifs. Aucun paiement ni commande réelle. |
 | **ViArtificial** | ViArtificial | https://samuelhaihornberg.github.io/ViArtificial/ | Superbots, conversation, NLP/LLM local, assistants IA. |
 | **Videogames** | Videogames | https://samuelhaihornberg.github.io/videogames/ | Jeux rétro, émulation, configurations, roms. Stick-Emoji : RollsPunch, Police-Criminal-homeoflaw. |
 | **Blogum** | Blogum | https://samuelhaihornberg.github.io/keffstation/blogum/ | Blog maker, profil social network, rencontres, sphères d'audience, réactions émotionnelles. |
@@ -25,7 +25,6 @@ Interface "cube des applications" en HTML/CSS/JS pur (sans framework). Chaque fa
 
 Chaque PWA possède un fichier `version.json` suivant sa dernière mise à jour et son statut :
 
-- `kifftech/version.json` — KiffTech Store
 - `viartificial-labs/version.json` — ViArtificial Labs
 - `videogames/version.json` — Videogames
 - `blogum/version.json` — Blogum
