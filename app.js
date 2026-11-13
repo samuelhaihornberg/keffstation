@@ -223,6 +223,7 @@ class KeffStation {
     this.vitrine = document.getElementById('vitrine');
     this.orbit = document.getElementById('orbit');
     this.nav = document.getElementById('nav');
+    this.ringApps = document.getElementById('ring-apps');
     this.appPrev = document.getElementById('vitrine-prev');
     this.appNext = document.getElementById('vitrine-next');
     this.btnCapture = document.getElementById('btn-capture');
@@ -316,10 +317,24 @@ class KeffStation {
     this.vitrine.style.setProperty('--count', total);
     if (this.appCount) this.appCount.textContent = total;
 
-    // L'orbite n'existe plus dans le DOM : les apps sont affichées statiquement.
     this.nodes = [];
 
     this.apps.forEach((app, i) => {
+      const pos = orbitPosition(i, total, 40);
+      const node = document.createElement('button');
+      node.type = 'button';
+      node.className = 'ring-app';
+      node.dataset.index = i;
+      node.style.left = `${pos.x}%`;
+      node.style.top = `${pos.y}%`;
+      node.style.setProperty('--app-color', app.color || '#1e6bff');
+      node.title = app.title;
+      node.setAttribute('aria-label', `Ouvrir ${app.num}`);
+      renderAppIcon(app.num, node, 44);
+      node.addEventListener('click', () => this.openApp(i));
+      this.ringApps.appendChild(node);
+      this.nodes.push(node);
+
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.dataset.index = i;
