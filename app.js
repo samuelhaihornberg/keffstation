@@ -823,7 +823,7 @@ function initApp() {
       clearTimeout(timeoutId);
       clearTimeout(watchdogId);
       setLoadingText(loading, '✅ KeffStation prêt', '#27d17f');
-      setTimeout(() => loading.classList.add('hidden'), 1000);
+      if (loading) setTimeout(() => loading.classList.add('hidden'), 1000);
     }).catch(e => {
       clearTimeout(timeoutId);
       clearTimeout(watchdogId);
