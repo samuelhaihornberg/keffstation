@@ -14,23 +14,9 @@
   /* ========================= Configuration ========================= */
   var STORAGE_KEY = "keffstation_lang";
   var STORAGE_KEY_PWA = "keffstation_lang_"; // préfixé par l'id de la PWA
-  var CACHE_BUST = "?v=1.0.0";
   var DEFAULT_LANG = "fr";
   var SUPPORTED = ["fr", "en"]; // seules les langues traduites humainement
   var RTL_LANGS = []; // aucune RTL pour l'instant (fr/en uniquement)
-
-  /* Chemin de la racine du site : détecté depuis l'URL du script i18n.js */
-  var BASE_PATH = "./";
-  (function () {
-    var scriptEl = document.querySelector('script[src*="i18n.js"]');
-    if (scriptEl && scriptEl.src) {
-      // ex: https://www.kiffstation.com/i18n.js
-      // ou depuis sous-dossier: .../kifftech/../i18n.js -> résolu par le navigateur en .../keffstation/i18n.js
-      BASE_PATH = scriptEl.src.replace(/\/[^\/]*$/, '/');
-    }
-  })();
-
-  var LOCALES_URL = BASE_PATH + "locales/";
 
   /* ========================= État ========================= */
   var DICT = {};        // { lang: { domain: { key: value } } }
@@ -38,7 +24,6 @@
     fr: { name: "Français", native: "Français", dir: "ltr", flag: "🇫🇷", complete: true, reviewed: true },
     en: { name: "English", native: "English", dir: "ltr", flag: "🇺🇸", complete: true, reviewed: true }
   };
-  var LOADED = { fr: false, en: false };
   var CURRENT_LANG = DEFAULT_LANG;
   var CURRENT_PWA = "keffstation";
 
@@ -60,40 +45,6 @@
     }
     return "keffstation";
   }
-
-  /* ========================= Chargement des fichiers de langue ========================= */
-  function loadLang(lang, callback) {
-    if (LOADED[lang]) {
-      if (callback) callback(lang);
-      return;
-    }
-    var url = LOCALES_URL + lang + ".json" + CACHE_BUST;
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.onload = function () {
-      if (xhr.status === 200 || xhr.status === 0) {
-        try {
-          var data = JSON.parse(xhr.responseText);
-          DICT[lang] = data;
-          LOADED[lang] = true;
-        } catch (e) {
-          LOADED[lang] = false;
-        }
-      } else {
-        LOADED[lang] = false;
-      }
-      if (callback) callback(lang);
-    };
-    xhr.onerror = function () {
-      LOADED[lang] = false;
-      if (callback) callback(lang);
-    };
-    xhr.send();
-  }
-
-  /* Pré-charger fr et en dès le départ */
-  loadLang("fr");
-  loadLang("en");
 
   /* ========================= Sélection de langue ========================= */
   function getLang(pwaId) {
@@ -125,22 +76,11 @@
     CURRENT_LANG = lang;
     applyDirection(lang);
 
-    // Charger la langue si nécessaire, puis appliquer immédiatement
-    if (!LOADED[lang]) {
-      loadLang(lang, function () {
-        applyTranslations(lang, pwaId);
-        refreshSelector(lang, pwaId);
-        document.dispatchEvent(new CustomEvent("ks-lang-change", {
-          detail: { lang: lang, pwa: pwaId }
-        }));
-      });
-    } else {
-      applyTranslations(lang, pwaId);
-      refreshSelector(lang, pwaId);
-      document.dispatchEvent(new CustomEvent("ks-lang-change", {
-        detail: { lang: lang, pwa: pwaId }
-      }));
-    }
+    applyTranslations(lang, pwaId);
+    refreshSelector(lang, pwaId);
+    document.dispatchEvent(new CustomEvent("ks-lang-change", {
+      detail: { lang: lang, pwa: pwaId }
+    }));
   }
 
   /* ========================= Direction RTL / LTR ========================= */
@@ -422,14 +362,7 @@
     // Sélecteur de langue avec drapeaux supprimé : seul le bouton Google Translate
     // (page-translate-adapter.js) reste disponible, sans texte, emoji uniquement.
 
-    // Appliquer immédiatement la langue sauvegardée ou par défaut
-    if (!LOADED[lang]) {
-      loadLang(lang, function () {
-        applyTranslations(lang, CURRENT_PWA);
-      });
-    } else {
-      applyTranslations(lang, CURRENT_PWA);
-    }
+    applyTranslations(lang, CURRENT_PWA);
   }
 
   if (document.readyState === "loading") {
