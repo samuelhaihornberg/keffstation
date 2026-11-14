@@ -2325,7 +2325,7 @@ export const CATALOGUE = {
       "id": "hp-reverb-g2",
       "marque": "HP",
       "modele": "Reverb G2",
-      "rayon": "montres-wearables",
+      "rayon": "casques-vr-gadgets",
       "annee": 2020,
       "dateSortie": null,
       "sourceAnnee": {
@@ -3797,7 +3797,7 @@ export const CATALOGUE = {
       "id": "meta-quest-2",
       "marque": "Meta",
       "modele": "Quest 2",
-      "rayon": "montres-wearables",
+      "rayon": "casques-vr-gadgets",
       "annee": 2020,
       "dateSortie": "2020-10-13",
       "sourceAnnee": {
@@ -4009,7 +4009,7 @@ export const CATALOGUE = {
       "id": "meta-quest-pro",
       "marque": "Meta",
       "modele": "Meta Quest Pro",
-      "rayon": "montres-wearables",
+      "rayon": "casques-vr-gadgets",
       "annee": 2022,
       "dateSortie": "2022-10-25",
       "sourceAnnee": {
@@ -4117,7 +4117,7 @@ export const CATALOGUE = {
       "id": "meta-quest-3",
       "marque": "Meta",
       "modele": "Quest 3",
-      "rayon": "montres-wearables",
+      "rayon": "casques-vr-gadgets",
       "annee": 2023,
       "dateSortie": "2023-10-10",
       "sourceAnnee": {
@@ -4321,7 +4321,7 @@ export const CATALOGUE = {
       "id": "meta-quest-3s",
       "marque": "Meta",
       "modele": "Meta Quest 3S",
-      "rayon": "montres-wearables",
+      "rayon": "casques-vr-gadgets",
       "annee": 2024,
       "dateSortie": "2024-10-15",
       "sourceAnnee": {
@@ -8213,7 +8213,7 @@ export const CATALOGUE = {
       "id": "valve-index",
       "marque": "Valve",
       "modele": "Valve Index (kit VR)",
-      "rayon": "montres-wearables",
+      "rayon": "casques-vr-gadgets",
       "annee": 2021,
       "dateSortie": "2019-06-28",
       "sourceAnnee": {

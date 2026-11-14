@@ -9,7 +9,8 @@ const RAYONS = [
   { id: 'smartphones', label: 'Smartphones', icon: '📱', color: '#00d4ff', desc: 'Smartphones et accessoires' },
   { id: 'ordinateurs-composants', label: 'Ordinateurs et composants', icon: '💻', color: '#0066ff', desc: 'Ordinateurs, composants et périphériques' },
   { id: 'tablettes', label: 'Tablettes', icon: '📲', color: '#00ffc8', desc: 'Tablettes et accessoires' },
-  { id: 'montres-wearables', label: 'Montres connectées et wearables', icon: '⌚', color: '#00ff88', desc: 'Montres connectées, bracelets et wearables' },
+  { id: 'montres-wearables', label: 'Montres connectées et smartwatches', icon: '⌚', color: '#00ff88', desc: 'Montres connectées et bracelets intelligents' },
+  { id: 'casques-vr-gadgets', label: 'Casques VR et gadgets immersifs', icon: '🥽', color: '#8a5cff', desc: 'Casques de réalité virtuelle et gadgets immersifs' },
   { id: 'maison-securite', label: 'Maison connectée et sécurité', icon: '🏠', color: '#b84dff', desc: 'Maison connectée, sécurité et surveillance' },
   { id: 'smart-car', label: 'Smart car et mobilité connectée', icon: '🚗', color: '#ff6b00', desc: 'Smart car, mobilité et accessoires connectés' },
   { id: 'smart-tech', label: 'Smart tech', icon: '🤖', color: '#ffd23f', desc: 'Robots, drones, assistants, énergie et objets connectés' }
