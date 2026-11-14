@@ -9,8 +9,7 @@ const RAYONS = [
   { id: 'smartphones', label: 'Smartphones', icon: '📱', color: '#00d4ff', desc: 'Smartphones et accessoires' },
   { id: 'ordinateurs-composants', label: 'Ordinateurs et composants', icon: '💻', color: '#0066ff', desc: 'Ordinateurs, composants et périphériques' },
   { id: 'tablettes', label: 'Tablettes', icon: '📲', color: '#00ffc8', desc: 'Tablettes et accessoires' },
-  { id: 'montres-wearables', label: 'Montres connectées et smartwatches', icon: '⌚', color: '#00ff88', desc: 'Montres connectées et bracelets intelligents' },
-  { id: 'casques-vr-gadgets', label: 'Casques VR et gadgets immersifs', icon: '🥽', color: '#8a5cff', desc: 'Casques de réalité virtuelle et gadgets immersifs' },
+  { id: 'montres-wearables', label: 'Montres connectées et wearables', icon: '⌚', color: '#00ff88', desc: 'Montres connectées, bracelets et wearables' },
   { id: 'maison-securite', label: 'Maison connectée et sécurité', icon: '🏠', color: '#b84dff', desc: 'Maison connectée, sécurité et surveillance' },
   { id: 'smart-car', label: 'Smart car et mobilité connectée', icon: '🚗', color: '#ff6b00', desc: 'Smart car, mobilité et accessoires connectés' },
   { id: 'smart-tech', label: 'Smart tech', icon: '🤖', color: '#ffd23f', desc: 'Robots, drones, assistants, énergie et objets connectés' }
@@ -224,6 +223,13 @@ class KiffTech{
     this.bindCartEvents();
 
     this.loadProducts();
+
+    document.addEventListener('kt-media-rights-change', () => {
+      if (state.currentProduct) {
+        const detail = document.getElementById('productDetail');
+        if (detail) detail.innerHTML = this.productDetailHTML(state.currentProduct);
+      }
+    });
 
     if(document.readyState==='complete') this.onLoaded();
     else window.addEventListener('load',()=>this.onLoaded());
@@ -801,10 +807,17 @@ class KiffTech{
     }
     const i = Math.min(state.imageIndex, p.images.length - 1);
     const media = p.medias.images[i];
+    const rights = this.mediaRightsConsent();
+    const rightsNote = rights === 'accepted'
+      ? '<p class="media-rights-status is-accepted">Validation des droits médias : acceptée (cookie).</p>'
+      : rights === 'rejected'
+        ? '<p class="media-rights-status is-rejected">Validation des droits médias : refusée (cookie).</p>'
+        : '<p class="media-rights-status">Validation des droits médias : non définie.</p>';
     return `
-      <img class="main-image" src="${sanitizeHTML(media.fichier)}" alt="${sanitizeHTML(media.alt)}" loading="lazy">
+      <img class="main-image" src="${sanitizeHTML(media.fichier)}" alt="${sanitizeHTML(media.alt || '')}" loading="lazy">
       <div class="thumbnails">${p.medias.images.map((m, k) => `<button type="button" class="thumb-btn${k === i ? ' is-active' : ''}" data-image-index="${k}" aria-label="Image ${k + 1}"><img src="${sanitizeHTML(m.fichier)}" alt="" loading="lazy"></button>`).join('')}</div>
-      <p class="media-credit">${sanitizeHTML(media.auteur)} · ${sanitizeHTML(media.licence)} · ${this.sourceLink(media.source)}</p>`;
+      <p class="media-credit">${sanitizeHTML(media.auteur || '')}${media.licence ? ' · ' + sanitizeHTML(media.licence) : ''}${media.source ? ' · ' + this.sourceLink(media.source) : ''}</p>
+      ${rightsNote}`;
   }
 
   variantBoxHTML(p){
@@ -909,19 +922,28 @@ class KiffTech{
       </div>`;
   }
 
+  mediaRightsConsent(){
+    try {
+      const m = document.cookie.split(';').map(s=>s.trim()).find(s=>s.startsWith('kt_media_rights_consent='));
+      return m ? decodeURIComponent(m.split('=').slice(1).join('=')) : '';
+    } catch { return ''; }
+  }
+
   mediaHTML(p){
     const imgs = p.medias?.images || [];
     const videos = Array.isArray(p.medias?.videos) && p.medias.videos.length
       ? p.medias.videos
       : (p.medias?.video ? [p.medias.video] : []);
+    const rights = this.mediaRightsConsent();
+    const rightsLabel = rights === 'accepted' ? 'acceptée' : rights === 'rejected' ? 'refusée' : 'non définie';
     const videoHTML = videos.length
       ? videos.map(video => `<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/${sanitizeHTML(video.id)}" title="${sanitizeHTML(video.titre)}" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
         <p class="media-credit">Vidéo officielle : ${sanitizeHTML(video.titre)}, ${sanitizeHTML(video.chaine)} · <a href="${sanitizeHTML(video.url)}" target="_blank" rel="noopener">YouTube</a></p>`).join('')
       : '<p class="empty-note">Vidéo officielle : Information à confirmer.</p>';
     const imgHTML = imgs.length
-      ? `<ul class="media-list">${imgs.map((m, k) => `<li><strong>Image ${k + 1}</strong> : ${sanitizeHTML(m.alt)}<span class="media-credit">${sanitizeHTML(m.attribution)} · ${this.sourceLink(m.source)}</span></li>`).join('')}</ul>`
+      ? `<ul class="media-list">${imgs.map((m, k) => `<li><strong>Image ${k + 1}</strong> : ${sanitizeHTML(m.alt || '')}<span class="media-credit">${sanitizeHTML(m.auteur || m.attribution || '')}${(m.licence) ? ' · ' + sanitizeHTML(m.licence) : ''}${m.source ? ' · ' + this.sourceLink(m.source) : ''}</span></li>`).join('')}</ul>`
       : '<p class="empty-note">Image à confirmer : aucun média autorisé vérifié.</p>';
-    return videoHTML + imgHTML;
+    return `<p class="media-rights-status ${rights==='accepted'?'is-accepted':rights==='rejected'?'is-rejected':''}">Validation des droits médias : ${rightsLabel} (cookie <code>kt_media_rights_consent</code>).</p>` + videoHTML + imgHTML;
   }
 
   sourcesHTML(p){

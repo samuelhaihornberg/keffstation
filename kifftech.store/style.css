@@ -778,3 +778,13 @@ body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden}
 .etat-catalogue.is-buyable{border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.06);}
 .etat-catalogue.is-present{border-color:rgba(0,212,255,.25);}
 .etat-catalogue strong{display:block;margin-bottom:.2rem;}
+
+/* Validation droits médias (cookie) */
+.media-rights-banner{position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:1200;background:rgba(8,14,24,.98);border:1px solid var(--border-bright);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.45);padding:.9rem 1rem}
+.media-rights-banner[hidden]{display:none}
+.media-rights-content{display:flex;flex-wrap:wrap;gap:.75rem 1rem;align-items:center;justify-content:space-between}
+.media-rights-content p{margin:0;flex:1 1 320px;font-size:.85rem;color:var(--fg-muted);line-height:1.4}
+.media-rights-actions{display:flex;gap:.5rem}
+.media-rights-status{font-size:.75rem;color:var(--fg-muted);margin:.35rem 0 0}
+.media-rights-status.is-accepted{color:#7dffb8}
+.media-rights-status.is-rejected{color:#ffd27f}

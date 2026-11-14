@@ -222,6 +222,41 @@
 
 <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
+<div id="mediaRightsBanner" class="media-rights-banner" role="dialog" aria-live="polite" aria-label="Validation des droits médias" hidden>
+  <div class="media-rights-content">
+    <p><strong>Validation des droits médias</strong> — Les images/attributions des fiches produits sont issues de sources à vérifier. Choisissez d’accepter ou de refuser la validation des droits (préférence enregistrée dans un cookie).</p>
+    <div class="media-rights-actions">
+      <button type="button" class="btn-secondary" id="mediaRightsReject">Refuser</button>
+      <button type="button" class="btn-primary" id="mediaRightsAccept">Accepter</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const COOKIE='kt_media_rights_consent';
+  function getCookie(name){
+    return document.cookie.split(';').map(s=>s.trim()).find(s=>s.startsWith(name+'='))?.split('=').slice(1).join('=') || '';
+  }
+  function setCookie(name,value,days){
+    const d=new Date(); d.setTime(d.getTime()+days*24*60*60*1000);
+    document.cookie = name+'='+encodeURIComponent(value)+'; expires='+d.toUTCString()+'; path=/; SameSite=Lax';
+  }
+  window.ktMediaRightsConsent = function(){ return getCookie(COOKIE); };
+  window.ktSetMediaRightsConsent = function(v){ setCookie(COOKIE,v,180); document.dispatchEvent(new CustomEvent('kt-media-rights-change',{detail:{value:v}})); };
+  document.addEventListener('DOMContentLoaded', function(){
+    const banner=document.getElementById('mediaRightsBanner');
+    const accept=document.getElementById('mediaRightsAccept');
+    const reject=document.getElementById('mediaRightsReject');
+    if(!banner||!accept||!reject) return;
+    const current=getCookie(COOKIE);
+    if(!current){ banner.hidden=false; }
+    function choose(v){ window.ktSetMediaRightsConsent(v); banner.hidden=true; }
+    accept.addEventListener('click', function(){ choose('accepted'); });
+    reject.addEventListener('click', function(){ choose('rejected'); });
+  });
+})();
+</script>
+
 <div id="splash" aria-hidden="true">
   <svg class="splash-logo" viewBox="0 0 32 32"><defs><linearGradient id="splashGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffc8"/><stop offset="100%" stop-color="#0066ff"/></linearGradient></defs><path fill="url(#splashGrad)" d="M16 2L4 8v16l12 6 12-6V8L16 2zm0 2.5L26 10v12l-10 5-10-5V10L16 4.5z"/></svg>
   <div class="splash-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="splash-bar" id="splashBar"></div></div>
