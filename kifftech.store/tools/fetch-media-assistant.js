@@ -143,8 +143,8 @@ async function searchCommons(query, limit) {
 
 async function searchGoogleCSE(query, limit) {
   const key = process.env.GOOGLE_API_KEY;
-  const cx = process.env.GOOGLE_CSE_ID;
-  if (!key || !cx) throw new Error('GOOGLE_API_KEY/GOOGLE_CSE_ID non définis');
+  const cx = process.env.GOOGLE_CSE_ID || '957bb6ebe1c8042e5';
+  if (!key) throw new Error('GOOGLE_API_KEY non défini (GOOGLE_CSE_ID optionnel, défaut: 957bb6ebe1c8042e5)');
   const params = new URLSearchParams({
     key, cx, q: query, searchType: 'image', num: String(Math.min(10, Math.max(limit, 1))), safe: 'active'
   });
@@ -195,7 +195,7 @@ async function searchImages(provider, query, limit) {
     return r;
   }
   // auto
-  const hasCse = !!(process.env.GOOGLE_API_KEY && process.env.GOOGLE_CSE_ID);
+  const hasCse = !!process.env.GOOGLE_API_KEY;
   if (hasCse) {
     let r = await tryP('google-cse', () => searchGoogleCSE(query, limit));
     if (!r.length) r = await tryP('commons', () => searchCommons(query, limit));
@@ -219,8 +219,11 @@ async function main() {
   const today = new Date().toISOString().slice(0, 10);
   const results = [];
   console.log(`[agent] provider=${args.provider} produits=${products.length} per=${args.per} dry-run=${args.dryRun}`);
-  if (args.provider !== 'commons' && !(process.env.GOOGLE_API_KEY && process.env.GOOGLE_CSE_ID)) {
-    console.log('[agent] info: sans GOOGLE_API_KEY/GOOGLE_CSE_ID, la recherche Google utilise un mode best-effort (peut être limité/bloqué) avec repli Commons.');
+  const hasCse = !!process.env.GOOGLE_API_KEY;
+  if (args.provider !== 'commons' && !hasCse) {
+    console.log('[agent] info: sans GOOGLE_API_KEY, la recherche Google CSE API est indisponible (cx par défaut: 957bb6ebe1c8042e5). Mode best-effort + repli Commons utilisé.');
+  } else if (args.provider !== 'commons') {
+    console.log(`[agent] Google CSE API activée (cx=${process.env.GOOGLE_CSE_ID || '957bb6ebe1c8042e5'}).`);
   }
 
   for (let idx = 0; idx < products.length; idx++) {
