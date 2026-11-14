@@ -1,0 +1,82 @@
+name: Kifftech Media Agent (Google Search Images)
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: "Provider (google, commons, auto)"
+        required: false
+        default: "google"
+        type: choice
+        options: [google, commons, auto]
+      per:
+        description: "Images par produit (1-5)"
+        required: false
+        default: "3"
+      max:
+        description: "Nombre max de produits (vide = tous)"
+        required: false
+        default: ""
+      rayon:
+        description: "Rayon du catalogue (optionnel)"
+        required: false
+        default: ""
+      id:
+        description: "ID produit (optionnel)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Dry-run (sans téléchargement)"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  fetch-media:
+    name: Recherche/téléchargement médias
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run media agent
+        env:
+          # Secret GitHub: ajoutez "googleapikey" (ou GOOGLE_API_KEY) dans Settings > Secrets and variables > Actions
+          GOOGLE_API_KEY: ${{ secrets.googleapikey != '' && secrets.googleapikey || secrets.GOOGLE_API_KEY }}
+          GOOGLE_CSE_ID: ${{ secrets.GOOGLE_CSE_ID != '' && secrets.GOOGLE_CSE_ID || '957bb6ebe1c8042e5' }}
+        working-directory: kifftech.store
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARGS=(--provider "${{ inputs.provider }}" --per "${{ inputs.per }}")
+          if [ -n "${{ inputs.max }}" ]; then ARGS+=(--max "${{ inputs.max }}"); fi
+          if [ -n "${{ inputs.rayon }}" ]; then ARGS+=(--rayon "${{ inputs.rayon }}"); fi
+          if [ -n "${{ inputs.id }}" ]; then ARGS+=(--id "${{ inputs.id }}"); fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS+=(--dry-run); fi
+          echo "Running: node tools/fetch-media-assistant.js ${ARGS[*]}"
+          node tools/fetch-media-assistant.js "${ARGS[@]}"
+
+      - name: Upload media suggestions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kifftech-media-suggestions
+          path: |
+            kifftech.store/tools/media-suggestions.json
+          if-no-files-found: warn
+
+      - name: Upload downloaded images
+        if: always() && inputs.dry_run != true
+        uses: actions/upload-artifact@v4
+        with:
+          name: kifftech-media-images
+          path: |
+            kifftech.store/img/**
+          if-no-files-found: warn
