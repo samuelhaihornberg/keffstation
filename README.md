@@ -16,7 +16,7 @@ Interface "cube des applications" en HTML/CSS/JS pur (sans framework). Chaque fa
 
 | Face | PWA | URL | Description |
 |------|-----|-----|-------------|
-| **KiffTech** | KiffTech.store | https://samuelhaihornberg.github.io/Kifftech.store/ | Catalogue de démonstration : produits, prix, réductions et stocks fictifs. Aucun paiement ni commande réelle. |
+| **KiffTech** | KiffTech.store (sous-app locale) | `./kifftech.store/` (déploiement autonome possible : https://samuelhaihornberg.github.io/Kifftech.store/) | Catalogue PWA jeux vidéo & smart tech : fiches produits, médias vérifiés, panier. Paiement PayPal/carte via backend Node (`server.js`) lorsque configuré et offres vendables. |
 | **ViArtificial** | ViArtificial | https://samuelhaihornberg.github.io/ViArtificial/ | Superbots, conversation, NLP/LLM local, assistants IA. |
 | **Videogames** | Videogames | https://samuelhaihornberg.github.io/videogames/ | Jeux rétro, émulation, configurations, roms. Stick-Emoji : RollsPunch, Police-Criminal-homeoflaw. |
 | **Blogum** | Blogum | https://samuelhaihornberg.github.io/keffstation/blogum/ | Blog maker, profil social network, rencontres, sphères d'audience, réactions émotionnelles. |

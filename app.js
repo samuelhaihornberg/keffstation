@@ -5,16 +5,16 @@ const APPS = [
   {
     num: "Kifftech",
     title: "Kifftech",
-    desc: "Application de démonstration (catalogue fictif) : produits, prix, réductions et stocks sont fictifs. Aucun paiement ni commande réelle.",
-    tags: ["PWA", "Démonstration", "Catalogue fictif"],
-    appUrl: "https://samuelhaihornberg.github.io/Kifftech.store/",
-    embedUrl: "https://samuelhaihornberg.github.io/Kifftech.store/",
-    embedLabel: "Ouvrir Kifftech",
+    desc: "KiffTech.store — catalogue PWA jeux vidéo & smart tech (fiches produits, médias vérifiés, panier). Paiement PayPal/carte via backend Node (server.js) lorsque configuré et offres vendables.",
+    tags: ["PWA", "Catalogue", "KiffTech.store"],
+    appUrl: "./kifftech.store/",
+    embedUrl: "./kifftech.store/",
+    embedLabel: "Ouvrir Kifftech.store",
     embedded: true,
     color: "#1e6bff",
     subArticles: [
-      { title: "Catalogue en démonstration", desc: "Produits, prix, réductions et stocks affichés sont fictifs. Aucune offre réelle n'est proposée.", tags: ["Démo", "Fictif"] },
-      { title: "Panier et abonnement de test", desc: "Le panier et l'abonnement fonctionnent dans le navigateur, sans paiement ni commande réelle.", tags: ["Panier", "Abonnement", "Sans paiement"] }
+      { title: "Catalogue & fiches produits", desc: "Fiches modèles 2020–2026, médias sous licence vérifiée, caractéristiques et états catalogue/achetable.", tags: ["Catalogue", "Fiches"] },
+      { title: "Panier & paiement (Node)", desc: "Panier côté client, calculs/montants recalculés côté serveur (Node). Paiement actif uniquement si backend PayPal configuré et offre vendable.", tags: ["Panier", "PayPal", "Node"] }
     ]
   },
   {
@@ -590,9 +590,9 @@ class KeffStation {
     this.panelCard.querySelector('.panel-close')?.addEventListener('click', () => this.closePanel());
     this.panelCard.querySelector('.embed-btn')?.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Kifftech : navigation directe vers l'application autonome (pas d'iframe)
+      // Kifftech : ouvrir la sous-app locale (pas d'iframe)
       if (app.num === 'Kifftech') {
-        window.location.href = app.appUrl || app.embedUrl;
+        window.location.href = app.appUrl || app.embedUrl || './kifftech.store/';
       } else if (app.embedUrl) {
         this.openEmbed(app);
       } else if (app.appUrl) {

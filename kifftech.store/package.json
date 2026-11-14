@@ -1,0 +1,20 @@
+{
+  "name": "kifftech",
+  "version": "1.0.0",
+  "description": "Catalogue KiffTech PWA — fiches produits vérifiées auprès des fabricants (2020–2026)",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tools/check-contenu.js",
+    "check:contenu": "node tools/check-contenu.js",
+    "check:contenu:strict": "node tools/check-contenu.js --strict",
+    "check:contenu:complete": "node tools/check-contenu.js --complete"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^3.2.3"
+  }
+}

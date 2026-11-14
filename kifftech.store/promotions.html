@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03050a">
+<meta name="description" content="KiffTech.store — À propos : file d’attente fournisseur grossiste, promotions achat multiple, boutique sérieuse, classy, classique, hybride, post-moderne, futuriste.">
+<link rel="stylesheet" href="./style.css">
+<title>KiffTech.store — À propos & Promotions</title>
+<style>
+/* ===== Article À propos — Promotions ===== */
+.article-about{padding:calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 40px);max-width:720px;margin:0 auto;}
+.article-about .k-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--border-bright);background:var(--accent-dim);color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;}
+.article-about h1{font-size:clamp(24px,5vw,40px);line-height:1.15;margin:0 0 14px;letter-spacing:-0.02em;}
+.article-about h1 .kw{color:var(--accent);}
+.article-about p.lead{font-size:clamp(15px,2.2vw,18px);line-height:1.7;color:var(--fg-muted);margin:0 0 22px;}
+.article-about .divider{height:1px;background:var(--border);margin:26px 0;border:none;}
+.article-about h2{font-size:clamp(18px,3vw,24px);margin:24px 0 10px;color:var(--fg);}
+.article-about ul.features{list-style:none;padding:0;margin:0 0 22px;}
+.article-about ul.features li{padding:10px 0;border-bottom:1px solid var(--border);color:var(--fg-muted);display:flex;align-items:center;gap:10px;}
+.article-about ul.features li::before{content:"▸";color:var(--accent);font-weight:900;font-size:16px;flex:0 0 auto;}
+.article-about .cta-row{display:flex;flex-direction:column;gap:10px;margin-top:30px;}
+.article-about .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 18px;border-radius:var(--radius-md);border:0;background:linear-gradient(90deg,var(--accent),var(--blue));color:#001a14;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 0 24px var(--accent-glow);text-decoration:none;transition:transform .2s var(--transition),filter .2s var(--transition);}
+.article-about .btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.article-about .btn.secondary{background:transparent;border:1px solid var(--border-bright);color:var(--fg);box-shadow:none;}
+.article-about .btn.secondary:hover{background:var(--glass-strong);}
+
+/* Rayons / catégories */
+.rayons{margin-top:34px;}
+.rayons h3{font-size:clamp(17px,2.6vw,21px);margin:0 0 12px;color:var(--fg);}
+.rayons .chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.rayons .chip{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 10px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-card);color:var(--fg);font-size:13px;font-weight:600;text-align:center;cursor:pointer;transition:all .2s var(--transition);}
+.rayons .chip:hover{border-color:var(--border-bright);background:var(--glass-strong);color:var(--accent);box-shadow:0 0 20px var(--accent-dim);}
+.rayons .chip .tag{font-size:10px;text-transform:uppercase;letter-spacing:.08em;opacity:.7;}
+
+/* Responsive article */
+@media (min-width:640px){
+  .article-about{padding:calc(var(--safe-top) + 40px) 32px calc(var(--safe-bottom) + 60px);}
+  .article-about .cta-row{flex-direction:row;}
+  .article-about .cta-row .btn{width:auto;}
+}
+</style>
+</head>
+<body>
+<div class="bg-deep" aria-hidden="true"></div>
+<div class="bio-particles" id="bioParticles" aria-hidden="true"></div>
+
+<header class="top-bar" role="banner">
+  <div class="bar-left">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffc8"/><stop offset="100%" stop-color="#0066ff"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#logoGrad)"/><path d="M10 12h12v8H10z" fill="#03050a"/></svg>
+    <span class="app-name">KiffTech.store</span>
+  </div>
+  <div class="bar-center">
+    <nav class="main-tabs" id="mainTabs" role="tablist" aria-label="Sections"></nav>
+  </div>
+  <div class="bar-right">
+    <a href="./index.html" class="icon-btn" aria-label="Retour au catalogue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>
+  </div>
+</header>
+<p class="demo-notice" role="note">Les promotions décrites sur cette page ne sont pas appliquées au panier. Aucun paiement ni commande réelle.</p>
+
+<main class="main-content" id="mainContent" role="main">
+  <article class="article-about" aria-labelledby="about-title">
+    <span class="k-badge">À propos • KiffTech.store</span>
+
+    <h1 id="about-title">Une boutique <span class="kw">sérieuse, classy, classe, classique</span>, <span class="kw">hybride, post-moderne &amp; futuriste</span>.</h1>
+
+    <p class="lead">Chez KiffTech.store, vous ne achetez pas dans un stock classique. Vous passez dans une <strong>file d’attente de vente fournisseur grossiste</strong>. Votre commande rejoint le flux grossiste, et KiffTech.store — votre intermédiaire — l’optimise pour vous.</p>
+
+    <div class="divider"></div>
+
+    <h2>Comment ça marche</h2>
+    <ul class="features">
+      <li><strong>File d’attente fournisseur grossiste :</strong> votre achat entre dans le circuit grossiste avant d’être préparé par KiffTech.store.</li>
+      <li><strong>Intermédiaire de confiance :</strong> KiffTech.store sélectionne, vérifie et prépare vos articles entre le grossiste et vous.</li>
+      <li><strong>Promotions achat multiple :</strong> achetez <strong>plusieurs articles d’un coup, en une fois</strong>, et la promotion s’applique automatiquement. Plus vous prenez, plus c’est avantageux.</li>
+      <li><strong>Une image de boutique solide :</strong> ce modèle rend KiffTech.store <strong>sérieuse, classy, classe, classique</strong>, avec un positionnement <strong>hybride, post-moderne et futuriste</strong>.</li>
+    </ul>
+
+    <div class="cta-row">
+      <a href="./index.html" class="btn">Aller au catalogue</a>
+      <a href="#" class="btn secondary">Voir les rayons</a>
+    </div>
+
+    <div class="rayons" id="rayons">
+      <h3>Rayons &amp; Catégories</h3>
+      <div class="chip-grid" id="chipGrid">
+        <button class="chip" data-cat="accessories"><span class="tag">Gadgets</span> Accessories &amp; Gadgets</button>
+        <button class="chip" data-cat="smartphones"><span class="tag">Mobile</span> Smartphones</button>
+        <button class="chip" data-cat="tablets"><span class="tag">Mobile</span> Tablets</button>
+        <button class="chip" data-cat="laptop"><span class="tag">Informatique</span> Laptop &amp; Tower &amp; Mini PC</button>
+        <button class="chip" data-cat="consoles"><span class="tag">Jeux</span> Consoles &amp; Accessories VideoGames</button>
+        <button class="chip" data-cat="immobilier"><span class="tag">Immo</span> Immobilier</button>
+        <button class="chip" data-cat="garden"><span class="tag">Maison</span> Garden</button>
+        <button class="chip" data-cat="robots"><span class="tag">Éducation</span> Robots Compagny &amp; Educative</button>
+        <button class="chip" data-cat="sport"><span class="tag">Sport</span> Sport Electronic</button>
+        <button class="chip" data-cat="components-pc"><span class="tag">PC</span> Compenent Informatic</button>
+        <button class="chip" data-cat="components-el"><span class="tag">Élec</span> Compenent Electronic</button>
+        <button class="chip" data-cat="parts"><span class="tag">Pièces</span> Compenent Matter for Electronic and/or Mecanic</button>
+      </div>
+    </div>
+  </article>
+</main>
+
+<script>
+// Filtrage simple des rayons (démo, sans rechargement)
+(function(){
+  const grid = document.getElementById('chipGrid');
+  if(!grid) return;
+  grid.addEventListener('click',(e)=>{
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    const cat = chip.getAttribute('data-cat');
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    chip.style.borderColor = 'var(--accent)';
+    chip.style.color = 'var(--accent)';
+    setTimeout(()=>{chip.style.borderColor='';chip.style.color='';},700);
+    console.log('Rayon sélectionné :', cat);
+  });
+})();
+</script>
+</body>
+</html>
