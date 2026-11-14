@@ -1,23 +1,29 @@
 #!/usr/bin/env node
 /**
- * Assistant recherche + téléchargement + squelette média pour Kifftech.store (keffstation).
+ * Assistant "agent" recherche + téléchargement + squelette média pour Kifftech.store (keffstation).
  *
- * - Recherche des images sur Wikimedia Commons (licences libres, métadonnées auteur/licence/source).
- * - Télécharge les fichiers dans img/.
- * - Génère un squelette JSON (media-suggestions.json) intégrable dans la visionneuse/fiche produit
- *   via `medias.images[]` (champ principal attendu: `fichier`).
+ * Fonctionne produit par produit (rayon/marque/modèle/année du catalogue), recherche des images,
+ * tente le téléchargement dans img/, puis génère tools/media-suggestions.json (squelette medias.images[]).
+ *
+ * Providers de recherche:
+ * - google : Google Custom Search JSON API (recommandé, fiable) si GOOGLE_API_KEY et GOOGLE_CSE_ID sont définis.
+ *            Sinon, tentative best-effort via page de résultats Google Images (peut être bloquée/captcha/HTML variable).
+ * - commons: Wikimedia Commons API (sources/licences ouvertes, métadonnées riches).
+ * - auto   : google si credentials CSE présents, sinon commons.
  *
  * Usage:
- *   node tools/fetch-media-assistant.js [--per 3] [--max 60] [--rayon smartphones] [--id alienware-m15-r3] [--dry-run]
+ *   node tools/fetch-media-assistant.js [--provider auto|google|commons] [--per 3] [--max 60] [--rayon <rayon>] [--id <id>] [--dry-run]
  *
- * Notes:
- * - Nécessite un accès réseau à l'API Wikimedia Commons.
- * - Vérifiez toujours manuellement la licence, l'attribution et la pertinence avant intégration.
- * - Mot-clé de recherche utilisé: "<marque> <modele> <annee?> images libres de droits" (+ variantes).
+ * Variables d'environnement (Google CSE, optionnel mais recommandé pour "recherche google"):
+ *   GOOGLE_API_KEY=...   GOOGLE_CSE_ID=...
+ *
+ * Mots-clés: "(marque modèle [année]) + images libres de droits" (+ variantes).
+ * Vérifiez toujours manuellement la licence, l'attribution et la pertinence avant intégration.
  */
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const http = require('http');
 
 const ROOT = path.resolve(__dirname, '..');
 const CATALOGUE_PATH = path.join(ROOT, 'data', 'catalogue.js');
@@ -25,7 +31,7 @@ const IMG_DIR = path.join(ROOT, 'img');
 const OUT_PATH = path.join(ROOT, 'tools', 'media-suggestions.json');
 
 function parseArgs(argv) {
-  const args = { per: 3, max: Infinity, rayon: null, id: null, dryRun: false };
+  const args = { per: 3, max: Infinity, rayon: null, id: null, dryRun: false, provider: 'auto' };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--per') args.per = Math.max(1, Math.min(5, parseInt(argv[++i] || '3', 10)));
@@ -33,17 +39,29 @@ function parseArgs(argv) {
     else if (a === '--rayon') args.rayon = argv[++i] || null;
     else if (a === '--id') args.id = argv[++i] || null;
     else if (a === '--dry-run') args.dryRun = true;
+    else if (a === '--provider') args.provider = (argv[++i] || 'auto').toLowerCase();
     else if (a === '--help' || a === '-h') args.help = true;
   }
   return args;
 }
 
+function usage() {
+  console.log(`Usage: node tools/fetch-media-assistant.js [options]
+  --provider auto|google|commons  (défaut: auto)
+  --per 1..5                      images par produit (défaut: 3)
+  --max N                         limiter le nombre de produits
+  --rayon <rayon>                 filtrer par rayon du catalogue
+  --id <id-produit>               traiter un produit
+  --dry-run                       recherche/squelette sans téléchargement
+  --help
+
+Env (Google CSE): GOOGLE_API_KEY, GOOGLE_CSE_ID`);
+}
+
 function loadCatalogue() {
   let s = fs.readFileSync(CATALOGUE_PATH, 'utf8');
   s = s.replace(/^export const CATALOGUE = /, '').replace(/;\s*$/, '');
-  // fallback: try to evaluate
   try { return Function('return (' + s + ')')(); } catch (e) {
-    // heuristic: extract produits array is complex; rely on simple regex scan for essentials
     throw new Error('Impossible de parser data/catalogue.js: ' + e.message);
   }
 }
@@ -54,24 +72,44 @@ function slugify(str) {
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 }
 
-function fetchJson(url) {
-  return fetch(url, { headers: { 'User-Agent': 'KifftechMediaAssistant/1.0 (local script; contact: local)' } })
-    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+async function fetchText(url, headers = {}) {
+  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36', 'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.8', ...headers } });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return await res.text();
+}
+
+async function fetchJson(url, headers = {}) {
+  const res = await fetch(url, { headers: { 'User-Agent': 'KifftechMediaAgent/1.0', 'Accept': 'application/json', ...headers } });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return await res.json();
 }
 
 function downloadFile(url, dest) {
   return new Promise((resolve, reject) => {
+    const proto = url.startsWith('https:') ? https : http;
     const file = fs.createWriteStream(dest);
-    const get = (u) => https.get(u, { headers: { 'User-Agent': 'KifftechMediaAssistant/1.0' } }, (res) => {
-      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        file.close(); fs.unlink(dest, () => {}); return get(res.headers.location.startsWith('http') ? res.headers.location : new URL(res.headers.location, u).toString());
-      }
-      if (res.statusCode !== 200) { file.close(); fs.unlink(dest, () => {}); return reject(new Error('HTTP ' + res.statusCode + ' ' + u)); }
-      res.pipe(file);
-      file.on('finish', () => file.close(resolve));
-    }).on('error', (err) => { file.close(); fs.unlink(dest, () => {}); reject(err); });
+    const get = (u, redirects = 0) => {
+      if (redirects > 5) { file.close(); fs.unlink(dest, () => {}); return reject(new Error('Trop de redirections')); }
+      proto.get(u, { headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36' } }, (res) => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          const loc = res.headers.location.startsWith('http') ? res.headers.location : new URL(res.headers.location, u).toString();
+          file.close(); fs.unlink(dest, () => {}); return get(loc, redirects + 1);
+        }
+        if (res.statusCode !== 200) { file.close(); fs.unlink(dest, () => {}); return reject(new Error('HTTP ' + res.statusCode)); }
+        res.pipe(file);
+        file.on('finish', () => file.close(resolve));
+      }).on('error', (err) => { file.close(); fs.unlink(dest, () => {}); reject(err); });
+    };
     get(url);
   });
+}
+
+function extFrom(url, mime) {
+  const m = (url || '').match(/\.(jpg|jpeg|png|webp)(?:[?#]|$)/i);
+  if (m) return '.' + m[1].toLowerCase().replace('jpeg', 'jpg');
+  if (/png/i.test(mime || '')) return '.png';
+  if (/webp/i.test(mime || '')) return '.webp';
+  return '.jpg';
 }
 
 async function searchCommons(query, limit) {
@@ -97,25 +135,80 @@ async function searchCommons(query, limit) {
       auteur: pick('Artist') || pick('Credit'),
       licence: pick('LicenseShortName') || pick('License'),
       source: ii.descriptionurl || ('https://commons.wikimedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_'))),
-      description: pick('ImageDescription') || pick('ObjectName') || p.title
+      description: pick('ImageDescription') || pick('ObjectName') || p.title,
+      provider: 'commons'
     };
-  }).filter(x => x && /image\//.test(x.mime) && /\.(jpg|jpeg|png|webp)/i.test(x.url || x.original || ''));
+  }).filter(x => x && /image\//.test(x.mime || '') && /\.(jpg|jpeg|png|webp)/i.test(x.url || x.original || ''));
 }
 
-function extFrom(url, mime) {
-  const m = (url || '').match(/\.(jpg|jpeg|png|webp)(?:\?|$)/i);
-  if (m) return '.' + m[1].toLowerCase().replace('jpeg', 'jpg');
-  if (/png/i.test(mime)) return '.png';
-  if (/webp/i.test(mime)) return '.webp';
-  return '.jpg';
+async function searchGoogleCSE(query, limit) {
+  const key = process.env.GOOGLE_API_KEY;
+  const cx = process.env.GOOGLE_CSE_ID;
+  if (!key || !cx) throw new Error('GOOGLE_API_KEY/GOOGLE_CSE_ID non définis');
+  const params = new URLSearchParams({
+    key, cx, q: query, searchType: 'image', num: String(Math.min(10, Math.max(limit, 1))), safe: 'active'
+  });
+  // rights peut être ajouté si configuré (ex: cc_publicdomain,cc_attribute,...)
+  if (process.env.GOOGLE_CSE_RIGHTS) params.set('rights', process.env.GOOGLE_CSE_RIGHTS);
+  const url = 'https://www.googleapis.com/customsearch/v1?' + params.toString();
+  const data = await fetchJson(url);
+  const items = Array.isArray(data.items) ? data.items : [];
+  return items.map(it => ({
+    title: it.title || '',
+    url: it.link,
+    original: it.link,
+    mime: (it.mime || ''),
+    auteur: (it.image && it.image.contextLink) ? '' : '',
+    licence: 'À vérifier (résultat Google)',
+    source: (it.image && it.image.contextLink) || it.link || '',
+    description: it.snippet || it.title || '',
+    provider: 'google-cse'
+  })).filter(x => x.url && /\.(jpg|jpeg|png|webp)/i.test(x.url));
+}
+
+function decodeHtml(s){ return String(s||'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'"); }
+async function searchGoogleBestEffort(query, limit) {
+  // Tentative best-effort (sans API): extraction d'URLs d'images depuis la page de résultats.
+  // Peut échouer (consentement/captcha/structure HTML changeante). Licence non garantie.
+  const url = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(query);
+  const html = await fetchText(url, { 'Cookie': 'CONSENT=YES+' });
+  const found = [];
+  const re = /"(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp)(?:\?[^"]*)?)"/ig;
+  let m;
+  while ((m = re.exec(html)) && found.length < limit * 4) {
+    const u = decodeHtml(m[1]);
+    if (/gstatic\.com|google\.com\/images/.test(u)) continue;
+    if (!found.find(x => x.url === u)) found.push({ title: '', url: u, original: u, mime: '', auteur: '', licence: 'À vérifier (résultat Google, best-effort)', source: u, description: query, provider: 'google-web' });
+  }
+  return found;
+}
+
+async function searchImages(provider, query, limit) {
+  const errors = [];
+  const tryP = async (name, fn) => { try { const r = await fn(); if (r && r.length) return r; errors.push(name+':0'); } catch(e){ errors.push(name+':'+e.message); } return []; };
+  if (provider === 'commons') return await searchCommons(query, limit);
+  if (provider === 'google') {
+    let r = await tryP('google-cse', () => searchGoogleCSE(query, limit));
+    if (!r.length) r = await tryP('google-web', () => searchGoogleBestEffort(query, limit));
+    if (!r.length) r = await tryP('commons-fallback', () => searchCommons(query, limit));
+    if (!r.length && errors.length) console.error('[info] aucune image trouvée (' + errors.join(', ') + ') pour: ' + query);
+    return r;
+  }
+  // auto
+  const hasCse = !!(process.env.GOOGLE_API_KEY && process.env.GOOGLE_CSE_ID);
+  if (hasCse) {
+    let r = await tryP('google-cse', () => searchGoogleCSE(query, limit));
+    if (!r.length) r = await tryP('commons', () => searchCommons(query, limit));
+    return r;
+  }
+  let r = await tryP('commons', () => searchCommons(query, limit));
+  if (!r.length) r = await tryP('google-web', () => searchGoogleBestEffort(query, limit));
+  return r;
 }
 
 async function main() {
   const args = parseArgs(process.argv);
-  if (args.help) {
-    console.log('Usage: node tools/fetch-media-assistant.js [--per 3] [--max 60] [--rayon <rayon>] [--id <id>] [--dry-run]');
-    process.exit(0);
-  }
+  if (args.help) { usage(); process.exit(0); }
   if (!fs.existsSync(IMG_DIR)) fs.mkdirSync(IMG_DIR, { recursive: true });
   const catalogue = loadCatalogue();
   let products = Array.isArray(catalogue.produits) ? catalogue.produits : [];
@@ -125,27 +218,30 @@ async function main() {
 
   const today = new Date().toISOString().slice(0, 10);
   const results = [];
-  for (const p of products) {
+  console.log(`[agent] provider=${args.provider} produits=${products.length} per=${args.per} dry-run=${args.dryRun}`);
+  if (args.provider !== 'commons' && !(process.env.GOOGLE_API_KEY && process.env.GOOGLE_CSE_ID)) {
+    console.log('[agent] info: sans GOOGLE_API_KEY/GOOGLE_CSE_ID, la recherche Google utilise un mode best-effort (peut être limité/bloqué) avec repli Commons.');
+  }
+
+  for (let idx = 0; idx < products.length; idx++) {
+    const p = products[idx];
     const existing = (p.medias && Array.isArray(p.medias.images)) ? p.medias.images.length : 0;
     const need = Math.max(0, args.per - existing);
     const baseQuery = `${p.marque || ''} ${p.modele || ''}`.trim();
     const queries = [
-      `${baseQuery} ${p.annee || ''} images libres de droits`,
-      `${baseQuery} product photo`,
-      `${baseQuery}`
+      `${baseQuery} ${p.annee || ''} images libres de droits`.trim(),
+      `${baseQuery} image libre de droits`.trim(),
+      `${baseQuery} official product image`
     ];
     const suggested = [];
     let found = [];
     for (const q of queries) {
       if (found.length >= need) break;
-      try {
-        const hits = await searchCommons(q, need);
-        for (const h of hits) {
-          if (found.length >= need) break;
-          if (!found.find(x => x.original === h.original)) found.push(h);
-        }
-      } catch (e) {
-        console.error(`[warn] recherche échouée pour ${p.id} (${q}): ${e.message}`);
+      const hits = await searchImages(args.provider, q, need);
+      for (const h of hits) {
+        if (found.length >= need) break;
+        const key = h.original || h.url;
+        if (key && !found.find(x => (x.original || x.url) === key)) found.push(h);
       }
     }
     found = found.slice(0, need);
@@ -169,20 +265,22 @@ async function main() {
         alt: `${p.marque || ''} ${p.modele || ''} - image ${i + 1 + existing}`.trim(),
         auteur: h.auteur || '',
         licence: h.licence || '',
-        source: h.source || h.original || '',
+        source: h.source || h.original || h.url || '',
         dateVerification: today,
         _downloaded: args.dryRun ? false : downloaded,
-        _requete: baseQuery
+        _requete: `${baseQuery} images libres de droits`,
+        _provider: h.provider || args.provider
       });
     }
     results.push({ id: p.id, marque: p.marque, modele: p.modele, rayon: p.rayon, annee: p.annee, existantes: existing, suggested });
-    console.log(`[${p.id}] ${suggested.length}/${need} suggestion(s)${args.dryRun ? ' (dry-run)' : ''}`);
+    console.log(`[${idx + 1}/${products.length}] ${p.id} -> ${suggested.length}/${need} suggestion(s)`);
   }
 
-  const out = { generatedAt: new Date().toISOString(), params: { per: args.per, rayon: args.rayon, id: args.id, dryRun: args.dryRun }, products: results };
+  const out = { generatedAt: new Date().toISOString(), mode: 'agent', params: { provider: args.provider, per: args.per, rayon: args.rayon, id: args.id, dryRun: args.dryRun }, products: results };
   fs.writeFileSync(OUT_PATH, JSON.stringify(out, null, 2) + '\n', 'utf8');
-  console.log(`\nSquelette écrit: ${path.relative(ROOT, OUT_PATH)}`);
-  console.log('Intégration: pour chaque produit, fusionner `suggested[]` (sans champs `_...`) dans `medias.images[]` du catalogue.');
+  const totalSug = results.reduce((a, p) => a + (p.suggested ? p.suggested.length : 0), 0);
+  console.log(`\n[agent] terminé. suggestions=${totalSug} fichier=${path.relative(ROOT, OUT_PATH)}`);
+  console.log('[agent] vérifiez licences/droits/pertinence, puis fusionnez avec merge-media-suggestions.js');
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch(e => { console.error('[agent] erreur:', e.message); process.exit(1); });
