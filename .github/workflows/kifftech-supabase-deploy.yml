@@ -28,7 +28,6 @@ jobs:
     env:
       SUPABASE_PROJECT_REF: spkaxtmhefhycqnshybo
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN || secrets.TOKEN_SUPABASE }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     defaults:
       run:
         working-directory: kifftech.store
@@ -49,9 +48,13 @@ jobs:
       - name: 4. Liaison au projet
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
-      - name: 5. Migrations
+      - name: 5. Migrations SQL (ordre des fichiers, via l'API Supabase)
         if: ${{ inputs.run_migration }}
-        run: supabase db push
+        run: |
+          for f in $(ls supabase/migrations/*.sql | sort); do
+            echo "Migration : $f"
+            supabase db query --remote -f "$f" --yes
+          done
 
       - name: 6. Fonction paypal-config
         run: supabase functions deploy paypal-config --no-verify-jwt --yes
