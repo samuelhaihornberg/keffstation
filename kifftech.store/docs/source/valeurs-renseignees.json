@@ -1,5 +1,5 @@
 {
-  "provenance": "Le texte source (commit 229ddb2) contient les valeurs fournies par le responsable. Ce fichier ajoute : l’URL vérifiée de la politique de confidentialité (ligne 100), l’inventaire des cookies et stockages relevé dans le code (ligne 185) et le bloc de politique de retours (ligne 77).",
+  "provenance": "Le texte source (commit 229ddb2) contient les valeurs fournies par le responsable. Ce fichier ajoute : l’URL vérifiée de la politique de confidentialité (ligne 100), l’inventaire des cookies et stockages relevé dans le code (ligne 185) et le bloc de politique de retours (ligne 77). Ligne 80 : « non applicable » (décision du responsable). Ligne 77 : remplacée par le bloc de politique de retours, qui est affiché sur la page.",
   "remplacements": {
     "100": [
       [
@@ -11,6 +11,12 @@
       [
         "[À COMPLÉTER AVANT PUBLICATION]",
         "Inventaire relevé dans le code de kifftech.store (15/11/2026) ci-dessous. Mécanisme de consentement : [À COMPLÉTER]"
+      ]
+    ],
+    "80": [
+      [
+        "[Lien vers le formulaire d’annulation]",
+        "Non applicable : aucun formulaire d’annulation en ligne. Utiliser l’adresse e-mail ci-dessous."
       ]
     ]
   },

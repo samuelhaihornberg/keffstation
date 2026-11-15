@@ -6,15 +6,13 @@ Source : `docs/source/KiffStation_conditions_utilisation_et_confidentialite.txt`
 |---|---|---|---|
 | Partie I | 1. ÉDITEUR ET VENDEUR | 21 | [À COMPLÉTER] |
 | Partie I | 1. ÉDITEUR ET VENDEUR | 23 | [À COMPLÉTER, LE CAS ÉCHÉANT] |
-| Partie I | 7. LIVRAISON, TAXES, RETOURS ET ANNULATIONS | 77 | [URL DE LA POLITIQUE DE RETOURS ET D’ANNULATIONS] |
-| Partie I | 7. LIVRAISON, TAXES, RETOURS ET ANNULATIONS | 80 | [Lien vers le formulaire d’annulation] |
 | Partie I | 11. RESPONSABILITÉ ET DROIT APPLICABLE | 107 | [À COMPLÉTER APRÈS VÉRIFICATION] |
 | Partie II | 6. DURÉES DE CONSERVATION | 174 | [DURÉE LÉGALE À DÉTERMINER] |
 | Partie II | 6. DURÉES DE CONSERVATION | 176 | [DURÉE À COMPLÉTER] |
 | Partie II | 6. DURÉES DE CONSERVATION | 177 | [DURÉE À COMPLÉTER] |
 | Partie II | 7. COOKIES ET STOCKAGE LOCAL | 185 | [À COMPLÉTER] |
 
-Total restant : 9 occurrences (dont l’en-tête de date, présent dans les deux pages).
+Total restant : 7 occurrences (dont l’en-tête de date, présent dans les deux pages).
 
 ## Après complétion
 1. Compléter les champs (valeurs fournies par le responsable, pas inventées), puis relancer `python3 tools/build-legal-pages.py`.

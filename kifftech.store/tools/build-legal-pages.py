@@ -122,6 +122,7 @@ i2n = i2 + 1
 for n, l in enumerate(src, start=1):
     m = re.match(r'^(\d+)\. ([^a-z]+)$', l)
     if m and any(c.isalpha() for c in l): current = l
+    if n == POLICY_LINE: continue
     t = substitute(n, l)
     for ph in re.findall(r'\[[^\]]+\]', t):
         rows.append(('Partie I' if n < i2n else 'Partie II', current or '—', n, ph))
