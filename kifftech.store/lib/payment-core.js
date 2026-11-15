@@ -1,6 +1,21 @@
 // Shared payment/sellability logic (browser + server). No DOM, no secrets.
 // Recalculates amounts from canonical catalogue data; never trust client totals.
 
+function roundMoney(value) {
+  return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+}
+
+function toDefinedMoney(value) {
+  return typeof value === 'number' && Number.isFinite(value) ? roundMoney(value) : null;
+}
+
+function moneyOrNull(obj) {
+  if (!obj || typeof obj !== 'object') return null;
+  if (toDefinedMoney(obj.montant) !== null) return toDefinedMoney(obj.montant);
+  // Ne pas inventer un montant à partir d'un taux/inclus sans base confirmée.
+  return null;
+}
+
 export function selectedOptionForGroup(groupe, index) {
   const i = Number.isInteger(index) ? index : 0;
   return (groupe.options || [])[i] || (groupe.options || [])[0] || null;
@@ -9,118 +24,123 @@ export function selectedOptionForGroup(groupe, index) {
 export function resolveSelection(product, choiceIndices) {
   const choice = Array.isArray(choiceIndices) ? choiceIndices : [];
   const labels = [];
-  let prix = product.prix && typeof product.prix.montant === 'number' ? product.prix.montant : (product.price ?? null);
-  let devise = (product.prix && product.prix.devise) || product.currency || 'EUR';
+  let prix = product.prix && typeof product.prix.montant === 'number' ? roundMoney(product.prix.montant) : (typeof product.price === 'number' ? roundMoney(product.price) : null);
+  let devise = (product.prix && product.prix.devise) || product.currency || null;
   let disponible = true;
 
   (product.variantes || []).forEach((groupe, g) => {
     const option = selectedOptionForGroup(groupe, choice[g] ?? 0);
     if (!option) return;
     labels.push(option.libelle);
-    if (typeof option.prix === 'number') prix = option.prix;
+    if (typeof option.prix === 'number' && Number.isFinite(option.prix)) prix = roundMoney(option.prix);
     else if (option.prix === null) prix = null;
+    if (option.devise) devise = option.devise;
     if (option.dispo === false) disponible = false;
   });
 
   const dispoStatut = product.disponibilite && product.disponibilite.statut;
   if (dispoStatut && dispoStatut !== 'disponible') disponible = false;
+  // Certaines fiches marquent une option/produit explicitement non achetable sans statut global normalisé.
+  if (product.etatCatalogue && product.etatCatalogue.achetableMaintenant === false) disponible = false;
+
+  const shipping = moneyOrNull(product.livraison);
+  const taxes = moneyOrNull(product.taxes);
 
   return {
     label: labels.filter(Boolean).join(' · '),
     prix,
     devise,
     disponible,
+    shipping,
+    taxes,
   };
 }
 
-export function sellability(product, selection) {
+export function checkSellability(product, selection) {
   const reasons = [];
-  const sel = selection || resolveSelection(product, []);
-  if (sel.prix === null || sel.prix === undefined || Number.isNaN(Number(sel.prix))) {
-    reasons.push('Prix final à confirmer');
-  }
-  if (!sel.disponible) {
-    reasons.push('Stock/disponibilité à confirmer ou indisponible');
-  }
-  if (!sel.devise) {
-    reasons.push('Devise non définie');
-  }
-  if (!product.livraison || product.livraison.montant === undefined || product.livraison.montant === null) {
-    reasons.push('Livraison non définie');
-  }
-  if (!product.taxes || (product.taxes.montant === undefined && product.taxes.inclus === undefined && product.taxes.taux === undefined)) {
-    reasons.push('Taxes non définies');
-  }
-  if (reasons.length === 0) {
-    if (!(Number(sel.prix) > 0)) reasons.push('Prix final invalide');
-  }
+  if (!product) reasons.push('Produit introuvable');
+  if (!selection) reasons.push('Sélection invalide');
+  if (selection && (selection.prix === null || selection.prix === undefined || !Number.isFinite(selection.prix))) reasons.push('Prix final à confirmer');
+  if (selection && !selection.devise) reasons.push('Devise non définie');
+  if (selection && !selection.disponible) reasons.push('Disponibilité/stock non confirmée');
+  if (!selection || selection.shipping === null || selection.shipping === undefined) reasons.push('Livraison non définie');
+  if (!selection || selection.taxes === null || selection.taxes === undefined) reasons.push('Taxes non définies');
   return { ok: reasons.length === 0, reasons };
 }
 
 export function formatSellabilityReason(reasons) {
-  if (!reasons || !reasons.length) return '';
+  if (!reasons || !reasons.length) return 'Paiement indisponible.';
   return `Paiement indisponible : ${reasons.join(', ')}.`;
 }
 
-export function moneyToCents(amount) {
-  return Math.round(Number(amount) * 100);
-}
-
-export function centsToMoney(cents) {
-  return Math.round(Number(cents)) / 100;
-}
-
 export function buildOrder(catalogue, items) {
-  if (!Array.isArray(items) || items.length === 0) {
-    return { ok: false, error: 'Panier vide.' };
-  }
-  const products = Array.isArray(catalogue && catalogue.produits) ? catalogue.produits : [];
-  const byId = new Map(products.map(p => [p.id, p]));
+  const rawItems = Array.isArray(items) ? items : [];
+  if (rawItems.length === 0) return { ok: false, error: 'Caisse vide.' };
+
+  const products = (catalogue && catalogue.produits) || [];
+  const map = new Map(products.map(p => [p.id, p]));
 
   const lines = [];
-  const devises = new Set();
-  let totalCents = 0;
+  let currency = null;
+  let subtotal = 0;
+  let shippingTotal = 0;
+  let taxesTotal = 0;
 
-  for (const raw of items) {
-    const productId = raw && raw.productId;
-    const quantity = Math.max(1, Math.min(99, parseInt(raw && raw.quantity, 10) || 0));
-    const choiceIndices = Array.isArray(raw && raw.choiceIndices) ? raw.choiceIndices.map(n => parseInt(n, 10) || 0) : [];
-    if (!productId || !byId.has(productId)) {
-      return { ok: false, error: `Produit introuvable: ${productId || 'inconnu'}` };
-    }
-    if (!quantity || quantity < 1) {
-      return { ok: false, error: `Quantité invalide pour ${productId}` };
-    }
-    const product = byId.get(productId);
-    const sel = resolveSelection(product, choiceIndices);
-    const sell = sellability(product, sel);
-    if (!sell.ok) {
-      return { ok: false, error: `${product.modele || productId}: ${sell.reasons.join(', ')}` };
-    }
-    const unitCents = moneyToCents(sel.prix);
-    const lineCents = unitCents * quantity;
-    totalCents += lineCents;
-    devises.add(sel.devise);
+  for (const item of rawItems) {
+    if (!item || typeof item.productId !== 'string') return { ok: false, error: 'Article invalide.' };
+    const product = map.get(item.productId);
+    if (!product) return { ok: false, error: 'Produit introuvable.' };
+    const qty = Number.isInteger(item.quantity) ? item.quantity : parseInt(item.quantity, 10);
+    if (!Number.isInteger(qty) || qty <= 0) return { ok: false, error: 'Quantité invalide.' };
+    if (qty > 99) return { ok: false, error: 'Quantité trop élevée.' };
+
+    const selection = resolveSelection(product, item.choiceIndices || []);
+    const sell = checkSellability(product, selection);
+    if (!sell.ok) return { ok: false, error: `${product.marque} ${product.modele} : ${sell.reasons.join(', ')}.` };
+
+    if (!currency) currency = selection.devise;
+    if (selection.devise !== currency) return { ok: false, error: 'Devise unique requise pour le paiement.' };
+
+    const lineSubtotal = roundMoney(selection.prix * qty);
+    const lineShipping = roundMoney(selection.shipping * qty);
+    const lineTaxes = roundMoney(selection.taxes * qty);
+    subtotal = roundMoney(subtotal + lineSubtotal);
+    shippingTotal = roundMoney(shippingTotal + lineShipping);
+    taxesTotal = roundMoney(taxesTotal + lineTaxes);
+
     lines.push({
-      productId,
-      title: `${product.marque || ''} ${product.modele || ''}`.trim() || productId,
-      variant: sel.label || null,
-      quantity,
-      unitAmount: centsToMoney(unitCents),
-      currency: sel.devise,
+      id: product.id,
+      title: `${product.marque} ${product.modele}`,
+      variant: selection.label || null,
+      quantity: qty,
+      unitAmount: selection.prix,
+      currency,
+      lineSubtotal,
+      lineShipping,
+      lineTaxes,
     });
   }
 
-  if (devises.size !== 1) {
-    return { ok: false, error: 'Paiement impossible : le panier contient plusieurs devises. Réglez les articles séparément par devise.' };
-  }
+  const total = roundMoney(subtotal + shippingTotal + taxesTotal);
+  if (!currency) return { ok: false, error: 'Devise non définie.' };
+  if (!(total > 0)) return { ok: false, error: 'Total final invalide.' };
 
-  const currency = [...devises][0];
   return {
     ok: true,
     currency,
-    total: centsToMoney(totalCents),
-    totalCents,
     lines,
+    totals: {
+      subtotal,
+      shipping: shippingTotal,
+      taxes: taxesTotal,
+      currency,
+      total,
+    },
+    // compat héritée
+    total,
   };
+}
+
+export function sellability(product, selection) {
+  return checkSellability(product, selection || (product ? resolveSelection(product, []) : null));
 }

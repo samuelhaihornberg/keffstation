@@ -8,8 +8,9 @@ function getEnv(env, key) {
 export function getPayPalConfig(env) {
   const clientId = getEnv(env, 'PAYPAL_CLIENT_ID');
   const clientSecret = getEnv(env, 'PAYPAL_CLIENT_SECRET');
-  const base = getEnv(env, 'PAYPAL_API_BASE') || 'https://api-m.paypal.com';
-  return { clientId, clientSecret, base: String(base).replace(/\/$/, '') };
+  const base = String(getEnv(env, 'PAYPAL_API_BASE') || 'https://api-m.paypal.com').replace(/\/$/, '');
+  const environment = /sandbox/i.test(base) ? 'sandbox' : (/api-m\.paypal\.com$/i.test(base) ? 'live' : 'custom');
+  return { clientId, clientSecret, base, environment };
 }
 
 export async function getAccessToken(env) {
@@ -40,13 +41,14 @@ export async function getAccessToken(env) {
 export async function paypalFetch(env, path, options = {}) {
   const { base } = getPayPalConfig(env);
   const token = await getAccessToken(env);
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    ...(options.headers || {}),
+  };
   const res = await fetch(`${base}${path}`, {
     ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
+    headers,
   });
   const text = await res.text();
   let data = null;
@@ -65,4 +67,9 @@ export function jsonResponse(body, status = 200) {
     status,
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
   });
+}
+
+export function safeRequestId(value) {
+  const id = typeof value === 'string' ? value.trim() : '';
+  return /^[A-Za-z0-9._:-]{8,80}$/.test(id) ? id : '';
 }

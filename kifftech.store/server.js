@@ -12,8 +12,18 @@ const PORT = parseInt(process.env.PORT || '3000', 10);
 function getPayPalConfig() {
   const clientId = process.env.PAYPAL_CLIENT_ID || '';
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET || '';
-  const base = (process.env.PAYPAL_API_BASE || 'https://api-m.paypal.com').replace(/\/$/, '');
-  return { clientId, clientSecret, base };
+  const base = String(process.env.PAYPAL_API_BASE || 'https://api-m.paypal.com').replace(/\/$/, '');
+  const environment = /sandbox/i.test(base) ? 'sandbox' : (/api-m\.paypal\.com$/i.test(base) ? 'live' : 'custom');
+  return { clientId, clientSecret, base, environment };
+}
+
+function amountObj(currency, value) {
+  return { currency_code: currency, value: Number(value).toFixed(2) };
+}
+
+function safeRequestId(value) {
+  const id = typeof value === 'string' ? value.trim() : '';
+  return /^[A-Za-z0-9._:-]{8,80}$/.test(id) ? id : '';
 }
 
 async function getAccessToken() {
@@ -64,130 +74,59 @@ async function paypalFetch(apiPath, options = {}) {
   return data;
 }
 
-function sendJson(res, status, body) {
-  const payload = JSON.stringify(body);
+function sendJSON(res, status, body) {
+  const json = JSON.stringify(body);
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
   });
-  res.end(payload);
+  res.end(json);
 }
 
-async function readJsonBody(req) {
-  return await new Promise((resolve, reject) => {
-    let data = '';
-    req.on('data', chunk => {
-      data += chunk;
-      if (data.length > 1_000_000) { reject(new Error('too large')); req.destroy(); }
-    });
-    req.on('end', () => {
-      try { resolve(data ? JSON.parse(data) : {}); } catch (e) { reject(e); }
-    });
-    req.on('error', reject);
-  });
-}
-
-async function handleConfig(req, res) {
-  if (req.method !== 'GET') return sendJson(res, 405, { ok: false, error: 'Méthode non autorisée.' });
-  const { clientId } = getPayPalConfig();
-  if (!clientId) return sendJson(res, 503, { ok: false, error: 'Paiement non configuré.' });
-  return sendJson(res, 200, { ok: true, clientId, currency: 'EUR' });
-}
-
-async function handleCreateOrder(req, res) {
-  if (req.method === 'OPTIONS') { res.writeHead(204, { 'Cache-Control': 'no-store' }); return res.end(); }
-  if (req.method !== 'POST') return sendJson(res, 405, { ok: false, error: 'Méthode non autorisée.' });
-  let body;
-  try { body = await readJsonBody(req); } catch { return sendJson(res, 400, { ok: false, error: 'Requête invalide.' }); }
-  const items = Array.isArray(body && body.items) ? body.items : [];
-  const order = buildOrder(CATALOGUE, items);
-  if (!order.ok) return sendJson(res, 400, { ok: false, error: order.error || 'Commande invalide.' });
-  try {
-    const payload = {
-      intent: 'CAPTURE',
-      purchase_units: [{
-        amount: {
-          currency_code: order.currency,
-          value: order.total.toFixed(2),
-          breakdown: {
-            item_total: { currency_code: order.currency, value: order.total.toFixed(2) },
-          },
-        },
-        items: order.lines.map(l => ({
-          name: String(l.title || 'Article').slice(0, 127),
-          description: l.variant ? String(l.variant).slice(0, 127) : undefined,
-          quantity: String(l.quantity),
-          unit_amount: { currency_code: order.currency, value: Number(l.unitAmount).toFixed(2) },
-        })),
-      }],
-      application_context: {
-        shipping_preference: 'NO_SHIPPING',
-        user_action: 'PAY_NOW',
-      },
-    };
-    const created = await paypalFetch('/v2/checkout/orders', { method: 'POST', body: JSON.stringify(payload) });
-    if (!created || !created.id) return sendJson(res, 502, { ok: false, error: 'Création de commande PayPal impossible.' });
-    return sendJson(res, 200, { ok: true, id: created.id });
-  } catch (err) {
-    const status = err && err.status ? err.status : 502;
-    const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de créer la commande PayPal.';
-    return sendJson(res, status, { ok: false, error: msg });
-  }
-}
-
-async function handleCaptureOrder(req, res) {
-  if (req.method === 'OPTIONS') { res.writeHead(204, { 'Cache-Control': 'no-store' }); return res.end(); }
-  if (req.method !== 'POST') return sendJson(res, 405, { ok: false, error: 'Méthode non autorisée.' });
-  let body;
-  try { body = await readJsonBody(req); } catch { return sendJson(res, 400, { ok: false, error: 'Requête invalide.' }); }
-  const orderID = body && typeof body.orderID === 'string' ? body.orderID.trim() : '';
-  if (!/^[-A-Z0-9]+$/i.test(orderID)) return sendJson(res, 400, { ok: false, error: 'Identifiant de commande invalide.' });
-  try {
-    const captured = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`, { method: 'POST', body: '{}' });
-    const status = captured && captured.status;
-    if (status !== 'COMPLETED') return sendJson(res, 400, { ok: false, error: 'Le paiement n’a pas été confirmé.', status: status || 'UNKNOWN' });
-    const captureId = (((captured.purchase_units || [])[0] || {}).payments || {}).captures
-      ? ((((captured.purchase_units || [])[0] || {}).payments || {}).captures[0] || {}).id
-      : null;
-    return sendJson(res, 200, { ok: true, status: 'COMPLETED', captureId: captureId || null });
-  } catch (err) {
-    const status = err && err.status ? err.status : 502;
-    const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de capturer le paiement PayPal.';
-    return sendJson(res, status, { ok: false, error: msg });
-  }
+async function readBody(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  const raw = Buffer.concat(chunks).toString('utf8');
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch { return null; }
 }
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.mjs': 'text/javascript; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
-  '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
+  '.webmanifest': 'application/manifest+json',
   '.txt': 'text/plain; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8',
 };
 
-async function serveStatic(req, res, urlPath) {
-  let pathname = decodeURIComponent(urlPath.split('?')[0]);
+async function serveStatic(req, res) {
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
-  const filePath = path.join(__dirname, pathname);
-  if (!filePath.startsWith(__dirname)) { res.writeHead(403); return res.end('Forbidden'); }
+  const filePath = path.normalize(path.join(__dirname, pathname));
+  if (!filePath.startsWith(__dirname)) {
+    res.writeHead(403); res.end('Forbidden'); return;
+  }
   try {
-    let st = await stat(filePath);
+    const st = await stat(filePath);
     if (st.isDirectory()) {
-      const indexPath = path.join(filePath, 'index.html');
-      st = await stat(indexPath);
+      const idx = path.join(filePath, 'index.html');
+      await stat(idx);
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      return createReadStream(indexPath).pipe(res);
+      createReadStream(idx).pipe(res);
+      return;
     }
-    const ext = path.extname(filePath).toLowerCase();
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
-    return createReadStream(filePath).pipe(res);
+    res.writeHead(200, { 'Content-Type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream' });
+    createReadStream(filePath).pipe(res);
   } catch {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Not found');
@@ -196,22 +135,97 @@ async function serveStatic(req, res, urlPath) {
 
 const server = createServer(async (req, res) => {
   try {
-    const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-    const p = url.pathname.replace(/\/+$/, '') || '/';
-    if (p === '/api/paypal/config') return await handleConfig(req, res);
-    if (p === '/api/paypal/create-order') return await handleCreateOrder(req, res);
-    if (p === '/api/paypal/capture-order') return await handleCaptureOrder(req, res);
-    return await serveStatic(req, res, url.pathname);
-  } catch (e) {
-    console.error(e);
-    if (!res.headersSent) sendJson(res, 500, { ok: false, error: 'Erreur serveur.' });
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+
+    if (req.method === 'GET' && url.pathname === '/api/paypal/config') {
+      const { clientId, environment } = getPayPalConfig();
+      if (!clientId) return sendJSON(res, 503, { ok: false, error: 'Paiement non configuré côté serveur.' });
+      return sendJSON(res, 200, { ok: true, clientId, currency: 'EUR', environment, intent: 'capture' });
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/paypal/create-order') {
+      const body = await readBody(req);
+      if (body === null) return sendJSON(res, 400, { ok: false, error: 'Requête invalide.' });
+      const order = buildOrder(CATALOGUE, Array.isArray(body.items) ? body.items : []);
+      if (!order.ok) return sendJSON(res, 400, { ok: false, error: order.error || 'Commande invalide.' });
+      try {
+        const requestId = safeRequestId(body.requestId);
+        const headers = requestId ? { 'PayPal-Request-Id': requestId, 'Prefer': 'return=representation' } : { 'Prefer': 'return=representation' };
+        const created = await paypalFetch('/v2/checkout/orders', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            intent: 'CAPTURE',
+            purchase_units: [{
+              amount: {
+                currency_code: order.totals.currency,
+                value: order.totals.total.toFixed(2),
+                breakdown: {
+                  item_total: amountObj(order.totals.currency, order.totals.subtotal),
+                  shipping: amountObj(order.totals.currency, order.totals.shipping),
+                  tax_total: amountObj(order.totals.currency, order.totals.taxes),
+                },
+              },
+              items: order.lines.map(l => ({
+                name: String(l.title || 'Article').slice(0, 127),
+                description: l.variant ? String(l.variant).slice(0, 127) : undefined,
+                quantity: String(l.quantity),
+                unit_amount: amountObj(order.totals.currency, l.unitAmount),
+              })),
+            }],
+            application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW' },
+          }),
+        });
+        if (!created || !created.id) return sendJSON(res, 502, { ok: false, error: 'Création de commande PayPal impossible.' });
+        return sendJSON(res, 200, { ok: true, id: created.id, status: created.status || 'CREATED', totals: order.totals });
+      } catch (err) {
+        const status = err && err.status ? err.status : 502;
+        const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de créer la commande PayPal.';
+        return sendJSON(res, status, { ok: false, error: msg });
+      }
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/paypal/capture-order') {
+      const body = await readBody(req);
+      if (body === null) return sendJSON(res, 400, { ok: false, error: 'Requête invalide.' });
+      const orderID = body && typeof body.orderID === 'string' ? body.orderID.trim() : '';
+      if (!/^[-A-Z0-9]+$/i.test(orderID)) return sendJSON(res, 400, { ok: false, error: 'Identifiant de commande invalide.' });
+      try {
+        const existing = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}`, { method: 'GET' });
+        const existingStatus = existing && existing.status;
+        if (existingStatus === 'COMPLETED') {
+          const cap = (((existing.purchase_units || [])[0] || {}).payments || {}).captures || [];
+          return sendJSON(res, 200, { ok: true, status: 'COMPLETED', captureId: (cap[0] || {}).id || null, alreadyCaptured: true });
+        }
+        if (existingStatus && existingStatus !== 'APPROVED') {
+          return sendJSON(res, 400, { ok: false, error: 'Le paiement n’est pas approuvé pour capture.', status: existingStatus });
+        }
+        const requestId = safeRequestId(body.requestId);
+        const headers = requestId ? { 'PayPal-Request-Id': requestId, 'Prefer': 'return=representation' } : { 'Prefer': 'return=representation' };
+        const captured = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`, { method: 'POST', headers, body: '{}' });
+        const status = captured && captured.status;
+        if (status !== 'COMPLETED') return sendJSON(res, 400, { ok: false, error: 'Le paiement n’a pas été confirmé par le serveur.', status: status || 'UNKNOWN' });
+        const captures = (((captured.purchase_units || [])[0] || {}).payments || {}).captures || [];
+        return sendJSON(res, 200, { ok: true, status: 'COMPLETED', captureId: (captures[0] || {}).id || null });
+      } catch (err) {
+        const status = err && err.status ? err.status : 502;
+        const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de confirmer la capture du paiement PayPal.';
+        return sendJSON(res, status, { ok: false, error: msg });
+      }
+    }
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, { 'Cache-Control': 'no-store' });
+      return res.end();
+    }
+
+    return serveStatic(req, res);
+  } catch (err) {
+    console.error(err);
+    if (!res.headersSent) sendJSON(res, 500, { ok: false, error: 'Erreur serveur.' });
   }
 });
 
 server.listen(PORT, () => {
-  const { clientId, clientSecret } = getPayPalConfig();
-  console.log(`KiffTech server running on http://localhost:${PORT}`);
-  if (!clientId || !clientSecret) {
-    console.log('PayPal non configuré: définissez PAYPAL_CLIENT_ID et PAYPAL_CLIENT_SECRET (et optionnellement PAYPAL_API_BASE).');
-  }
+  console.log(`KiffTech server listening on http://localhost:${PORT}`);
 });

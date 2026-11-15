@@ -137,26 +137,45 @@ const cartManager = {
   calculateTotals(productsMap) {
     let totalItems = 0, uniqueItems = 0;
     const parDevise = new Map();
+    let subtotal = 0;
+    let shipping = 0;
+    let taxes = 0;
+    let shippingDefined = true;
+    let taxesDefined = true;
+    let pricedDefined = true;
     for (const item of state.cart) {
       const p = productsMap.get(item.productId);
       if (!p) continue;
       const sel = resolveSelection(p, item.choiceIndices || []);
-      const devise = sel.devise || 'EUR';
+      const devise = sel.devise || null;
       totalItems += item.quantity;
       uniqueItems += 1;
-      const unit = (sel.prix != null ? sel.prix : 0);
-      const montant = unit * item.quantity;
-      parDevise.set(devise, Math.round(((parDevise.get(devise) || 0) + montant) * 100) / 100);
+      if (devise) parDevise.set(devise, Math.round(((parDevise.get(devise) || 0) + (Number(sel.prix || 0) * item.quantity)) * 100) / 100);
+      if (typeof sel.prix !== 'number' || !Number.isFinite(sel.prix) || !devise) pricedDefined = false;
+      else subtotal = Math.round((subtotal + sel.prix * item.quantity) * 100) / 100;
+      if (typeof sel.shipping === 'number' && Number.isFinite(sel.shipping)) shipping = Math.round((shipping + sel.shipping * item.quantity) * 100) / 100;
+      else shippingDefined = false;
+      if (typeof sel.taxes === 'number' && Number.isFinite(sel.taxes)) taxes = Math.round((taxes + sel.taxes * item.quantity) * 100) / 100;
+      else taxesDefined = false;
     }
     const devises = [...parDevise.keys()];
     const deviseUnique = devises.length === 1 ? devises[0] : null;
-    const subtotal = deviseUnique ? parDevise.get(deviseUnique) : null;
+    const finalDefined = pricedDefined && shippingDefined && taxesDefined && !!deviseUnique;
+    const finalTotal = finalDefined ? Math.round((subtotal + shipping + taxes) * 100) / 100 : null;
     return {
       totalItems, uniqueItems, devises,
       devise: deviseUnique,
       parDevise: Object.fromEntries(parDevise),
       mixedCurrencies: devises.length > 1,
-      subtotal, shipping: null, finalTotal: subtotal, details: []
+      pricedDefined,
+      shippingDefined,
+      taxesDefined,
+      finalDefined,
+      subtotal: pricedDefined && deviseUnique ? subtotal : null,
+      shipping: shippingDefined && deviseUnique ? shipping : null,
+      taxes: taxesDefined && deviseUnique ? taxes : null,
+      finalTotal,
+      details: []
     };
   }
 };
@@ -977,15 +996,24 @@ class KiffTech{
     if(e.target.closest('[data-action="buy-now"]')) { this.buyNow(p.id, this.currentChoice(p), '#paypalDirectContainer'); return; }
   }
 
-  bindCartEvents() {
-    window.addEventListener('cart:change', () => this.updateCartDisplay());
+  formatTotalsMoney(value, currency) {
+    if (value === null || value === undefined) return 'À définir';
+    return formatPrice(value, currency || 'EUR');
   }
 
-  updateCartDisplay() {
-    const totals = cartManager.calculateTotals(state.productsMap);
-    this.cartCount.textContent = totals.totalItems;
-    
-    if (state.currentTab === 'cart') this.renderCartPanel();
+  renderTotalsSummaryHTML(totals, { compact = false } = {}) {
+    const currency = totals.devise || totals.currency || '—';
+    const rows = [
+      ['Sous-total', this.formatTotalsMoney(totals.subtotal, currency)],
+      ['Livraison', this.formatTotalsMoney(totals.shipping, currency)],
+      ['Taxes', this.formatTotalsMoney(totals.taxes, currency)],
+      ['Devise', currency === '—' ? 'À définir' : sanitizeHTML(currency)],
+      ['Total final', this.formatTotalsMoney(totals.finalTotal, currency)],
+    ];
+    return `
+      <div class="payment-totals ${compact ? 'compact' : ''}" aria-label="Récapitulatif des montants">
+        ${rows.map(([label, value]) => `<div class="payment-total-row ${label === 'Total final' ? 'is-final' : ''}"><span>${label}</span><strong>${value}</strong></div>`).join('')}
+      </div>`;
   }
 
   renderCartPanel() {
@@ -1011,140 +1039,93 @@ class KiffTech{
       if (!product) return '';
       const sel = resolveSelection(product, item.choiceIndices || []);
       const unit = sel.prix;
-      const devise = sel.devise || 'EUR';
-      const line = unit !== null && unit !== undefined ? unit * item.quantity : null;
-      const thumb = product.images[0];
+      const subtotal = (unit != null ? unit : 0) * item.quantity;
+      const priceText = unit != null ? formatPrice(unit, sel.devise || totals.devise || 'EUR') : 'Information à confirmer';
+      const variantText = sel.label ? ` <span class="cart-variant">(${sanitizeHTML(sel.label)})</span>` : '';
+      const sell = sellability(product, sel);
       return `
-        <article class="cart-item" style="display:flex;gap:1rem;padding:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:.75rem;align-items:center;">
-          ${thumb ? `<img src="${sanitizeHTML(thumb)}" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius-md);">` : '<div class="cart-thumb-empty" aria-hidden="true">Image à confirmer</div>'}
-          <div style="flex:1;min-width:0;">
-            <h4 style="font-size:.9rem;font-weight:600;margin-bottom:.25rem;">${sanitizeHTML(product.title)}</h4>
-            ${sel.label ? `<p style="font-size:.7rem;color:var(--fg-muted);">${sanitizeHTML(sel.label)}</p>` : ''}
-            <p style="font-size:.7rem;color:var(--fg-muted);">${sanitizeHTML(product.brand)} • ${unit !== null ? formatPrice(unit, devise) : 'Prix à confirmer'} x ${item.quantity}</p>
-            <div style="display:flex;align-items:center;gap:.5rem;margin-top:.5rem;">
-              <button onclick="window.keffTech.updateCartQty(${index}, ${item.quantity - 1})" class="icon-btn-sm" style="width:32px;height:32px;">−</button>
-              <span style="min-width:2rem;text-align:center;font-weight:600;">${item.quantity}</span>
-              <button onclick="window.keffTech.updateCartQty(${index}, ${item.quantity + 1})" class="icon-btn-sm" style="width:32px;height:32px;">+</button>
-              <span style="margin-left:auto;font-weight:700;color:var(--accent);">${line !== null ? formatPrice(line, devise) : 'Prix à confirmer'}</span>
-              <button onclick="window.keffTech.removeFromCart(${index})" class="icon-btn-sm" style="color:var(--danger);" aria-label="Supprimer">🗑️</button>
-            </div>
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <h4>${sanitizeHTML(product.title)}${variantText}</h4>
+            <span class="cart-item-price">${priceText} / unité</span>
+            ${sell.ok ? '' : `<span class="cart-item-note">${sanitizeHTML(formatSellabilityReason(sell.reasons))}</span>`}
           </div>
-        </article>
-      `;
+          <div class="cart-item-actions">
+            <button class="qty-btn" data-action="dec" data-index="${index}" aria-label="Diminuer">−</button>
+            <span class="qty">${item.quantity}</span>
+            <button class="qty-btn" data-action="inc" data-index="${index}" aria-label="Augmenter">+</button>
+            <button class="remove-btn" data-action="remove" data-index="${index}" aria-label="Retirer">✕</button>
+          </div>
+          <div class="cart-item-subtotal">${unit != null ? formatPrice(subtotal, sel.devise || totals.devise || 'EUR') : '—'}</div>
+        </div>`;
     }).join('');
 
-    const sousTotauxHTML = Object.entries(totals.parDevise).map(([devise, montant]) => `
-        <div style="display:flex;justify-content:space-between;padding:.5rem 0;">
-          <span>Sous-total ${sanitizeHTML(devise)} (prix publics officiels)</span>
-          <span>${formatPrice(montant, devise)}</span>
-        </div>`).join('');
-    const totalHTML = totals.mixedCurrencies
-      ? `<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-top:2px solid var(--accent);margin-top:1rem;font-size:1.1rem;font-weight:800;">
-          <span>TOTAL indicatif</span>
-          <span style="color:var(--accent);">Non calculable</span>
-        </div>
-        <p style="font-size:.7rem;color:var(--fg-muted);margin-top:.5rem;">Le panier contient des prix publiés dans plusieurs devises : aucune conversion de change n’est effectuée. Réglez séparément par devise.</p>`
-      : `<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-top:2px solid var(--accent);margin-top:1rem;font-size:1.1rem;font-weight:800;">
-          <span>TOTAL (prix officiels)</span>
-          <span style="color:var(--accent);">${formatPrice(totals.finalTotal, totals.devise || 'EUR')}</span>
-        </div>`;
+    const unsellable = items.some((item) => {
+      const p = state.productsMap.get(item.productId);
+      return !p || !sellability(p, resolveSelection(p, item.choiceIndices || [])).ok;
+    });
+    const canPay = !unsellable && !totals.mixedCurrencies && totals.finalDefined && totals.finalTotal > 0;
+    const payNote = totals.mixedCurrencies
+      ? 'Paiement indisponible : la caisse contient plusieurs devises. Retirez des articles pour n’avoir qu’une seule devise.'
+      : unsellable || !totals.finalDefined
+        ? 'Paiement indisponible : prix final, disponibilité, livraison et/ou taxes non définis pour ce panier. La livraison et les taxes sont actuellement « à définir » ; le bouton reste désactivé tant qu’ils ne sont pas configurés (aucun montant inventé ou mis à zéro).'
+        : 'Paiement PayPal ponctuel (compte PayPal et, si PayPal l’autorise pour le compte/pays, carte via les composants PayPal officiels). Montants recalculés et capture confirmée côté serveur avant validation de paiement.';
 
-    const orderItems = items.map(i => ({ productId: i.productId, choiceIndices: i.choiceIndices || [], quantity: i.quantity }));
-    const cartOrder = buildOrder(CATALOGUE, orderItems);
+    panel.querySelector('.panel-content').innerHTML = `
+      <div class="cart-list">${itemsHTML}</div>
+      <div class="cart-summary kifftech-checkout">
+        <h3 class="checkout-title">Récapitulatif de paiement KiffTech</h3>
+        ${this.renderTotalsSummaryHTML(totals)}
+        <p class="cart-note">${sanitizeHTML(payNote)}</p>
+        <div id="paypalCartContainer" class="paypal-container kifftech-paypal" aria-live="polite"></div>
+        <div id="paypalCardContainer" class="paypal-container kifftech-card" aria-live="polite"></div>
+        <div id="paypalCartStatus" class="pay-status" aria-live="polite"></div>
+        <p style="font-size:.7rem;color:var(--fg-muted);margin-top:.5rem;">Achat ponctuel uniquement. Aucun numéro de carte n’est collecté ni stocké par KiffTech (composants PayPal officiels). Le serveur recalcule les montants depuis le catalogue vérifié et ne marque une commande payée qu’après capture confirmée.</p>
+      </div>`;
 
-    const content = panel.querySelector('.panel-content');
-    content.innerHTML = `
-      <div style="margin-bottom:1.5rem;">
-        <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:.5rem;">Caisse (${totals.totalItems} article${totals.totalItems > 1 ? 's' : ''})</h2>
-        <p style="color:var(--fg-muted);font-size:.8rem;">${totals.uniqueItems} produit${totals.uniqueItems > 1 ? 's' : ''} différent${totals.uniqueItems > 1 ? 's' : ''}</p>
-      </div>
-      <div class="cart-items">${itemsHTML}</div>
-      <div class="cart-summary" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.5rem;margin-top:1.5rem;">
-        ${sousTotauxHTML}
-        <div style="display:flex;justify-content:space-between;padding:.5rem 0;">
-          <span>Livraison</span>
-          <span style="color:var(--fg-muted);font-weight:700;">À définir (requis pour le paiement)</span>
-        </div>
-        ${totalHTML}
-        <p style="font-size:.7rem;color:var(--fg-muted);margin-top:.5rem;">Montant recalculé côté serveur à partir du catalogue. Le paiement n’est possible que pour une offre vendable (prix final, disponibilité, devise, livraison et taxes définis).</p>
-        ${cartOrder.ok ? '' : `<p class="pay-unavailable" role="note" style="margin-top:.75rem">${sanitizeHTML(cartOrder.error || 'Paiement indisponible pour ce panier.')}</p>`}
-        <div id="paypalCartStatus" class="pay-status" aria-live="polite" style="margin-top:.75rem;"></div>
-        <div id="paypalCartContainer" class="paypal-container" aria-live="polite" style="margin-top:.75rem;"></div>
-        <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
-          <button class="btn-secondary" onclick="window.keffTech.switchTab('catalog')" style="flex:1;">Continuer mes achats</button>
-        </div>
-      </div>
-      `;
-    if (cartOrder.ok) {
-      this.renderPayPalButtons('#paypalCartContainer', orderItems, { mode: 'cart' });
+    panel.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.dataset.index, 10);
+        const item = cartManager.getItems()[index];
+        if (!item) return;
+        if (btn.dataset.action === 'inc') cartManager.updateQuantity(index, item.quantity + 1);
+        if (btn.dataset.action === 'dec') cartManager.updateQuantity(index, item.quantity - 1);
+        if (btn.dataset.action === 'remove') cartManager.remove(index);
+        this.renderCartPanel();
+      });
+    });
+
+    if (canPay) {
+      this.renderPayPalCheckout({ buttonsSelector: '#paypalCartContainer', cardSelector: '#paypalCardContainer', items, mode: 'cart' });
+    } else {
+      const c = panel.querySelector('#paypalCartContainer');
+      if (c) c.innerHTML = '<p class="pay-unavailable">Paiement indisponible pour cette caisse tant que le total final (sous-total, livraison, taxes, devise) n’est pas déterminé.</p>';
+      const cc = panel.querySelector('#paypalCardContainer');
+      if (cc) cc.innerHTML = '';
     }
-  }
-
-  updateCartQty(index, quantity) {
-    cartManager.updateQuantity(index, quantity);
-    if (state.currentTab === 'cart') this.renderCartPanel();
-  }
-
-  removeFromCart(index) {
-    cartManager.remove(index);
-    if (state.currentTab === 'cart') this.renderCartPanel();
-  }
-
-  checkout() {
-    this.showToast('Utilisez le bouton PayPal pour régler la caisse.', 'error');
-  }
-
-  async buyNow(productId, choiceIndices = null, containerSelector = null) {
-    const p = state.productsMap.get(productId) || state.products.find(x => x.id === productId);
-    if (!p) return;
-    const choice = Array.isArray(choiceIndices) ? choiceIndices : this.currentChoice(p);
-    const sel = resolveSelection(p, choice);
-    const sell = sellability(p, sel);
-    if (!sell.ok) {
-      this.showToast(formatSellabilityReason(sell.reasons), 'error');
-      return;
-    }
-    const items = [{ productId, choiceIndices: choice, quantity: 1 }];
-    if (containerSelector) {
-      const el = document.querySelector(containerSelector);
-      if (el) {
-        el.innerHTML = '<div class="pay-status">Chargement du paiement sécurisé…</div>';
-        await this.renderPayPalButtons(containerSelector, items, { mode: 'direct', productTitle: p.title });
-        return;
-      }
-    }
-    // fallback: show modal with PayPal buttons
-    this.modalBody.innerHTML = `
-      <h3 style="margin-bottom:.5rem;">Acheter maintenant</h3>
-      <p style="margin-bottom:1rem;color:var(--fg-muted);font-size:.85rem;">${sanitizeHTML(p.title)}${sel.label ? ' — ' + sanitizeHTML(sel.label) : ''}</p>
-      <p style="margin-bottom:1rem;font-weight:700;">${formatPrice(sel.prix, sel.devise || p.currency || 'EUR')}</p>
-      <div id="paypalModalStatus" class="pay-status" aria-live="polite"></div>
-      <div id="paypalModalContainer" class="paypal-container"></div>
-    `;
-    this.modal.hidden = false;
-    document.body.style.overflow = 'hidden';
-    await this.renderPayPalButtons('#paypalModalContainer', items, { mode: 'direct', productTitle: p.title });
   }
 
   async ensurePayPalSDK() {
-    if (window.paypal) return window.paypal;
+    if (window.paypal && window.__kifftechPaypalConfig) return { paypal: window.paypal, config: window.__kifftechPaypalConfig };
     if (this._paypalLoading) return this._paypalLoading;
     this._paypalLoading = (async () => {
-      const res = await fetch('./api/paypal/config', { headers: { 'Accept': 'application/json' } });
+      const res = await fetch('./api/paypal/config', { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       let cfg = null;
       try { cfg = await res.json(); } catch {}
       if (!res.ok || !cfg || !cfg.ok || !cfg.clientId) {
-        throw new Error((cfg && cfg.error) || 'Paiement non configuré.');
+        throw new Error((cfg && cfg.error) || 'Paiement non configuré côté serveur.');
       }
       await new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-kifftech-paypal-sdk="1"]');
+        if (existing) { existing.addEventListener('load', resolve, { once: true }); existing.addEventListener('error', () => reject(new Error('Impossible de charger le SDK PayPal.')), { once: true }); return; }
         const s = document.createElement('script');
+        s.dataset.kifftechPaypalSdk = '1';
         const params = new URLSearchParams({
           'client-id': cfg.clientId,
           currency: cfg.currency || 'EUR',
-          intent: 'capture',
+          intent: cfg.intent || 'capture',
           components: 'buttons,card-fields',
-          'enable-funding': 'card',
-          'disable-funding': 'paylater,venmo',
+          commit: 'true',
         });
         s.src = `https://www.paypal.com/sdk/js?${params.toString()}`;
         s.async = true;
@@ -1153,237 +1134,261 @@ class KiffTech{
         document.head.appendChild(s);
       });
       if (!window.paypal) throw new Error('SDK PayPal indisponible.');
-      return window.paypal;
-    })().catch(err => { this._paypalLoading = null; throw err; });
+      window.__kifftechPaypalConfig = cfg;
+      return { paypal: window.paypal, config: cfg };
+    })().finally(() => { this._paypalLoading = null; });
     return this._paypalLoading;
   }
 
-  async renderPayPalButtons(containerSelector, items, opts = {}) {
-    const container = document.querySelector(containerSelector);
-    if (!container) return;
-    container.innerHTML = '';
-    const statusSel = opts.mode === 'cart' ? '#paypalCartStatus' : (opts.mode === 'direct' ? (containerSelector === '#paypalModalContainer' ? '#paypalModalStatus' : '#paypalDirectContainer') : null);
-    const setStatus = (msg, type) => {
-      const el = statusSel ? document.querySelector(statusSel) : null;
-      if (el) { el.textContent = msg || ''; el.className = 'pay-status' + (type ? ' ' + type : ''); }
-    };
-    const cardWrapId = `${String(containerSelector).replace(/[^a-zA-Z0-9_-]/g, '')}-card`;
+  makePaymentRequestId(prefix = 'kt') {
     try {
-      setStatus('Chargement du paiement sécurisé…');
-      const paypal = await this.ensurePayPalSDK();
-      setStatus('');
-      container.innerHTML = `
-        <div class="pay-methods">
-          <div class="pay-method pay-method-paypal">
-            <div class="pay-method-title">PayPal</div>
-            <div id="${cardWrapId}-buttons"></div>
-          </div>
-          <div class="pay-divider"><span>ou</span></div>
-          <div class="pay-method pay-method-card">
-            <div class="pay-method-title">Carte bancaire</div>
-            <div id="${cardWrapId}-fields" class="card-fields-wrap"></div>
-          </div>
-        </div>`;
-
-      const btnTarget = `#${cardWrapId}-buttons`;
-      const cardTarget = `#${cardWrapId}-fields`;
-      paypal.Buttons({
-        style: { layout: 'vertical', shape: 'rect', label: 'pay' },
-        onClick: (data, actions) => {
-          const order = buildOrder(CATALOGUE, items);
-          if (!order.ok) {
-            setStatus(order.error || 'Paiement indisponible.', 'error');
-            this.showToast(order.error || 'Paiement indisponible.', 'error');
-            return actions.reject();
-          }
-          setStatus('');
-          return actions.resolve();
-        },
-        createOrder: async () => {
-          setStatus('Création de la commande sécurisée…');
-          const res = await fetch('./api/paypal/create-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data.ok || !data.id) {
-            const msg = data.error || 'Impossible de créer la commande.';
-            setStatus(msg, 'error');
-            throw new Error(msg);
-          }
-          setStatus('Commande créée. Finalisez le paiement dans la fenêtre PayPal.');
-          return data.id;
-        },
-        onApprove: async (data) => {
-          setStatus('Confirmation du paiement en cours…');
-          const res = await fetch('./api/paypal/capture-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderID: data.orderID }),
-          });
-          const result = await res.json().catch(() => ({}));
-          if (!res.ok || !result.ok || result.status !== 'COMPLETED') {
-            const msg = result.error || 'Le paiement n’a pas été confirmé.';
-            setStatus(msg, 'error');
-            this.showToast(msg, 'error');
-            return;
-          }
-          setStatus('Paiement confirmé. Merci pour votre achat.', 'success');
-          this.showToast('Paiement confirmé.', 'success');
-          if (opts.mode === 'cart') {
-            state.cart = [];
-            cartManager.save();
-            this.updateCartDisplay();
-            this.renderCartPanel();
-          }
-        },
-        onCancel: () => {
-          setStatus('Paiement annulé. Aucun montant n’a été débité.', 'info');
-          this.showToast('Paiement annulé.', 'error');
-        },
-        onError: (err) => {
-          console.warn('PayPal error', err);
-          setStatus('Erreur lors du paiement. Aucun débit confirmé.', 'error');
-          this.showToast('Erreur lors du paiement. Réessayez.', 'error');
-        },
-      }).render(btnTarget);
-
-      await this.renderCardFields(cardTarget, items, { ...opts, setStatus });
-    } catch (err) {
-      container.innerHTML = '';
-      setStatus(err && err.message ? err.message : 'Paiement indisponible.', 'error');
+      const rnd = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      return `${prefix}-${String(rnd).replace(/[^A-Za-z0-9._:-]/g, '').slice(0, 60)}`;
+    } catch {
+      return `${prefix}-${Date.now()}-${Math.floor(Math.random()*1e6)}`;
     }
   }
 
-  async renderCardFields(containerSelector, items, opts = {}) {
-    const container = document.querySelector(containerSelector);
-    if (!container) return;
-    const setStatus = opts.setStatus || (() => {});
+  async renderPayPalCheckout({ buttonsSelector, cardSelector = null, items, mode = 'cart', statusSelector = null }) {
+    const buttonsContainer = document.querySelector(buttonsSelector);
+    if (!buttonsContainer) return;
+    const cardContainer = cardSelector ? document.querySelector(cardSelector) : null;
+    const statusEl = statusSelector ? document.querySelector(statusSelector) : (mode === 'cart' ? document.querySelector('#paypalCartStatus') : document.querySelector('#paypalDirectStatus'));
+    const setStatus = (msg, type = 'info') => {
+      if (!statusEl) return;
+      statusEl.className = `pay-status ${type}`;
+      statusEl.textContent = msg || '';
+    };
+
+    const orderCheck = buildOrder(CATALOGUE, items);
+    if (!orderCheck.ok) {
+      buttonsContainer.innerHTML = `<p class="pay-unavailable">${sanitizeHTML(orderCheck.error || 'Paiement indisponible.')}</p>`;
+      if (cardContainer) cardContainer.innerHTML = '';
+      setStatus(orderCheck.error || 'Paiement indisponible.', 'error');
+      return;
+    }
+
+    if (buttonsContainer.dataset.rendering === '1') return;
+    buttonsContainer.dataset.rendering = '1';
+    buttonsContainer.innerHTML = '';
+    if (cardContainer) cardContainer.innerHTML = '';
+    setStatus('Chargement du paiement sécurisé PayPal…');
+
+    let sdk;
     try {
-      if (!window.paypal || !window.paypal.CardFields) {
-        container.innerHTML = '<p class="pay-unavailable">Paiement par carte personnalisé non disponible (composant carte indisponible). Utilisez PayPal ci-dessus.</p>';
-        return;
+      sdk = await this.ensurePayPalSDK();
+    } catch (e) {
+      buttonsContainer.innerHTML = `<p class="pay-unavailable">${sanitizeHTML(e.message || 'Paiement non configuré.')}</p>`;
+      setStatus(e.message || 'Paiement non configuré.', 'error');
+      buttonsContainer.dataset.rendering = '0';
+      return;
+    }
+
+    const paypal = sdk.paypal;
+    const env = (sdk.config && sdk.config.environment) || 'unknown';
+    const envLabel = env === 'sandbox' ? 'Sandbox' : env === 'live' ? 'Live' : 'environnement serveur';
+    const inFlight = { creating: false, capturing: false };
+
+    const createOrder = async () => {
+      if (inFlight.creating) throw new Error('Création de commande déjà en cours.');
+      inFlight.creating = true;
+      const requestId = this.makePaymentRequestId('create');
+      try {
+        const res = await fetch('./api/paypal/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items, requestId }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok || !data.id) throw new Error(data.error || 'Création de commande refusée.');
+        setStatus(`Commande PayPal créée (${envLabel}). Finalisez le paiement sans recharger la page.`, 'info');
+        return data.id;
+      } finally {
+        inFlight.creating = false;
       }
-      const cardFields = window.paypal.CardFields({
-        createOrder: async () => {
-          const order = buildOrder(CATALOGUE, items);
-          if (!order.ok) {
-            setStatus(order.error || 'Paiement indisponible.', 'error');
-            this.showToast(order.error || 'Paiement indisponible.', 'error');
-            throw new Error(order.error || 'Commande invalide.');
-          }
-          setStatus('Création de la commande sécurisée…');
-          const res = await fetch('./api/paypal/create-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items }),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || !data.ok || !data.id) {
-            const msg = data.error || 'Impossible de créer la commande.';
-            setStatus(msg, 'error');
-            throw new Error(msg);
-          }
-          setStatus('Saisissez vos informations de carte pour payer.');
-          return data.id;
+    };
+
+    const captureOrder = async (orderID) => {
+      if (inFlight.capturing) return { ok: false, error: 'Capture déjà en cours.' };
+      inFlight.capturing = true;
+      const requestId = this.makePaymentRequestId('capture');
+      try {
+        const res = await fetch('./api/paypal/capture-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderID, requestId }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok || data.status !== 'COMPLETED') {
+          throw new Error(data.error || 'Capture non confirmée par le serveur.');
+        }
+        return data;
+      } finally {
+        inFlight.capturing = false;
+      }
+    };
+
+    const onApproved = async (data) => {
+      setStatus('Paiement approuvé. Confirmation de la capture côté serveur…');
+      try {
+        const captured = await captureOrder(data.orderID);
+        setStatus(captured.alreadyCaptured ? 'Paiement déjà confirmé côté serveur.' : 'Paiement confirmé par le serveur. Merci pour votre commande.', 'success');
+        this.showToast(captured.alreadyCaptured ? 'Paiement déjà confirmé.' : 'Paiement confirmé.', 'success');
+        if (mode === 'cart') {
+          state.cart = [];
+          cartManager.save();
+          this.updateCartDisplay();
+        }
+      } catch (err) {
+        setStatus(err.message || 'Paiement non confirmé. Aucun paiement validé sans confirmation serveur.', 'error');
+        this.showToast(err.message || 'Paiement non confirmé.', 'error');
+      }
+    };
+
+    try {
+      const brandColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00ffc8';
+      const buttons = paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'pill',
+          label: 'pay',
+          tagline: false,
+          height: 45,
         },
-        onApprove: async (data) => {
-          setStatus('Confirmation du paiement en cours…');
-          const res = await fetch('./api/paypal/capture-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderID: data.orderID }),
-          });
-          const result = await res.json().catch(() => ({}));
-          if (!res.ok || !result.ok || result.status !== 'COMPLETED') {
-            const msg = result.error || 'Le paiement n’a pas été confirmé.';
-            setStatus(msg, 'error');
-            this.showToast(msg, 'error');
-            return;
-          }
-          setStatus('Paiement confirmé. Merci pour votre achat.', 'success');
-          this.showToast('Paiement confirmé.', 'success');
-          if (opts.mode === 'cart') {
-            state.cart = [];
-            cartManager.save();
-            this.updateCartDisplay();
-            this.renderCartPanel();
-          }
+        createOrder,
+        onApprove: (data) => onApproved(data),
+        onCancel: () => {
+          setStatus('Paiement annulé. Aucun débit confirmé.', 'info');
+          this.showToast('Paiement annulé.', 'error');
         },
         onError: (err) => {
-          console.warn('CardFields error', err);
-          setStatus('Erreur lors du paiement par carte. Aucun débit confirmé.', 'error');
-          this.showToast('Erreur lors du paiement par carte.', 'error');
-        },
-        style: {
-          input: { 'font-size': '16px', color: '#e6fff5' },
-          '.invalid': { color: '#ff6b6b' },
+          console.warn('PayPal button error', err);
+          setStatus('Erreur ou refus de paiement. Aucun paiement confirmé. Vous pouvez réessayer.', 'error');
         },
       });
 
-      if (!cardFields.isEligible || !cardFields.isEligible()) {
-        container.innerHTML = '<p class="pay-unavailable">Carte personnalisée non éligible sur ce compte/appareil. Utilisez le bouton PayPal (carte possible via PayPal si disponible).</p>';
-        return;
+      if (!buttons.isEligible()) {
+        buttonsContainer.innerHTML = '<p class="pay-unavailable">Boutons PayPal non éligibles dans ce contexte. Vérifiez la configuration et l’éligibilité du compte.</p>';
+      } else {
+        await buttons.render(buttonsContainer);
       }
 
-      const idBase = container.id || `card-${Date.now()}`;
-      container.id = idBase;
-      container.innerHTML = `
-        <div class="card-preview" aria-hidden="true">
-          <div class="card-preview-top"><span class="card-brand">CARTE BANCAIRE</span><span class="card-chip"></span></div>
-          <div class="card-preview-num">•••• •••• •••• ••••</div>
-          <div class="card-preview-bottom"><span>Nom du titulaire</span><span>MM/AA</span></div>
-        </div>
-        <div class="card-form">
-          <label class="card-label">Nom sur la carte</label>
-          <div id="${idBase}-name" class="card-field"></div>
-          <label class="card-label">Numéro de carte</label>
-          <div id="${idBase}-number" class="card-field"></div>
-          <div class="card-row">
-            <div><label class="card-label">Expiration</label><div id="${idBase}-expiry" class="card-field"></div></div>
-            <div><label class="card-label">CVV</label><div id="${idBase}-cvv" class="card-field"></div></div>
-          </div>
-          <button type="button" id="${idBase}-submit" class="btn-primary card-submit">Payer par carte</button>
-          <p class="card-note">Saisie sécurisée (champs hébergés PayPal). Aucune donnée de carte n’est stockée par KiffTech.</p>
-        </div>`;
-
-      const nameField = cardFields.NameField();
-      const numberField = cardFields.NumberField();
-      const expiryField = cardFields.ExpiryField();
-      const cvvField = cardFields.CVVField();
-      await Promise.all([
-        nameField.render(`#${idBase}-name`),
-        numberField.render(`#${idBase}-number`),
-        expiryField.render(`#${idBase}-expiry`),
-        cvvField.render(`#${idBase}-cvv`),
-      ]);
-
-      const submit = document.getElementById(`${idBase}-submit`);
-      if (submit) {
-        submit.addEventListener('click', async () => {
-          const order = buildOrder(CATALOGUE, items);
-          if (!order.ok) {
-            setStatus(order.error || 'Paiement indisponible.', 'error');
-            this.showToast(order.error || 'Paiement indisponible.', 'error');
-            return;
-          }
-          submit.disabled = true;
-          setStatus('Traitement du paiement par carte…');
+      // Champs de carte avancés PayPal (hébergés) : affichés uniquement si éligibles.
+      if (cardContainer) {
+        if (paypal.CardFields && typeof paypal.CardFields === 'function') {
           try {
-            await cardFields.submit();
-          } catch (err) {
-            console.warn('Card submit error', err);
-            setStatus('Paiement par carte refusé ou interrompu. Aucun débit confirmé.', 'error');
-          } finally {
-            submit.disabled = false;
+            const cardFields = paypal.CardFields({
+              createOrder,
+              onApprove: (data) => onApproved(data),
+            });
+            if (cardFields.isEligible && cardFields.isEligible()) {
+              const idBase = (cardContainer.id && cardContainer.id !== '') ? cardContainer.id : `card-${mode}-${Date.now()}`;
+              cardContainer.id = idBase;
+              cardContainer.innerHTML = `
+                <div class="pay-divider"><span>Paiement par carte (si éligible)</span></div>
+                <div class="card-fields-wrap kifftech-card-wrap">
+                  <div class="card-preview" aria-hidden="true">
+                    <div class="card-preview-top"><span class="card-brand">KIFFTECH · CARTE</span><span class="card-chip"></span></div>
+                    <div class="card-preview-num">•••• •••• •••• ••••</div>
+                    <div class="card-preview-bottom"><span>Titulaire</span><span>MM/AA</span></div>
+                  </div>
+                  <div class="card-form">
+                    <label class="card-label">Nom sur la carte</label>
+                    <div id="${idBase}-name" class="card-field"></div>
+                    <label class="card-label">Numéro de carte</label>
+                    <div id="${idBase}-number" class="card-field"></div>
+                    <div class="card-row">
+                      <div><label class="card-label">Expiration</label><div id="${idBase}-expiry" class="card-field"></div></div>
+                      <div><label class="card-label">CVV</label><div id="${idBase}-cvv" class="card-field"></div></div>
+                    </div>
+                    <button type="button" id="${idBase}-submit" class="btn-primary card-submit">Payer par carte</button>
+                    <p class="card-note">Saisie sécurisée par champs hébergés PayPal. Aucune donnée de carte n’est collectée ni stockée par KiffTech.</p>
+                  </div>
+                </div>`;
+              const nameField = cardFields.NameField();
+              const numberField = cardFields.NumberField();
+              const expiryField = cardFields.ExpiryField();
+              const cvvField = cardFields.CVVField();
+              await Promise.all([
+                nameField.render(`#${idBase}-name`),
+                numberField.render(`#${idBase}-number`),
+                expiryField.render(`#${idBase}-expiry`),
+                cvvField.render(`#${idBase}-cvv`),
+              ]);
+              const submit = document.getElementById(`${idBase}-submit`);
+              if (submit) {
+                submit.addEventListener('click', async () => {
+                  const current = buildOrder(CATALOGUE, items);
+                  if (!current.ok) {
+                    setStatus(current.error || 'Paiement indisponible.', 'error');
+                    return;
+                  }
+                  submit.disabled = true;
+                  setStatus('Traitement du paiement par carte…');
+                  try {
+                    await cardFields.submit();
+                  } catch (err) {
+                    console.warn('Card submit error', err);
+                    setStatus('Paiement par carte refusé, annulé ou interrompu. Aucun débit confirmé.', 'error');
+                  } finally {
+                    submit.disabled = false;
+                  }
+                });
+              }
+            } else {
+              cardContainer.innerHTML = '<p class="pay-unavailable">Champs carte avancés non éligibles pour ce compte/pays/appareil. Le paiement par carte peut rester disponible via PayPal selon éligibilité.</p>';
+            }
+          } catch (e) {
+            console.warn('CardFields unavailable', e);
+            cardContainer.innerHTML = '<p class="pay-unavailable">Champs carte avancés indisponibles. Utilisez le bouton PayPal si disponible.</p>';
           }
-        });
+        }
       }
+
+      setStatus(`Paiement sécurisé PayPal (${envLabel}, achat ponctuel). Vérifiez le total final avant de payer.`, 'info');
     } catch (e) {
-      console.warn('CardFields unavailable', e);
-      container.innerHTML = '<p class="pay-unavailable">Paiement par carte personnalisé indisponible. Utilisez le bouton PayPal.</p>';
+      console.error('PayPal render error', e);
+      buttonsContainer.innerHTML = `<p class="pay-unavailable">${sanitizeHTML(e.message || 'Impossible d’afficher le paiement PayPal.')}</p>`;
+      setStatus(e.message || 'Impossible d’afficher le paiement PayPal.', 'error');
+    } finally {
+      buttonsContainer.dataset.rendering = '0';
     }
+  }
+
+  async buyNow(productId, choiceIndices = [], containerSelector = '#paypalDirectContainer') {
+    const p = state.productsMap.get(productId) || state.products.find(x => x.id === productId);
+    if (!p) return;
+    const items = [{ productId, choiceIndices: Array.isArray(choiceIndices) ? choiceIndices : this.currentChoice(p), quantity: 1 }];
+    const order = buildOrder(CATALOGUE, items);
+    if (!order.ok) {
+      this.showToast(order.error || 'Paiement indisponible pour cet article.', 'error');
+      const c = document.querySelector(containerSelector);
+      if (c) c.innerHTML = `<p class="pay-unavailable">${sanitizeHTML(order.error || 'Paiement indisponible.')}</p>`;
+      return;
+    }
+
+    const totalsHTML = this.renderTotalsSummaryHTML({
+      subtotal: order.totals.subtotal,
+      shipping: order.totals.shipping,
+      taxes: order.totals.taxes,
+      devise: order.totals.currency,
+      finalTotal: order.totals.total,
+    }, { compact: true });
+
+    this.modalBody.innerHTML = `
+      <div class="kifftech-checkout kifftech-checkout-modal">
+        <h3 class="checkout-title">Paiement KiffTech — ${sanitizeHTML(p.title)}</h3>
+        ${totalsHTML}
+        <p class="cart-note">Achat ponctuel. Vérifiez le sous-total, la livraison, les taxes, la devise et le total final avant l’ouverture/la confirmation du paiement.</p>
+        <div id="paypalModalContainer" class="paypal-container kifftech-paypal" aria-live="polite"></div>
+        <div id="paypalModalCardContainer" class="paypal-container kifftech-card" aria-live="polite"></div>
+        <div id="paypalDirectStatus" class="pay-status" aria-live="polite"></div>
+        <p style="font-size:.7rem;color:var(--fg-muted);margin-top:.5rem;">Composants PayPal officiels. Aucune collecte/stockage direct des cartes par KiffTech. Capture confirmée côté serveur uniquement.</p>
+      </div>`;
+    this.modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    await this.renderPayPalCheckout({ buttonsSelector: '#paypalModalContainer', cardSelector: '#paypalModalCardContainer', items, mode: 'direct', statusSelector: '#paypalDirectStatus' });
   }
 
     closeModal(){this.modal.hidden=true;document.body.style.overflow='';}

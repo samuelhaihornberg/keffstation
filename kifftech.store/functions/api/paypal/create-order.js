@@ -1,6 +1,10 @@
 import { CATALOGUE } from '../../../data/catalogue.js';
 import { buildOrder } from '../../../lib/payment-core.js';
-import { paypalFetch, jsonResponse } from '../_lib/paypal.js';
+import { paypalFetch, jsonResponse, safeRequestId } from '../_lib/paypal.js';
+
+function amountObj(currency, value) {
+  return { currency_code: currency, value: Number(value).toFixed(2) };
+}
 
 export async function onRequestPost(context) {
   let body;
@@ -21,17 +25,19 @@ export async function onRequestPost(context) {
       intent: 'CAPTURE',
       purchase_units: [{
         amount: {
-          currency_code: order.currency,
-          value: order.total.toFixed(2),
+          currency_code: order.totals.currency,
+          value: order.totals.total.toFixed(2),
           breakdown: {
-            item_total: { currency_code: order.currency, value: order.total.toFixed(2) },
+            item_total: amountObj(order.totals.currency, order.totals.subtotal),
+            shipping: amountObj(order.totals.currency, order.totals.shipping),
+            tax_total: amountObj(order.totals.currency, order.totals.taxes),
           },
         },
         items: order.lines.map(l => ({
           name: String(l.title || 'Article').slice(0, 127),
           description: l.variant ? String(l.variant).slice(0, 127) : undefined,
           quantity: String(l.quantity),
-          unit_amount: { currency_code: order.currency, value: Number(l.unitAmount).toFixed(2) },
+          unit_amount: amountObj(order.totals.currency, l.unitAmount),
         })),
       }],
       application_context: {
@@ -40,15 +46,19 @@ export async function onRequestPost(context) {
       },
     };
 
+    const requestId = safeRequestId(body && body.requestId);
+    const headers = requestId ? { 'PayPal-Request-Id': requestId, 'Prefer': 'return=representation' } : { 'Prefer': 'return=representation' };
+
     const created = await paypalFetch(context.env, '/v2/checkout/orders', {
       method: 'POST',
+      headers,
       body: JSON.stringify(payload),
     });
 
     if (!created || !created.id) {
       return jsonResponse({ ok: false, error: 'Création de commande PayPal impossible.' }, 502);
     }
-    return jsonResponse({ ok: true, id: created.id });
+    return jsonResponse({ ok: true, id: created.id, status: created.status || 'CREATED', totals: order.totals });
   } catch (err) {
     const status = err && err.status ? err.status : 502;
     const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de créer la commande PayPal.';
