@@ -43,6 +43,13 @@ def body(items):
             out.append(f'<h2>{inline(t)}</h2>')
         else:
             out.append(f'<p>{inline(t)}</p>')
+        if str(n) in MAP.get('blocs_apres', {}):
+            if in_ul: out.append('</ul>'); in_ul = False
+            b = MAP['blocs_apres'][str(n)]
+            out.append('<div class="policy-block">')
+            out.append(f'<p class="policy-title">{html.escape(b["titre"])}</p>')
+            out += [f'<p>{html.escape(x)}</p>' for x in b['paragraphes']]
+            out.append('</div>')
     if in_ul: out.append('</ul>')
     return '\n'.join(out)
 

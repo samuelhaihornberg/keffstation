@@ -1,6 +1,19 @@
 {
-  "provenance": "Le texte source (commit 229ddb2) contient déjà les valeurs renseignées par le responsable. Ce fichier ne sert plus qu’au bloc de politique de retours.",
-  "remplacements": {},
+  "provenance": "Le texte source (commit 229ddb2) contient les valeurs fournies par le responsable. Ce fichier ajoute : l’URL vérifiée de la politique de confidentialité (ligne 100), l’inventaire des cookies et stockages relevé dans le code (ligne 185) et le bloc de politique de retours (ligne 77).",
+  "remplacements": {
+    "100": [
+      [
+        "https://kiffstation.com/kifftech.store/politique-confidentialite.html",
+        "https://samuelhaihornberg.github.io/keffstation/kifftech.store/politique-confidentialite.html"
+      ]
+    ],
+    "185": [
+      [
+        "[À COMPLÉTER AVANT PUBLICATION]",
+        "Inventaire relevé dans le code de kifftech.store (15/11/2026) ci-dessous. Mécanisme de consentement : [À COMPLÉTER]"
+      ]
+    ]
+  },
   "bloc_politique_retours": {
     "ligne": 77,
     "titre": "Politique de retours (texte fourni par le responsable de la boutique)",
@@ -10,5 +23,20 @@
       "Durée de la politique de retour et de remboursement : 3 jours si le colis n’est pas reçu.",
       "Ces règles s’appliquent sous réserve des droits impératifs des consommateurs. Pour un consommateur, le délai légal de rétractation du pays de résidence prévaut sur les délais ci-dessus. Dans l’Union européenne, ce délai est en principe de 14 jours à compter de la réception pour les ventes à distance (à vérifier par un professionnel)."
     ]
+  },
+  "blocs_apres": {
+    "185": {
+      "titre": "Inventaire des cookies et du stockage local",
+      "paragraphes": [
+        "Cookie kt_media_rights_consent : mémorise le choix d’accepter ou de refuser la validation des droits médias. Posé par JavaScript, chemin /, SameSite=Lax, durée 180 jours. Non publicitaire, non transmis à des tiers.",
+        "Stockage local kifftech-cart-v1 : contenu du panier, conservé sur l’appareil jusqu’à suppression par l’utilisateur ou vidage du stockage du navigateur.",
+        "Stockage local kifftech-subscription-v1 : état d’une souscription de démonstration, sans paiement associé. Conservé sur l’appareil jusqu’à suppression.",
+        "Cache du service worker kifftech-v24 : copie locale des fichiers de l’application pour le fonctionnement hors ligne. Aucune donnée personnelle.",
+        "PayPal : son SDK est chargé depuis paypal.com lors du paiement. PayPal peut déposer ses propres cookies et stockages, selon sa politique.",
+        "YouTube (youtube-nocookie.com) : lecteur intégré sur les fiches produits qui ont une vidéo officielle. Le lecteur peut déposer des cookies selon le réglage du navigateur.",
+        "Site racine KiffStation (hors kifftech.store) : stockage local kiffstation_cookies_accepted et kiffstation_cookies_accepted_at, qui mémorisent le choix de la bannière cookies.",
+        "Aucun outil de mesure d’audience ni publicitaire n’a été détecté dans le code de kifftech.store."
+      ]
+    }
   }
 }

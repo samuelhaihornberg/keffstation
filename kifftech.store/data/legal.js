@@ -1,13 +1,13 @@
-/* Conditions et politique de la boutique (pages : conditions.html, politique-confidentialite.html).
-   - termsUrl / privacyUrl : pages publiées.
-   - termsVersion : version du document (0.1 = projet).
-   - termsValidated : NE PASSER À true QU'APRÈS validation juridique et complétion des champs [À COMPLÉTER].
-     Tant qu'il vaut false, le serveur refuse la création de commande (legal_not_configured) et le front
-     désactive le paiement. */
+/* Conditions et politique de la boutique.
+   Pages publiées (URL vérifiées le 15/11/2026, HTTP 200) :
+   - conditions.html : Partie I (Conditions d’utilisation et de vente)
+   - politique-confidentialite.html : Partie II (Politique de confidentialité)
+   termsValidated doit rester false tant que les champs [À COMPLÉTER] et la validation juridique ne sont pas faits.
+   Tant qu'il vaut false, le serveur refuse la création de commande (legal_not_configured) et le front désactive le paiement. */
 export const LEGAL = {
   termsUrl: 'https://samuelhaihornberg.github.io/keffstation/kifftech.store/conditions.html',
   privacyUrl: 'https://samuelhaihornberg.github.io/keffstation/kifftech.store/politique-confidentialite.html',
   termsVersion: '0.1',
-  termsDate: '',
+  termsDate: '15 novembre 2026',
   termsValidated: false,
 };

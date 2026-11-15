@@ -12,7 +12,7 @@ Source : `docs/source/KiffStation_conditions_utilisation_et_confidentialite.txt`
 | Partie II | 6. DURÉES DE CONSERVATION | 174 | [DURÉE LÉGALE À DÉTERMINER] |
 | Partie II | 6. DURÉES DE CONSERVATION | 176 | [DURÉE À COMPLÉTER] |
 | Partie II | 6. DURÉES DE CONSERVATION | 177 | [DURÉE À COMPLÉTER] |
-| Partie II | 7. COOKIES ET STOCKAGE LOCAL | 185 | [À COMPLÉTER AVANT PUBLICATION] |
+| Partie II | 7. COOKIES ET STOCKAGE LOCAL | 185 | [À COMPLÉTER] |
 
 Total restant : 9 occurrences (dont l’en-tête de date, présent dans les deux pages).
 
