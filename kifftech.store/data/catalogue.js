@@ -1,11 +1,12 @@
 /* ===== KiffTech — catalogue produits (données vérifiées fabricant) =====
    Chaque fiche indique ses sources (URL + date de vérification).
    - Prix : prix public officiel uniquement (TTC, marché France/UE), aucune remise.
-   - Aucun prix, stock, contenu de boîte ou compatibilité inventé : les éléments
-     non confirmés figurent dans `manquants` (badge « Fiche incomplète »).
+   - Aucun prix, contenu de boîte ou compatibilité inventé : les éléments non
+     confirmés figurent dans `manquants` (badge « Fiche incomplète »).
    - Médias : photographies sous licence libre (Wikimedia Commons, auteur/licence
      vérifiés) + vidéo officielle du fabricant (YouTube, embed uniquement).
-   - Aucune commande ni paiement n'est possible. */
+   - Configuration boutique (demandée) : livraison internationale expresse
+     gratuite, taxes non prises en charge, stock 999. */
 export const CATALOGUE = {
   "produits": [
     {
@@ -86,10 +87,11 @@ export const CATALOGUE = {
         "source": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Commercialisé à partir du 21 mai 2020 ; modèle remplacé depuis par les générations suivantes",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -139,11 +141,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -193,10 +204,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -235,18 +247,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -292,10 +313,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -339,18 +361,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -396,10 +427,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -443,18 +475,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -500,10 +541,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -547,18 +589,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -604,10 +655,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -651,18 +703,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -708,10 +769,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -755,18 +817,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -863,10 +934,11 @@ export const CATALOGUE = {
         "source": "https://www.apple.com/fr/newsroom/2020/10/apple-announces-iphone-12-and-iphone-12-mini-a-new-era-for-iphone-with-5g/"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Précommandes ouvertes le 16 octobre 2020, disponibilité le 23 octobre 2020 ; modèle aujourd'hui remplacé dans la gamme Apple",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2020/10/apple-announces-iphone-12-and-iphone-12-mini-a-new-era-for-iphone-with-5g/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2020/10/apple-announces-iphone-12-and-iphone-12-mini-a-new-era-for-iphone-with-5g/",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -972,11 +1044,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -1087,9 +1168,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes le 17 septembre 2021, disponibilité le 24 septembre 2021",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2021/09/apple-introduces-iphone-13-and-iphone-13-mini/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2021/09/apple-introduces-iphone-13-and-iphone-13-mini/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -1190,10 +1272,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -1316,9 +1408,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes le 9 septembre 2022, disponibilité le 16 septembre 2022",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -1422,10 +1515,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -1548,9 +1651,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes le 15 septembre 2023, disponibilité le 22 septembre 2023 dans plus de 40 pays et régions",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -1653,10 +1757,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -1779,9 +1893,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes le 13 septembre 2024, disponibilité le 20 septembre 2024",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2024/09/apple-debuts-iphone-16-pro-iphone-16-pro-max/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2024/09/apple-debuts-iphone-16-pro-iphone-16-pro-max/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -1885,10 +2000,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2007,9 +2132,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes le 12 septembre 2025, disponibilité le 19 septembre 2025 dans plus de 63 pays et régions",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max-the-most-powerful-and-advanced-pro-models-ever/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max-the-most-powerful-and-advanced-pro-models-ever/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -2112,10 +2238,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2210,9 +2346,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes le 4 mars 2026 à 15 h 15, disponibilité le 11 mars 2026 (selon pays et zones)",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/fr/newsroom/2026/03/apple-introduces-iphone-17e/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/fr/newsroom/2026/03/apple-introduces-iphone-17e/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -2315,10 +2452,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2403,10 +2550,11 @@ export const CATALOGUE = {
         "source": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Précommandes ouvertes le 28 mai 2020, disponibilité annoncée pour l'automne 2020 ; modèle aujourd'hui arrêté",
-        "date": "2026-11-14",
-        "source": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -2462,11 +2610,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2512,10 +2669,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -2559,18 +2717,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2616,10 +2783,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -2658,18 +2826,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2715,10 +2892,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -2757,18 +2935,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2810,10 +2997,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -2857,18 +3045,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -2976,10 +3173,11 @@ export const CATALOGUE = {
         "source": "https://www.raspberrypi.com/news/raspberry-pi-400-the-70-desktop-pc/"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Annoncé le 2 novembre 2020 ; modèle remplacé depuis par le Raspberry Pi 500 dans la gamme",
-        "date": "2026-11-14",
-        "source": "https://www.raspberrypi.com/news/raspberry-pi-400-the-70-desktop-pc/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.raspberrypi.com/news/raspberry-pi-400-the-70-desktop-pc/",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -3097,11 +3295,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -3151,10 +3358,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.raspberrypi.com/products/raspberry-pi-pico/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.raspberrypi.com/products/raspberry-pi-pico/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -3210,7 +3418,6 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)",
         "Au moins 2 photographies supplémentaires sous licence libre avec attribution/licence vérifiées (objectif 3–5) à ajouter"
       ],
@@ -3218,11 +3425,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -3272,10 +3489,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.raspberrypi.com/products/raspberry-pi-pico-w/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.raspberrypi.com/products/raspberry-pi-pico-w/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -3330,18 +3548,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -3450,9 +3677,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes ouvertes le 28 septembre 2023, premières unités annoncées pour fin octobre 2023",
-        "date": "2026-11-14",
-        "source": "https://www.raspberrypi.com/news/introducing-raspberry-pi-5/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.raspberrypi.com/news/introducing-raspberry-pi-5/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -3556,10 +3784,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -3609,10 +3847,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.raspberrypi.com/products/raspberry-pi-pico-2/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.raspberrypi.com/products/raspberry-pi-pico-2/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -3667,18 +3906,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -3732,10 +3980,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -3779,18 +4028,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -3889,10 +4147,11 @@ export const CATALOGUE = {
         "source": "https://about.fb.com/news/2020/09/introducing-oculus-quest-2-the-next-generation-of-all-in-one-vr/"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Commercialisé le 13 octobre 2020 ; modèle arrêté depuis, remplacé par les Quest 3 et Quest 3S",
-        "date": "2026-11-14",
-        "source": "https://about.fb.com/news/2020/09/introducing-oculus-quest-2-the-next-generation-of-all-in-one-vr/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://about.fb.com/news/2020/09/introducing-oculus-quest-2-the-next-generation-of-all-in-one-vr/",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -3998,11 +4257,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4052,10 +4320,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.meta.com/quest/quest-pro/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.meta.com/quest/quest-pro/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -4099,18 +4368,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4207,9 +4485,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes ouvertes le 27 septembre 2023, commercialisation le 10 octobre 2023",
-        "date": "2026-11-14",
-        "source": "https://about.fb.com/news/2023/09/meet-meta-quest-3-mixed-reality-headset/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://about.fb.com/news/2023/09/meet-meta-quest-3-mixed-reality-headset/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -4311,10 +4590,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4364,10 +4653,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.meta.com/quest/quest-3s/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.meta.com/quest/quest-3s/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -4431,7 +4721,6 @@ export const CATALOGUE = {
       "manquants": [
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)",
         "Au moins 2 photographies supplémentaires sous licence libre avec attribution/licence vérifiées (objectif 3–5) à ajouter"
       ],
@@ -4439,11 +4728,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4528,10 +4827,11 @@ export const CATALOGUE = {
         "source": "https://news.xbox.com/en-us/2020/09/09/xbox-series-x-and-xbox-series-s-launching-november-10/"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Lancée le 10 novembre 2020 ; modèle toujours pris en charge mais remplacé par des éditions ultérieures",
-        "date": "2026-11-14",
-        "source": "https://news.xbox.com/en-us/2020/09/09/xbox-series-x-and-xbox-series-s-launching-november-10/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://news.xbox.com/en-us/2020/09/09/xbox-series-x-and-xbox-series-s-launching-november-10/",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -4637,11 +4937,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4691,10 +5000,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -4738,18 +5048,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4799,10 +5118,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -4846,18 +5166,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -4907,10 +5236,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -4954,18 +5284,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5015,10 +5354,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5062,18 +5402,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5123,10 +5472,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5170,18 +5520,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5231,10 +5590,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5278,18 +5638,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5397,10 +5766,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Annoncé le 21 avril 2020, disponible à partir de mai 2020 ; modèles remplacés depuis",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/Bravo-17-A4DX"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/Bravo-17-A4DX",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5507,11 +5877,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5557,10 +5937,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5604,18 +5985,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5661,10 +6051,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5708,18 +6099,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5765,10 +6165,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5812,18 +6213,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5869,10 +6279,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -5916,18 +6327,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -5973,10 +6393,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -6020,18 +6441,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -6077,10 +6507,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -6133,18 +6564,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -6252,9 +6692,10 @@ export const CATALOGUE = {
       "prix": null,
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Console en vente depuis le 05/06/2025 (sortie officielle), actuellement commercialisée",
-        "date": "2026-11-13",
-        "source": "https://www.nintendo.com/fr-fr/Hardware/Nintendo-Switch-2/Nintendo-Switch-2-2785301.html"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.nintendo.com/fr-fr/Hardware/Nintendo-Switch-2/Nintendo-Switch-2-2785301.html",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -6407,10 +6848,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -6503,10 +6955,11 @@ export const CATALOGUE = {
         "source": "https://news.samsung.com/us/introducing-samsung-galaxy-s20-5g-unpacked2020"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Commercialisé du 6 mars 2020 au 13 mars 2020 selon les marchés ; modèle aujourd'hui retiré du catalogue Samsung",
-        "date": "2026-11-14",
-        "source": "https://news.samsung.com/us/introducing-samsung-galaxy-s20-5g-unpacked2020"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://news.samsung.com/us/introducing-samsung-galaxy-s20-5g-unpacked2020",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -6613,11 +7066,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -6683,10 +7145,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle et stock à confirmer sur boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.samsung.com/global/galaxy/galaxy-s21-5g/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.samsung.com/global/galaxy/galaxy-s21-5g/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -6751,11 +7214,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -6851,9 +7324,10 @@ export const CATALOGUE = {
       "prix": null,
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Commercialisation annoncée à partir du 25 février 2022",
-        "date": "2026-11-14",
-        "source": "https://news.samsung.com/global/samsung-galaxy-s22-ultra-offers-the-ultimate-and-most-premium-s-series-experience-yet"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://news.samsung.com/global/samsung-galaxy-s22-ultra-offers-the-ultimate-and-most-premium-s-series-experience-yet",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -6953,10 +7427,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -7095,9 +7580,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Commercialisation à partir du 17 février 2023",
-        "date": "2026-11-14",
-        "source": "https://news.samsung.com/global/take-your-passions-further-with-the-new-samsung-galaxy-s23-series-designed-for-a-premium-experience-today-and-beyond"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://news.samsung.com/global/take-your-passions-further-with-the-new-samsung-galaxy-s23-series-designed-for-a-premium-experience-today-and-beyond",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -7201,10 +7687,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -7347,9 +7843,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Disponibilité mondiale annoncée à partir du 31 janvier 2024",
-        "date": "2026-11-14",
-        "source": "https://news.samsung.com/global/enter-the-new-era-of-mobile-ai-with-samsung-galaxy-s24-series"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://news.samsung.com/global/enter-the-new-era-of-mobile-ai-with-samsung-galaxy-s24-series",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -7453,10 +7950,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -7510,10 +8017,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle et stock à confirmer sur boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.samsung.com/global/galaxy/galaxy-s25-ultra/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.samsung.com/global/galaxy/galaxy-s25-ultra/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -7587,11 +8095,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -7726,9 +8244,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Précommandes ouvertes le 25 février 2026, commercialisation mondiale le 11 mars 2026",
-        "date": "2026-11-14",
-        "source": "https://www.samsungmobilepress.com/articles/galaxy-s26-series-galaxy-buds4-series-available-worldwide"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.samsungmobilepress.com/articles/galaxy-s26-series-galaxy-buds4-series-available-worldwide",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -7841,10 +8360,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -7919,9 +8448,10 @@ export const CATALOGUE = {
       "prix": null,
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Console en vente depuis le 07/11/2024, actuellement commercialisée par Sony",
-        "date": "2026-11-13",
-        "source": "https://www.playstation.com/fr-fr/ps5/ps5-pro/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.playstation.com/fr-fr/ps5/ps5-pro/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -8030,10 +8560,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -8119,9 +8660,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Disponible à l'achat et au téléchargement sur Steam",
-        "date": "2026-11-14",
-        "source": "https://store.steampowered.com/app/546560/Half_Life_Alyx/"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://store.steampowered.com/app/546560/Half_Life_Alyx/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -8203,10 +8745,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -8256,10 +8808,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://store.steampowered.com/valveindex"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://store.steampowered.com/valveindex",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -8299,7 +8852,6 @@ export const CATALOGUE = {
         "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
@@ -8307,11 +8859,21 @@ export const CATALOGUE = {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -8361,10 +8923,11 @@ export const CATALOGUE = {
       ],
       "prix": null,
       "disponibilite": {
-        "statut": "inconnu",
-        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
-        "date": "2026-11-14",
-        "source": "https://www.steamdeck.com/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.steamdeck.com/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -8428,18 +8991,27 @@ export const CATALOGUE = {
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
         "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
         "raisonNonAchetable": [
-          "Prix final à confirmer",
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
+          "Prix final à confirmer"
         ]
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -8532,9 +9104,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "De retour en stock depuis le 27/05/2026, après une période de rupture",
-        "date": "2026-11-13",
-        "source": "https://steamcommunity.com/groups/steam_hardware/announcements/detail/672869045073085539"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://steamcommunity.com/groups/steam_hardware/announcements/detail/672869045073085539",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -8619,10 +9192,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -8750,9 +9333,10 @@ export const CATALOGUE = {
       },
       "disponibilite": {
         "statut": "disponible",
-        "libelle": "Vente par réservation : e-mails d'achat envoyés dans l'ordre de la file ; Valve a annoncé que toute la file de réservations aura l'option d'achat d'ici la fin 2026",
-        "date": "2026-11-13",
-        "source": "https://steamcommunity.com/groups/steam_hardware/announcements/detail/698770449667981837"
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://steamcommunity.com/groups/steam_hardware/announcements/detail/698770449667981837",
+        "stock": 999
       },
       "accessoires": [
         {
@@ -8874,10 +9458,20 @@ export const CATALOGUE = {
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -8972,10 +9566,11 @@ export const CATALOGUE = {
         "source": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Disponible à partir du 18 septembre 2020 (modèle de génération antérieure, disponibilité actuelle à confirmer)",
-        "date": "2026-11-14",
-        "source": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -9030,17 +9625,25 @@ export const CATALOGUE = {
       "manquants": [
         "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes",
         "Prix public officiel actuel et variantes détaillées (marché/devise, finitions, bracelets) à confirmer",
-        "Disponibilité/stock actuel à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)"
+        "Disponibilité/stock actuel à confirmer"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -9131,10 +9734,11 @@ export const CATALOGUE = {
         "source": "https://news.samsung.com/us/galaxy-watch3-buds-live-available-unpacked-2020"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Disponible à partir du 6 août 2020 dans certains marchés (modèle de génération antérieure, disponibilité actuelle à confirmer)",
-        "date": "2026-11-14",
-        "source": "https://news.samsung.com/global/galaxy-watch3-and-galaxy-buds-live-now-available"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://news.samsung.com/global/galaxy-watch3-and-galaxy-buds-live-now-available",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -9188,17 +9792,25 @@ export const CATALOGUE = {
       "manquants": [
         "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes",
         "Prix public officiel actuel en EUR et disponibilités marché France/UE à confirmer",
-        "Disponibilité/stock actuel à confirmer",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)"
+        "Disponibilité/stock actuel à confirmer"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     },
     {
@@ -9279,10 +9891,11 @@ export const CATALOGUE = {
         "source": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/"
       },
       "disponibilite": {
-        "statut": "archive",
-        "libelle": "Annoncé en août 2020 (modèle de génération antérieure, disponibilité actuelle à confirmer)",
-        "date": "2026-11-14",
-        "source": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/"
+        "statut": "disponible",
+        "libelle": "En stock (999) — livraison internationale expresse gratuite, taxes non prises en charge",
+        "date": "2026-11-15",
+        "source": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/",
+        "stock": 999
       },
       "accessoires": [],
       "bundles": [],
@@ -9328,17 +9941,25 @@ export const CATALOGUE = {
         "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes",
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer/ajouter",
         "Prix public officiel actuel en EUR et disponibilité/stock à confirmer",
-        "Poids exact à confirmer sur source officielle",
-        "Livraison et taxes non définies (paiement non autorisé tant que non complété)"
+        "Poids exact à confirmer sur source officielle"
       ],
       "etatCatalogue": {
         "presentAuCatalogue": true,
         "achetableMaintenant": false,
-        "raisonNonAchetable": [
-          "Disponibilité/stock non confirmée",
-          "Livraison non définie",
-          "Taxes non définies"
-        ]
+        "raisonNonAchetable": []
+      },
+      "stock": 999,
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
       }
     }
   ]

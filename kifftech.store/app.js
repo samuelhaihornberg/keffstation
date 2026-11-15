@@ -787,7 +787,7 @@ class KiffTech{
           <div class="detail-ref">Sortie officielle : ${sanitizeHTML(p.dateSortie ? this.formatDate(p.dateSortie) : String(p.annee))}</div>
           <div class="etat-catalogue ${etat.achetable ? 'is-buyable' : 'is-present'}">
             <strong>${etat.achetable ? 'Achetable maintenant' : 'Présent au catalogue'}</strong>
-            <p>${etat.achetable ? 'Prix final, variante, disponibilité, livraison et taxes confirmés.' : 'Fiche réelle consultable. Achat impossible tant que prix final, variante, disponibilité, livraison et taxes ne sont pas confirmés.'}${!etat.achetable && etat.raisons.length ? ' ' + sanitizeHTML(etat.raisons.join(', ')) + '.' : ''}</p>
+            <p>${etat.achetable ? 'Prix final, variante, disponibilité, livraison et taxes confirmés.' : 'Fiche consultable. Achat possible uniquement si prix final, variante, disponibilité/stock, livraison et taxes sont confirmés.'}${!etat.achetable && etat.raisons.length ? ' ' + sanitizeHTML(etat.raisons.join(', ')) + '.' : ''}</p>
           </div>
         </div>
       </div>
@@ -1068,7 +1068,7 @@ class KiffTech{
     const payNote = totals.mixedCurrencies
       ? 'Paiement indisponible : la caisse contient plusieurs devises. Retirez des articles pour n’avoir qu’une seule devise.'
       : unsellable || !totals.finalDefined
-        ? 'Paiement indisponible : prix final, disponibilité, livraison et/ou taxes non définis pour ce panier. La livraison et les taxes sont actuellement « à définir » ; le bouton reste désactivé tant qu’ils ne sont pas configurés (aucun montant inventé ou mis à zéro).'
+        ? 'Paiement indisponible : prix final, disponibilité, livraison, taxes, devise ou stock non valides pour ce panier. Le paiement reste désactivé tant que le total final n’est pas déterminé.'
         : 'Paiement PayPal ponctuel (compte PayPal et, si PayPal l’autorise pour le compte/pays, carte via les composants PayPal officiels). Montants recalculés et capture confirmée côté serveur avant validation de paiement.';
 
     panel.querySelector('.panel-content').innerHTML = `
@@ -1099,7 +1099,7 @@ class KiffTech{
       this.renderPayPalCheckout({ buttonsSelector: '#paypalCartContainer', cardSelector: '#paypalCardContainer', items, mode: 'cart' });
     } else {
       const c = panel.querySelector('#paypalCartContainer');
-      if (c) c.innerHTML = '<p class="pay-unavailable">Paiement indisponible pour cette caisse tant que le total final (sous-total, livraison, taxes, devise) n’est pas déterminé.</p>';
+      if (c) c.innerHTML = '<p class="pay-unavailable">Paiement indisponible pour cette caisse tant que le total final (sous-total, livraison, taxes, devise) n’est pas déterminé et valide.</p>';
       const cc = panel.querySelector('#paypalCardContainer');
       if (cc) cc.innerHTML = '';
     }

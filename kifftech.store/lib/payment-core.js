@@ -40,8 +40,9 @@ export function resolveSelection(product, choiceIndices) {
 
   const dispoStatut = product.disponibilite && product.disponibilite.statut;
   if (dispoStatut && dispoStatut !== 'disponible') disponible = false;
-  // Certaines fiches marquent une option/produit explicitement non achetable sans statut global normalisé.
-  if (product.etatCatalogue && product.etatCatalogue.achetableMaintenant === false) disponible = false;
+  const stock = typeof product.stock === 'number' ? product.stock
+    : (product.disponibilite && typeof product.disponibilite.stock === 'number' ? product.disponibilite.stock : null);
+  if (stock !== null && stock <= 0) disponible = false;
 
   const shipping = moneyOrNull(product.livraison);
   const taxes = moneyOrNull(product.taxes);
@@ -92,7 +93,10 @@ export function buildOrder(catalogue, items) {
     if (!product) return { ok: false, error: 'Produit introuvable.' };
     const qty = Number.isInteger(item.quantity) ? item.quantity : parseInt(item.quantity, 10);
     if (!Number.isInteger(qty) || qty <= 0) return { ok: false, error: 'Quantité invalide.' };
-    if (qty > 99) return { ok: false, error: 'Quantité trop élevée.' };
+    const stock = typeof product.stock === 'number' ? product.stock
+      : (product.disponibilite && typeof product.disponibilite.stock === 'number' ? product.disponibilite.stock : null);
+    const maxQty = (stock !== null && Number.isFinite(stock)) ? Math.min(999, Math.max(0, Math.floor(stock))) : 99;
+    if (qty > maxQty) return { ok: false, error: `Quantité supérieure au stock disponible (${maxQty}).` };
 
     const selection = resolveSelection(product, item.choiceIndices || []);
     const sell = checkSellability(product, selection);
