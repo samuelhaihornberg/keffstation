@@ -3,7 +3,7 @@
  * Fusionne les suggestions média (tools/media-suggestions.json) dans data/catalogue.js.
  *
  * Usage:
- *   node tools/merge-media-suggestions.js [--dry-run] [--include-failed] [--replace]
+ *   node tools/merge-media-suggestions.cjs [--dry-run] [--include-failed] [--replace]
  *
  * - Par défaut, n'ajoute que les suggestions téléchargées (_downloaded !== false) et
  *   évite les doublons (même `fichier`).
@@ -54,7 +54,7 @@ function cleanSuggestion(s){
 function main(){
   const args=parseArgs(process.argv);
   if(args.help){
-    console.log('Usage: node tools/merge-media-suggestions.js [--dry-run] [--include-failed] [--replace]');
+    console.log('Usage: node tools/merge-media-suggestions.cjs [--dry-run] [--include-failed] [--replace]');
     process.exit(0);
   }
   if(!fs.existsSync(SUG_PATH)) throw new Error('Fichier introuvable: '+SUG_PATH);

@@ -12,7 +12,7 @@
  * - auto   : google si credentials CSE présents, sinon commons.
  *
  * Usage:
- *   node tools/fetch-media-assistant.js [--provider auto|google|commons] [--per 3] [--max 60] [--rayon <rayon>] [--id <id>] [--dry-run]
+ *   node tools/fetch-media-assistant.cjs [--provider auto|google|commons] [--per 3] [--max 60] [--rayon <rayon>] [--id <id>] [--dry-run]
  *
  * Variables d'environnement (Google CSE, optionnel mais recommandé pour "recherche google"):
  *   GOOGLE_API_KEY=...   GOOGLE_CSE_ID=...
@@ -46,7 +46,7 @@ function parseArgs(argv) {
 }
 
 function usage() {
-  console.log(`Usage: node tools/fetch-media-assistant.js [options]
+  console.log(`Usage: node tools/fetch-media-assistant.cjs [options]
   --provider auto|google|commons  (défaut: auto)
   --per 1..5                      images par produit (défaut: 3)
   --max N                         limiter le nombre de produits
@@ -60,8 +60,15 @@ Env (Google CSE): GOOGLE_API_KEY, GOOGLE_CSE_ID`);
 
 function loadCatalogue() {
   let s = fs.readFileSync(CATALOGUE_PATH, 'utf8');
-  s = s.replace(/^export const CATALOGUE = /, '').replace(/;\s*$/, '');
-  try { return Function('return (' + s + ')')(); } catch (e) {
+  const prefix = 'export const CATALOGUE = ';
+  const start = s.indexOf(prefix);
+  if (start === -1) throw new Error('Préfixe CATALOGUE introuvable');
+  let body = s.slice(start + prefix.length);
+  // couper avant un éventuel autre export (ex. export const ...) pour ne garder que l'objet principal
+  const nextExport = body.search(/\nexport\s+/);
+  if (nextExport !== -1) body = body.slice(0, nextExport);
+  body = body.replace(/;\s*$/, '');
+  try { return Function('return (' + body + ')')(); } catch (e) {
     throw new Error('Impossible de parser data/catalogue.js: ' + e.message);
   }
 }
@@ -283,7 +290,7 @@ async function main() {
   fs.writeFileSync(OUT_PATH, JSON.stringify(out, null, 2) + '\n', 'utf8');
   const totalSug = results.reduce((a, p) => a + (p.suggested ? p.suggested.length : 0), 0);
   console.log(`\n[agent] terminé. suggestions=${totalSug} fichier=${path.relative(ROOT, OUT_PATH)}`);
-  console.log('[agent] vérifiez licences/droits/pertinence, puis fusionnez avec merge-media-suggestions.js');
+  console.log('[agent] vérifiez licences/droits/pertinence, puis fusionnez avec merge-media-suggestions.cjs');
 }
 
 main().catch(e => { console.error('[agent] erreur:', e.message); process.exit(1); });
