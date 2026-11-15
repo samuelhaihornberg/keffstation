@@ -31,15 +31,17 @@ Règles de sécurité appliquées dans les fonctions :
 - **Données minimisées** : pas de nom, e-mail ou adresse de l’acheteur stocké par KiffTech. Les réponses PayPal complètes ne sont jamais journalisées.
 - **Cartes** : composants PayPal officiels, champs carte affichés seulement si `isEligible()`. Aucune saisie ni stockage de numéro de carte.
 
-## 2. Conditions d’utilisation (bloquant)
+## 2. Conditions d’utilisation et politique de confidentialité (bloquant)
 
-Le dépôt ne contient **aucune page de conditions d’utilisation ni politique de confidentialité**. Le seul lien existant (bannière cookies de `keffstation/index.html`) pointe vers `href="#"`. Aucun texte juridique n’a donc été créé.
+Source : `docs/source/KiffStation_conditions_utilisation_et_confidentialite.txt` (permalink dans `docs/source/SOURCE.md`), texte reproduit sans modification dans :
+- `conditions.html` — Partie I : Conditions d’utilisation et de vente ;
+- `politique-confidentialite.html` — Partie II : Politique de confidentialité.
 
-Tant que `data/legal.js` n’est pas renseigné, le paiement est **désactivé** (le serveur refuse la création avec `legal_not_configured`).
+`data/legal.js` : `termsUrl`, `privacyUrl`, `termsVersion = 0.1` sont renseignés, mais **`termsValidated = false`**. Tant que ce drapeau n’est pas `true`, le serveur refuse la création de commande (`legal_not_configured`, sans appel PayPal) et le front désactive le paiement.
 
-Pour activer : publier les conditions (ex. `https://www.kiffstation.com/conditions.html`), puis dans `data/legal.js` renseigner `termsUrl`, `termsVersion` (ex. `2026-11-15-v1`), `privacyUrl`, `termsDate`. Changer `termsVersion` à chaque modification des conditions. Lancer `npm run sync:supabase`, commit, push.
+Champs à compléter avant de passer `termsValidated` à `true` : voir **`docs/CHAMPS-A-COMPLETER.md`** (identité du vendeur, adresse, contacts, politique de retours, durées de conservation, droit applicable, prestataires, inventaire des cookies, etc.). Ne pas activer tant que ces champs ne sont pas renseignés et validés juridiquement.
 
-Les « règles existantes de KiffStation » mentionnées dans la demande **n’existent pas encore** dans le dépôt : à fournir avant publication.
+Hypothèse à confirmer : les pages sont servies sous `https://www.kiffstation.com/kifftech.store/`.
 
 ## 3. Lier le projet et déployer
 

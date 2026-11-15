@@ -1,11 +1,13 @@
-/* Conditions et politiques publiées de la boutique.
-   Tant que termsUrl ou termsVersion est vide, le paiement est désactivé :
-   aucun texte juridique n’est inventé par le code.
-   Quand les conditions sont publiées : renseigner les URL exactes et une version
-   (ex. "2026-11-15-v1"). Toute modification des conditions doit changer la version. */
+/* Conditions et politique de la boutique (pages : conditions.html, politique-confidentialite.html).
+   - termsUrl / privacyUrl : pages publiées.
+   - termsVersion : version du document (0.1 = projet).
+   - termsValidated : NE PASSER À true QU'APRÈS validation juridique et complétion des champs [À COMPLÉTER].
+     Tant qu'il vaut false, le serveur refuse la création de commande (legal_not_configured) et le front
+     désactive le paiement. */
 export const LEGAL = {
-  termsUrl: '',
-  privacyUrl: '',
-  termsVersion: '',
+  termsUrl: 'https://www.kiffstation.com/kifftech.store/conditions.html',
+  privacyUrl: 'https://www.kiffstation.com/kifftech.store/politique-confidentialite.html',
+  termsVersion: '0.1',
   termsDate: '',
+  termsValidated: false,
 };

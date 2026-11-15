@@ -9,7 +9,7 @@ trap 'kill "$PID" 2>/dev/null || true; rm -rf "$WORK"' EXIT
 cp -r "$ROOT/supabase/functions" "$WORK/functions"
 # Conditions de TEST fictives (le vrai data/legal.js reste vide tant que les conditions ne sont pas publiées).
 cat > "$WORK/functions/_shared/legal.js" <<'JS'
-export const LEGAL = { termsUrl: 'https://example.invalid/test-conditions', privacyUrl: '', termsVersion: 'TEST-v1', termsDate: '2026-01-01' };
+export const LEGAL = { termsUrl: 'https://example.invalid/test-conditions', privacyUrl: '', termsVersion: 'TEST-v1', termsDate: '2026-01-01', termsValidated: true };
 JS
 cp "$HERE/mock-server.ts" "$WORK/server.ts"
 cp "$HERE/payment-flow.test.mjs" "$WORK/test.mjs"

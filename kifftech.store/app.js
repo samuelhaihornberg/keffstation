@@ -3,6 +3,11 @@ import { CATALOGUE } from './data/catalogue.js';
 import { CONTACT } from './data/config.js';
 import { SUPABASE_FUNCTIONS_BASE_URL, SUPABASE_PUBLISHABLE_KEY } from './data/payment-config.js';
 import { LEGAL } from './data/legal.js';
+
+// Le paiement n'est ouvert que si les conditions sont publiées ET validées (termsValidated).
+function legalReady() {
+  return Boolean(LEGAL.termsUrl && LEGAL.termsVersion && LEGAL.termsValidated === true);
+}
 import { resolveSelection, sellability, formatSellabilityReason, buildOrder } from './lib/payment-core.js';
 
 // ---------- RAYONS (Catégories de produits) ----------
@@ -1119,8 +1124,8 @@ class KiffTech{
     return `${supaBase}${endpoint}`;
   }
   termsBlockHTML() {
-    if (!(LEGAL.termsUrl && LEGAL.termsVersion)) {
-      return '<div class="kt-terms kt-terms--off"><p class="pay-unavailable">Conditions d’utilisation non encore publiées : le paiement est indisponible.</p></div>';
+    if (!legalReady()) {
+      return '<div class="kt-terms kt-terms--off"><p class="pay-unavailable">Paiement indisponible : conditions en cours de validation. <a href="./conditions.html">Lire les conditions</a> · <a href="./politique-confidentialite.html">Lire la politique de confidentialité</a></p></div>';
     }
     const privacy = LEGAL.privacyUrl
       ? ` et la <a href="${sanitizeHTML(LEGAL.privacyUrl)}" target="_blank" rel="noopener">politique de confidentialité</a>`
@@ -1205,8 +1210,8 @@ class KiffTech{
     const scope = buttonsContainer.closest('.kifftech-checkout');
     const termsBox = scope ? scope.querySelector('.kt-accept-terms') : null;
     const args = { buttonsSelector, cardSelector, items, mode, statusSelector };
-    if (!(LEGAL.termsUrl && LEGAL.termsVersion)) {
-      buttonsContainer.innerHTML = '<p class="pay-unavailable">Paiement indisponible : conditions d’utilisation non encore publiées.</p>';
+    if (!legalReady()) {
+      buttonsContainer.innerHTML = '<p class="pay-unavailable">Paiement indisponible : conditions en cours de validation.</p>';
       if (cardContainer) cardContainer.innerHTML = '';
       setStatus('Paiement indisponible : conditions non publiées.', 'error');
       return;

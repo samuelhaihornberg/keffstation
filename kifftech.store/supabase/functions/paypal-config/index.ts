@@ -19,7 +19,7 @@ Deno.serve(async (req: Request) => {
       currency: "EUR",
       intent: "capture",
       environment,
-      legalReady: Boolean(LEGAL.termsUrl && LEGAL.termsVersion),
+      legalReady: Boolean(LEGAL.termsUrl && LEGAL.termsVersion && LEGAL.termsValidated === true),
       termsVersion: LEGAL.termsVersion || null,
     }, 200, corsHeaders(req));
   } catch (err) {

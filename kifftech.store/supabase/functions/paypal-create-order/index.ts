@@ -21,8 +21,8 @@ Deno.serve(async (req: Request) => {
     const items = Array.isArray(body.items) && body.items.length > 0 && body.items.length <= 20 ? body.items : null;
     if (!items) throw new HttpError(400, "bad_items", "Panier invalide.");
 
-    if (!LEGAL.termsUrl || !LEGAL.termsVersion) {
-      throw new HttpError(503, "legal_not_configured", "Conditions d’utilisation non publiées : paiement indisponible.");
+    if (!LEGAL.termsUrl || !LEGAL.termsVersion || LEGAL.termsValidated !== true) {
+      throw new HttpError(503, "legal_not_configured", "Conditions d’utilisation non validées : paiement indisponible.");
     }
     if (body.acceptTerms !== true) {
       throw new HttpError(400, "terms_not_accepted", "Vous devez accepter les conditions avant le paiement.");
