@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03050a">
+<meta name="description" content="KiffTech.store — Méthode d’organisation des promotions : -10% à -18% pour tous, -19% à -25% pour les abonnés KiffStation à 2$/semaine.">
+<link rel="stylesheet" href="./style.css">
+<title>KiffTech.store — Méthode & Promotions</title>
+<style>
+:root{--sticky-offset:calc(var(--safe-top, 0px) + 56px)}
+.promo-page{padding:calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 40px);max-width:820px;margin:0 auto}
+.promo-hero{padding:8px 4px 18px}
+.k-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--border-bright);background:var(--accent-dim);color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+.promo-hero h1{font-size:clamp(24px,5vw,38px);line-height:1.15;margin:0 0 12px;letter-spacing:-.02em}
+.promo-hero .lead{font-size:clamp(15px,2.2vw,18px);line-height:1.7;color:var(--fg-muted);margin:0}
+.notice-inline{margin:14px 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,210,63,.08);color:var(--fg-muted);font-size:.82rem;line-height:1.45}
+
+/* Barre de menu supplémentaire (2 items) — suit le scroll */
+.promo-subnav-wrap{position:sticky;top:var(--sticky-offset);z-index:40;margin:18px 0 22px}
+.promo-subnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;border-radius:14px;border:1px solid rgba(0,255,200,.18);background:rgba(6,12,22,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.promo-subnav a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card,#0a0f1a);color:var(--fg);text-decoration:none;font-weight:700;font-size:.86rem;text-align:center;line-height:1.25;transition:all .2s ease}
+.promo-subnav a:hover,.promo-subnav a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.promo-subnav a .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:0 0 auto}
+.promo-subnav a.subscriber .dot{background:#ffd23f}
+
+.article-block{scroll-margin-top:calc(var(--sticky-offset) + 86px);margin:0 0 18px;padding:18px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,rgba(10,20,34,.72),rgba(6,12,22,.82))}
+.article-block h2{font-size:clamp(20px,3vw,26px);margin:0 0 10px;color:var(--fg)}
+.article-block h3{font-size:1rem;margin:16px 0 8px;color:var(--fg)}
+.article-block p,.article-block li{color:var(--fg-muted);line-height:1.7;font-size:.95rem}
+.article-block ul,.article-block ol{margin:0 0 10px 18px;padding:0;display:grid;gap:6px}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-weight:800;font-size:.82rem;border:1px solid var(--border-bright)}
+.pill.all{color:#7dffb8;border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.08)}
+.pill.sub{color:#ffe6a1;border-color:rgba(255,210,63,.4);background:rgba(255,210,63,.1)}
+.grid-2{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+.card-mini{padding:12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.02)}
+.card-mini strong{color:var(--fg)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);color:var(--fg-muted)}
+th{color:var(--fg);background:rgba(255,255,255,.03);font-size:.8rem;letter-spacing:.03em;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+.cta-row{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cta-row .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--blue,#0066ff));color:#001a14}
+.btn.secondary{border:1px solid var(--border-bright);color:var(--fg);background:transparent}
+@media (min-width:700px){.grid-2{grid-template-columns:1fr 1fr}.cta-row{flex-direction:row}.promo-page{padding-left:24px;padding-right:24px}}
+</style>
+</head>
+<body>
+<div class="bg-deep" aria-hidden="true"></div>
+<div class="bio-particles" id="bioParticles" aria-hidden="true"></div>
+
+<header class="top-bar" role="banner">
+  <div class="bar-left">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffc8"/><stop offset="100%" stop-color="#0066ff"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#logoGrad)"/><path d="M10 12h12v8H10z" fill="#03050a"/></svg>
+    <span class="app-name">KiffTech.store</span>
+  </div>
+  <div class="bar-right">
+    <a href="./index.html" class="icon-btn" aria-label="Retour au catalogue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>
+  </div>
+</header>
+
+<main class="promo-page" id="top">
+  <section class="promo-hero" aria-labelledby="page-title">
+    <span class="k-badge">Méthode KiffTech.store • Promotions</span>
+    <h1 id="page-title">Organiser les promotions pour en faire profiter tout le monde</h1>
+    <p class="lead">Cette page explique la <strong>technique et la méthode KiffTech.store</strong> pour structurer des promotions claires : un avantage accessible à tous, et un avantage renforcé pour les abonnés KiffStation.</p>
+    <p class="notice-inline"><strong>Note :</strong> cette page décrit la méthode et les niveaux de réduction prévus. Les promotions effectivement applicables dépendent des offres, conditions et informations affichées au moment de l’achat (prix/éligibilité confirmés). Les mentions d’abonnement renvoient à l’offre KiffStation telle que proposée.</p>
+  </section>
+
+  <div class="promo-subnav-wrap" aria-label="Menu des articles">
+    <nav class="promo-subnav">
+      <a href="#article-methode"><span class="dot" aria-hidden="true"></span>Article 1 — La méthode KiffTech</a>
+      <a href="#article-avantages" class="subscriber"><span class="dot" aria-hidden="true"></span>Article 2 — Avantages &amp; abonnés</a>
+    </nav>
+  </div>
+
+  <article id="article-methode" class="article-block" aria-labelledby="titre-methode">
+    <h2 id="titre-methode">Article 1 — La technique et la méthode KiffTech.store</h2>
+    <p>KiffTech.store s’appuie sur une logique simple : regrouper la demande, optimiser le passage en flux grossiste/intermédiaire, puis <strong>redistribuer une partie du gain</strong> sous forme de promotions lisibles. L’objectif n’est pas de multiplier les offres opaques, mais d’organiser des paliers stables que chacun peut comprendre.</p>
+
+    <h3>1) Organisation en paliers (et non en remises aléatoires)</h3>
+    <ul>
+      <li><strong>Base commune :</strong> une fourchette de réduction accessible à tous les clients sur les offres éligibles.</li>
+      <li><strong>Palier abonnés :</strong> une fourchette renforcée réservée aux abonnés KiffStation, en contrepartie d’un engagement simple.</li>
+      <li><strong>Lisibilité :</strong> les paliers sont annoncés à l’avance pour éviter les surprises au moment du paiement.</li>
+    </ul>
+
+    <h3>2) Conditions de cohérence avant application</h3>
+    <p>Une promotion n’est appliquée que si l’offre est cohérente et vérifiable :</p>
+    <ul>
+      <li>prix de référence/officiel et prix final identifiés pour l’article concerné ;</li>
+      <li>variante, disponibilité/stock et conditions commerciales confirmés ;</li>
+      <li>panier compatible (devise, montants, livraison/taxes déterminés selon la configuration de vente) ;</li>
+      <li>éligibilité de l’offre au palier (tout le monde ou abonné).</li>
+    </ul>
+
+    <h3>3) Mise en œuvre pratique</h3>
+    <ol>
+      <li><strong>Qualification de l’offre :</strong> vérification des informations produit et du prix applicable.</li>
+      <li><strong>Affectation au palier :</strong> « tout le monde » ou « abonné KiffStation » selon le statut.</li>
+      <li><strong>Calcul transparent :</strong> application du pourcentage de réduction dans la fourchette prévue pour le palier éligible.</li>
+      <li><strong>Affichage avant validation :</strong> récapitulatif des montants et conditions visibles avant confirmation.</li>
+    </ol>
+
+    <div class="grid-2">
+      <div class="card-mini"><strong>Principe</strong><br>Une réduction compréhensible vaut mieux qu’une accumulation de promotions difficiles à comparer.</div>
+      <div class="card-mini"><strong>Objectif</strong><br>Faire profiter un maximum de personnes, tout en récompensant l’engagement des abonnés.</div>
+    </div>
+  </article>
+
+  <article id="article-avantages" class="article-block" aria-labelledby="titre-avantages">
+    <h2 id="titre-avantages">Article 2 — Faire profiter tout le monde (et plus aux abonnés)</h2>
+    <p>La méthode KiffTech.store distingue deux niveaux d’avantage, afin de combiner accessibilité générale et bénéfice renforcé pour les membres.</p>
+
+    <div class="pill-row" aria-label="Paliers de promotion">
+      <span class="pill all">Tout le monde : −10% à −18%</span>
+      <span class="pill sub">Abonnés KiffStation (2$/semaine) : −19% à −25%</span>
+    </div>
+
+    <h3>Tableau des paliers</h3>
+    <div class="table-wrap">
+      <table aria-label="Paliers de promotions KiffTech.store">
+        <thead>
+          <tr><th>Public</th><th>Réduction prévue</th><th>Condition</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tout le monde</strong></td>
+            <td><strong>−10% à −18%</strong></td>
+            <td>Offres éligibles, conditions/prix confirmés au moment de l’achat.</td>
+          </tr>
+          <tr>
+            <td><strong>Abonnés KiffStation</strong></td>
+            <td><strong>−19% à −25%</strong></td>
+            <td>Abonnement KiffStation à <strong>2$/semaine</strong> actif, sur les offres éligibles.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Pourquoi deux niveaux ?</h3>
+    <ul>
+      <li><strong>Accessibilité :</strong> le palier « tout le monde » garantit un avantage réel sans condition d’abonnement.</li>
+      <li><strong>Engagement récompensé :</strong> le palier abonné offre une réduction supérieure (−19% à −25%) pour les clients réguliers.</li>
+      <li><strong>Équilibre :</strong> la méthode vise à partager le bénéfice d’organisation/volume tout en soutenant le service.</li>
+    </ul>
+
+    <h3>Bonnes pratiques de transparence</h3>
+    <ul>
+      <li>afficher clairement le palier applicable (public ou abonné) ;</li>
+      <li>indiquer la base de calcul et le montant final avant validation ;</li>
+      <li>préciser quand une offre n’est pas éligible à un palier donné.</li>
+    </ul>
+
+    <div class="cta-row">
+      <a href="./index.html" class="btn primary">Voir le catalogue</a>
+      <a href="./promotions.html" class="btn secondary">À propos &amp; promotions</a>
+    </div>
+  </article>
+</main>
+
+<script>
+// Surbrillance légère de l’item actif au scroll (2 sections)
+(function(){
+  const links = Array.from(document.querySelectorAll('.promo-subnav a'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if (!links.length || !sections.length || !('IntersectionObserver' in window)) return;
+  const byId = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => { l.style.borderColor=''; l.style.color=''; });
+        const active = byId.get(entry.target.id);
+        if (active) { active.style.borderColor = 'var(--accent)'; active.style.color = 'var(--accent)'; }
+      }
+    });
+  }, { rootMargin: '-35% 0px -55% 0px', threshold: 0.01 });
+  sections.forEach(s => obs.observe(s));
+})();
+</script>
+</body>
+</html>
