@@ -56,6 +56,9 @@ jobs:
             supabase db query --remote -f "$f" --yes
           done
 
+      - name: 5 bis. Noms des secrets Supabase présents (aucune valeur affichée)
+        run: supabase secrets list
+
       - name: 6. Fonction paypal-config
         run: supabase functions deploy paypal-config --no-verify-jwt --yes
 
