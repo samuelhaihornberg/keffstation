@@ -1,37 +1,26 @@
-# KiffTech — Paiement PayPal (ponctuel) : déploiement et état
+# KiffTech — Paiement PayPal (ponctuel) : état et déploiement
 
-> Voir aussi **`DEPLOY_CLOUDFLARE_BACKEND.md`** pour la préparation/déploiement du backend via **Cloudflare Pages Functions** (`kifftech.store/functions/`) en gardant **GitHub Pages** comme vitrine (URL `*.pages.dev` d’abord, sans modification DNS).
+> **Cible actuelle (demandée)** : **Supabase Edge Functions** (`kifftech.store/supabase/functions/`) en gardant **GitHub Pages** comme vitrine. **Aucune configuration Cloudflare, aucune modification DNS.** Voir **`DEPLOY_SUPABASE_BACKEND.md`** (étapes exactes, sans inventer de Project URL/Ref).
 
 ## Implémentation (ce dépôt, `kifftech.store/`)
-- **Frontend** : SDK PayPal officiel (`buttons,card-fields`), achat **ponctuel** (`intent=capture`), présentation KiffTech. Backend configurable via `data/payment-config.js` (`PAYMENT_API_BASE` vide = same-origin, ou URL absolue du backend Cloudflare). Le navigateur reçoit uniquement la config publique (`clientId`, devise, environnement). **Aucun `PAYPAL_CLIENT_SECRET`, aucun numéro de carte, aucune donnée sensible de paiement** n’est collecté/stocké/exposé côté front.
-- **Compte PayPal / carte** : carte via composants PayPal officiels **selon autorisation/éligibilité** (`isEligible()` vérifié avant champs avancés). Pas de formulaire maison de carte.
-- **Backend** (GitHub Pages ne peut pas sécuriser le secret) : `/api/paypal/config`, `/api/paypal/create-order`, `/api/paypal/capture-order` implémentés dans :
-  - `functions/api/paypal/*` (Cloudflare Pages Functions / Workers) — **cible recommandée** pour un backend séparé du site GitHub Pages
-  - `server.js` (Node)
-- **CORS (backend séparé)** : autorisé uniquement pour l’origine exacte `PUBLIC_SITE_ORIGIN` (env non secrète). Préflight OPTIONS géré.
-- **Montants** : recalculés côté serveur à partir du catalogue vérifié (`lib/payment-core.js`, `data/catalogue.js`). Le client n’envoie pas de montants faisant foi. Devise unique, prix final, disponibilité/stock, **livraison** et **taxes** doivent être déterminés avant paiement.
-- **Validation de paiement** : commande considérée payée uniquement après **capture confirmée côté serveur** (`COMPLETED`).
-- **0 € livraison/taxes** : autorisés s’ils sont **réellement configurés et justifiés** (ex. configuration actuelle : livraison internationale expresse gratuite, taxes non prises en charge) et affichés comme définis ; sinon traités comme non définis → boutons désactivés.
-- **Aucun achat réel** effectué pendant les vérifications.
+- **Frontend** : SDK PayPal officiel (`buttons,card-fields`), achat **ponctuel** (`intent=capture`). Config dans `data/payment-config.js` :
+  - `SUPABASE_FUNCTIONS_BASE_URL` + `SUPABASE_PUBLISHABLE_KEY` (publique uniquement, si requise) pour appeler `/paypal-config`, `/paypal-create-order`, `/paypal-capture-order`.
+  - (Alternative) `PAYMENT_API_BASE` pour backend custom. Le navigateur reçoit uniquement la config publique ; **aucun `PAYPAL_CLIENT_SECRET`, aucune clé `service_role`, aucune donnée carte** collectée/stockée/exposée côté front.
+- **Carte** : composants PayPal officiels uniquement si autorisé/éligible (`isEligible()` avant champs avancés). **Aucune collecte directe de numéros de carte**.
+- **Supabase Edge Functions** : `supabase/functions/paypal-config|paypal-create-order|paypal-capture-order` + `_shared/` (helpers, `payment-core.js`, `catalogue.js`). CORS limité à `PUBLIC_SITE_ORIGIN`.
+- **Montants/validation** : **recalculés côté serveur** depuis le catalogue de référence (articles, variantes, devise, livraison, taxes, total) — jamais confiance au navigateur. Commande considérée payée uniquement après **capture confirmée serveur `COMPLETED`**.
+- **0 € livraison/taxes** : autorisés si **configurés et justifiés** (état catalogue actuel) ; sinon non définis → paiement désactivé.
+- **Aucun achat réel** effectué.
 
-## Variables d’environnement backend
-À configurer **dans l’hébergeur du backend** (Cloudflare Dashboard → Workers & Pages → projet → Settings → Variables and Secrets). Jamais dans Git/front/GitHub Pages/logs.
+## Variables/secrets (Supabase, jamais dans Git/front/logs/chat)
+À définir dans **Supabase Dashboard → Edge Functions → Secrets** (voir `.env.example` fictif dans `supabase/functions/.env.example`) :
 - `PAYPAL_CLIENT_ID` — identifiant (Live en production).
-- `PAYPAL_CLIENT_SECRET` — **secret serveur uniquement** (chiffré).
-- `PAYPAL_API_BASE` — `https://api-m.paypal.com` (**Live production**) ou `https://api-m.sandbox.paypal.com` (Sandbox).
-- `PUBLIC_SITE_ORIGIN` — origine exacte du site publié (CORS), ex. `https://www.kiffstation.com`.
+- `PAYPAL_CLIENT_SECRET` — **secret serveur uniquement**.
+- `PAYPAL_API_BASE` — `https://api-m.paypal.com` (Live) ou `https://api-m.sandbox.paypal.com` (Sandbox).
+- `PUBLIC_SITE_ORIGIN` — origine exacte du site publié (CORS).
 
-Voir `.env.example` et `DEPLOY_CLOUDFLARE_BACKEND.md`.
+Front (public, dans `data/payment-config.js`) : `SUPABASE_FUNCTIONS_BASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (publishable/anon uniquement, optionnelle). **Jamais `service_role`.**
 
 ## État Sandbox vs Live
-### Sandbox
-- **Supporté par le code** avec identifiants Sandbox + `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com` sur un backend déployé/joignable.
-- **Non vérifié opérationnel ici** (aucun backend déployé/configuré testé).
-
-### Live
-- **Prévu par le code** (`PAYPAL_API_BASE=https://api-m.paypal.com` + identifiants Live).
-- **Configuré/déployé** : **non attesté** (à réaliser par vous dans Cloudflare Dashboard ; secrets non accessibles/vérifiables ici).
-- **Effectivement opérationnel** : **non — ne pas déclarer Live opérationnel** avant déploiement Cloudflare effectif, saisie des variables/secrets Live, configuration `PAYMENT_API_BASE` front vers `*.pages.dev` (puis domaine si choisi), `PUBLIC_SITE_ORIGIN` correct, et vérification des endpoints/éligibilité sans paiement réel.
-
-## Condition actuelle
-- GitHub Pages publie le front statique (vitrine conservée). Les endpoints `./api/paypal/*` ne sont pas servis par Pages → backend séparé requis. Livraison/taxes 0 € actuellement **configurés/justifiés** dans le catalogue (définis).
+- **Sandbox** : supporté si déployé avec secrets Sandbox + `PAYPAL_API_BASE` Sandbox — **non vérifié ici**.
+- **Live** : supporté (`https://api-m.paypal.com` + secrets Live) — **non opérationnel ; ne pas déclarer opérationnel** avant déploiement des fonctions sur votre projet Supabase, saisie des secrets Live, configuration front (URL/ref réels, sans invention) et vérification des endpoints/éligibilité. **Non confirmé.**

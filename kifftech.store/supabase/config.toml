@@ -1,0 +1,3 @@
+# Configuration Supabase CLI (locale/projet) — ne pas inventer de project_id.
+# Après création du projet dans le Dashboard, liez-le avec : supabase link --project-ref <VOTRE_PROJECT_REF>
+# (le project ref sera visible dans votre projet Supabase ; ne le committez pas s'il doit rester privé)

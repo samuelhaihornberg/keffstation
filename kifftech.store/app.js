@@ -1,7 +1,7 @@
 /* ===== KiffTech — Catalogue (données vérifiées) ===== */
 import { CATALOGUE } from './data/catalogue.js';
 import { CONTACT } from './data/config.js';
-import { PAYMENT_API_BASE } from './data/payment-config.js';
+import { PAYMENT_API_BASE, SUPABASE_FUNCTIONS_BASE_URL, SUPABASE_PUBLISHABLE_KEY } from './data/payment-config.js';
 import { resolveSelection, sellability, formatSellabilityReason, buildOrder } from './lib/payment-core.js';
 
 // ---------- RAYONS (Catégories de produits) ----------
@@ -1109,16 +1109,35 @@ class KiffTech{
 
   paymentApiUrl(path) {
     const p = String(path || '');
-    const base = (typeof PAYMENT_API_BASE === 'string' ? PAYMENT_API_BASE : '').replace(/\/$/, '');
-    if (!base) return `.${p.startsWith('/') ? '' : '/'}${p}`;
-    return `${base}${p.startsWith('/') ? p : '/' + p}`;
+    const endpoint = p.startsWith('/') ? p : '/' + p;
+    const supaBase = (typeof SUPABASE_FUNCTIONS_BASE_URL === 'string' ? SUPABASE_FUNCTIONS_BASE_URL : '').replace(/\/+$/, '');
+    if (supaBase) {
+      if (endpoint.endsWith('/api/paypal/config')) return `${supaBase}/paypal-config`;
+      if (endpoint.endsWith('/api/paypal/create-order')) return `${supaBase}/paypal-create-order`;
+      if (endpoint.endsWith('/api/paypal/capture-order')) return `${supaBase}/paypal-capture-order`;
+      return `${supaBase}${endpoint}`;
+    }
+    const base = (typeof PAYMENT_API_BASE === 'string' ? PAYMENT_API_BASE : '').replace(/\/+$/, '');
+    if (!base) return `.${endpoint}`;
+    return `${base}${endpoint}`;
+  }
+
+  paymentApiHeaders(extra = {}) {
+    const headers = { ...extra };
+    const supaBase = (typeof SUPABASE_FUNCTIONS_BASE_URL === 'string' ? SUPABASE_FUNCTIONS_BASE_URL : '').replace(/\/+$/, '');
+    const key = (typeof SUPABASE_PUBLISHABLE_KEY === 'string' ? SUPABASE_PUBLISHABLE_KEY : '').trim();
+    if (supaBase && key) {
+      headers.apikey = key;
+      headers.Authorization = `Bearer ${key}`;
+    }
+    return headers;
   }
 
   async ensurePayPalSDK() {
     if (window.paypal && window.__kifftechPaypalConfig) return { paypal: window.paypal, config: window.__kifftechPaypalConfig };
     if (this._paypalLoading) return this._paypalLoading;
     this._paypalLoading = (async () => {
-      const res = await fetch(this.paymentApiUrl('/api/paypal/config'), { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+      const res = await fetch(this.paymentApiUrl('/api/paypal/config'), { headers: this.paymentApiHeaders({ 'Accept': 'application/json' }), cache: 'no-store' });
       let cfg = null;
       try { cfg = await res.json(); } catch {}
       if (!res.ok || !cfg || !cfg.ok || !cfg.clientId) {
@@ -1205,7 +1224,7 @@ class KiffTech{
       try {
         const res = await fetch(this.paymentApiUrl('/api/paypal/create-order'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: this.paymentApiHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ items, requestId }),
         });
         const data = await res.json().catch(() => ({}));
@@ -1224,7 +1243,7 @@ class KiffTech{
       try {
         const res = await fetch(this.paymentApiUrl('/api/paypal/capture-order'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: this.paymentApiHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ orderID, requestId }),
         });
         const data = await res.json().catch(() => ({}));
