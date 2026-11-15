@@ -1,5 +1,5 @@
 const B = "http://127.0.0.1:8787";
-const O = 'https://www.kiffstation.com';
+const O = 'https://kiffstation.com';
 const results = [];
 const check = (name, ok, extra = '') => { results.push([ok, name, extra]); console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${extra}`); };
 const post = (fn, body, origin = O) => fetch(`${B}/${fn}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify(body) });

@@ -74,12 +74,12 @@ jobs:
       - name: 10. Contrôle public de paypal-config (code HTTP seulement)
         run: |
           code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
-            -H "Origin: https://www.kiffstation.com" \
+            -H "Origin: https://kiffstation.com" \
             "https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/paypal-config")
           echo "paypal-config : HTTP $code"
           case "$code" in
             200) echo "Contrôle réussi." ;;
-            403) echo "403 : PUBLIC_SITE_ORIGIN absente ou différente de https://www.kiffstation.com (Supabase → Edge Functions → Secrets)."; exit 1 ;;
+            403) echo "403 : PUBLIC_SITE_ORIGIN absente ou différente de https://kiffstation.com (Supabase → Edge Functions → Secrets)."; exit 1 ;;
             503) echo "503 : PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET ou PAYPAL_API_BASE manquant ou invalide (noms exacts requis)."; exit 1 ;;
             *) echo "Code inattendu : $code"; exit 1 ;;
           esac

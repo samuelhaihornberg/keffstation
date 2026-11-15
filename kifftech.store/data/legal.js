@@ -5,8 +5,8 @@
      Tant qu'il vaut false, le serveur refuse la création de commande (legal_not_configured) et le front
      désactive le paiement. */
 export const LEGAL = {
-  termsUrl: 'https://www.kiffstation.com/kifftech.store/conditions.html',
-  privacyUrl: 'https://www.kiffstation.com/kifftech.store/politique-confidentialite.html',
+  termsUrl: 'https://kiffstation.com/kifftech.store/conditions.html',
+  privacyUrl: 'https://kiffstation.com/kifftech.store/politique-confidentialite.html',
   termsVersion: '0.1',
   termsDate: '',
   termsValidated: false,

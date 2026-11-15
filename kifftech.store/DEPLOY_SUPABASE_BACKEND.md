@@ -41,7 +41,7 @@ Source : `docs/source/KiffStation_conditions_utilisation_et_confidentialite.txt`
 
 Champs à compléter avant de passer `termsValidated` à `true` : voir **`docs/CHAMPS-A-COMPLETER.md`** (identité du vendeur, adresse, contacts, politique de retours, durées de conservation, droit applicable, prestataires, inventaire des cookies, etc.). Ne pas activer tant que ces champs ne sont pas renseignés et validés juridiquement.
 
-Hypothèse à confirmer : les pages sont servies sous `https://www.kiffstation.com/kifftech.store/`.
+Pages servies sous `https://kiffstation.com/kifftech.store/` (adresse canonique, sans redirection).
 
 ## 3. Lier le projet et déployer
 
@@ -73,7 +73,7 @@ supabase functions deploy paypal-invoice --no-verify-jwt
 | `PAYPAL_CLIENT_ID` | identifiant **Live** de l’application PayPal | secret chiffré |
 | `PAYPAL_CLIENT_SECRET` | secret **Live** | secret chiffré, serveur uniquement |
 | `PAYPAL_API_BASE` | `https://api-m.paypal.com` | Live. Seules les deux bases PayPal officielles sont acceptées. |
-| `PUBLIC_SITE_ORIGIN` | origine exacte de la vitrine, ex. `https://www.kiffstation.com` | **À confirmer** : le `CNAME` du dépôt indique `www.kiffstation.com`. Sans slash final. |
+| `PUBLIC_SITE_ORIGIN` | origine exacte de la vitrine, ex. `https://kiffstation.com` | Adresse canonique : `www.kiffstation.com` redirige (301) vers `kiffstation.com`, donc les visiteurs envoient `Origin: https://kiffstation.com`. Ne pas mettre la variante `www`. Sans slash final. |
 
 Ne **créez pas** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` ni `SUPABASE_SECRET_KEY` : la plateforme les fournit aux fonctions. La clé secrète exposée dans la conversation précédente **doit être révoquée puis remplacée** par vous dans Project Settings → API Keys ; elle n’est utilisée nulle part dans ce code.
 
@@ -87,13 +87,13 @@ Les GitHub Secrets ne sont **pas** utilisés au runtime des fonctions. **Recomma
 
 ```bash
 # Config publique : 200, aucun secret dans la réponse, origine exacte acceptée
-curl -i -H "Origin: https://www.kiffstation.com" https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-config
+curl -i -H "Origin: https://kiffstation.com" https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-config
 
 # Origine étrangère : 403
 curl -i -H "Origin: https://exemple.invalid" https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-config
 
 # Création sans acceptation : 400 terms_not_accepted (aucune commande créée)
-curl -i -X POST -H "Origin: https://www.kiffstation.com" -H "Content-Type: application/json" \
+curl -i -X POST -H "Origin: https://kiffstation.com" -H "Content-Type: application/json" \
   -d '{"items":[],"acceptTerms":false}' https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-create-order
 ```
 
