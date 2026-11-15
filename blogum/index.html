@@ -31,7 +31,10 @@
           <img src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/faf852a98bfec55a20c5bcbec2b15c19da72b980/1794400646339.jpg" alt="Logo Blogum" width="36" height="36">
           <h1>Blogum</h1>
         </div>
-        <div class="blogum-badge">PWA intégrée · KeffStation</div>
+        <div class="row" style="gap:8px;align-items:center">
+          <div class="blogum-badge">PWA intégrée · KeffStation</div>
+          <button class="btn small maker-btn" id="openAuthBtn" type="button">Connexion / Inscription</button>
+        </div>
       </div>
       <nav id="viewTabs" class="view-tabs" role="tablist" aria-label="Vues Blogum"></nav>
       <p class="swipe-hint">Touchez un sélecteur ou glissez à gauche/droite pour changer de vue.</p>
@@ -48,6 +51,74 @@
     </div>
   </main>
 
+  <section id="authOverlay" class="auth-overlay hidden" aria-hidden="true">
+    <div class="auth-dialog card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="sec-title" id="authTitle" style="margin:0">Compte Blogum</h2>
+        <button class="btn small maker-btn" id="closeAuthBtn" type="button" aria-label="Fermer">Fermer</button>
+      </div>
+      <p class="small muted" id="authConfigNotice"></p>
+      <div class="row auth-mode-switch" role="tablist" aria-label="Modes d’authentification">
+        <button class="btn maker-btn auth-mode-btn" id="authModeLogin" type="button">Connexion</button>
+        <button class="btn maker-btn auth-mode-btn" id="authModeSignup" type="button">Inscription</button>
+      </div>
+
+      <div id="authStatus" class="stack"></div>
+
+      <form id="loginForm" class="stack auth-form" novalidate>
+        <label class="field">E-mail<input type="email" id="loginEmail" autocomplete="email" required></label>
+        <label class="field">Mot de passe<input type="password" id="loginPassword" autocomplete="current-password" required></label>
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <button class="btn maker-btn" type="button" id="forgotPasswordBtn">Mot de passe oublié ?</button>
+          <button class="btn maker-btn primary" type="submit" id="loginSubmitBtn">Se connecter</button>
+        </div>
+        <div class="row"><button class="btn maker-btn" type="button" id="goSignupFromLogin">Créer un compte</button></div>
+      </form>
+
+      <form id="resetForm" class="stack auth-form hidden" novalidate>
+        <p class="small muted">Saisis ton e-mail pour recevoir un lien de réinitialisation (si un compte correspond).</p>
+        <label class="field">E-mail<input type="email" id="resetEmail" autocomplete="email" required></label>
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <button class="btn maker-btn" type="button" id="backToLoginBtn">Retour à la connexion</button>
+          <button class="btn maker-btn primary" type="submit" id="resetSubmitBtn">Envoyer la demande</button>
+        </div>
+      </form>
+
+      <form id="signupForm" class="stack auth-form hidden" novalidate>
+        <label class="field">Pseudo<input type="text" id="signupPseudo" autocomplete="nickname" required></label>
+        <label class="field">E-mail<input type="email" id="signupEmail" autocomplete="email" required></label>
+        <label class="field">Mot de passe<input type="password" id="signupPassword" autocomplete="new-password" required minlength="8"></label>
+        <label class="field">Confirmation du mot de passe<input type="password" id="signupPasswordConfirm" autocomplete="new-password" required minlength="8"></label>
+        <label class="field">Date de naissance<input type="date" id="signupDob" required></label>
+
+        <div class="notice small">
+          <strong>Âge et environnements (préparation) :</strong> Blogum prévoit 3 environnements distincts (21+, 18–20, &lt;18 protégé) <strong>sans accès croisé</strong>. L’environnement est déterminé uniquement par un <strong>résultat de vérification d’âge confirmé côté serveur</strong> (jamais par la date saisie seule ni un choix libre).
+        </div>
+        <div class="notice small">
+          <strong>Vérification d’âge :</strong> aucun fournisseur de vérification d’identité n’est configuré. <strong>Aucune photo de carte d’identité, passeport ou permis n’est collectée ni stockée.</strong> Un point d’intégration est prévu pour conserver uniquement le résultat minimal nécessaire une fois un fournisseur réellement défini. <strong>Tant que la vérification n’est pas configurée, le compte ne peut pas encore être activé.</strong>
+        </div>
+
+        <label class="field" style="gap:8px">
+          <span class="small muted">Conditions</span>
+          <span style="display:flex;gap:10px;align-items:flex-start">
+            <input type="checkbox" id="signupTerms" required style="width:auto;margin-top:4px">
+            <span class="small">J’accepte les conditions d’utilisation et la politique de confidentialité.</span>
+          </span>
+        </label>
+
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <button class="btn maker-btn" type="button" id="goLoginFromSignup">Déjà un compte ? Connexion</button>
+          <button class="btn maker-btn primary" type="submit" id="signupSubmitBtn">S’inscrire</button>
+        </div>
+      </form>
+
+      <div id="authSessionInfo" class="stack"></div>
+    </div>
+  </section>
+
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+  <script src="./auth.js"></script>
   <script src="./app.js"></script>
   <script src="./clear-cache.js"></script>
   <script defer src="../page-transition.js"></script>

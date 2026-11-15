@@ -146,6 +146,7 @@
     renderAllViews();
     bindNav();
     bindSwipe();
+    initAuthUI();
     setView(0, false);
   }
 
@@ -697,6 +698,204 @@
     qsa('[data-q-prompt]').forEach(el => el.addEventListener('input', e => { const q = qsList.find(x => x.id === e.target.dataset.qPrompt); if (q) q.prompt = e.target.value; }));
     qsa('[data-q-answer]').forEach(el => el.addEventListener('input', e => { const q = qsList.find(x => x.id === e.target.dataset.qAnswer); if (q) q.answer = e.target.value; }));
     qsa('[data-q-delete]').forEach(btn => btn.onclick = () => { r.questions = qsList.filter(x => x.id !== btn.dataset.qDelete); renderRubricEditorArea(r); });
+  }
+
+  // -------- Auth UI (Connexion / Inscription) --------
+  const authState = { mode: 'login', loading: false, session: null, configured: false };
+
+  function authEls() {
+    return {
+      overlay: qs('#authOverlay'),
+      openBtn: qs('#openAuthBtn'),
+      closeBtn: qs('#closeAuthBtn'),
+      notice: qs('#authConfigNotice'),
+      status: qs('#authStatus'),
+      sessionInfo: qs('#authSessionInfo'),
+      modeLogin: qs('#authModeLogin'),
+      modeSignup: qs('#authModeSignup'),
+      loginForm: qs('#loginForm'),
+      signupForm: qs('#signupForm'),
+      resetForm: qs('#resetForm')
+    };
+  }
+
+  function openAuth(mode = 'login') {
+    const e = authEls(); if (!e.overlay) return;
+    e.overlay.classList.remove('hidden'); e.overlay.setAttribute('aria-hidden', 'false');
+    setAuthMode(mode);
+    renderAuthStatus();
+    refreshAuthSession();
+  }
+  function closeAuth() {
+    const e = authEls(); if (!e.overlay) return;
+    e.overlay.classList.add('hidden'); e.overlay.setAttribute('aria-hidden', 'true');
+  }
+  function setAuthMode(mode) {
+    authState.mode = mode;
+    const e = authEls();
+    if (!e.loginForm) return;
+    e.loginForm.classList.toggle('hidden', mode !== 'login');
+    e.signupForm.classList.toggle('hidden', mode !== 'signup');
+    e.resetForm.classList.toggle('hidden', mode !== 'reset');
+    e.modeLogin.classList.toggle('active', mode === 'login');
+    e.modeSignup.classList.toggle('active', mode === 'signup');
+    renderAuthStatus();
+  }
+
+  function setAuthLoading(loading) {
+    authState.loading = !!loading;
+    const e = authEls(); if (!e.overlay) return;
+    e.overlay.classList.toggle('auth-loading', authState.loading);
+    qsa('button, input', e.overlay).forEach(el => {
+      if (el.id === 'closeAuthBtn') return;
+      el.disabled = authState.loading && (el.tagName === 'BUTTON' || el.type === 'submit');
+    });
+  }
+
+  function renderAuthNotice() {
+    const e = authEls(); if (!e.notice) return;
+    const cfg = window.BlogumAuth ? BlogumAuth.getConfig() : { ageVerificationProvider: { configured: false } };
+    const configured = window.BlogumAuth ? BlogumAuth.isConfigured() : false;
+    authState.configured = configured;
+    const parts = [];
+    if (!configured) {
+      parts.push(`<div class="auth-alert info"><strong>Connexion réelle non configurée.</strong> Les paramètres publics Supabase/Auth ne sont pas disponibles pour cet environnement. L’interface est prête, mais aucune connexion/inscription réelle ne peut être confirmée tant que la configuration serveur n’est pas en place.</div>`);
+    } else {
+      parts.push(`<div class="auth-alert info"><strong>Client Auth configuré.</strong> Les opérations utilisent le client Supabase configuré. L’activation du compte dépend de la confirmation e-mail et d’une vérification d’âge confirmée côté serveur (si requise).</div>`);
+    }
+    parts.push(`<div class="notice small"><strong>Âge / environnements :</strong> Blogum 21+, serveur dédié 18–20, espace distinct protégé &lt;18 (sans fonctions de rencontre/espaces adultes). Aucun accès croisé. Le routage est déterminé uniquement par un résultat de vérification d’âge confirmé côté serveur (jamais par la date saisie ni un choix libre).</div>`);
+    parts.push(`<div class="notice small"><strong>Vérification d’identité :</strong> aucun fournisseur configuré — aucune collecte/stockage de photo de carte d’identité, passeport ou permis. Point d’intégration prévu pour conserver uniquement le résultat minimal nécessaire une fois défini. <strong>Tant que la vérification n’est pas configurée, le compte ne peut pas encore être activé.</strong></div>`);
+    e.notice.innerHTML = parts.join('');
+  }
+
+  function renderAuthStatus(msg = '', type = 'info') {
+    const e = authEls(); if (!e.status) return;
+    renderAuthNotice();
+    if (!msg) { e.status.innerHTML = ''; return; }
+    e.status.innerHTML = `<div class="auth-alert ${type}">${escapeHtml(msg)}</div>`;
+  }
+
+  async function refreshAuthSession() {
+    const e = authEls(); if (!e.sessionInfo || !window.BlogumAuth) return;
+    const res = await BlogumAuth.getSession();
+    authState.session = res.session || null;
+    if (!BlogumAuth.isConfigured()) {
+      e.sessionInfo.innerHTML = `<div class="small muted">Session : indisponible (configuration Auth absente). Aucun mot de passe n’est stocké localement.</div>`;
+      updateAuthButton();
+      return;
+    }
+    if (res.session && res.session.user) {
+      const u = res.session.user;
+      const email = u.email || '(e-mail non disponible)';
+      e.sessionInfo.innerHTML = `
+        <div class="auth-alert success"><strong>Session active</strong> : ${escapeHtml(email)}</div>
+        <div class="notice small">Aucune activation d’environnement croisé. L’accès aux environnements (21+, 18–20, &lt;18) dépend d’une vérification d’âge confirmée côté serveur (non configurée ici).</div>
+        <div class="row"><button class="btn maker-btn" type="button" id="logoutBtn">Se déconnecter</button></div>`;
+      qs('#logoutBtn').onclick = async () => {
+        setAuthLoading(true);
+        const out = await BlogumAuth.signOut();
+        setAuthLoading(false);
+        if (out.ok) { renderAuthStatus('Déconnexion effectuée.', 'success'); } else { renderAuthStatus(out.message || 'Déconnexion impossible.', 'error'); }
+        await refreshAuthSession();
+      };
+    } else {
+      e.sessionInfo.innerHTML = `<div class="small muted">Aucune session active. ${escapeHtml(res.error || '')}</div>`;
+    }
+    updateAuthButton();
+  }
+
+  function updateAuthButton() {
+    const btn = qs('#openAuthBtn'); if (!btn) return;
+    if (authState.session && authState.session.user) btn.textContent = 'Compte';
+    else btn.textContent = 'Connexion / Inscription';
+  }
+
+  function initAuthUI() {
+    const e = authEls(); if (!e.overlay) return;
+    renderAuthNotice();
+    updateAuthButton();
+
+    e.openBtn && (e.openBtn.onclick = () => openAuth('login'));
+    e.closeBtn && (e.closeBtn.onclick = closeAuth);
+    e.overlay.addEventListener('click', (ev) => { if (ev.target === e.overlay) closeAuth(); });
+    e.modeLogin && (e.modeLogin.onclick = () => setAuthMode('login'));
+    e.modeSignup && (e.modeSignup.onclick = () => setAuthMode('signup'));
+    qs('#goSignupFromLogin') && (qs('#goSignupFromLogin').onclick = () => setAuthMode('signup'));
+    qs('#goLoginFromSignup') && (qs('#goLoginFromSignup').onclick = () => setAuthMode('login'));
+    qs('#forgotPasswordBtn') && (qs('#forgotPasswordBtn').onclick = () => setAuthMode('reset'));
+    qs('#backToLoginBtn') && (qs('#backToLoginBtn').onclick = () => setAuthMode('login'));
+
+    // Connexion
+    e.loginForm && e.loginForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const email = (qs('#loginEmail').value || '').trim();
+      const password = qs('#loginPassword').value || '';
+      if (!email || !password) { renderAuthStatus('Veuillez renseigner l’e-mail et le mot de passe.', 'error'); return; }
+      setAuthLoading(true);
+      const out = await BlogumAuth.signIn({ email, password });
+      setAuthLoading(false);
+      if (!out.ok) {
+        renderAuthStatus(out.configured === false ? out.message : (out.message || 'Connexion impossible. Vérifie tes identifiants ou la confirmation de ton e-mail.'), 'error');
+      } else {
+        renderAuthStatus('Connexion confirmée par le serveur.', 'success');
+        qs('#loginPassword').value = '';
+        await refreshAuthSession();
+      }
+    });
+
+    // Réinitialisation (message neutre, ne révèle pas l’existence du compte)
+    e.resetForm && e.resetForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const email = (qs('#resetEmail').value || '').trim();
+      if (!email) { renderAuthStatus('Veuillez indiquer ton adresse e-mail.', 'error'); return; }
+      setAuthLoading(true);
+      const out = await BlogumAuth.resetPassword(email);
+      setAuthLoading(false);
+      if (out.configured === false) {
+        renderAuthStatus(out.message, 'error');
+      } else {
+        renderAuthStatus(out.message || "Si un compte correspond à cette adresse, un e-mail de réinitialisation a été envoyé.", 'success');
+        // retour vers connexion proposé après demande
+        setTimeout(() => setAuthMode('login'), 1200);
+      }
+    });
+
+    // Inscription
+    e.signupForm && e.signupForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const pseudo = (qs('#signupPseudo').value || '').trim();
+      const email = (qs('#signupEmail').value || '').trim();
+      const password = qs('#signupPassword').value || '';
+      const confirm = qs('#signupPasswordConfirm').value || '';
+      const dob = qs('#signupDob').value || '';
+      const terms = !!qs('#signupTerms').checked;
+
+      if (!pseudo || !email || !password || !confirm || !dob) { renderAuthStatus('Merci de compléter tous les champs requis.', 'error'); return; }
+      if (password.length < 8) { renderAuthStatus('Le mot de passe doit contenir au moins 8 caractères.', 'error'); return; }
+      if (password !== confirm) { renderAuthStatus('La confirmation du mot de passe ne correspond pas.', 'error'); return; }
+      if (!terms) { renderAuthStatus('Tu dois accepter les conditions d’utilisation et la politique de confidentialité.', 'error'); return; }
+
+      setAuthLoading(true);
+      const out = await BlogumAuth.signUp({ email, password, pseudo, birthDate: dob, acceptedTerms: terms });
+      setAuthLoading(false);
+      if (!out.ok) {
+        renderAuthStatus(out.configured === false ? out.message : (out.message || "Inscription impossible."), 'error');
+        return;
+      }
+      // ne jamais stocker les mots de passe ; vider les champs sensibles
+      qs('#signupPassword').value = '';
+      qs('#signupPasswordConfirm').value = '';
+      const activationNote = " Compte non activable tant que la vérification d’âge (fournisseur/serveur) n’est pas configurée et confirmée côté serveur.";
+      if (out.needsEmailConfirmation) {
+        renderAuthStatus((out.message || "Inscription envoyée. Vérifie ton adresse e-mail pour confirmer le compte.") + activationNote, 'success');
+      } else {
+        renderAuthStatus((out.message || "Inscription créée.") + activationNote, 'success');
+      }
+      await refreshAuthSession();
+    });
+
+    // état initial
+    refreshAuthSession();
   }
 
   document.addEventListener('DOMContentLoaded', init);
