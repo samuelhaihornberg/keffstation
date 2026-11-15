@@ -77,7 +77,9 @@ jobs:
             -H "Origin: https://www.kiffstation.com" \
             "https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/paypal-config")
           echo "paypal-config : HTTP $code"
-          if [ "$code" != "200" ]; then
-            echo "Contrôle non réussi : vérifiez les secrets Supabase (503 = secret manquant ou PAYPAL_API_BASE invalide)."
-            exit 1
-          fi
+          case "$code" in
+            200) echo "Contrôle réussi." ;;
+            403) echo "403 : PUBLIC_SITE_ORIGIN absente ou différente de https://www.kiffstation.com (Supabase → Edge Functions → Secrets)."; exit 1 ;;
+            503) echo "503 : PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET ou PAYPAL_API_BASE manquant ou invalide (noms exacts requis)."; exit 1 ;;
+            *) echo "Code inattendu : $code"; exit 1 ;;
+          esac
