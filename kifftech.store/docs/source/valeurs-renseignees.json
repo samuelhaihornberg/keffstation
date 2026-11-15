@@ -1,0 +1,98 @@
+{
+  "provenance": "Valeurs fournies par le responsable de la boutique dans la conversation du 15/11/2026. Aucune autre valeur n’a été ajoutée.",
+  "remplacements": {
+    "20": [
+      [
+        "[RAISON SOCIALE OU NOM LÉGAL]",
+        "Sam Haï Hornberg"
+      ]
+    ],
+    "22": [
+      [
+        "[À COMPLÉTER]",
+        "3 Hahartsit, Ra’anana, Israël"
+      ]
+    ],
+    "25": [
+      [
+        "[À COMPLÉTER]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ],
+    "81": [
+      [
+        "[Adresse e-mail professionnelle]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ],
+    "100": [
+      [
+        "[URL DE LA POLITIQUE DE CONFIDENTIALITÉ]",
+        "https://kiffstation.com/kifftech.store/politique-confidentialite.html"
+      ]
+    ],
+    "114": [
+      [
+        "[À COMPLÉTER]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ],
+    "115": [
+      [
+        "[À COMPLÉTER]",
+        "3 Hahartsit, Ra’anana, Israël"
+      ]
+    ],
+    "126": [
+      [
+        "[NOM LÉGAL DE LA PERSONNE OU DE L’ENTREPRISE]",
+        "Sam Haï Hornberg"
+      ]
+    ],
+    "128": [
+      [
+        "[À COMPLÉTER]",
+        "3 Hahartsit, Ra’anana, Israël"
+      ]
+    ],
+    "129": [
+      [
+        "[ADRESSE E-MAIL À COMPLÉTER]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ],
+    "130": [
+      [
+        "[À COMPLÉTER]",
+        "Israël"
+      ]
+    ],
+    "189": [
+      [
+        "[ADRESSE E-MAIL VIE PRIVÉE]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ],
+    "201": [
+      [
+        "[ADRESSE E-MAIL VIE PRIVÉE]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ],
+    "208": [
+      [
+        "[ADRESSE E-MAIL VIE PRIVÉE]",
+        "kiffstationadmin@gmail.com"
+      ]
+    ]
+  },
+  "bloc_politique_retours": {
+    "ligne": 77,
+    "titre": "Politique de retours (texte fourni par le responsable de la boutique)",
+    "paragraphes": [
+      "Retour impossible si le colis est reçu en bon état. Sinon, contacter votre service de livraison de votre état de votre région.",
+      "Retour si le colis non reçu n’est pas confirmé par votre livreur.",
+      "Durée de la politique de retour et de remboursement : 3 jours si le colis n’est pas reçu."
+    ]
+  }
+}
