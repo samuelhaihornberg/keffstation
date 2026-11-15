@@ -8,6 +8,6 @@
      - PAYMENT_API_BASE : ex. "https://<projet>.pages.dev" ou "" pour same-origin (./api/paypal/*)
 
    Ne jamais mettre de secret ici. */
-export const SUPABASE_FUNCTIONS_BASE_URL = '';
-export const SUPABASE_PUBLISHABLE_KEY = '';
+export const SUPABASE_FUNCTIONS_BASE_URL = 'https://spkaxtmhefhycqnshybo.supabase.co/functions/v1';
+export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_hxW67QrCb_UX-jj6tWm8ew_WhCHxciB';
 export const PAYMENT_API_BASE = '';

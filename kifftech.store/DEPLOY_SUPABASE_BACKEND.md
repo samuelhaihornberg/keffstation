@@ -89,3 +89,10 @@ Puis commit & push sur `main` (déploiement GitHub Pages existant). **Aucun secr
 ## 6) État Sandbox vs Live
 - **Sandbox** : supporté par le code si secrets Sandbox + `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com` déployés — **non vérifié ici**.
 - **Live** : supporté par le code (`https://api-m.paypal.com` + identifiants Live) — **non opérationnel / ne pas déclarer opérationnel** tant que fonctions non déployées sur **votre** projet Supabase, secrets Live non configurés, et endpoints non vérifiés. Aucun secret exposé, aucun paiement réel effectué.
+
+## 7) Valeurs du projet renseignées (état)
+- Project URL et Project Ref : `https://spkaxtmhefhycqnshybo.supabase.co` (ref `spkaxtmhefhycqnshybo`), renseignés dans `data/payment-config.js` (`SUPABASE_FUNCTIONS_BASE_URL`).
+- Clé **publishable** : renseignée dans `data/payment-config.js` (publique, prévue pour le navigateur).
+- Clé **secret/service_role** (`sb_secret_…`) : **non utilisée** par le front ni par les fonctions. Ne jamais la mettre dans Git, `payment-config.js`, le front ou les logs. Elle a été transmise dans une conversation : **recommandé de la régénérer** dans Supabase Dashboard → Project Settings → API Keys.
+- `SUPABASE_JWKS_URL` : non requis par ces fonctions (utile seulement pour vérifier des JWT utilisateur).
+- État actuel : `GET .../functions/v1/paypal-config` renvoie **404** → fonctions **non encore déployées** sur ce projet.
