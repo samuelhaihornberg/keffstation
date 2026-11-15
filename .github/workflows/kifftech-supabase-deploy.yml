@@ -44,7 +44,7 @@ jobs:
       - name: 3. Installation de la CLI Supabase
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.1.0
 
       - name: 4. Liaison au projet
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
