@@ -41,7 +41,7 @@ async function dbMock(url: URL, method: string, init: any): Promise<Response> {
       o.status = "paid"; o.paypal_capture_id = body.p_capture_id; o.paid_at = new Date().toISOString(); o.failure_code = null;
       store.invSeq += 1;
       const num = "KT-2026-" + String(store.invSeq).padStart(6, "0");
-      store.invoices.push({ id: crypto.randomUUID(), order_id: o.id, invoice_number: num, issued_at: new Date().toISOString(), currency: o.currency, subtotal: o.subtotal, shipping: o.shipping, taxes: o.taxes, total_paid: o.total, paypal_capture_id: body.p_capture_id, lines: o.lines, seller: null, legal_complete: false });
+      store.invoices.push({ id: crypto.randomUUID(), order_id: o.id, invoice_number: num, issued_at: new Date().toISOString(), currency: o.currency, subtotal: o.subtotal, shipping: o.shipping, taxes: o.taxes, total_paid: o.total, paypal_capture_id: body.p_capture_id, lines: o.lines, seller: null, legal_complete: false, receipt_token_hash: body.p_receipt_hash });
       return json(num);
     }
     return json({ message: "unknown rpc" }, 404);
@@ -111,7 +111,7 @@ async function ppMock(url: URL, method: string, init: any): Promise<Response> {
   return realFetch(input, init);
 };
 
-const names = ["paypal-config", "paypal-create-order", "paypal-capture-order"];
+const names = ["paypal-config", "paypal-create-order", "paypal-capture-order", "paypal-invoice"];
 for (const n of names) {
   (globalThis as any).__current = n;
   await import(`./functions/${n}/index.ts`);

@@ -96,13 +96,32 @@ check('capture réussie 200 COMPLETED', r.status === 200 && j.status === 'COMPLE
 check('facture avec numéro unique et montant payé 1438', j.invoice && /^KT-\d{4}-\d{6}$/.test(j.invoice.number) && j.invoice.totalPaid === 1438 && j.invoice.currency === 'EUR');
 check('facture indique légalement incomplète (pas de faux document conforme)', j.invoice && j.invoice.legalComplete === false);
 
-// 10. Double capture / double clic : pas de 2e capture
-const before = (await state()).pp.capture;
-r = await post('paypal-capture-order', { orderID: ppIdOk.id, orderToken: ppIdOk.orderToken });
-j = await r.json();
-check('2e capture = alreadyCaptured, sans nouvel appel PayPal capture', r.status === 200 && j.alreadyCaptured === true && (await state()).pp.capture === before);
+// 10. Reçu par jeton, purge après paiement, double capture sans nouvel appel PayPal
+check('capture renvoie un jeton de reçu', typeof j.receiptToken === 'string' && j.receiptToken.length > 20);
 st = await state();
-check('une seule facture pour cette commande', st.invoices.filter((i) => i.order_id === st.orders.find((o) => o.paypal_order_id === ppIdOk.id).id).length === 1);
+const paidOrder = st.orders.find((o) => o.paypal_order_id === ppIdOk.id);
+check('après paiement, jeton de commande purgé (plus de jeton réutilisable)', paidOrder.token_hash === 'purged' && paidOrder.request_id === null);
+check('reçu : seule l’empreinte du jeton de reçu est stockée', st.invoices[st.invoices.length - 1].receipt_token_hash && st.invoices[st.invoices.length - 1].receipt_token_hash.length === 64 && !JSON.stringify(st.invoices).includes(j.receiptToken));
+const before = st.pp.capture;
+r = await post('paypal-capture-order', { orderID: ppIdOk.id, orderToken: ppIdOk.orderToken });
+let dup = await r.json();
+check('2e capture refusée (already_paid), sans nouvel appel PayPal capture', r.status === 409 && dup.code === 'already_paid' && (await state()).pp.capture === before);
+st = await state();
+check('une seule facture pour cette commande', st.invoices.filter((i) => i.order_id === paidOrder.id).length === 1);
+
+// 10b. Consultation du reçu
+const invUrl = `${B}/paypal-invoice`;
+const inv = (body, origin = O) => fetch(invUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify(body) });
+r = await inv({ invoiceNumber: j.invoiceNumber, receiptToken: j.receiptToken });
+let ij = await r.json();
+check('reçu accessible avec le bon jeton (200)', r.status === 200 && ij.invoice && ij.invoice.number === j.invoiceNumber && ij.invoice.totalPaid === 1438);
+check('réponse reçu sans empreinte ni jeton', !JSON.stringify(ij).includes('receipt_token_hash') && !JSON.stringify(ij).includes(j.receiptToken));
+r = await inv({ invoiceNumber: j.invoiceNumber, receiptToken: 'z'.repeat(30) });
+check('reçu refusé avec mauvais jeton (403)', r.status === 403);
+r = await inv({ invoiceNumber: 'KT-2026-999999', receiptToken: j.receiptToken });
+check('reçu inconnu (404)', r.status === 404);
+r = await inv({ invoiceNumber: j.invoiceNumber, receiptToken: j.receiptToken }, 'https://evil.example');
+check('reçu origine étrangère (403)', r.status === 403);
 
 // 11. Limitation de débit
 const rate = await (async () => { await ctl({ rate: false }); const x = await post('paypal-create-order', goodCreate()); await ctl({ rate: true }); return x; })();

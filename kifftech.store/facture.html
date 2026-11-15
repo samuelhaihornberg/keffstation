@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#03050a">
+<link rel="stylesheet" href="./style.css">
+<title>KiffTech.store — Facture</title>
+<style>
+.receipt{max-width:720px;margin:0 auto;padding:calc(var(--safe-top,0px) + 24px) 16px 40px}
+.receipt h1{font-size:1.4rem;margin:0 0 6px}
+.receipt .meta{font-size:.85rem;color:var(--fg-muted);margin-bottom:16px;line-height:1.5}
+.receipt table{width:100%;border-collapse:collapse;font-size:.9rem;margin:12px 0}
+.receipt th,.receipt td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+.receipt td.num,.receipt th.num{text-align:right;white-space:nowrap}
+.receipt .total{font-weight:800;color:var(--accent)}
+.receipt .notice{padding:10px 12px;border:1px solid var(--border);border-radius:12px;font-size:.82rem;color:var(--fg-muted);line-height:1.45;margin-top:12px}
+.receipt .notice.warn{border-color:rgba(255,210,63,.4);color:#ffe6a1}
+.receipt .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.receipt .actions a,.receipt .actions button{min-height:44px;padding:10px 14px;border-radius:12px;border:1px solid var(--border-bright);background:transparent;color:var(--fg);font-weight:700;text-decoration:none;cursor:pointer}
+@media print{.receipt .actions{display:none}}
+</style>
+</head>
+<body>
+<main class="receipt" id="receipt">
+  <h1>Facture KiffTech.store</h1>
+  <p class="meta" id="status">Chargement de votre facture…</p>
+  <div id="content" hidden></div>
+  <div class="actions">
+    <a href="./index.html">Retour au catalogue</a>
+    <button type="button" id="printBtn" hidden>Imprimer / enregistrer en PDF</button>
+  </div>
+</main>
+<script type="module">
+import { SUPABASE_FUNCTIONS_BASE_URL, SUPABASE_PUBLISHABLE_KEY } from './data/payment-config.js';
+
+const status = document.getElementById('status');
+const content = document.getElementById('content');
+const params = new URLSearchParams(location.hash.slice(1));
+const number = params.get('n') || '';
+const token = params.get('t') || '';
+// Retire le jeton de l'adresse affichée et de l'historique dès lecture.
+history.replaceState(null, '', location.pathname + location.search);
+
+function fmt(value, currency) {
+  try { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency }).format(Number(value)); }
+  catch { return `${Number(value).toFixed(2)} ${currency}`; }
+}
+function row(cells, cls = '') {
+  const tr = document.createElement('tr');
+  cells.forEach((c, i) => {
+    const td = document.createElement('td');
+    td.textContent = c;
+    if (i > 0) td.className = 'num';
+    if (cls) td.className += ` ${cls}`;
+    tr.appendChild(td);
+  });
+  return tr;
+}
+function show(inv) {
+  status.textContent = '';
+  const h = document.createElement('p');
+  h.className = 'meta';
+  h.textContent = `Numéro : ${inv.number} · Date : ${new Date(inv.issuedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · Référence PayPal : ${inv.paypalCaptureId}`;
+  content.appendChild(h);
+
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const hr = document.createElement('tr');
+  ['Article', 'Qté', 'Prix unitaire', 'Sous-total'].forEach((label, i) => {
+    const th = document.createElement('th');
+    th.textContent = label;
+    if (i > 0) th.className = 'num';
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  (inv.lines || []).forEach((l) => {
+    const label = l.variant ? `${l.title} (${l.variant})` : l.title;
+    tbody.appendChild(row([label, String(l.quantity), fmt(l.unitAmount, inv.currency), fmt(l.lineSubtotal, inv.currency)]));
+  });
+  tbody.appendChild(row(['Sous-total', '', '', fmt(inv.subtotal, inv.currency)]));
+  tbody.appendChild(row(['Livraison', '', '', fmt(inv.shipping, inv.currency)]));
+  tbody.appendChild(row(['Taxes', '', '', fmt(inv.taxes, inv.currency)]));
+  tbody.appendChild(row(['Total payé', '', '', fmt(inv.totalPaid, inv.currency)], 'total'));
+  table.appendChild(tbody);
+  content.appendChild(table);
+
+  const notice = document.createElement('div');
+  notice.className = inv.legalComplete ? 'notice' : 'notice warn';
+  notice.textContent = inv.legalComplete
+    ? 'Document émis après paiement confirmé.'
+    : 'Document provisoire : les mentions légales du vendeur (identité, adresse, identifiants, régime de TVA) ne sont pas encore finalisées. Ce document ne constitue pas une facture conforme.';
+  content.appendChild(notice);
+
+  content.hidden = false;
+  document.getElementById('printBtn').hidden = false;
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+}
+
+async function load() {
+  if (!number || !token || !SUPABASE_FUNCTIONS_BASE_URL) {
+    status.textContent = 'Lien de facture incomplet ou invalide.';
+    return;
+  }
+  try {
+    const res = await fetch(`${SUPABASE_FUNCTIONS_BASE_URL}/paypal-invoice`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_PUBLISHABLE_KEY },
+      body: JSON.stringify({ invoiceNumber: number, receiptToken: token }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) {
+      status.textContent = data.error || 'Facture indisponible.';
+      return;
+    }
+    show(data.invoice);
+  } catch {
+    status.textContent = 'Connexion impossible. Réessayez plus tard.';
+  }
+}
+load();
+</script>
+</body>
+</html>

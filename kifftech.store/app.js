@@ -1303,6 +1303,11 @@ class KiffTech{
           msg += ` Reçu n° ${inv.number} : ${formatPrice(inv.totalPaid, inv.currency)} payés. Référence PayPal : ${inv.paypalCaptureId}.`;
           if (!inv.legalComplete) msg += ' Document provisoire : les mentions légales du vendeur ne sont pas encore finalisées.';
         }
+        if (inv && captured.receiptToken) {
+          const receiptUrl = `./facture.html#n=${encodeURIComponent(inv.number)}&t=${encodeURIComponent(captured.receiptToken)}`;
+          msg += ' Ouverture de votre facture…';
+          setTimeout(() => { window.location.href = receiptUrl; }, 2500);
+        }
         setStatus(msg, 'success');
         this.showToast(captured.alreadyCaptured ? 'Paiement déjà confirmé.' : 'Paiement confirmé.', 'success');
         if (mode === 'cart') {

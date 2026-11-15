@@ -1,17 +1,13 @@
 // Capture serveur après approbation du client. "Payé" uniquement après capture COMPLETED
 // avec montant et devise identiques à la commande enregistrée côté serveur.
-import { clientKey, corsHeaders, errorResponse, foreignOrigin, HttpError, json, readJson, sha256Hex } from "../_shared/http.ts";
+// Après paiement : le jeton de commande est purgé et un jeton de reçu (haché) est créé.
+import { clientKey, corsHeaders, errorResponse, foreignOrigin, HttpError, json, randomToken, readJson, sha256Hex } from "../_shared/http.ts";
 import { db, rateLimitOk } from "../_shared/db.ts";
 import { paypalFetch, PayPalError } from "../_shared/paypal.ts";
 
 function firstCapture(order: any): any {
   const pu = (order && order.purchase_units && order.purchase_units[0]) || {};
   return (pu.payments && pu.payments.captures && pu.payments.captures[0]) || null;
-}
-
-async function invoiceFor(orderId: string): Promise<any> {
-  const { data } = await db().from("invoices").select("invoice_number, issued_at, currency, subtotal, shipping, taxes, total_paid, paypal_capture_id, lines, legal_complete").eq("order_id", orderId).maybeSingle();
-  return data;
 }
 
 function invoiceView(inv: any) {
@@ -47,14 +43,14 @@ Deno.serve(async (req: Request) => {
     }
 
     const { data: row } = await db().from("payment_orders")
-      .select("id, status, currency, total, subtotal, shipping, taxes, lines, token_hash, paypal_order_id")
+      .select("id, status, currency, total, token_hash, paypal_order_id")
       .eq("paypal_order_id", orderID).maybeSingle();
     if (!row) throw new HttpError(404, "order_not_found", "Commande introuvable.");
-    if ((await sha256Hex(orderToken)) !== row.token_hash) throw new HttpError(403, "bad_token", "Accès à la commande refusé.");
-
     if (row.status === "paid") {
-      const inv = await invoiceFor(row.id);
-      return json({ ok: true, status: "COMPLETED", alreadyCaptured: true, invoice: inv ? invoiceView(inv) : null }, 200, corsHeaders(req));
+      throw new HttpError(409, "already_paid", "Ce paiement est déjà confirmé. Votre reçu a été ouvert lors de la première confirmation.");
+    }
+    if (row.token_hash === "purged" || (await sha256Hex(orderToken)) !== row.token_hash) {
+      throw new HttpError(403, "bad_token", "Accès à la commande refusé.");
     }
     if (row.status === "capturing") throw new HttpError(409, "capture_in_progress", "Paiement en cours de confirmation. Patientez.");
     if (row.status !== "created") throw new HttpError(400, "not_capturable", "Cette commande ne peut plus être encaissée.");
@@ -93,21 +89,30 @@ Deno.serve(async (req: Request) => {
     }
 
     const captureId = String(capture.id);
-    const { data: invNumber, error: payErr } = await db().rpc("kt_mark_paid", { p_order_id: row.id, p_capture_id: captureId });
+    const receiptToken = randomToken(32);
+    const { data: invNumber, error: payErr } = await db().rpc("kt_mark_paid", {
+      p_order_id: row.id,
+      p_capture_id: captureId,
+      p_receipt_hash: await sha256Hex(receiptToken),
+    });
     if (payErr) throw new HttpError(503, "db_unavailable", "Paiement reçu mais confirmation interne en attente. Conservez la référence de paiement.");
     lockedId = null;
 
-    const inv = await invoiceFor(row.id);
+    // Purge immédiate du jeton de commande : il n'a plus d'usage après paiement.
+    await db().from("payment_orders").update({ token_hash: "purged", request_id: null, updated_at: new Date().toISOString() }).eq("id", row.id);
+
+    const { data: inv } = await db().from("invoices").select("*").eq("invoice_number", invNumber).maybeSingle();
     return json({
       ok: true,
       status: "COMPLETED",
       captureId,
       invoiceNumber: invNumber,
+      receiptToken,
       invoice: inv ? invoiceView(inv) : null,
     }, 200, corsHeaders(req));
   } catch (err) {
     if (lockedId) {
-      // Libère le verrou (sauf commande marquée failed). Une nouvelle tentative réconcilie via PayPal.
+      // Libère le verrou. Une nouvelle tentative réconcilie via PayPal (idempotent).
       const declined = err instanceof PayPalError && err.isDeclined();
       await db().from("payment_orders").update({
         status: "created",

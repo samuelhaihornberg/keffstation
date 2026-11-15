@@ -1,0 +1,77 @@
+name: KiffTech — déploiement Supabase (paiement)
+
+# Déclenchement manuel uniquement. Les étapes s'exécutent dans l'ordre :
+# contrôle des copies → liaison du projet → migration → fonctions (une par une) → contrôle public.
+# Aucun secret PayPal n'est lu ni transmis par ce workflow : les secrets PayPal se saisissent
+# dans Supabase Dashboard → Edge Functions → Secrets, pas dans GitHub.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_migration:
+        description: "Appliquer les migrations (supabase db push)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kifftech-supabase-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Déploiement séquentiel
+    runs-on: ubuntu-latest
+    environment: supabase-production
+    env:
+      SUPABASE_PROJECT_REF: spkaxtmhefhycqnshybo
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    defaults:
+      run:
+        working-directory: kifftech.store
+    steps:
+      - name: 1. Récupération du code
+        uses: actions/checkout@v4
+
+      - name: 2. Contrôle des copies partagées
+        run: |
+          node --version
+          node tools/sync-supabase-shared.mjs --check
+
+      - name: 3. Installation de la CLI Supabase
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: 4. Liaison au projet
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: 5. Migrations
+        if: ${{ inputs.run_migration }}
+        run: supabase db push
+
+      - name: 6. Fonction paypal-config
+        run: supabase functions deploy paypal-config --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+
+      - name: 7. Fonction paypal-create-order
+        run: supabase functions deploy paypal-create-order --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+
+      - name: 8. Fonction paypal-capture-order
+        run: supabase functions deploy paypal-capture-order --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+
+      - name: 9. Fonction paypal-invoice
+        run: supabase functions deploy paypal-invoice --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+
+      - name: 10. Contrôle public de paypal-config (code HTTP seulement)
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+            -H "Origin: https://www.kiffstation.com" \
+            "https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/paypal-config")
+          echo "paypal-config : HTTP $code"
+          if [ "$code" != "200" ]; then
+            echo "Contrôle non réussi : vérifiez les secrets Supabase (503 = secret manquant ou PAYPAL_API_BASE invalide)."
+            exit 1
+          fi
