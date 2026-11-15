@@ -1,6 +1,7 @@
 /* ===== KiffTech — Catalogue (données vérifiées) ===== */
 import { CATALOGUE } from './data/catalogue.js';
 import { CONTACT } from './data/config.js';
+import { PAYMENT_API_BASE } from './data/payment-config.js';
 import { resolveSelection, sellability, formatSellabilityReason, buildOrder } from './lib/payment-core.js';
 
 // ---------- RAYONS (Catégories de produits) ----------
@@ -1105,15 +1106,23 @@ class KiffTech{
     }
   }
 
+
+  paymentApiUrl(path) {
+    const p = String(path || '');
+    const base = (typeof PAYMENT_API_BASE === 'string' ? PAYMENT_API_BASE : '').replace(/\/$/, '');
+    if (!base) return `.${p.startsWith('/') ? '' : '/'}${p}`;
+    return `${base}${p.startsWith('/') ? p : '/' + p}`;
+  }
+
   async ensurePayPalSDK() {
     if (window.paypal && window.__kifftechPaypalConfig) return { paypal: window.paypal, config: window.__kifftechPaypalConfig };
     if (this._paypalLoading) return this._paypalLoading;
     this._paypalLoading = (async () => {
-      const res = await fetch('./api/paypal/config', { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+      const res = await fetch(this.paymentApiUrl('/api/paypal/config'), { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       let cfg = null;
       try { cfg = await res.json(); } catch {}
       if (!res.ok || !cfg || !cfg.ok || !cfg.clientId) {
-        throw new Error((cfg && cfg.error) || 'Paiement non configuré côté serveur.');
+        throw new Error((cfg && cfg.error) || 'Paiement non configuré côté serveur ou backend injoignable.');
       }
       await new Promise((resolve, reject) => {
         const existing = document.querySelector('script[data-kifftech-paypal-sdk="1"]');
@@ -1194,7 +1203,7 @@ class KiffTech{
       inFlight.creating = true;
       const requestId = this.makePaymentRequestId('create');
       try {
-        const res = await fetch('./api/paypal/create-order', {
+        const res = await fetch(this.paymentApiUrl('/api/paypal/create-order'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ items, requestId }),
@@ -1213,7 +1222,7 @@ class KiffTech{
       inFlight.capturing = true;
       const requestId = this.makePaymentRequestId('capture');
       try {
-        const res = await fetch('./api/paypal/capture-order', {
+        const res = await fetch(this.paymentApiUrl('/api/paypal/capture-order'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderID, requestId }),

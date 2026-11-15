@@ -17,6 +17,23 @@ function getPayPalConfig() {
   return { clientId, clientSecret, base, environment };
 }
 
+function getAllowedOrigin() {
+  return String(process.env.PUBLIC_SITE_ORIGIN || '').trim().replace(/\/$/, '');
+}
+
+function corsHeaders(req) {
+  const allowed = getAllowedOrigin();
+  const origin = String((req.headers && req.headers.origin) || '');
+  if (!allowed || !origin || origin !== allowed) return {};
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type,Accept',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
+  };
+}
+
 function amountObj(currency, value) {
   return { currency_code: currency, value: Number(value).toFixed(2) };
 }
@@ -74,11 +91,12 @@ async function paypalFetch(apiPath, options = {}) {
   return data;
 }
 
-function sendJSON(res, status, body) {
+function sendJSON(req, res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
+    ...corsHeaders(req),
   });
   res.end(json);
 }
@@ -139,15 +157,15 @@ const server = createServer(async (req, res) => {
 
     if (req.method === 'GET' && url.pathname === '/api/paypal/config') {
       const { clientId, environment } = getPayPalConfig();
-      if (!clientId) return sendJSON(res, 503, { ok: false, error: 'Paiement non configuré côté serveur.' });
-      return sendJSON(res, 200, { ok: true, clientId, currency: 'EUR', environment, intent: 'capture' });
+      if (!clientId) return sendJSON(req, res, 503, { ok: false, error: 'Paiement non configuré côté serveur.' });
+      return sendJSON(req, res, 200, { ok: true, clientId, currency: 'EUR', environment, intent: 'capture' });
     }
 
     if (req.method === 'POST' && url.pathname === '/api/paypal/create-order') {
       const body = await readBody(req);
-      if (body === null) return sendJSON(res, 400, { ok: false, error: 'Requête invalide.' });
+      if (body === null) return sendJSON(req, res, 400, { ok: false, error: 'Requête invalide.' });
       const order = buildOrder(CATALOGUE, Array.isArray(body.items) ? body.items : []);
-      if (!order.ok) return sendJSON(res, 400, { ok: false, error: order.error || 'Commande invalide.' });
+      if (!order.ok) return sendJSON(req, res, 400, { ok: false, error: order.error || 'Commande invalide.' });
       try {
         const requestId = safeRequestId(body.requestId);
         const headers = requestId ? { 'PayPal-Request-Id': requestId, 'Prefer': 'return=representation' } : { 'Prefer': 'return=representation' };
@@ -176,53 +194,53 @@ const server = createServer(async (req, res) => {
             application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW' },
           }),
         });
-        if (!created || !created.id) return sendJSON(res, 502, { ok: false, error: 'Création de commande PayPal impossible.' });
-        return sendJSON(res, 200, { ok: true, id: created.id, status: created.status || 'CREATED', totals: order.totals });
+        if (!created || !created.id) return sendJSON(req, res, 502, { ok: false, error: 'Création de commande PayPal impossible.' });
+        return sendJSON(req, res, 200, { ok: true, id: created.id, status: created.status || 'CREATED', totals: order.totals });
       } catch (err) {
         const status = err && err.status ? err.status : 502;
         const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de créer la commande PayPal.';
-        return sendJSON(res, status, { ok: false, error: msg });
+        return sendJSON(req, res, status, { ok: false, error: msg });
       }
     }
 
     if (req.method === 'POST' && url.pathname === '/api/paypal/capture-order') {
       const body = await readBody(req);
-      if (body === null) return sendJSON(res, 400, { ok: false, error: 'Requête invalide.' });
+      if (body === null) return sendJSON(req, res, 400, { ok: false, error: 'Requête invalide.' });
       const orderID = body && typeof body.orderID === 'string' ? body.orderID.trim() : '';
-      if (!/^[-A-Z0-9]+$/i.test(orderID)) return sendJSON(res, 400, { ok: false, error: 'Identifiant de commande invalide.' });
+      if (!/^[-A-Z0-9]+$/i.test(orderID)) return sendJSON(req, res, 400, { ok: false, error: 'Identifiant de commande invalide.' });
       try {
         const existing = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}`, { method: 'GET' });
         const existingStatus = existing && existing.status;
         if (existingStatus === 'COMPLETED') {
           const cap = (((existing.purchase_units || [])[0] || {}).payments || {}).captures || [];
-          return sendJSON(res, 200, { ok: true, status: 'COMPLETED', captureId: (cap[0] || {}).id || null, alreadyCaptured: true });
+          return sendJSON(req, res, 200, { ok: true, status: 'COMPLETED', captureId: (cap[0] || {}).id || null, alreadyCaptured: true });
         }
         if (existingStatus && existingStatus !== 'APPROVED') {
-          return sendJSON(res, 400, { ok: false, error: 'Le paiement n’est pas approuvé pour capture.', status: existingStatus });
+          return sendJSON(req, res, 400, { ok: false, error: 'Le paiement n’est pas approuvé pour capture.', status: existingStatus });
         }
         const requestId = safeRequestId(body.requestId);
         const headers = requestId ? { 'PayPal-Request-Id': requestId, 'Prefer': 'return=representation' } : { 'Prefer': 'return=representation' };
         const captured = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`, { method: 'POST', headers, body: '{}' });
         const status = captured && captured.status;
-        if (status !== 'COMPLETED') return sendJSON(res, 400, { ok: false, error: 'Le paiement n’a pas été confirmé par le serveur.', status: status || 'UNKNOWN' });
+        if (status !== 'COMPLETED') return sendJSON(req, res, 400, { ok: false, error: 'Le paiement n’a pas été confirmé par le serveur.', status: status || 'UNKNOWN' });
         const captures = (((captured.purchase_units || [])[0] || {}).payments || {}).captures || [];
-        return sendJSON(res, 200, { ok: true, status: 'COMPLETED', captureId: (captures[0] || {}).id || null });
+        return sendJSON(req, res, 200, { ok: true, status: 'COMPLETED', captureId: (captures[0] || {}).id || null });
       } catch (err) {
         const status = err && err.status ? err.status : 502;
         const msg = status === 503 ? 'Paiement non configuré côté serveur.' : 'Impossible de confirmer la capture du paiement PayPal.';
-        return sendJSON(res, status, { ok: false, error: msg });
+        return sendJSON(req, res, status, { ok: false, error: msg });
       }
     }
 
     if (req.method === 'OPTIONS') {
-      res.writeHead(204, { 'Cache-Control': 'no-store' });
+      res.writeHead(204, { 'Cache-Control': 'no-store', ...corsHeaders(req) });
       return res.end();
     }
 
     return serveStatic(req, res);
   } catch (err) {
     console.error(err);
-    if (!res.headersSent) sendJSON(res, 500, { ok: false, error: 'Erreur serveur.' });
+    if (!res.headersSent) sendJSON(req, res, 500, { ok: false, error: 'Erreur serveur.' });
   }
 });
 

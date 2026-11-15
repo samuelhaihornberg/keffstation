@@ -13,6 +13,24 @@ export function getPayPalConfig(env) {
   return { clientId, clientSecret, base, environment };
 }
 
+export function getAllowedOrigin(env) {
+  const v = String(getEnv(env, 'PUBLIC_SITE_ORIGIN') || '').trim().replace(/\/$/, '');
+  return v;
+}
+
+export function corsHeaders(request, env) {
+  const allowed = getAllowedOrigin(env);
+  const origin = request && request.headers ? String(request.headers.get('Origin') || '') : '';
+  if (!allowed || !origin || origin !== allowed) return {};
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type,Accept',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
+  };
+}
+
 export async function getAccessToken(env) {
   const { clientId, clientSecret, base } = getPayPalConfig(env);
   if (!clientId || !clientSecret) {
@@ -62,11 +80,15 @@ export async function paypalFetch(env, path, options = {}) {
   return data;
 }
 
-export function jsonResponse(body, status = 200) {
+export function jsonResponse(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...extraHeaders },
   });
+}
+
+export function optionsResponse(extraHeaders = {}) {
+  return new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store', ...extraHeaders } });
 }
 
 export function safeRequestId(value) {
