@@ -54,16 +54,16 @@ jobs:
         run: supabase db push
 
       - name: 6. Fonction paypal-config
-        run: supabase functions deploy paypal-config --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+        run: supabase functions deploy paypal-config --no-verify-jwt --yes
 
       - name: 7. Fonction paypal-create-order
-        run: supabase functions deploy paypal-create-order --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+        run: supabase functions deploy paypal-create-order --no-verify-jwt --yes
 
       - name: 8. Fonction paypal-capture-order
-        run: supabase functions deploy paypal-capture-order --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+        run: supabase functions deploy paypal-capture-order --no-verify-jwt --yes
 
       - name: 9. Fonction paypal-invoice
-        run: supabase functions deploy paypal-invoice --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+        run: supabase functions deploy paypal-invoice --no-verify-jwt --yes
 
       - name: 10. Contrôle public de paypal-config (code HTTP seulement)
         run: |
