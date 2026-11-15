@@ -4,7 +4,7 @@ ET POLITIQUE DE CONFIDENTIALITÉ
 
 PROJET À COMPLÉTER AVANT PUBLICATION
 Version : 0.1
-Date d’entrée en vigueur : [À COMPLÉTER]
+Date d’entrée en vigueur : 15 novembre 2026
 
 IMPORTANT
 Ce document est un projet de rédaction. Il ne doit pas être présenté comme juridiquement validé tant que les champs entre crochets ne sont pas complétés et que les règles applicables au vendeur et aux pays ciblés n’ont pas été vérifiées.
@@ -17,13 +17,13 @@ PARTIE I — CONDITIONS D’UTILISATION ET DE VENTE
 
 Le site KiffStation.com et ses applications sont exploités sous le nom commercial KiffStation par :
 
-Nom légal du vendeur ou de l’éditeur : [RAISON SOCIALE OU NOM LÉGAL]
-Forme juridique et pays d’immatriculation : [À COMPLÉTER]
-Adresse professionnelle : [À COMPLÉTER]
+Nom légal du vendeur ou de l’éditeur : Samuel Haï Hornberg
+Forme juridique : [À COMPLÉTER] ; pays d’immatriculation : Israël
+Adresse professionnelle : 3 Hahartsits, Ra’anana, Israël
 Numéro d’immatriculation : [À COMPLÉTER, LE CAS ÉCHÉANT]
-Numéro fiscal ou de TVA : [À COMPLÉTER, LE CAS ÉCHÉANT]
-Adresse e-mail professionnelle : [À COMPLÉTER]
-Téléphone professionnel : [À COMPLÉTER]
+Numéro fiscal ou de TVA : 329771448
+Adresse e-mail professionnelle : kiffstationadmin@gmail.com
+Téléphone professionnel : 05 48 38 52 69
 
 KiffStation ne doit être indiqué comme vendeur d’un produit que si l’entité identifiée ci-dessus en est effectivement le vendeur. Si un autre professionnel vend ou expédie le produit, son identité doit être présentée avant la commande.
 
@@ -78,7 +78,7 @@ Les droits d’annulation, de rétractation, de retour, de remboursement et de g
 
 Pour demander une annulation ou signaler un problème :
 [Lien vers le formulaire d’annulation]
-[Adresse e-mail professionnelle]
+kiffstationadmin@gmail.com
 
 Les présentes conditions ne limitent pas les droits impératifs accordés aux consommateurs par la loi applicable. Les délais, exceptions et éventuels frais doivent être vérifiés et indiqués selon les marchés visés avant l’ouverture des ventes.
 
@@ -97,13 +97,13 @@ Les liens vers les fabricants, PayPal et d’autres services mènent vers des si
 10. CONFIDENTIALITÉ
 
 Le traitement des données personnelles est décrit dans la Politique de confidentialité de KiffStation, accessible à l’adresse :
-[URL DE LA POLITIQUE DE CONFIDENTIALITÉ]
+https://kiffstation.com/kifftech.store/politique-confidentialite.html
 
 11. RESPONSABILITÉ ET DROIT APPLICABLE
 
 Les présentes conditions n’excluent ni ne limitent les responsabilités ou garanties qui ne peuvent pas être écartées par la loi applicable. En cas d’indisponibilité technique, KiffStation s’efforce de rétablir le service dans des délais raisonnables.
 
-Droit applicable : [PAYS ET DROIT À CONFIRMER]
+Droit applicable : Israël — droit israélien pour les achats d’un article ou d’un lot d’articles effectués sur KiffStation.com/kifftech.store
 Règlement des litiges et juridiction : [À COMPLÉTER APRÈS VÉRIFICATION]
 
 Les protections impératives accordées aux consommateurs dans leur pays de résidence restent applicables lorsque la loi le prévoit.
@@ -111,11 +111,11 @@ Les protections impératives accordées aux consommateurs dans leur pays de rés
 12. CONTACT ET VERSION
 
 Pour toute question relative au site, aux présentes conditions ou à une commande :
-Adresse e-mail professionnelle : [À COMPLÉTER]
-Adresse postale professionnelle : [À COMPLÉTER]
-Téléphone professionnel : [À COMPLÉTER]
+Adresse e-mail professionnelle : kiffstationadmin@gmail.com
+Adresse postale professionnelle : 3 Hahartsits, Ra’anana, Israël
+Téléphone professionnel : 05 48 38 52 69
 
-Version 0.1 — publiée le [DATE À COMPLÉTER].
+Version 0.1 — publiée le 15 novembre 2026.
 
 ============================================================
 PARTIE II — POLITIQUE DE CONFIDENTIALITÉ
@@ -123,11 +123,11 @@ PARTIE II — POLITIQUE DE CONFIDENTIALITÉ
 
 1. RESPONSABLE DU TRAITEMENT
 
-Le responsable du traitement est [NOM LÉGAL DE LA PERSONNE OU DE L’ENTREPRISE], exploitant le site sous le nom commercial KiffStation.
+Le responsable du traitement est Samuel Haï Hornberg, exploitant le site sous le nom commercial KiffStation.
 
-Adresse professionnelle : [À COMPLÉTER]
-Contact vie privée : [ADRESSE E-MAIL À COMPLÉTER]
-Pays d’établissement : [À COMPLÉTER]
+Adresse professionnelle : 3 Hahartsits, Ra’anana, Israël
+Contact vie privée : kiffstationadmin@gmail.com
+Pays d’établissement : Israël
 
 2. DONNÉES TRAITÉES
 
@@ -170,7 +170,7 @@ Les prestataires exacts, leurs rôles et les pays où les données peuvent être
 6. DURÉES DE CONSERVATION
 
 Les durées sont définies selon la finalité et les obligations applicables :
-- données de compte : [DURÉE OU CRITÈRE À COMPLÉTER] ;
+- données de compte : tant que l’utilisateur reste inscrit ;
 - commandes, factures et paiements : [DURÉE LÉGALE À DÉTERMINER] ;
 - contenus publiés : selon les choix de l’auteur et les règles de l’application ;
 - journaux de sécurité : [DURÉE À COMPLÉTER] ;
@@ -186,7 +186,7 @@ Inventaire des outils réellement utilisés : [À COMPLÉTER AVANT PUBLICATION]
 
 8. DROITS DES UTILISATEURS
 
-Selon la législation applicable, l’utilisateur peut demander l’accès, la rectification ou la suppression de ses données, ou exercer les autres droits prévus par la loi. Il peut adresser sa demande à [ADRESSE E-MAIL VIE PRIVÉE]. Des renseignements complémentaires peuvent être demandés pour vérifier son identité.
+Selon la législation applicable, l’utilisateur peut demander l’accès, la rectification ou la suppression de ses données, ou exercer les autres droits prévus par la loi. Il peut adresser sa demande à kiffstationadmin@gmail.com. Des renseignements complémentaires peuvent être demandés pour vérifier son identité.
 
 Les demandes sont traitées dans les délais et selon les règles applicables. Certaines données peuvent devoir être conservées pour satisfaire une obligation légale ou défendre des droits.
 
@@ -198,14 +198,14 @@ Certains prestataires peuvent traiter des données depuis des pays différents d
 
 10. MINEURS
 
-Les règles d’âge sont présentées dans l’application concernée avant l’inscription ou la publication. KiffStation ne demande pas intentionnellement à un mineur de fournir des données en violation des règles applicables. Toute demande concernant les données d’un mineur peut être adressée à [ADRESSE E-MAIL VIE PRIVÉE].
+Les règles d’âge sont présentées dans l’application concernée avant l’inscription ou la publication. Aucune donnée concernant un mineur n’est enregistrée par KiffStation. Toute demande concernant les données d’un mineur peut être adressée à kiffstationadmin@gmail.com.
 
 11. MODIFICATIONS ET CONTACT
 
 La présente politique peut être mise à jour lorsque les services, prestataires ou règles applicables changent. La version et sa date de mise à jour sont indiquées en haut de cette page.
 
 Contact pour toute question relative aux données personnelles :
-[ADRESSE E-MAIL VIE PRIVÉE]
+kiffstationadmin@gmail.com
 
-Version 0.1 — publiée le [DATE À COMPLÉTER].
+Version 0.1 — publiée le 15 novembre 2026.
 

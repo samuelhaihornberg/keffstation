@@ -4,7 +4,7 @@ const realServe = Deno.serve;
 (Deno as any).serve = (h: any) => { const name = (globalThis as any).__current; handlers[name] = h; return { finished: Promise.resolve() } as any; };
 Deno.env.set("SUPABASE_URL", "https://mock-supabase.test");
 Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", "mock-service-role-not-real");
-Deno.env.set("PUBLIC_SITE_ORIGIN", "https://kiffstation.com");
+Deno.env.set("PUBLIC_SITE_ORIGIN", "https://samuelhaihornberg.github.io");
 Deno.env.set("PAYPAL_CLIENT_ID", "TEST_CLIENT_ID_FAKE");
 Deno.env.set("PAYPAL_CLIENT_SECRET", "TEST_SECRET_VALUE_MUST_NOT_LEAK");
 Deno.env.set("PAYPAL_API_BASE", "https://api-m.sandbox.paypal.com");
