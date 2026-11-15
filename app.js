@@ -81,8 +81,8 @@ const APPS = [
     title: "Blogum",
     desc: "Blog maker, profil social network, rencontres, sphères d'audience, profils caméléons, échelle de proximité, espaces hybrides blog ↔ forum, réactions émotionnelles.",
     tags: ["Blog", "Réseau social", "Rencontres", "Feedback"],
-    appUrl: "https://www.kiffstation.com/blogum/",
-    embedUrl: "https://www.kiffstation.com/blogum/",
+    appUrl: "./blogum/",
+    embedUrl: "./blogum/",
     embedLabel: "Ouvrir Blogum",
     color: "#ff3d9a",
     subArticles: [
@@ -590,9 +590,9 @@ class KeffStation {
     this.panelCard.querySelector('.panel-close')?.addEventListener('click', () => this.closePanel());
     this.panelCard.querySelector('.embed-btn')?.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Kifftech : ouvrir la sous-app locale (pas d'iframe)
-      if (app.num === 'Kifftech') {
-        window.location.href = app.appUrl || app.embedUrl || './kifftech.store/';
+      // Sous-apps locales intégrées (pas d'iframe)
+      if (app.num === 'Kifftech' || app.num === 'Blogum') {
+        window.location.href = app.appUrl || app.embedUrl || (app.num === 'Blogum' ? './blogum/' : './kifftech.store/');
       } else if (app.embedUrl) {
         this.openEmbed(app);
       } else if (app.appUrl) {
