@@ -804,3 +804,8 @@ body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden}
 .card-preview{background:linear-gradient(135deg,#062235 0%,#0b3b52 45%,#081726 100%);border:1px solid rgba(0,255,200,.18)}
 .card-submit{background:linear-gradient(135deg,var(--accent),#00a6ff);color:#031018;border:none}
 .cart-note{font-size:.78rem;color:var(--fg-muted);line-height:1.45}
+
+/* Acceptation des conditions (case non cochée par défaut) */
+.kt-terms{display:flex;gap:.5rem;align-items:flex-start;font-size:.8rem;color:var(--fg-muted);line-height:1.45;padding:.6rem .7rem;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.02)}
+.kt-terms input{margin-top:.2rem;width:18px;height:18px;flex:0 0 auto;accent-color:var(--accent)}
+.kt-terms a{color:var(--accent)}

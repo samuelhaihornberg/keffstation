@@ -5,11 +5,12 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js",
     "test": "node tools/check-contenu.js",
     "check:contenu": "node tools/check-contenu.js",
     "check:contenu:strict": "node tools/check-contenu.js --strict",
-    "check:contenu:complete": "node tools/check-contenu.js --complete"
+    "check:contenu:complete": "node tools/check-contenu.js --complete",
+    "sync:supabase": "node tools/sync-supabase-shared.mjs",
+    "check:supabase": "node tools/sync-supabase-shared.mjs --check"
   },
   "keywords": [],
   "author": "",

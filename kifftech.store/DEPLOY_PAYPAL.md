@@ -1,26 +1,22 @@
-# KiffTech — Paiement PayPal (ponctuel) : état et déploiement
+# KiffTech — Paiement PayPal : état
 
-> **Cible actuelle (demandée)** : **Supabase Edge Functions** (`kifftech.store/supabase/functions/`) en gardant **GitHub Pages** comme vitrine. **Aucune configuration Cloudflare, aucune modification DNS.** Voir **`DEPLOY_SUPABASE_BACKEND.md`** (étapes exactes, sans inventer de Project URL/Ref).
+Voir **`DEPLOY_SUPABASE_BACKEND.md`** pour l’architecture, les étapes de déploiement, les secrets et les vérifications.
 
-## Implémentation (ce dépôt, `kifftech.store/`)
-- **Frontend** : SDK PayPal officiel (`buttons,card-fields`), achat **ponctuel** (`intent=capture`). Config dans `data/payment-config.js` :
-  - `SUPABASE_FUNCTIONS_BASE_URL` + `SUPABASE_PUBLISHABLE_KEY` (publique uniquement, si requise) pour appeler `/paypal-config`, `/paypal-create-order`, `/paypal-capture-order`.
-  - (Alternative) `PAYMENT_API_BASE` pour backend custom. Le navigateur reçoit uniquement la config publique ; **aucun `PAYPAL_CLIENT_SECRET`, aucune clé `service_role`, aucune donnée carte** collectée/stockée/exposée côté front.
-- **Carte** : composants PayPal officiels uniquement si autorisé/éligible (`isEligible()` avant champs avancés). **Aucune collecte directe de numéros de carte**.
-- **Supabase Edge Functions** : `supabase/functions/paypal-config|paypal-create-order|paypal-capture-order` + `_shared/` (helpers, `payment-core.js`, `catalogue.js`). CORS limité à `PUBLIC_SITE_ORIGIN`.
-- **Montants/validation** : **recalculés côté serveur** depuis le catalogue de référence (articles, variantes, devise, livraison, taxes, total) — jamais confiance au navigateur. Commande considérée payée uniquement après **capture confirmée serveur `COMPLETED`**.
-- **0 € livraison/taxes** : autorisés si **configurés et justifiés** (état catalogue actuel) ; sinon non définis → paiement désactivé.
-- **Aucun achat réel** effectué.
+## Résumé
+- Backend : Supabase Edge Functions (`supabase/functions/`), projet `spkaxtmhefhycqnshybo`. Pas de Cloudflare, pas de serveur Node.
+- Front : GitHub Pages, appelle les fonctions via `data/payment-config.js` (URL + clé publishable uniquement).
+- Paiement ponctuel (`intent: CAPTURE`). PayPal et carte via composants officiels, selon éligibilité PayPal.
+- Montants recalculés côté serveur. « Payé » uniquement après capture confirmée avec montant et devise identiques.
+- Acceptation des conditions obligatoire (case non cochée par défaut), version et date enregistrées avec la commande.
+- Reçu créé après capture (numéro unique, `legal_complete = false` tant que l’identité vendeur n’est pas renseignée).
 
-## Variables/secrets (Supabase, jamais dans Git/front/logs/chat)
-À définir dans **Supabase Dashboard → Edge Functions → Secrets** (voir `.env.example` fictif dans `supabase/functions/.env.example`) :
-- `PAYPAL_CLIENT_ID` — identifiant (Live en production).
-- `PAYPAL_CLIENT_SECRET` — **secret serveur uniquement**.
-- `PAYPAL_API_BASE` — `https://api-m.paypal.com` (Live) ou `https://api-m.sandbox.paypal.com` (Sandbox).
-- `PUBLIC_SITE_ORIGIN` — origine exacte du site publié (CORS).
+## Sandbox / Live
+- **Sandbox** : supporté par le code avec les identifiants Sandbox et `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com`. **Non déployé ni testé sur votre projet.**
+- **Live** : supporté par le code avec les identifiants Live et `PAYPAL_API_BASE=https://api-m.paypal.com`. **Non opérationnel à ce stade** : fonctions non déployées, secrets Live non saisis, conditions non publiées, endpoints non vérifiés.
 
-Front (public, dans `data/payment-config.js`) : `SUPABASE_FUNCTIONS_BASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (publishable/anon uniquement, optionnelle). **Jamais `service_role`.**
-
-## État Sandbox vs Live
-- **Sandbox** : supporté si déployé avec secrets Sandbox + `PAYPAL_API_BASE` Sandbox — **non vérifié ici**.
-- **Live** : supporté (`https://api-m.paypal.com` + secrets Live) — **non opérationnel ; ne pas déclarer opérationnel** avant déploiement des fonctions sur votre projet Supabase, saisie des secrets Live, configuration front (URL/ref réels, sans invention) et vérification des endpoints/éligibilité. **Non confirmé.**
+## Bloquants restants
+1. Déploiement des fonctions et de la migration sur `spkaxtmhefhycqnshybo`.
+2. Secrets Live saisis dans le Dashboard.
+3. Conditions d’utilisation et politique de confidentialité publiées (`data/legal.js`).
+4. Identité vendeur et mentions légales de facturation.
+5. Révocation de la clé secrète Supabase exposée dans la conversation.

@@ -1,3 +1,4 @@
+// COPIE GÉNÉRÉE depuis data/catalogue.js — ne pas éditer. Régénérer : npm run sync:supabase
 /* ===== KiffTech — catalogue produits (données vérifiées fabricant) =====
    Chaque fiche indique ses sources (URL + date de vérification).
    - Prix : prix public officiel uniquement (TTC, marché France/UE), aucune remise.

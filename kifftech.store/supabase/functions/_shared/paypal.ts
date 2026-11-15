@@ -1,85 +1,80 @@
-// Shared helpers for Supabase Edge Functions (Deno). No secrets in code/logs.
+// Appels REST PayPal côté serveur. Secrets lus uniquement depuis l'environnement des fonctions.
+import { HttpError } from "./http.ts";
+
+const ALLOWED_BASES = ["https://api-m.paypal.com", "https://api-m.sandbox.paypal.com"];
+
 export function getPayPalConfig() {
-  const clientId = Deno.env.get('PAYPAL_CLIENT_ID') || '';
-  const clientSecret = Deno.env.get('PAYPAL_CLIENT_SECRET') || '';
-  const base = String(Deno.env.get('PAYPAL_API_BASE') || 'https://api-m.paypal.com').replace(/\/$/, '');
-  const environment = /sandbox/i.test(base) ? 'sandbox' : (/api-m\.paypal\.com$/i.test(base) ? 'live' : 'custom');
+  const clientId = Deno.env.get("PAYPAL_CLIENT_ID") || "";
+  const clientSecret = Deno.env.get("PAYPAL_CLIENT_SECRET") || "";
+  const base = String(Deno.env.get("PAYPAL_API_BASE") || "").replace(/\/+$/, "");
+  if (!clientId || !clientSecret || !base) {
+    throw new HttpError(503, "paypal_not_configured", "Paiement non configuré côté serveur.");
+  }
+  if (!ALLOWED_BASES.includes(base)) {
+    throw new HttpError(503, "paypal_not_configured", "Paiement non configuré côté serveur.");
+  }
+  const environment = base === "https://api-m.paypal.com" ? "live" : "sandbox";
   return { clientId, clientSecret, base, environment };
 }
 
-export function getAllowedOrigin() {
-  return String(Deno.env.get('PUBLIC_SITE_ORIGIN') || '').trim().replace(/\/$/, '');
-}
+let cachedToken: { value: string; expiresAt: number; base: string } | null = null;
 
-export function corsHeaders(req: Request): Record<string, string> {
-  const allowed = getAllowedOrigin();
-  const origin = req.headers.get('Origin') || '';
-  if (!allowed || !origin || origin !== allowed) return { 'Vary': 'Origin' };
-  return {
-    'Access-Control-Allow-Origin': allowed,
-    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Max-Age': '86400',
-    'Vary': 'Origin',
-  };
-}
-
-export function json(body: unknown, status = 200, headers: Record<string, string> = {}) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers },
-  });
-}
-
-export function options(req: Request) {
-  return new Response('ok', { headers: corsHeaders(req) });
-}
-
-export async function getAccessToken() {
+async function accessToken(): Promise<string> {
   const { clientId, clientSecret, base } = getPayPalConfig();
-  if (!clientId || !clientSecret) {
-    const err: any = new Error('Configuration PayPal incomplète côté serveur.');
-    err.status = 503;
-    throw err;
+  if (cachedToken && cachedToken.base === base && cachedToken.expiresAt > Date.now() + 60_000) {
+    return cachedToken.value;
   }
-  const auth = btoa(`${clientId}:${clientSecret}`);
   const res = await fetch(`${base}/v1/oauth2/token`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: 'grant_type=client_credentials',
+    body: "grant_type=client_credentials",
   });
-  if (!res.ok) {
-    const err: any = new Error('Échec d’authentification PayPal.');
-    err.status = 502;
-    throw err;
-  }
+  if (!res.ok) throw new HttpError(502, "paypal_auth", "Authentification PayPal impossible.");
   const data = await res.json();
+  cachedToken = { value: data.access_token, expiresAt: Date.now() + (data.expires_in || 300) * 1000, base };
   return data.access_token;
 }
 
-export async function paypalFetch(path: string, options: RequestInit = {}) {
-  const { base } = getPayPalConfig();
-  const token = await getAccessToken();
-  const headers = new Headers(options.headers || {});
-  headers.set('Authorization', `Bearer ${token}`);
-  headers.set('Content-Type', 'application/json');
-  const res = await fetch(`${base}${path}`, { ...options, headers });
-  const text = await res.text();
-  let data: any = null;
-  try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
-  if (!res.ok) {
-    const err: any = new Error('Requête PayPal refusée.');
-    err.status = res.status >= 400 && res.status < 500 ? 400 : 502;
-    err.details = data;
-    throw err;
+export class PayPalError extends HttpError {
+  paypalName: string;
+  issues: string;
+  constructor(status: number, paypalName: string, issues = "") {
+    super(status, "paypal_error", "Requête PayPal refusée.");
+    this.paypalName = paypalName;
+    this.issues = issues;
   }
-  return data;
+  isDeclined(): boolean {
+    return /INSTRUMENT_DECLINED|DECLINED/i.test(`${this.paypalName} ${this.issues}`);
+  }
 }
 
-export function safeRequestId(value: unknown) {
-  const id = typeof value === 'string' ? value.trim() : '';
-  return /^[A-Za-z0-9._:-]{8,80}$/.test(id) ? id : '';
+// Ne journalise jamais les réponses PayPal complètes (données payeur).
+export async function paypalFetch(path: string, init: { method: string; body?: string; headers?: Record<string, string> }): Promise<any> {
+  const { base } = getPayPalConfig();
+  const token = await accessToken();
+  let res: Response;
+  try {
+    res = await fetch(`${base}${path}`, {
+      method: init.method,
+      body: init.body,
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(init.headers || {}) },
+    });
+  } catch {
+    throw new HttpError(502, "paypal_network", "PayPal est injoignable. Réessayez.");
+  }
+  const text = await res.text();
+  let data: any = null;
+  try { data = text ? JSON.parse(text) : null; } catch { data = null; }
+  if (!res.ok) {
+    const name = String((data && data.name) || `HTTP_${res.status}`).slice(0, 80);
+    if (res.status >= 500) throw new HttpError(502, "paypal_unavailable", "PayPal indisponible. Réessayez.");
+    const issues = Array.isArray(data && data.details)
+      ? data.details.map((d: any) => String((d && d.issue) || "")).filter(Boolean).join(",").slice(0, 200)
+      : "";
+    throw new PayPalError(400, name, issues);
+  }
+  return data;
 }

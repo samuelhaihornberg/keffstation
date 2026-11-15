@@ -1,3 +1,4 @@
+// COPIE GÉNÉRÉE depuis lib/payment-core.js — ne pas éditer. Régénérer : npm run sync:supabase
 // Shared payment/sellability logic (browser + server). No DOM, no secrets.
 // Recalculates amounts from canonical catalogue data; never trust client totals.
 

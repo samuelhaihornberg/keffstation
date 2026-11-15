@@ -1,3 +1,12 @@
-# Configuration Supabase CLI (locale/projet) — ne pas inventer de project_id.
-# Après création du projet dans le Dashboard, liez-le avec : supabase link --project-ref <VOTRE_PROJECT_REF>
-# (le project ref sera visible dans votre projet Supabase ; ne le committez pas s'il doit rester privé)
+# Supabase CLI — fonctions de paiement KiffTech.
+# verify_jwt = false : le navigateur (panier public, sans compte) appelle les fonctions avec la clé publishable,
+# qui n'est pas un JWT utilisateur. La protection est assurée par les fonctions elles-mêmes :
+# origine exacte (PUBLIC_SITE_ORIGIN), limitation de débit, recalcul serveur, jeton de commande, capture confirmée.
+[functions.paypal-config]
+verify_jwt = false
+
+[functions.paypal-create-order]
+verify_jwt = false
+
+[functions.paypal-capture-order]
+verify_jwt = false

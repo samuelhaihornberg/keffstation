@@ -1,56 +1,123 @@
-import { corsHeaders, json, options, paypalFetch, safeRequestId } from "../_shared/paypal.ts";
+// Capture serveur après approbation du client. "Payé" uniquement après capture COMPLETED
+// avec montant et devise identiques à la commande enregistrée côté serveur.
+import { clientKey, corsHeaders, errorResponse, foreignOrigin, HttpError, json, readJson, sha256Hex } from "../_shared/http.ts";
+import { db, rateLimitOk } from "../_shared/db.ts";
+import { paypalFetch, PayPalError } from "../_shared/paypal.ts";
+
+function firstCapture(order: any): any {
+  const pu = (order && order.purchase_units && order.purchase_units[0]) || {};
+  return (pu.payments && pu.payments.captures && pu.payments.captures[0]) || null;
+}
+
+async function invoiceFor(orderId: string): Promise<any> {
+  const { data } = await db().from("invoices").select("invoice_number, issued_at, currency, subtotal, shipping, taxes, total_paid, paypal_capture_id, lines, legal_complete").eq("order_id", orderId).maybeSingle();
+  return data;
+}
+
+function invoiceView(inv: any) {
+  return {
+    number: inv.invoice_number,
+    issuedAt: inv.issued_at,
+    currency: inv.currency,
+    subtotal: Number(inv.subtotal),
+    shipping: Number(inv.shipping),
+    taxes: Number(inv.taxes),
+    totalPaid: Number(inv.total_paid),
+    paypalCaptureId: inv.paypal_capture_id,
+    lines: inv.lines,
+    legalComplete: inv.legal_complete === true,
+  };
+}
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return options(req);
-  const headers = corsHeaders(req);
-  if (req.method !== "POST") return json({ ok: false, error: "Méthode non autorisée." }, 405, headers);
-
-  let body: any;
+  let lockedId: string | null = null;
   try {
-    body = await req.json();
-  } catch {
-    return json({ ok: false, error: "Requête invalide." }, 400, headers);
-  }
-
-  const orderID = body && typeof body.orderID === "string" ? body.orderID.trim() : "";
-  if (!/^[-A-Z0-9]+$/i.test(orderID)) {
-    return json({ ok: false, error: "Identifiant de commande invalide." }, 400, headers);
-  }
-
-  try {
-    const existing = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}`, { method: "GET" });
-    const existingStatus = existing && existing.status;
-    if (existingStatus === "COMPLETED") {
-      const cap = (((existing.purchase_units || [])[0] || {}).payments || {}).captures || [];
-      return json({ ok: true, status: "COMPLETED", captureId: (cap[0] || {}).id || null, alreadyCaptured: true }, 200, headers);
-    }
-    if (existingStatus && existingStatus !== "APPROVED") {
-      return json({ ok: false, error: "Le paiement n’est pas approuvé pour capture.", status: existingStatus }, 400, headers);
+    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(req) });
+    if (foreignOrigin(req)) throw new HttpError(403, "forbidden_origin", "Origine non autorisée.");
+    if (req.method !== "POST") throw new HttpError(405, "method", "Méthode non autorisée.");
+    if (!(await rateLimitOk(await clientKey(req, "capture"), 600, 30))) {
+      throw new HttpError(429, "rate_limited", "Trop de tentatives. Réessayez plus tard.");
     }
 
-    const requestId = safeRequestId(body && body.requestId);
-    const reqHeaders: Record<string, string> = requestId
-      ? { "PayPal-Request-Id": requestId, "Prefer": "return=representation" }
-      : { "Prefer": "return=representation" };
-    const captured = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`, {
-      method: "POST",
-      headers: reqHeaders,
-      body: "{}",
-    });
-
-    const status = captured && captured.status;
-    if (status !== "COMPLETED") {
-      return json({ ok: false, error: "Le paiement n’a pas été confirmé par le serveur.", status: status || "UNKNOWN" }, 400, headers);
+    const body = await readJson(req, 4096);
+    const orderID = typeof body.orderID === "string" ? body.orderID.trim() : "";
+    const orderToken = typeof body.orderToken === "string" ? body.orderToken : "";
+    if (!/^[A-Z0-9]{8,40}$/i.test(orderID) || orderToken.length < 20 || orderToken.length > 200) {
+      throw new HttpError(400, "bad_request", "Requête invalide.");
     }
 
-    const captures = (((captured.purchase_units || [])[0] || {}).payments || {}).captures || [];
-    const captureId = (captures[0] || {}).id || null;
+    const { data: row } = await db().from("payment_orders")
+      .select("id, status, currency, total, subtotal, shipping, taxes, lines, token_hash, paypal_order_id")
+      .eq("paypal_order_id", orderID).maybeSingle();
+    if (!row) throw new HttpError(404, "order_not_found", "Commande introuvable.");
+    if ((await sha256Hex(orderToken)) !== row.token_hash) throw new HttpError(403, "bad_token", "Accès à la commande refusé.");
 
-    // Succès uniquement après capture confirmée côté serveur.
-    return json({ ok: true, status: "COMPLETED", captureId }, 200, headers);
-  } catch (err: any) {
-    const status = err && err.status ? err.status : 502;
-    const msg = status === 503 ? "Paiement non configuré côté serveur." : "Impossible de confirmer la capture du paiement PayPal.";
-    return json({ ok: false, error: msg }, status, headers);
+    if (row.status === "paid") {
+      const inv = await invoiceFor(row.id);
+      return json({ ok: true, status: "COMPLETED", alreadyCaptured: true, invoice: inv ? invoiceView(inv) : null }, 200, corsHeaders(req));
+    }
+    if (row.status === "capturing") throw new HttpError(409, "capture_in_progress", "Paiement en cours de confirmation. Patientez.");
+    if (row.status !== "created") throw new HttpError(400, "not_capturable", "Cette commande ne peut plus être encaissée.");
+
+    // Verrou : une seule capture à la fois pour cette commande.
+    const { data: locked } = await db().from("payment_orders")
+      .update({ status: "capturing", updated_at: new Date().toISOString() })
+      .eq("id", row.id).eq("status", "created").select("id");
+    if (!locked || locked.length === 0) throw new HttpError(409, "capture_in_progress", "Paiement en cours de confirmation. Patientez.");
+    lockedId = row.id;
+
+    const pp = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}`, { method: "GET" });
+    let capture: any = null;
+    if (pp.status === "COMPLETED") {
+      capture = firstCapture(pp); // déjà capturé lors d'une tentative précédente : on réconcilie
+    } else if (pp.status === "APPROVED") {
+      const cap = await paypalFetch(`/v2/checkout/orders/${encodeURIComponent(orderID)}/capture`, {
+        method: "POST",
+        headers: { "PayPal-Request-Id": `capture-${row.id}`, "Prefer": "return=representation" },
+        body: "{}",
+      });
+      if (cap && cap.status === "COMPLETED") capture = firstCapture(cap);
+    } else {
+      throw new HttpError(400, "not_approved", "Le paiement n’a pas été approuvé par le client.");
+    }
+
+    const amountOk = capture
+      && capture.status === "COMPLETED"
+      && capture.amount
+      && capture.amount.currency_code === row.currency
+      && Number(capture.amount.value).toFixed(2) === Number(row.total).toFixed(2);
+    if (!amountOk) {
+      await db().from("payment_orders").update({ status: "failed", failure_code: "amount_mismatch", paypal_capture_id: capture ? String(capture.id) : null, updated_at: new Date().toISOString() }).eq("id", row.id);
+      lockedId = null;
+      throw new HttpError(409, "amount_mismatch", "Le montant confirmé ne correspond pas à la commande. Contactez la boutique avec la référence de paiement.");
+    }
+
+    const captureId = String(capture.id);
+    const { data: invNumber, error: payErr } = await db().rpc("kt_mark_paid", { p_order_id: row.id, p_capture_id: captureId });
+    if (payErr) throw new HttpError(503, "db_unavailable", "Paiement reçu mais confirmation interne en attente. Conservez la référence de paiement.");
+    lockedId = null;
+
+    const inv = await invoiceFor(row.id);
+    return json({
+      ok: true,
+      status: "COMPLETED",
+      captureId,
+      invoiceNumber: invNumber,
+      invoice: inv ? invoiceView(inv) : null,
+    }, 200, corsHeaders(req));
+  } catch (err) {
+    if (lockedId) {
+      // Libère le verrou (sauf commande marquée failed). Une nouvelle tentative réconcilie via PayPal.
+      const declined = err instanceof PayPalError && err.isDeclined();
+      await db().from("payment_orders").update({
+        status: "created",
+        failure_code: declined ? "declined" : "capture_retry",
+        updated_at: new Date().toISOString(),
+      }).eq("id", lockedId).eq("status", "capturing");
+    }
+    if (err instanceof PayPalError && err.isDeclined()) {
+      return json({ ok: false, code: "declined", error: "Paiement refusé par PayPal. Choisissez un autre moyen de paiement." }, 402, corsHeaders(req));
+    }
+    return errorResponse(req, err);
   }
 });

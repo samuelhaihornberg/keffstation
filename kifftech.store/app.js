@@ -1,7 +1,8 @@
 /* ===== KiffTech — Catalogue (données vérifiées) ===== */
 import { CATALOGUE } from './data/catalogue.js';
 import { CONTACT } from './data/config.js';
-import { PAYMENT_API_BASE, SUPABASE_FUNCTIONS_BASE_URL, SUPABASE_PUBLISHABLE_KEY } from './data/payment-config.js';
+import { SUPABASE_FUNCTIONS_BASE_URL, SUPABASE_PUBLISHABLE_KEY } from './data/payment-config.js';
+import { LEGAL } from './data/legal.js';
 import { resolveSelection, sellability, formatSellabilityReason, buildOrder } from './lib/payment-core.js';
 
 // ---------- RAYONS (Catégories de produits) ----------
@@ -1078,6 +1079,7 @@ class KiffTech{
         <h3 class="checkout-title">Récapitulatif de paiement KiffTech</h3>
         ${this.renderTotalsSummaryHTML(totals)}
         <p class="cart-note">${sanitizeHTML(payNote)}</p>
+        ${this.termsBlockHTML()}
         <div id="paypalCartContainer" class="paypal-container kifftech-paypal" aria-live="polite"></div>
         <div id="paypalCardContainer" class="paypal-container kifftech-card" aria-live="polite"></div>
         <div id="paypalCartStatus" class="pay-status" aria-live="polite"></div>
@@ -1108,18 +1110,22 @@ class KiffTech{
 
 
   paymentApiUrl(path) {
-    const p = String(path || '');
-    const endpoint = p.startsWith('/') ? p : '/' + p;
+    const endpoint = String(path || '').startsWith('/') ? String(path) : '/' + String(path || '');
     const supaBase = (typeof SUPABASE_FUNCTIONS_BASE_URL === 'string' ? SUPABASE_FUNCTIONS_BASE_URL : '').replace(/\/+$/, '');
-    if (supaBase) {
-      if (endpoint.endsWith('/api/paypal/config')) return `${supaBase}/paypal-config`;
-      if (endpoint.endsWith('/api/paypal/create-order')) return `${supaBase}/paypal-create-order`;
-      if (endpoint.endsWith('/api/paypal/capture-order')) return `${supaBase}/paypal-capture-order`;
-      return `${supaBase}${endpoint}`;
+    if (!supaBase) return '';
+    if (endpoint.endsWith('/api/paypal/config')) return `${supaBase}/paypal-config`;
+    if (endpoint.endsWith('/api/paypal/create-order')) return `${supaBase}/paypal-create-order`;
+    if (endpoint.endsWith('/api/paypal/capture-order')) return `${supaBase}/paypal-capture-order`;
+    return `${supaBase}${endpoint}`;
+  }
+  termsBlockHTML() {
+    if (!(LEGAL.termsUrl && LEGAL.termsVersion)) {
+      return '<div class="kt-terms kt-terms--off"><p class="pay-unavailable">Conditions d’utilisation non encore publiées : le paiement est indisponible.</p></div>';
     }
-    const base = (typeof PAYMENT_API_BASE === 'string' ? PAYMENT_API_BASE : '').replace(/\/+$/, '');
-    if (!base) return `.${endpoint}`;
-    return `${base}${endpoint}`;
+    const privacy = LEGAL.privacyUrl
+      ? ` et la <a href="${sanitizeHTML(LEGAL.privacyUrl)}" target="_blank" rel="noopener">politique de confidentialité</a>`
+      : '';
+    return `<label class="kt-terms"><input type="checkbox" class="kt-accept-terms"> <span>J’ai lu et j’accepte les <a href="${sanitizeHTML(LEGAL.termsUrl)}" target="_blank" rel="noopener">conditions d’utilisation</a>${privacy} (version ${sanitizeHTML(LEGAL.termsVersion)}). Achat ponctuel, sans abonnement.</span></label>`;
   }
 
   paymentApiHeaders(extra = {}) {
@@ -1128,7 +1134,6 @@ class KiffTech{
     const key = (typeof SUPABASE_PUBLISHABLE_KEY === 'string' ? SUPABASE_PUBLISHABLE_KEY : '').trim();
     if (supaBase && key) {
       headers.apikey = key;
-      headers.Authorization = `Bearer ${key}`;
     }
     return headers;
   }
@@ -1137,6 +1142,7 @@ class KiffTech{
     if (window.paypal && window.__kifftechPaypalConfig) return { paypal: window.paypal, config: window.__kifftechPaypalConfig };
     if (this._paypalLoading) return this._paypalLoading;
     this._paypalLoading = (async () => {
+      if (!this.paymentApiUrl('/api/paypal/config')) throw new Error('Paiement non configuré : URL du backend Supabase manquante.');
       const res = await fetch(this.paymentApiUrl('/api/paypal/config'), { headers: this.paymentApiHeaders({ 'Accept': 'application/json' }), cache: 'no-store' });
       let cfg = null;
       try { cfg = await res.json(); } catch {}
@@ -1196,6 +1202,29 @@ class KiffTech{
       return;
     }
 
+    const scope = buttonsContainer.closest('.kifftech-checkout');
+    const termsBox = scope ? scope.querySelector('.kt-accept-terms') : null;
+    const args = { buttonsSelector, cardSelector, items, mode, statusSelector };
+    if (!(LEGAL.termsUrl && LEGAL.termsVersion)) {
+      buttonsContainer.innerHTML = '<p class="pay-unavailable">Paiement indisponible : conditions d’utilisation non encore publiées.</p>';
+      if (cardContainer) cardContainer.innerHTML = '';
+      setStatus('Paiement indisponible : conditions non publiées.', 'error');
+      return;
+    }
+    if (!termsBox || !termsBox.checked) {
+      buttonsContainer.innerHTML = '<p class="pay-unavailable">Cochez la case d’acceptation des conditions pour afficher les moyens de paiement.</p>';
+      if (cardContainer) cardContainer.innerHTML = '';
+      if (termsBox && !termsBox.dataset.bound) {
+        termsBox.dataset.bound = '1';
+        termsBox.addEventListener('change', () => {
+          buttonsContainer.dataset.rendering = '0';
+          this.renderPayPalCheckout(args);
+        });
+      }
+      setStatus('', 'info');
+      return;
+    }
+
     if (buttonsContainer.dataset.rendering === '1') return;
     buttonsContainer.dataset.rendering = '1';
     buttonsContainer.innerHTML = '';
@@ -1222,13 +1251,16 @@ class KiffTech{
       inFlight.creating = true;
       const requestId = this.makePaymentRequestId('create');
       try {
+        if (!termsBox || !termsBox.checked) throw new Error('Acceptez les conditions avant de payer.');
         const res = await fetch(this.paymentApiUrl('/api/paypal/create-order'), {
           method: 'POST',
           headers: this.paymentApiHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ items, requestId }),
+          body: JSON.stringify({ items, requestId, acceptTerms: true, termsVersion: LEGAL.termsVersion }),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.ok || !data.id) throw new Error(data.error || 'Création de commande refusée.');
+        if (!res.ok || !data.ok || !data.id || !data.orderToken) throw new Error(data.error || 'Création de commande refusée.');
+        this._payTokens = this._payTokens || new Map();
+        this._payTokens.set(data.id, data.orderToken);
         setStatus(`Commande PayPal créée (${envLabel}). Finalisez le paiement sans recharger la page.`, 'info');
         return data.id;
       } finally {
@@ -1241,15 +1273,20 @@ class KiffTech{
       inFlight.capturing = true;
       const requestId = this.makePaymentRequestId('capture');
       try {
+        const orderToken = this._payTokens && this._payTokens.get(orderID);
+        if (!orderToken) throw new Error('Session de paiement expirée. Relancez le paiement.');
         const res = await fetch(this.paymentApiUrl('/api/paypal/capture-order'), {
           method: 'POST',
           headers: this.paymentApiHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ orderID, requestId }),
+          body: JSON.stringify({ orderID, orderToken, requestId }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok || !data.ok || data.status !== 'COMPLETED') {
-          throw new Error(data.error || 'Capture non confirmée par le serveur.');
+          const err = new Error(data.error || 'Paiement non confirmé par le serveur. Aucun paiement validé.');
+          err.code = data.code || '';
+          throw err;
         }
+        this._payTokens.delete(orderID);
         return data;
       } finally {
         inFlight.capturing = false;
@@ -1260,7 +1297,13 @@ class KiffTech{
       setStatus('Paiement approuvé. Confirmation de la capture côté serveur…');
       try {
         const captured = await captureOrder(data.orderID);
-        setStatus(captured.alreadyCaptured ? 'Paiement déjà confirmé côté serveur.' : 'Paiement confirmé par le serveur. Merci pour votre commande.', 'success');
+        const inv = captured.invoice;
+        let msg = captured.alreadyCaptured ? 'Paiement déjà confirmé côté serveur.' : 'Paiement confirmé par le serveur. Merci pour votre commande.';
+        if (inv) {
+          msg += ` Reçu n° ${inv.number} : ${formatPrice(inv.totalPaid, inv.currency)} payés. Référence PayPal : ${inv.paypalCaptureId}.`;
+          if (!inv.legalComplete) msg += ' Document provisoire : les mentions légales du vendeur ne sont pas encore finalisées.';
+        }
+        setStatus(msg, 'success');
         this.showToast(captured.alreadyCaptured ? 'Paiement déjà confirmé.' : 'Paiement confirmé.', 'success');
         if (mode === 'cart') {
           state.cart = [];
@@ -1409,6 +1452,7 @@ class KiffTech{
         <h3 class="checkout-title">Paiement KiffTech — ${sanitizeHTML(p.title)}</h3>
         ${totalsHTML}
         <p class="cart-note">Achat ponctuel. Vérifiez le sous-total, la livraison, les taxes, la devise et le total final avant l’ouverture/la confirmation du paiement.</p>
+        ${this.termsBlockHTML()}
         <div id="paypalModalContainer" class="paypal-container kifftech-paypal" aria-live="polite"></div>
         <div id="paypalModalCardContainer" class="paypal-container kifftech-card" aria-live="polite"></div>
         <div id="paypalDirectStatus" class="pay-status" aria-live="polite"></div>

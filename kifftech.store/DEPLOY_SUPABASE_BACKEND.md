@@ -1,98 +1,113 @@
-# Déploiement backend PayPal — Supabase Edge Functions (`kifftech.store/`)
+# KiffTech — Paiement PayPal réel avec Supabase Edge Functions
 
-Objectif : **remplacer le backend Cloudflare/Node** par **Supabase Edge Functions** pour le paiement PayPal, en gardant la **vitrine publiée sur GitHub Pages**. **Aucune configuration Cloudflare, aucune modification DNS.**
+Vitrine : **GitHub Pages** (inchangée). Backend de paiement : **Supabase Edge Functions** du projet `spkaxtmhefhycqnshybo`. **Aucun Cloudflare, aucun serveur Node, aucune modification DNS.**
 
-> Je n’ai pas accès à votre compte Supabase. Les fichiers sont préparés ; suivez les étapes ci-dessous. **N’inventez pas de Project URL ni de Project Ref** : utilisez ceux affichés dans votre propre projet Supabase. **Aucun paiement réel de test effectué. Ne déclarez pas le paiement Live opérationnel** avant déploiement des fonctions, saisie des secrets Live et vérification des endpoints.
+> État : code prêt et testé localement (banc simulé). **Non déployé** sur votre projet par cette session. **Le paiement Live n’est pas opérationnel** tant que les étapes 3 à 6 ci-dessous ne sont pas faites et que les endpoints ne répondent pas.
 
-## 1) Fichiers créés/modifiés (dans `kifftech.store/`)
-- `supabase/functions/paypal-config/index.ts` : configuration publique PayPal (renvoie `clientId`, `currency`, `environment`, `intent`) — **ne renvoie jamais `PAYPAL_CLIENT_SECRET`**.
-- `supabase/functions/paypal-create-order/index.ts` : création de commande PayPal côté serveur.
-- `supabase/functions/paypal-capture-order/index.ts` : capture côté serveur après approbation client.
-- `supabase/functions/_shared/paypal.ts` : appels PayPal serveur (secrets via env), CORS limité à `PUBLIC_SITE_ORIGIN`.
-- `supabase/functions/_shared/payment-core.js`, `supabase/functions/_shared/catalogue.js` : logique réutilisée de **recalcul/validation** (articles, variantes, devise, livraison, taxes, total) depuis les données de référence ; le navigateur n’est jamais source de vérité pour les montants. Commande « payée » uniquement après capture confirmée `COMPLETED`.
-- `supabase/functions/.env.example` : **noms et valeurs fictives uniquement** (aucun secret réel).
-- `data/payment-config.js` : configuration front (`SUPABASE_FUNCTIONS_BASE_URL`, `SUPABASE_PUBLISHABLE_KEY` publique uniquement). Clé `service_role` **jamais** côté front.
-- `app.js` : appels vers les fonctions Supabase + en-têtes publics si configurés, gestion d’erreurs.
+## 1. Architecture
 
-## 2) Prérequis (votre machine)
-- Compte Supabase et accès au Dashboard.
-- Supabase CLI installé : https://supabase.com/docs/guides/cli
-- Git (dépôt `keffstation` à jour).
+| Élément | Où | Rôle |
+|---|---|---|
+| `paypal-config` | Edge Function (GET) | Renvoie uniquement `clientId`, devise, environnement, version des conditions. **Jamais le secret.** |
+| `paypal-create-order` | Edge Function (POST) | Recalcule la commande depuis le catalogue (`payment-core.js`), vérifie l’acceptation des conditions, crée la commande PayPal (`intent: CAPTURE`), enregistre la commande + acceptation + hash du jeton. |
+| `paypal-capture-order` | Edge Function (POST) | Vérifie le jeton de commande, verrouille, contrôle l’état PayPal, capture, **vérifie montant et devise**, puis marque « payé » et crée le reçu. |
+| `migrations/20261115120000_kifftech_payments.sql` | Base | Tables `payment_orders`, `invoices`, `rate_limits` ; RLS activée **sans** accès anon/authenticated ; fonctions `kt_rate_limit_hit`, `kt_mark_paid`. |
+| `data/payment-config.js` | Front (public) | URL des fonctions + clé **publishable** uniquement. |
+| `data/legal.js` | Front + copie serveur | Conditions publiées (URL + version). **Vide = paiement désactivé.** |
 
-## 3) Étapes exactes — créer/lier le projet et déployer
+Règles de sécurité appliquées dans les fonctions :
+- **Montants** : jamais repris du navigateur (prix, totaux et champs forgés sont ignorés). Le serveur recalcule articles, variantes, quantités (max 20 lignes), devise unique, livraison, taxes et total.
+- **Payé** : uniquement après capture PayPal `COMPLETED` **avec montant et devise identiques** à la commande enregistrée. Sinon `failed` (aucune facture).
+- **Jeton de commande** : 256 bits aléatoires renvoyés une fois au navigateur ; seule son empreinte SHA-256 est stockée. Sans lui : pas de capture.
+- **Double capture / double clic** : verrou `created → capturing`, réconciliation via `GET order` avant toute capture, `PayPal-Request-Id` déterministe (`capture-<id interne>`).
+- **Refus carte** (`INSTRUMENT_DECLINED`) : code `declined`, commande réessayable, aucun paiement.
+- **CORS** : uniquement l’origine exacte `PUBLIC_SITE_ORIGIN` ; une requête avec `Origin` différent est refusée (403).
+- **Débit** : 10 créations / 10 min, 30 captures / 10 min, 120 configs / 10 min par empreinte d’IP (SHA-256 tronquée, IP non conservée).
+- **Authentification** : `verify_jwt = false` (voir `supabase/config.toml`) car le panier est public, sans compte. La protection repose sur les points ci-dessus.
+- **Données minimisées** : pas de nom, e-mail ou adresse de l’acheteur stocké par KiffTech. Les réponses PayPal complètes ne sont jamais journalisées.
+- **Cartes** : composants PayPal officiels, champs carte affichés seulement si `isEligible()`. Aucune saisie ni stockage de numéro de carte.
 
-### A. Créer (ou utiliser) un projet Supabase
-1. Ouvrir **Supabase Dashboard** → *New project* (ou sélectionner un projet existant).
-2. Noter dans *Project Settings → General/API* (sans les coller dans le dépôt/public) :
-   - **Project URL** (ex. `https://<PROJECT_REF>.supabase.co`) — visible dans votre dashboard, **ne pas inventer**.
-   - **Project Ref** (identifiant du projet).
-   - **Publishable/anon key** (clé publique) — utilisable côté navigateur si nécessaire ; **ne jamais utiliser `service_role` dans le front**.
+## 2. Conditions d’utilisation (bloquant)
 
-### B. Lier le dossier local et déployer les fonctions
-Depuis le dossier `kifftech.store/` du dépôt :
+Le dépôt ne contient **aucune page de conditions d’utilisation ni politique de confidentialité**. Le seul lien existant (bannière cookies de `keffstation/index.html`) pointe vers `href="#"`. Aucun texte juridique n’a donc été créé.
+
+Tant que `data/legal.js` n’est pas renseigné, le paiement est **désactivé** (le serveur refuse la création avec `legal_not_configured`).
+
+Pour activer : publier les conditions (ex. `https://www.kiffstation.com/conditions.html`), puis dans `data/legal.js` renseigner `termsUrl`, `termsVersion` (ex. `2026-11-15-v1`), `privacyUrl`, `termsDate`. Changer `termsVersion` à chaque modification des conditions. Lancer `npm run sync:supabase`, commit, push.
+
+Les « règles existantes de KiffStation » mentionnées dans la demande **n’existent pas encore** dans le dépôt : à fournir avant publication.
+
+## 3. Lier le projet et déployer
+
+Dans `kifftech.store/` :
 
 ```bash
 cd kifftech.store
+npm run check:supabase                     # copies _shared à jour (doit afficher "à jour")
 
-# Connexion CLI (ouvre le navigateur)
 supabase login
+supabase link --project-ref spkaxtmhefhycqnshybo
 
-# Lier le projet (remplacer <VOTRE_PROJECT_REF> par le ref affiché dans votre Dashboard)
-supabase link --project-ref <VOTRE_PROJECT_REF>
+# Migration (crée les tables et fonctions ; ou coller le SQL dans Supabase Dashboard → SQL Editor)
+supabase db push
 
-# Déployer les fonctions Edge
-supabase functions deploy paypal-config
-supabase functions deploy paypal-create-order
-supabase functions deploy paypal-capture-order
+# Fonctions (verify_jwt désactivé explicitement, voir section 1)
+supabase functions deploy paypal-config --no-verify-jwt
+supabase functions deploy paypal-create-order --no-verify-jwt
+supabase functions deploy paypal-capture-order --no-verify-jwt
 ```
 
-> Les fonctions lisent le catalogue/logique depuis `supabase/functions/_shared/` (incluses au déploiement). Exécuter les commandes depuis `kifftech.store/` (où se trouve `supabase/`).
+## 4. Secrets (Dashboard uniquement)
 
-### C. Configurer les secrets PayPal (Dashboard, jamais dans Git/logs/chat)
-**Supabase Dashboard → Edge Functions → Secrets** (ou *Project Settings → Edge Functions → Secrets* selon l’UI) → ajouter :
+**Supabase Dashboard → projet `spkaxtmhefhycqnshybo` → Edge Functions → Secrets**. Saisir vous-même, sans les coller dans le chat, Git ou les logs :
 
-| Nom du secret | Valeur (à saisir par vous) | Note |
+| Nom | Valeur à saisir | Note |
 |---|---|---|
-| `PAYPAL_CLIENT_ID` | *(identifiant PayPal **Live** pour production)* | requis |
-| `PAYPAL_CLIENT_SECRET` | *(secret PayPal **Live**)* | **secret serveur uniquement**, ne jamais exposer |
-| `PAYPAL_API_BASE` | `https://api-m.paypal.com` | **API Live (production)** |
-| `PUBLIC_SITE_ORIGIN` | *origine exacte du site publié, sans slash final* | ex. `https://www.kiffstation.com` (CNAME racine du repo, à confirmer) ou `https://samuelhaihornberg.github.io` — CORS limité à cette origine |
+| `PAYPAL_CLIENT_ID` | identifiant **Live** de l’application PayPal | secret chiffré |
+| `PAYPAL_CLIENT_SECRET` | secret **Live** | secret chiffré, serveur uniquement |
+| `PAYPAL_API_BASE` | `https://api-m.paypal.com` | Live. Seules les deux bases PayPal officielles sont acceptées. |
+| `PUBLIC_SITE_ORIGIN` | origine exacte de la vitrine, ex. `https://www.kiffstation.com` | **À confirmer** : le `CNAME` du dépôt indique `www.kiffstation.com`. Sans slash final. |
 
-- Pour Sandbox : `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com` avec identifiants Sandbox.
-- Les valeurs réelles sont saisies **uniquement** dans le Dashboard (ou via `supabase secrets set ...` sur votre machine, sans committer). **Ne pas** les mettre dans le chat, Git, le front ou les logs.
+Ne **créez pas** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` ni `SUPABASE_SECRET_KEY` : la plateforme les fournit aux fonctions. La clé secrète exposée dans la conversation précédente **doit être révoquée puis remplacée** par vous dans Project Settings → API Keys ; elle n’est utilisée nulle part dans ce code.
 
-### D. (Optionnel) Désactiver la vérification JWT pour invocation publique
-Si l’appel depuis le navigateur échoue pour motif d’authentification, vous pouvez soit (a) envoyer la clé **publishable** depuis le front (config ci-dessous), soit (b) dans le Dashboard/CLI autoriser l’invocation sans JWT utilisateur pour ces fonctions selon votre politique de sécurité. **Ne jamais utiliser `service_role` côté navigateur.**
+Les GitHub Secrets ne sont **pas** utilisés au runtime des fonctions. Aucun workflow de déploiement n’est ajouté ; si vous en créez un, il ne doit recevoir que le jeton de déploiement Supabase et jamais les secrets PayPal.
 
-### E. Configurer le front GitHub Pages (sans DNS/Cloudflare)
-Dans `kifftech.store/data/payment-config.js` :
-- `SUPABASE_FUNCTIONS_BASE_URL = 'https://<PROJECT_REF>.supabase.co/functions/v1'` (URL issue de votre projet, **ne pas inventer**)
-- `SUPABASE_PUBLISHABLE_KEY = '<CLE_PUBLISHABLE_ANON_PUBLIQUE>'` si nécessaire pour l’invocation (clé publique uniquement) ; sinon laisser vide.
-- Laisser `PAYMENT_API_BASE = ''`.
+## 5. Publier le front
 
-Puis commit & push sur `main` (déploiement GitHub Pages existant). **Aucun secret dans ce fichier.**
+`data/payment-config.js` contient déjà l’URL `https://spkaxtmhefhycqnshybo.supabase.co/functions/v1` et la clé publishable. Après les étapes 3 à 4 et la publication des conditions (section 2) : commit et push sur `main` (GitHub Pages se met à jour).
 
-## 4) Vérifications (sans paiement réel)
-- `GET https://<PROJECT_REF>.supabase.co/functions/v1/paypal-config` → JSON `{ ok, clientId, currency, environment, intent }` **sans `clientSecret`**.
-- Depuis l’origine publiée configurée (`PUBLIC_SITE_ORIGIN`), le checkout appelle les fonctions Supabase ; erreurs réseau/config affichées proprement.
-- Création/capture : montants **recalculés côté serveur** (articles/variantes/devise/livraison/taxes/total depuis catalogue) ; aucune confiance aux montants navigateur ; « payé » uniquement après capture `COMPLETED` confirmée.
-- Paiement **ponctuel**. PayPal et carte affichés uniquement selon options/éligibilité PayPal (composants officiels, `isEligible()` pour champs carte ; **aucune collecte directe de numéros de carte**).
-- **Aucun paiement réel de test.**
+## 6. Vérifications à faire (sans paiement réel)
 
-## 5) Reste à configurer dans Supabase (de votre côté)
-1. Créer/sélectionner le projet et récupérer **Project URL/Ref** + clé **publishable** (sans les publier dans le dépôt).
-2. `supabase login` + `supabase link --project-ref <VOTRE_PROJECT_REF>` + déployer les 3 fonctions.
-3. Saisir les secrets : `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_API_BASE=https://api-m.paypal.com`, `PUBLIC_SITE_ORIGIN` (origine exacte).
-4. Renseigner `SUPABASE_FUNCTIONS_BASE_URL` (et `SUPABASE_PUBLISHABLE_KEY` si requis) dans `data/payment-config.js`, puis pousser.
-5. Vérifier endpoints/CORS/éligibilité sans paiement réel.
+```bash
+# Config publique : 200, aucun secret dans la réponse, origine exacte acceptée
+curl -i -H "Origin: https://www.kiffstation.com" https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-config
 
-## 6) État Sandbox vs Live
-- **Sandbox** : supporté par le code si secrets Sandbox + `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com` déployés — **non vérifié ici**.
-- **Live** : supporté par le code (`https://api-m.paypal.com` + identifiants Live) — **non opérationnel / ne pas déclarer opérationnel** tant que fonctions non déployées sur **votre** projet Supabase, secrets Live non configurés, et endpoints non vérifiés. Aucun secret exposé, aucun paiement réel effectué.
+# Origine étrangère : 403
+curl -i -H "Origin: https://exemple.invalid" https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-config
 
-## 7) Valeurs du projet renseignées (état)
-- Project URL et Project Ref : `https://spkaxtmhefhycqnshybo.supabase.co` (ref `spkaxtmhefhycqnshybo`), renseignés dans `data/payment-config.js` (`SUPABASE_FUNCTIONS_BASE_URL`).
-- Clé **publishable** : renseignée dans `data/payment-config.js` (publique, prévue pour le navigateur).
-- Clé **secret/service_role** (`sb_secret_…`) : **non utilisée** par le front ni par les fonctions. Ne jamais la mettre dans Git, `payment-config.js`, le front ou les logs. Elle a été transmise dans une conversation : **recommandé de la régénérer** dans Supabase Dashboard → Project Settings → API Keys.
-- `SUPABASE_JWKS_URL` : non requis par ces fonctions (utile seulement pour vérifier des JWT utilisateur).
-- État actuel : `GET .../functions/v1/paypal-config` renvoie **404** → fonctions **non encore déployées** sur ce projet.
+# Création sans acceptation : 400 terms_not_accepted (aucune commande créée)
+curl -i -X POST -H "Origin: https://www.kiffstation.com" -H "Content-Type: application/json" \
+  -d '{"items":[],"acceptTerms":false}' https://spkaxtmhefhycqnshybo.supabase.co/functions/v1/paypal-create-order
+```
+
+Attendu après déploiement : `paypal-config` renvoie 200 (ou 503 `paypal_not_configured` si un secret manque) ; `legal_not_configured` tant que les conditions ne sont pas publiées. **Ne faites pas de paiement pour tester.**
+
+Tests locaux du comportement (simulation PayPal + base, aucun appel réel) : `bash supabase/tests/run-local-tests.sh` (nécessite `deno`). Résultat au moment de la rédaction : **35/35**.
+
+## 7. Reste à faire de votre côté
+
+1. Révoquer / remplacer la clé secrète Supabase exposée.
+2. `supabase link` + `db push` + 3× `functions deploy --no-verify-jwt`.
+3. Saisir les 4 secrets dans le Dashboard (section 4).
+4. Publier les conditions et les renseigner dans `data/legal.js` (section 2).
+5. Confirmer `PUBLIC_SITE_ORIGIN`.
+6. Vérifier les endpoints (section 6), puis tester avec un compte acheteur **Sandbox** si vous voulez un test sans débit, avant toute vente Live.
+
+## 8. Facturation : ce qui manque pour une facture légale
+
+Le reçu est créé après capture avec : numéro unique (`KT-AAAA-NNNNNN`), date, lignes, devise, montant payé, référence PayPal. Il est marqué `legal_complete = false` tant que ces informations ne sont pas renseignées dans `invoices.seller` (saisie par vous, jamais inventée) :
+- dénomination, forme juridique, adresse du siège, SIREN/SIRET ou équivalent, RCS/répertoire, numéro de TVA intracommunautaire si applicable ;
+- régime de TVA et taux appliqués (aujourd’hui : livraison 0 € et taxes 0 € « non prises en charge », à valider par votre expert-comptable) ;
+- contact vendeur, médiateur de la consommation, conditions de remboursement et de rétractation (à rédiger et publier).
+
+Ces mentions ne sont pas générées par le code. Un reçu avec `legal_complete = false` ne doit pas être présenté comme une facture conforme.
