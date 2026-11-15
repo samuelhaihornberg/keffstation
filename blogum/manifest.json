@@ -1,0 +1,19 @@
+{
+  "name": "Blogum",
+  "short_name": "Blogum",
+  "description": "Blogum — Mur, Réels/Story et Profil Blog-Forum (PWA intégrée à KeffStation).",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#070816",
+  "theme_color": "#ff3d9a",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/samuelhaihornberg/keffstation/faf852a98bfec55a20c5bcbec2b15c19da72b980/1794400646339.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "fr"
+}
