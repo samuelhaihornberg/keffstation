@@ -119,6 +119,9 @@ function extFrom(url, mime) {
   return '.jpg';
 }
 
+// Licences ouvertes compatibles avec une vente (sans NC ni ND). À vérifier ensuite sur la page source.
+const LICENCES_COMMERCIALES = /^(CC0|Public domain|PDM|CC BY(-SA)?\s?\d(\.\d)?)$/i;
+
 async function searchCommons(query, limit) {
   const params = new URLSearchParams({
     action: 'query', format: 'json', origin: '*',
@@ -145,7 +148,8 @@ async function searchCommons(query, limit) {
       description: pick('ImageDescription') || pick('ObjectName') || p.title,
       provider: 'commons'
     };
-  }).filter(x => x && /image\//.test(x.mime || '') && /\.(jpg|jpeg|png|webp)/i.test(x.url || x.original || ''));
+  }).filter(x => x && /image\//.test(x.mime || '') && /\.(jpg|jpeg|png|webp)/i.test(x.url || x.original || ''))
+    .filter(x => LICENCES_COMMERCIALES.test(x.licence || ''));
 }
 
 async function searchGoogleCSE(query, limit) {
@@ -196,7 +200,6 @@ async function searchImages(provider, query, limit) {
   if (provider === 'commons') return await searchCommons(query, limit);
   if (provider === 'google') {
     let r = await tryP('google-cse', () => searchGoogleCSE(query, limit));
-    if (!r.length) r = await tryP('google-web', () => searchGoogleBestEffort(query, limit));
     if (!r.length) r = await tryP('commons-fallback', () => searchCommons(query, limit));
     if (!r.length && errors.length) console.error('[info] aucune image trouvée (' + errors.join(', ') + ') pour: ' + query);
     return r;
@@ -209,7 +212,6 @@ async function searchImages(provider, query, limit) {
     return r;
   }
   let r = await tryP('commons', () => searchCommons(query, limit));
-  if (!r.length) r = await tryP('google-web', () => searchGoogleBestEffort(query, limit));
   return r;
 }
 
@@ -239,9 +241,8 @@ async function main() {
     const need = Math.max(0, args.per - existing);
     const baseQuery = `${p.marque || ''} ${p.modele || ''}`.trim();
     const queries = [
-      `${baseQuery} ${p.annee || ''} images libres de droits`.trim(),
-      `${baseQuery} image libre de droits`.trim(),
-      `${baseQuery} official product image`
+      `"${baseQuery}"`,
+      `"${baseQuery}" ${p.annee || ''}`.trim()
     ];
     const suggested = [];
     let found = [];
