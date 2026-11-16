@@ -8992,7 +8992,20 @@ export const CATALOGUE = {
         "Exploitation des fonctions principales du produit"
       ],
       "medias": {
-        "images": [],
+        "images": [
+          {
+            "fichier": "img/valve-index-1.jpg",
+            "alt": "Casque VR Valve Index porté par un militaire de l’US Air Force",
+            "licence": "Domaine public",
+            "auteur": "Airman 1st Class Robyn Hunsinger, US Air Force",
+            "attribution": "Photo : Robyn Hunsinger, US Air Force — domaine public (https://commons.wikimedia.org/wiki/File:Air_Force_officer_using_Valve_Index.jpg)",
+            "source": "https://commons.wikimedia.org/wiki/File:Air_Force_officer_using_Valve_Index.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Air_Force_officer_using_Valve_Index.jpg",
+            "credit": "https://www.dvidshub.net/image/6330699/1-sow-leadership-attends-fieldwerx-military-open",
+            "modeleCorrespondant": "Valve Index (kit VR) — logo VALVE INDEX visible sur le casque",
+            "dateVerification": "2026-11-16"
+          }
+        ],
         "videos": []
       },
       "article": {

@@ -46,5 +46,81 @@
       "statut_fiche": "médias à compléter — aucune image ni vidéo validée ; année de sortie à vérifier",
       "date_verification": "2026-11-16"
     }
+  ],
+  "lots": [
+    {
+      "lot": 1,
+      "date": "2026-11-16",
+      "methode": "Wikimedia Commons (nom exact, licence contrôlée, image vérifiée visuellement) ; Google et réseaux non consultés par l’outil",
+      "retenus": [
+        {
+          "produit": "valve-index",
+          "fichier": "img/valve-index-1.jpg",
+          "statut": "droits_verifies",
+          "mention_droits": "Public domain (Commons)",
+          "licence": "Domaine public",
+          "auteur": "Airman 1st Class Robyn Hunsinger, US Air Force",
+          "url_origine": "https://commons.wikimedia.org/wiki/File:Air_Force_officer_using_Valve_Index.jpg",
+          "credit": "https://www.dvidshub.net/image/6330699/1-sow-leadership-attends-fieldwerx-military-open",
+          "correspondance": "logo VALVE INDEX visible sur le casque",
+          "attribution": "non exigée (domaine public)",
+          "restriction": "photo d’une personne en service : ne pas laisser croire à une approbation de l’armée",
+          "date_verification": "2026-11-16"
+        }
+      ],
+      "rejetes": [
+        {
+          "produit": "surface-laptop-studio-2",
+          "url": "https://commons.wikimedia.org/wiki/File:Surface_Laptop_Studio_-_2.jpg",
+          "statut": "rejete",
+          "motif": "modèle non confirmé visuellement (pas de charnière Studio)"
+        },
+        {
+          "produit": "galaxy-watch3",
+          "url": "https://commons.wikimedia.org/wiki/File:SAMSUNG_Galaxy_Watch_(3).jpg",
+          "statut": "rejete",
+          "motif": "modèle non confirmé (montre ronde, référence absente du titre et de la page)"
+        },
+        {
+          "produit": "apple-watch-series-6",
+          "url": "https://commons.wikimedia.org/wiki/File:AppleWatchAppleStore.jpg",
+          "statut": "rejete",
+          "motif": "montre de première génération (édition dorée), pas une Series 6"
+        },
+        {
+          "produit": "raspberry-pi-500-plus",
+          "url": "https://commons.wikimedia.org/wiki/File:DEV-27445-RPi-500-Keyboard-Front.jpg",
+          "statut": "rejete",
+          "motif": "Raspberry Pi 500 (modèle précédent), pas le 500+"
+        }
+      ],
+      "sans_resultat": [
+        "alienware-m15-r3",
+        "alienware-m15-r4",
+        "alienware-x14",
+        "alienware-m16",
+        "alienware-m16-r2",
+        "alienware-area-51-16-2025",
+        "alienware-16x-aurora-2026",
+        "hp-reverb-g2",
+        "hp-spectre-x360-14-2021",
+        "hp-spectre-x360-13-5-2022",
+        "hp-spectre-x360-14-2024",
+        "hp-omnibook-ultra-2026",
+        "meta-quest-pro",
+        "microsoft-surface-laptop-4",
+        "microsoft-surface-laptop-5",
+        "microsoft-surface-laptop-7th-edition",
+        "microsoft-surface-laptop-13-inch",
+        "microsoft-surface-laptop-8th-edition",
+        "msi-ge76-raider-2021",
+        "msi-raider-ge67hx-2022",
+        "msi-titan-gt77-hx-2023",
+        "msi-titan-18-hx-2024",
+        "msi-titan-18-hx-dragon-edition-2025",
+        "msi-raider-16-max-2026",
+        "sony-wh-1000xm4"
+      ]
+    }
   ]
 }
