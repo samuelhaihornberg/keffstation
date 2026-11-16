@@ -30,3 +30,6 @@ Quand un produit n’a pas de marque officielle à rechercher, l’agent :
 3. Ne crée aucun « prix fabricant barré » : il n’existe pas de prix officiel de référence. Aucune remise n’est affichée tant qu’il n’y a pas d’historique de prix vérifiable (prix le plus bas des 30 derniers jours).
 4. Documents exigés avant mise en vente : fiche technique du fournisseur, déclaration de conformité (CE), rapport UN38.3 pour les batteries lithium, identité du fournisseur. Sans ces documents, le produit reste hors vente.
 5. Médias : photos du fournisseur seulement avec autorisation écrite de réutilisation commerciale ; sinon photos prises par vous après réception. Aucune image Google ou réseau sans licence vérifiée.
+
+## Décision du responsable (16/11/2026)
+Seule la photo du modèle exact est utilisée sur sa fiche. Aucune image de marque, de gamme ou de modèle voisin n’est affichée comme photo produit. Une image de marque ne peut servir qu’à une section marque distincte, si la licence le permet.
