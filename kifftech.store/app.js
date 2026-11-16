@@ -12,7 +12,7 @@ import { resolveSelection, sellability, formatSellabilityReason, buildOrder, RAY
 
 // ---------- RAYONS (Catégories de produits) ----------
 const RAYONS = [
-  { id: 'accessoires-gadgets', label: 'Accessoires et gadgets', icon: '🔌', color: '#00ffc8', desc: 'Accessoires, gadgets et studios', sousRayons: [
+  { id: 'accessoires-gadgets', label: 'Gadgets et accessoires', icon: '🔌', color: '#00ffc8', desc: 'Accessoires, gadgets et studios', sousRayons: [
     { id: 'cables-lumineux-neons', label: 'Câbles lumineux, néons et décorations' },
     { id: 'batteries-externes', label: 'Batteries externes (magnétiques, solaires)' },
     { id: 'antennes', label: 'Antennes' },
@@ -29,7 +29,7 @@ const RAYONS = [
   { id: 'smartphones', label: 'Smartphones', icon: '📱', color: '#00d4ff', desc: 'Smartphones et accessoires' },
   { id: 'ordinateurs-composants', label: 'Ordinateurs et composants', icon: '💻', color: '#0066ff', desc: 'Ordinateurs, composants et périphériques' },
   { id: 'tablettes', label: 'Tablettes', icon: '📲', color: '#00ffc8', desc: 'Tablettes et accessoires' },
-  { id: 'montres-wearables', label: 'Montres connectées et wearables', icon: '⌚', color: '#00ff88', desc: 'Montres connectées, bracelets et wearables' },
+  { id: 'vr-ar', label: 'VR & AR', icon: '🥽', color: '#b84dff', desc: 'Casques VR et AR complets' },
   { id: 'maison-securite', label: 'Maison connectée et sécurité', icon: '🏠', color: '#b84dff', desc: 'Maison connectée, sécurité et surveillance' },
   { id: 'smart-car', label: 'Smart car et mobilité connectée', icon: '🚗', color: '#ff6b00', desc: 'Smart car, mobilité et accessoires connectés' },
   { id: 'smart-tech', label: 'Smart tech', icon: '🤖', color: '#ffd23f', desc: 'Robots, drones, assistants, énergie et objets connectés' }
