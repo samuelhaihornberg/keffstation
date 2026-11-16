@@ -12,7 +12,19 @@ import { resolveSelection, sellability, formatSellabilityReason, buildOrder } fr
 
 // ---------- RAYONS (Catégories de produits) ----------
 const RAYONS = [
-  { id: 'accessoires-gadgets', label: 'Accessoires et gadgets', icon: '🔌', color: '#00ffc8', desc: 'Câbles, chargeurs, batteries externes, adaptateurs, hubs, supports, protections, accessoires audio, smartwatch et gadgets connectés' },
+  { id: 'accessoires-gadgets', label: 'Accessoires et gadgets', icon: '🔌', color: '#00ffc8', desc: 'Accessoires, gadgets et studios', sousRayons: [
+    { id: 'cables-lumineux-neons', label: 'Câbles lumineux, néons et décorations' },
+    { id: 'batteries-externes', label: 'Batteries externes (magnétiques, solaires)' },
+    { id: 'antennes', label: 'Antennes' },
+    { id: 'cameras-360', label: 'Caméras à 360 degrés' },
+    { id: 'smart-gadgets', label: 'Smart gadgets (antistress mécaniques et électroniques)' },
+    { id: 'studio-video', label: 'Studio vidéo' },
+    { id: 'studio-radio', label: 'Studio radio' },
+    { id: 'studio-serveurs', label: 'Studio serveurs' },
+    { id: 'studio-design', label: 'Studio design' },
+    { id: 'studio-audio', label: 'Studio audio' },
+    { id: 'sfx-musique', label: 'SFX et musique' }
+  ] },
   { id: 'jeux-video', label: 'Jeux vidéo', icon: '🎮', color: '#ff6b00', desc: 'Consoles, jeux et accessoires gaming' },
   { id: 'smartphones', label: 'Smartphones', icon: '📱', color: '#00d4ff', desc: 'Smartphones et accessoires' },
   { id: 'ordinateurs-composants', label: 'Ordinateurs et composants', icon: '💻', color: '#0066ff', desc: 'Ordinateurs, composants et périphériques' },
