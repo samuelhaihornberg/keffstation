@@ -1,0 +1,45 @@
+{
+  "schema": "kifftech-medias-registre v1 — chaque média : url_origine, licence affichée, auteur, attribution, conditions d’usage commercial, date_verification, statut (droits_verifies | a_verifier | rejete)",
+  "produits": [
+    {
+      "id": "anker-735-nano-ii-65w-a2667",
+      "rayon": "accessoires-gadgets",
+      "marque": "Anker",
+      "modele_exact": "Anker 735 Charger (Nano II 65W) — réf. A2667",
+      "source_modele": {
+        "url": "https://www.anker.com/fr/products/a2667",
+        "date_verification": "2026-11-16",
+        "prix_affiche": "19,99 € (prix barré 39,99 €)",
+        "stock_affiche": "En stock — expédition 1 à 2 jours ouvrables"
+      },
+      "annee": "[À VÉRIFIER — aucune date de sortie officielle relevée]",
+      "medias": {
+        "images": [],
+        "images_candidates_a_verifier": [
+          {
+            "source": "anker.com (images de la fiche produit)",
+            "statut": "rejete",
+            "motif": "photo du fabricant, aucune licence libre affichée"
+          }
+        ],
+        "videos": [],
+        "videos_candidates_a_verifier": [
+          {
+            "url": "https://www.youtube.com/watch?v=T9eR1G61biM",
+            "auteur": "Adam Talks Tech (tiers, non officiel)",
+            "statut": "a_verifier",
+            "motif": "critique indépendante ; l’intégration nécessite une autorisation de la source ou une vidéo officielle"
+          },
+          {
+            "url": "https://www.youtube.com/channel/UCqdDnTIFcP402BcTo2A30Ow",
+            "auteur": "Anker Charging (chaîne officielle)",
+            "statut": "a_verifier",
+            "motif": "chaîne officielle : aucune vidéo du modèle A2667 identifiée à ce stade"
+          }
+        ]
+      },
+      "statut_fiche": "médias à compléter — aucune image ni vidéo validée ; année de sortie à vérifier",
+      "date_verification": "2026-11-16"
+    }
+  ]
+}
