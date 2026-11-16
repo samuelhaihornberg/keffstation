@@ -61,6 +61,7 @@ export function resolveSelection(product, choiceIndices) {
 export function checkSellability(product, selection) {
   const reasons = [];
   if (!product) reasons.push('Produit introuvable');
+  if (product && !(product.medias?.images || []).some(m => m.licence && m.attribution)) reasons.push('Médias libres de droits non vérifiés');
   if (!selection) reasons.push('Sélection invalide');
   if (selection && (selection.prix === null || selection.prix === undefined || !Number.isFinite(selection.prix))) reasons.push('Prix final à confirmer');
   if (selection && !selection.devise) reasons.push('Devise non définie');

@@ -44,6 +44,7 @@ function normalizeProduct(raw) {
 
 const DEMO_PRODUCTS = CATALOGUE.produits
   .filter(p => RAYONS_MAP[p.rayon])
+  .filter(p => (p.medias?.images || []).some(m => m.licence && m.attribution))
   .map(normalizeProduct);
 
 const FALLBACK_PRODUCTS = DEMO_PRODUCTS;
