@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-11-16T10:44:35.608Z",
+  "generatedAt": "2026-11-16T10:47:25.455Z",
   "mode": "agent",
   "params": {
     "provider": "auto",
     "per": 3,
     "rayon": null,
     "id": "cable-multi-3in1-lumineux",
-    "dryRun": true
+    "dryRun": false
   },
   "products": [
     {
