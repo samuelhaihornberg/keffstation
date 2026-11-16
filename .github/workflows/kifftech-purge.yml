@@ -1,0 +1,43 @@
+name: KiffTech — purge des données techniques
+
+# Toutes les 6 heures : purge définie dans supabase/migrations (kt_purge_technical_data).
+# Supprime les empreintes d'IP de plus de 2 jours, et les jetons et identifiants de requête des commandes terminées.
+# Ne lit aucun secret PayPal. Seul le jeton Supabase de la CLI est utilisé.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kifftech-purge
+  cancel-in-progress: false
+
+jobs:
+  purge:
+    name: Purge
+    runs-on: ubuntu-latest
+    environment: supabase-production
+    env:
+      SUPABASE_PROJECT_REF: spkaxtmhefhycqnshybo
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN || secrets.TOKEN_SUPABASE }}
+    defaults:
+      run:
+        working-directory: kifftech.store
+    steps:
+      - name: 1. Récupération du code
+        uses: actions/checkout@v4
+
+      - name: 2. Installation de la CLI Supabase
+        uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+
+      - name: 3. Liaison au projet
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: 4. Purge
+        run: supabase db query --remote "select public.kt_purge_technical_data();" --yes

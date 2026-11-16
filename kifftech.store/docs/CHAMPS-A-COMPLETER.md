@@ -4,11 +4,8 @@ Source : `docs/source/KiffStation_conditions_utilisation_et_confidentialite.txt`
 
 | Partie | Section | Ligne source | Champ |
 |---|---|---|---|
-| Partie II | 6. DURÉES DE CONSERVATION | 174 | [DURÉE LÉGALE À DÉTERMINER] |
-| Partie II | 6. DURÉES DE CONSERVATION | 176 | [DURÉE À COMPLÉTER] |
-| Partie II | 6. DURÉES DE CONSERVATION | 177 | [DURÉE À COMPLÉTER] |
 
-Total restant : 3 occurrences (dont l’en-tête de date, présent dans les deux pages).
+Total restant : 0 occurrences (dont l’en-tête de date, présent dans les deux pages).
 
 ## Après complétion
 1. Compléter les champs (valeurs fournies par le responsable, pas inventées), puis relancer `python3 tools/build-legal-pages.py`.
