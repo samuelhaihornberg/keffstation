@@ -158,7 +158,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "alienware-m15-r4",
@@ -272,7 +274,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "alienware-x14",
@@ -387,7 +391,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "alienware-m16",
@@ -502,7 +508,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "alienware-m16-r2",
@@ -617,7 +625,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "alienware-area-51-16-2025",
@@ -732,7 +742,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "alienware-16x-aurora-2026",
@@ -847,7 +859,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-12",
@@ -1069,7 +1083,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-13",
@@ -1298,7 +1314,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-14-pro",
@@ -1542,7 +1560,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-15-pro",
@@ -1785,7 +1805,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-16-pro",
@@ -2029,7 +2051,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-17-pro",
@@ -2268,7 +2292,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-iphone-17e",
@@ -2483,7 +2509,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "hp-reverb-g2",
@@ -2643,7 +2671,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "hp-spectre-x360-14-2021",
@@ -2758,7 +2788,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "hp-spectre-x360-13-5-2022",
@@ -2868,7 +2900,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "hp-spectre-x360-14-2024",
@@ -2978,7 +3012,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "hp-omnibook-ultra-2026",
@@ -3089,7 +3125,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "linux-raspberry-pi-400",
@@ -3334,7 +3372,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "linux-raspberry-pi-pico",
@@ -3466,7 +3506,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "linux-raspberry-pi-pico-w",
@@ -3596,7 +3638,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "raspberry-pi-5",
@@ -3826,7 +3870,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "linux-raspberry-pi-pico-2",
@@ -3956,7 +4002,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "linux-raspberry-pi-500-plus",
@@ -4079,7 +4127,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "meta-quest-2",
@@ -4303,7 +4353,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "meta-quest-pro",
@@ -4422,7 +4474,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "meta-quest-3",
@@ -4638,7 +4692,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "meta-quest-3s",
@@ -4778,7 +4834,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-xbox-series-x",
@@ -4988,7 +5046,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-surface-laptop-4",
@@ -5107,7 +5167,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-surface-laptop-5",
@@ -5226,7 +5288,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-surface-laptop-studio-2",
@@ -5345,7 +5409,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-surface-laptop-7th-edition",
@@ -5464,7 +5530,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-surface-laptop-13-inch",
@@ -5583,7 +5651,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "microsoft-surface-laptop-8th-edition",
@@ -5702,7 +5772,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-bravo-17",
@@ -5936,7 +6008,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-ge76-raider-2021",
@@ -6051,7 +6125,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-raider-ge67hx-2022",
@@ -6166,7 +6242,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-titan-gt77-hx-2023",
@@ -6281,7 +6359,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-titan-18-hx-2024",
@@ -6396,7 +6476,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-titan-18-hx-dragon-edition-2025",
@@ -6511,7 +6593,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "msi-raider-16-max-2026",
@@ -6635,7 +6719,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "nintendo-switch-2",
@@ -6913,7 +6999,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s20-5g",
@@ -7132,7 +7220,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s21-5g",
@@ -7282,7 +7372,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s22-ultra",
@@ -7495,7 +7587,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s23-ultra",
@@ -7755,7 +7849,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s24-ultra",
@@ -8019,7 +8115,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s25-ultra",
@@ -8166,7 +8264,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-s26-ultra",
@@ -8431,7 +8531,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "sony-ps5-pro",
@@ -8632,7 +8734,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "valve-half-life-alyx",
@@ -8817,7 +8921,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "valve-index",
@@ -8933,7 +9039,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "valve-steam-deck-lcd",
@@ -9072,7 +9180,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "valve-steam-deck-oled",
@@ -9267,7 +9377,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "valve-steam-machine",
@@ -9534,7 +9646,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "apple-watch-series-6",
@@ -9708,7 +9822,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "samsung-galaxy-watch3",
@@ -9877,7 +9993,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     },
     {
       "id": "sony-wh-1000xm4",
@@ -10028,7 +10146,9 @@ export const CATALOGUE = {
         "montant": 0,
         "libelle": "Taxes non prises en charge",
         "prisEnCharge": false
-      }
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
     }
   ]
 };

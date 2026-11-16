@@ -11,8 +11,6 @@ cp -r "$ROOT/supabase/functions" "$WORK/functions"
 cat > "$WORK/functions/_shared/legal.js" <<'JS'
 export const LEGAL = { termsUrl: 'https://example.invalid/test-conditions', privacyUrl: '', termsVersion: 'TEST-v1', termsDate: '2026-01-01', termsValidated: true };
 JS
-# Stock fournisseur simulé UNIQUEMENT dans la copie de test (le vrai catalogue n’a aucun stock confirmé).
-sed -i 's/"id": "apple-iphone-17e",/"id": "apple-iphone-17e",\n      "stock": 999,/' "$WORK/functions/_shared/catalogue.js"
 cp "$HERE/mock-server.ts" "$WORK/server.ts"
 cp "$HERE/payment-flow.test.mjs" "$WORK/test.mjs"
 (cd "$WORK" && deno run --no-lock -A server.ts > server.log 2>&1) & PID=$!
