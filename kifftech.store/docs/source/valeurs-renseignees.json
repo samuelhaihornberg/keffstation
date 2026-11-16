@@ -1,5 +1,5 @@
 {
-  "provenance": "Le texte source (commit 229ddb2) contient les valeurs fournies par le responsable. Ce fichier ajoute : l’URL vérifiée de la politique de confidentialité (ligne 100), l’inventaire des cookies et stockages relevé dans le code (ligne 185) et le bloc de politique de retours (ligne 77). Ligne 80 : « non applicable » (décision du responsable). Ligne 77 : remplacée par le bloc de politique de retours, qui est affiché sur la page. Ligne 23 : numéro d’immatriculation = 329771448, selon le responsable (identique au numéro fiscal de la ligne 24). Ligne 185 : consentement « non applicable » (constat du code : aucun cookie non essentiel propre). Ligne 21 : forme juridique = entreprise individuelle, selon le responsable.",
+  "provenance": "Le texte source (commit 229ddb2) contient les valeurs fournies par le responsable. Ce fichier ajoute : l’URL vérifiée de la politique de confidentialité (ligne 100), l’inventaire des cookies et stockages relevé dans le code (ligne 185) et le bloc de politique de retours (ligne 77). Ligne 80 : « non applicable » (décision du responsable). Ligne 77 : remplacée par le bloc de politique de retours, qui est affiché sur la page. Ligne 23 : numéro d’immatriculation = 329771448, selon le responsable (identique au numéro fiscal de la ligne 24). Ligne 185 : consentement « non applicable » (constat du code : aucun cookie non essentiel propre). Ligne 21 : forme juridique = entreprise individuelle, selon le responsable. Ligne 80 : lien vers le formulaire en ligne. Ligne 107 : tribunal de Jérusalem et capitale du pays du litige. Bloc de retours : mis à jour selon la demande du responsable.",
   "remplacements": {
     "100": [
       [
@@ -16,7 +16,7 @@
     "80": [
       [
         "[Lien vers le formulaire d’annulation]",
-        "Non applicable : aucun formulaire d’annulation en ligne. Utiliser l’adresse e-mail ci-dessous."
+        "Formulaire en ligne : https://samuelhaihornberg.github.io/keffstation/kifftech.store/formulaire-conditions.html"
       ]
     ],
     "23": [
@@ -30,14 +30,20 @@
         "[À COMPLÉTER]",
         "entreprise individuelle"
       ]
+    ],
+    "107": [
+      [
+        "[À COMPLÉTER APRÈS VÉRIFICATION]",
+        "Règlement des litiges : réclamation par e-mail à kiffstationadmin@gmail.com. Juridiction : tribunal de Jérusalem (Israël). Pour un litige survenu dans un autre pays, le tribunal de la capitale de ce pays, sous réserve des règles impératives applicables."
+      ]
     ]
   },
   "bloc_politique_retours": {
     "ligne": 77,
     "titre": "Politique de retours (texte fourni par le responsable de la boutique)",
     "paragraphes": [
-      "Retour impossible si le colis est reçu en bon état. Sinon, contacter votre service de livraison de votre état de votre région.",
-      "Retour si le colis non reçu n’est pas confirmé par votre livreur.",
+      "Retour possible si le colis est reçu en retard ou endommagé, avec remboursement.",
+      "Si le colis n’est pas reçu, contacter le service de livraison de votre pays.",
       "Durée de la politique de retour et de remboursement : 3 jours si le colis n’est pas reçu.",
       "Ces règles s’appliquent sous réserve des droits impératifs des consommateurs. Pour un consommateur, le délai légal de rétractation du pays de résidence prévaut sur les délais ci-dessus. Dans l’Union européenne, ce délai est en principe de 14 jours à compter de la réception pour les ventes à distance (à vérifier par un professionnel)."
     ]

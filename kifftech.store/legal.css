@@ -11,3 +11,7 @@
 .legal-page p,.legal-page li{font-size:.92rem;line-height:1.65;color:var(--fg-muted);margin:0 0 10px;}
 .legal-page ul{margin:0 0 12px 18px;padding:0;}
 mark.todo{background:rgba(255,210,63,.18);color:#ffe6a1;border-radius:4px;padding:0 3px;}
+.legal-form{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.legal-form label{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--fg-muted);}
+.legal-form input,.legal-form select,.legal-form textarea{font:inherit;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--fg);}
+.legal-form button{min-height:44px;padding:10px 16px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent),var(--blue,#0066ff));color:#001a14;font-weight:800;cursor:pointer;}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03050a">
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./legal.css">
+<title>KiffTech.store — Formulaire de demande (conditions d’utilisation)</title>
+</head>
+<body>
+<header class="top-bar" role="banner">
+  <div class="bar-left"><span class="app-name">KiffTech.store</span></div>
+  <div class="bar-right"><a href="./conditions.html" class="icon-btn" aria-label="Retour aux conditions">&larr;</a></div>
+</header>
+<main class="legal-page">
+<h1>Formulaire de demande</h1>
+<p>Utilisez ce formulaire pour une demande d’annulation, de retour, de remboursement ou pour signaler un problème de livraison, selon les <a href="./conditions.html">conditions d’utilisation et de vente</a>.</p>
+<p>Le formulaire ouvre votre messagerie avec le message prérempli, envoyé à <strong>kiffstationadmin@gmail.com</strong>. Le site ne conserve pas ces informations.</p>
+<form id="demande" class="legal-form">
+  <label>Type de demande
+    <select id="type" required>
+      <option value="Annulation">Annulation</option>
+      <option value="Retour (colis reçu en retard ou endommagé)">Retour (colis reçu en retard ou endommagé)</option>
+      <option value="Remboursement">Remboursement</option>
+      <option value="Problème de livraison (colis non reçu)">Problème de livraison (colis non reçu)</option>
+      <option value="Autre">Autre</option>
+    </select>
+  </label>
+  <label>Numéro de commande (si vous l’avez)
+    <input id="ref" type="text" maxlength="60" autocomplete="off">
+  </label>
+  <label>Nom
+    <input id="nom" type="text" maxlength="100" autocomplete="name" required>
+  </label>
+  <label>Adresse e-mail de réponse
+    <input id="mail" type="email" maxlength="150" autocomplete="email" required>
+  </label>
+  <label>Description
+    <textarea id="msg" rows="6" maxlength="2000" required></textarea>
+  </label>
+  <button type="submit">Ouvrir mon e-mail</button>
+</form>
+</main>
+<script>
+document.getElementById('demande').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = (id) => document.getElementById(id).value.trim();
+  const subject = `[KiffTech] ${v('type')}${v('ref') ? ' — commande ' + v('ref') : ''}`;
+  const body = `Type : ${v('type')}\nCommande : ${v('ref') || '—'}\nNom : ${v('nom')}\nE-mail de réponse : ${v('mail')}\n\n${v('msg')}`;
+  window.location.href = `mailto:kiffstationadmin@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+</script>
+</body>
+</html>
