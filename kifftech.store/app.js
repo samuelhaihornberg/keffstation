@@ -37,12 +37,9 @@ const RAYONS = [
 
 const RAYONS_MAP = Object.fromEntries(RAYONS.map(r => [r.id, r]));
 
-// Un rayon sans aucun produit affichable (média libre) n’est pas affiché.
-function produitAffichable(p) {
-  return (p.medias?.images || []).some(m => m.licence && m.attribution);
-}
+// Un rayon n’est affiché que s’il contient au moins une fiche. Aucune fiche n’est masquée pour son année, son média ou son statut.
 function rayonsAffiches() {
-  return RAYONS.filter(r => DEMO_PRODUCTS.some(p => p.rayon === r.id && produitAffichable(p)));
+  return RAYONS.filter(r => DEMO_PRODUCTS.some(p => p.rayon === r.id));
 }
 
 // ---------- PRODUITS (données vérifiées : data/catalogue.js) ----------
@@ -51,7 +48,7 @@ function normalizeProduct(raw) {
   const prix = raw.prix || null;
   return {
     ...raw,
-    title: `${raw.marque} ${raw.modele}`,
+    title: raw.modele.toLowerCase().startsWith(String(raw.marque).toLowerCase() + ' ') ? raw.modele : `${raw.marque} ${raw.modele}`,
     brand: raw.marque,
     category: raw.rayon,
     price: prix ? prix.montant : null,
@@ -64,7 +61,6 @@ function normalizeProduct(raw) {
 
 const DEMO_PRODUCTS = CATALOGUE.produits
   .filter(p => RAYONS_MAP[p.rayon])
-  .filter(produitAffichable)
   .map(normalizeProduct);
 
 const FALLBACK_PRODUCTS = DEMO_PRODUCTS;
