@@ -6589,7 +6589,19 @@ export const CATALOGUE = {
         "Protéger les appareils avec un boîtier de synchronisation"
       ],
       "medias": {
-        "images": [],
+        "images": [
+          {
+            "fichier": "img/cable-neon-1.jpg",
+            "alt": "Câble charger néon lumineux 3 en 1",
+            "licence": "Fournisseur fourni — à confirmer",
+            "auteur": "Fournisseur (source fournie par le responsable)",
+            "attribution": "Source fournie par le responsable (GitHub : samuelhaihornberg/keffstation)",
+            "source": "https://github.com/samuelhaihornberg/keffstation/blob/9a830d0736f4f1eeb7836a3ea0b51aa92a3a5336/Cable%20neon.jpg",
+            "sourceOriginale": "https://github.com/samuelhaihornberg/keffstation/blob/9a830d0736f4f1eeb7836a3ea0b51aa92a3a5336/Cable%20neon.jpg",
+            "modeleCorrespondant": "Câble multi-3 en 1 lumineux",
+            "dateVerification": "2026-11-16"
+          }
+        ],
         "videos": []
       },
       "article": {
