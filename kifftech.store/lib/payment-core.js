@@ -42,7 +42,8 @@ export function resolveSelection(product, choiceIndices) {
   if (dispoStatut && dispoStatut !== 'disponible') disponible = false;
   const stock = typeof product.stock === 'number' ? product.stock
     : (product.disponibilite && typeof product.disponibilite.stock === 'number' ? product.disponibilite.stock : null);
-  if (stock !== null && stock <= 0) disponible = false;
+  // Vente seulement si un fournisseur confirme un stock disponible (stock numérique > 0).
+  if (!(typeof stock === 'number' && stock > 0)) disponible = false;
 
   const shipping = moneyOrNull(product.livraison);
   const taxes = moneyOrNull(product.taxes);
