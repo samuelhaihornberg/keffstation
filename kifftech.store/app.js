@@ -26,8 +26,6 @@ const RAYONS = [
 const RAYONS_MAP = Object.fromEntries(RAYONS.map(r => [r.id, r]));
 
 // ---------- PRODUITS (données vérifiées : data/catalogue.js) ----------
-const ANNEE_MIN = 2020;
-const ANNEE_MAX = 2026;
 
 function normalizeProduct(raw) {
   const prix = raw.prix || null;
@@ -45,7 +43,7 @@ function normalizeProduct(raw) {
 }
 
 const DEMO_PRODUCTS = CATALOGUE.produits
-  .filter(p => p.annee >= ANNEE_MIN && p.annee <= ANNEE_MAX && RAYONS_MAP[p.rayon])
+  .filter(p => RAYONS_MAP[p.rayon])
   .map(normalizeProduct);
 
 const FALLBACK_PRODUCTS = DEMO_PRODUCTS;
