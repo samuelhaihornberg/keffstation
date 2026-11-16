@@ -6626,7 +6626,7 @@ export const CATALOGUE = {
       "stock": 999,
       "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)",
       "motsCles": [
-        "chargeur multi-usb 3 en 1 lumineux"
+        "charger cable neon 3 en 1"
       ]
     }
   ]
