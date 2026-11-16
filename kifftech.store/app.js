@@ -25,6 +25,14 @@ const RAYONS = [
 
 const RAYONS_MAP = Object.fromEntries(RAYONS.map(r => [r.id, r]));
 
+// Un rayon sans aucun produit affichable (média libre) n’est pas affiché.
+function produitAffichable(p) {
+  return (p.medias?.images || []).some(m => m.licence && m.attribution);
+}
+function rayonsAffiches() {
+  return RAYONS.filter(r => DEMO_PRODUCTS.some(p => p.rayon === r.id && produitAffichable(p)));
+}
+
 // ---------- PRODUITS (données vérifiées : data/catalogue.js) ----------
 
 function normalizeProduct(raw) {
@@ -44,7 +52,7 @@ function normalizeProduct(raw) {
 
 const DEMO_PRODUCTS = CATALOGUE.produits
   .filter(p => RAYONS_MAP[p.rayon])
-  .filter(p => (p.medias?.images || []).some(m => m.licence && m.attribution))
+  .filter(produitAffichable)
   .map(normalizeProduct);
 
 const FALLBACK_PRODUCTS = DEMO_PRODUCTS;
@@ -440,7 +448,7 @@ class KiffTech{
   }
 
   populateFilters(){
-    this.categoryFilter.innerHTML = '<option value="">Tous les rayons</option>' + RAYONS.map(r=>`<option value="${r.id}">${r.label}</option>`).join('');
+    this.categoryFilter.innerHTML = '<option value="">Tous les rayons</option>' + rayonsAffiches().map(r=>`<option value="${r.id}">${r.label}</option>`).join('');
     this.supplierFilter.innerHTML = '<option value="">Tous fournisseurs</option>';
   }
 
@@ -482,7 +490,7 @@ class KiffTech{
       grid.innerHTML = toShow.map(p => this.catalogProductHTML(p)).join('');
       this.renderNovelties([]);
     } else {
-      grid.innerHTML = RAYONS.map(r => this.rayonCardHTML(r)).join('');
+      grid.innerHTML = rayonsAffiches().map(r => this.rayonCardHTML(r)).join('');
       this.bindRayonCards();
       this.renderNovelties(state.products.filter(p => p.isNew));
     }
