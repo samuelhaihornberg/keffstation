@@ -377,6 +377,9 @@ class KiffTech{
   }
 
   subscribe(tier) {
+    // Abonnement en maintenance : aucune souscription n’est enregistrée tant que le paiement n’existe pas.
+    this.showToast('Abonnement en maintenance : indisponible pour le moment.', 'error');
+    return;
     const names = { basic: 'KiffTech Basic', tresor: 'KiffTech Trésor' };
     if (!names[tier]) return;
     state.subscription = { tier, since: new Date().toISOString() };
