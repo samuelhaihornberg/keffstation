@@ -12,6 +12,7 @@ import { resolveSelection, sellability, formatSellabilityReason, buildOrder } fr
 
 // ---------- RAYONS (Catégories de produits) ----------
 const RAYONS = [
+  { id: 'accessoires-gadgets', label: 'Accessoires et gadgets', icon: '🔌', color: '#00ffc8', desc: 'Câbles, chargeurs, batteries externes, adaptateurs, hubs, supports, protections, accessoires audio, smartwatch et gadgets connectés' },
   { id: 'jeux-video', label: 'Jeux vidéo', icon: '🎮', color: '#ff6b00', desc: 'Consoles, jeux et accessoires gaming' },
   { id: 'smartphones', label: 'Smartphones', icon: '📱', color: '#00d4ff', desc: 'Smartphones et accessoires' },
   { id: 'ordinateurs-composants', label: 'Ordinateurs et composants', icon: '💻', color: '#0066ff', desc: 'Ordinateurs, composants et périphériques' },
