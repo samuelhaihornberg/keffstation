@@ -1,5 +1,5 @@
 {
-  "schema": "kifftech-medias-registre v1 — chaque média : url_origine, licence affichée, auteur, attribution, conditions d’usage commercial, date_verification, statut (droits_verifies | a_verifier | rejete)",
+  "schema": "kifftech-medias-registre v2 — statuts : droits_verifies | declare_libre_par_source | a_verifier | rejete. Seuls les droits_verifies sont intégrés. Champs par média : url_origine, mention_droits (mot pour mot), licence_ou_conditions, auteur_ou_editeur, qui_peut_autoriser, usage_commercial, attribution_requise, modifications, correspondance_modele, date_verification, statut.",
   "produits": [
     {
       "id": "anker-735-nano-ii-65w-a2667",
@@ -19,7 +19,8 @@
           {
             "source": "anker.com (images de la fiche produit)",
             "statut": "rejete",
-            "motif": "photo du fabricant, aucune licence libre affichée"
+            "motif": "photo du fabricant, aucune licence libre affichée",
+            "date_verification": "2026-11-16"
           }
         ],
         "videos": [],
@@ -28,13 +29,17 @@
             "url": "https://www.youtube.com/watch?v=T9eR1G61biM",
             "auteur": "Adam Talks Tech (tiers, non officiel)",
             "statut": "a_verifier",
-            "motif": "critique indépendante ; l’intégration nécessite une autorisation de la source ou une vidéo officielle"
+            "motif": "critique indépendante ; l’intégration nécessite une autorisation de la source ou une vidéo officielle",
+            "date_verification": "2026-11-16",
+            "correspondance_modele": "non vérifiée"
           },
           {
             "url": "https://www.youtube.com/channel/UCqdDnTIFcP402BcTo2A30Ow",
             "auteur": "Anker Charging (chaîne officielle)",
             "statut": "a_verifier",
-            "motif": "chaîne officielle : aucune vidéo du modèle A2667 identifiée à ce stade"
+            "motif": "chaîne officielle : aucune vidéo du modèle A2667 identifiée à ce stade",
+            "date_verification": "2026-11-16",
+            "correspondance_modele": "non vérifiée"
           }
         ]
       },
