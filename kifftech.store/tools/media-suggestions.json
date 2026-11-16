@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-11-16T08:26:39.535Z",
+  "generatedAt": "2026-11-16T10:44:35.608Z",
   "mode": "agent",
   "params": {
-    "provider": "commons",
+    "provider": "auto",
     "per": 3,
     "rayon": null,
-    "id": "apple-iphone-15-pro",
+    "id": "cable-multi-3in1-lumineux",
     "dryRun": true
   },
   "products": [
     {
-      "id": "apple-iphone-15-pro",
-      "marque": "Apple",
-      "modele": "iPhone 15 Pro",
-      "rayon": "smartphones",
-      "annee": 2023,
-      "existantes": 3,
+      "id": "cable-multi-3in1-lumineux",
+      "marque": "KiffTech",
+      "modele": "Câble multi-3 en 1 lumineux",
+      "rayon": "accessoires-gadgets",
+      "annee": 2026,
+      "existantes": 0,
       "suggested": []
     }
   ]

@@ -1,12 +1,3 @@
-/* ===== KiffTech — catalogue produits (données vérifiées fabricant) =====
-   Chaque fiche indique ses sources (URL + date de vérification).
-   - Prix : prix public officiel uniquement (TTC, marché France/UE), aucune remise.
-   - Aucun prix, contenu de boîte ou compatibilité inventé : les éléments non
-     confirmés figurent dans `manquants` (badge « Fiche incomplète »).
-   - Médias : photographies sous licence libre (Wikimedia Commons, auteur/licence
-     vérifiés) + vidéo officielle du fabricant (YouTube, embed uniquement).
-   - Configuration boutique (demandée) : livraison internationale expresse
-     gratuite, taxes non prises en charge, stock 999. */
 export const CATALOGUE = {
   "produits": [
     {
@@ -6509,6 +6500,134 @@ export const CATALOGUE = {
       },
       "stock": 999,
       "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "cable-multi-3in1-lumineux",
+      "marque": "KiffTech",
+      "modele": "Câble multi-3 en 1 lumineux",
+      "rayon": "accessoires-gadgets",
+      "annee": 2026,
+      "dateSortie": "2026-11-16",
+      "sourceAnnee": {
+        "url": "https://samuelhaihornberg.github.io/keffstation/kifftech.store/",
+        "date": "2026-11-16"
+      },
+      "sourceFiche": {
+        "url": "https://samuelhaihornberg.github.io/keffstation/kifftech.store/",
+        "date": "2026-11-16"
+      },
+      "ficheFabricant": {
+        "url": "https://samuelhaihornberg.github.io/keffstation/kifftech.store/",
+        "date": "2026-11-16"
+      },
+      "description": "Câble de recharge multi-3 en 1 lumineux : un seul câble pour plusieurs appareils, avec boîtier de synchronisation et éclairage lumineux intégré. Même concept pour toutes les marques, seule la couleur du modèle varie.",
+      "variantes": [
+        {
+          "groupe": "Couleur",
+          "options": [
+            {
+              "libelle": "Noir"
+            },
+            {
+              "libelle": "Blanc"
+            },
+            {
+              "libelle": "Gris"
+            },
+            {
+              "libelle": "Bleu"
+            },
+            {
+              "libelle": "Vert"
+            },
+            {
+              "libelle": "Rose"
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Fonction",
+          "valeur": "Recharge multi-appareils : 2 ports USB-A + 1 port USB-C synchronisés par boîtier"
+        },
+        {
+          "libelle": "Éclairage",
+          "valeur": "LED lumineuse intégrée"
+        },
+        {
+          "libelle": "Couleur",
+          "valeur": "Noir, Blanc, Gris, Bleu, Vert, Rose"
+        }
+      ],
+      "contenuBoite": "Câble multi-3 en 1 lumineux et documentation",
+      "prix": {
+        "montant": 20,
+        "devise": "EUR",
+        "marche": "France (Union européenne), TTC",
+        "libelle": "Câble multi-3 en 1 lumineux",
+        "date": "2026-11-16",
+        "source": "https://samuelhaihornberg.github.io/keffstation/kifftech.store/"
+      },
+      "disponibilite": {
+        "statut": "disponible",
+        "libelle": "Câble multi-3 en 1 lumineux disponible à l'achat",
+        "date": "2026-11-16",
+        "source": "https://samuelhaihornberg.github.io/keffstation/kifftech.store/"
+      },
+      "accessoires": [],
+      "bundles": [
+        {
+          "nom": "Pack de 5 câbles multi-3 en 1 lumineux",
+          "contenu": "5 câbles lumineux multi-3 en 1 à 55 € le lot (20 € l'unité)",
+          "source": "https://samuelhaihornberg.github.io/keffstation/kifftech.store/"
+        }
+      ],
+      "usages": [
+        "Recharger plusieurs appareils depuis un seul câble",
+        "Utiliser le câble lumineux lors d'activités créatives ou de gaming",
+        "Protéger les appareils avec un boîtier de synchronisation"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Câble multi-3 en 1 lumineux : recharge simplifiée",
+        "contenu": [
+          "Le câble multi-3 en 1 lumineux regroupe le besoin de recharge simultanée de plusieurs appareils dans un seul câble : deux sorties USB-A et une sortie USB-C sont synchronisées par un boîtier, avec une LED intégrée pour suivre l'état de charge.",
+          "Le concept est le même pour toutes les marques, seule la couleur du modèle varie selon le produit vendu."
+        ]
+      },
+      "sourcesVerifiees": [],
+      "manquants": [
+        "Médias libres de droits à confirmer (mot-clé : \"câble charger multi3in1 lumineux\")",
+        "Source fabricant officielle du câble à confirmer (private label KiffTech)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Médias libres de droits non vérifiés"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)",
+      "motsCles": [
+        "câble charger multi3in1 lumineux"
+      ]
     }
   ]
 };

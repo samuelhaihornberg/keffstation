@@ -239,7 +239,9 @@ async function main() {
     const p = products[idx];
     const existing = (p.medias && Array.isArray(p.medias.images)) ? p.medias.images.length : 0;
     const need = Math.max(0, args.per - existing);
-    const baseQuery = `${p.marque || ''} ${p.modele || ''}`.trim();
+    const baseQuery = (Array.isArray(p.motsCles) && p.motsCles.filter(Boolean).length)
+      ? String(p.motsCles.filter(Boolean).join(' '))
+      : `${p.marque || ''} ${p.modele || ''}`.trim();
     const queries = [
       `"${baseQuery}"`,
       `"${baseQuery}" ${p.annee || ''}`.trim()
