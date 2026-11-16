@@ -62,7 +62,7 @@ head = (
   '<div class="legal-head">'
   f'<p class="legal-brand">{html.escape(src[0])}</p>'
   f'<p class="legal-title">{html.escape(src[1])}<br>{html.escape(src[2])}</p>'
-  f'<p class="legal-status">{inline(src[4])}<br>{inline(src[5])}<br>{inline(src[6])}</p>'
+  f'<p class="legal-status">{inline(substitute(5, src[4]))}<br>{inline(substitute(6, src[5]))}<br>{inline(substitute(7, src[6]))}</p>'
   f'<div class="legal-warning"><strong>{html.escape(src[8])}</strong><br>{inline(src[9])}</div>'
   '</div>')
 

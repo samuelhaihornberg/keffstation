@@ -1,6 +1,24 @@
 {
-  "provenance": "Le texte source (commit 229ddb2) contient les valeurs fournies par le responsable. Ce fichier ajoute : l’URL vérifiée de la politique de confidentialité (ligne 100), l’inventaire des cookies et stockages relevé dans le code (ligne 185) et le bloc de politique de retours (ligne 77). Ligne 80 : « non applicable » (décision du responsable). Ligne 77 : remplacée par le bloc de politique de retours, qui est affiché sur la page. Ligne 23 : numéro d’immatriculation = 329771448, selon le responsable (identique au numéro fiscal de la ligne 24). Ligne 185 : consentement « non applicable » (constat du code : aucun cookie non essentiel propre). Ligne 21 : forme juridique = entreprise individuelle, selon le responsable. Ligne 80 : lien vers le formulaire en ligne. Ligne 107 : tribunal de Jérusalem et capitale du pays du litige. Bloc de retours : mis à jour selon la demande du responsable. Lignes 174, 176, 177 : durées de conservation selon le responsable (commandes/factures/paiements 7 ans ; journaux de sécurité 2 jours ; preuves d’acceptation même durée que les factures).",
+  "provenance": "Texte source (commit 229ddb2) + renseignements du responsable. Version 0.2 : règles commerciales du responsable (délai 45 jours, paiement, promotions, abonnements, remboursement, TVA, leads) ajoutées en blocs, sans validation écrite d’avocat. Champs inconnus laissés [À COMPLÉTER].",
   "remplacements": {
+    "6": [
+      [
+        "Version : 0.1",
+        "Version : 0.2 (version de travail, non validée)"
+      ]
+    ],
+    "118": [
+      [
+        "Version 0.1",
+        "Version 0.2"
+      ]
+    ],
+    "210": [
+      [
+        "Version 0.1",
+        "Version 0.2"
+      ]
+    ],
     "100": [
       [
         "https://kiffstation.com/kifftech.store/politique-confidentialite.html",
@@ -13,10 +31,10 @@
         "Inventaire relevé dans le code de kifftech.store (15/11/2026) ci-dessous. Mécanisme de consentement : non applicable, car kifftech.store ne dépose aucun cookie d’analyse, de mesure d’audience ni publicitaire."
       ]
     ],
-    "80": [
+    "21": [
       [
-        "[Lien vers le formulaire d’annulation]",
-        "Formulaire en ligne : https://samuelhaihornberg.github.io/keffstation/kifftech.store/formulaire-conditions.html"
+        "[À COMPLÉTER]",
+        "entreprise individuelle"
       ]
     ],
     "23": [
@@ -25,10 +43,10 @@
         "329771448"
       ]
     ],
-    "21": [
+    "80": [
       [
-        "[À COMPLÉTER]",
-        "entreprise individuelle"
+        "[Lien vers le formulaire d’annulation]",
+        "Formulaire en ligne : https://samuelhaihornberg.github.io/keffstation/kifftech.store/formulaire-conditions.html"
       ]
     ],
     "107": [
@@ -62,7 +80,7 @@
     "paragraphes": [
       "Retour possible si le colis est reçu en retard ou endommagé, avec remboursement.",
       "Si le colis n’est pas reçu, contacter le service de livraison de votre pays.",
-      "Durée de la politique de retour et de remboursement : 3 jours si le colis n’est pas reçu.",
+      "Durée de la politique de retour et de remboursement : [À CONFIRMER — 3 jours est incohérent avec le remboursement intégral à 45 jours prévu ci-dessous].",
       "Ces règles s’appliquent sous réserve des droits impératifs des consommateurs. Pour un consommateur, le délai légal de rétractation du pays de résidence prévaut sur les délais ci-dessus. Dans l’Union européenne, ce délai est en principe de 14 jours à compter de la réception pour les ventes à distance (à vérifier par un professionnel)."
     ]
   },
@@ -78,6 +96,29 @@
         "YouTube (youtube-nocookie.com) : lecteur intégré sur les fiches produits qui ont une vidéo officielle. Le lecteur peut déposer des cookies selon le réglage du navigateur.",
         "Site racine KiffStation (hors kifftech.store) : stockage local kiffstation_cookies_accepted et kiffstation_cookies_accepted_at, qui mémorisent le choix de la bannière cookies.",
         "Aucun outil de mesure d’audience ni publicitaire n’a été détecté dans le code de kifftech.store."
+      ]
+    },
+    "68": {
+      "titre": "Délai, paiement, promotions et abonnements (règles commerciales, version 0.2)",
+      "paragraphes": [
+        "Délai total maximal : 45 jours, en comptant l’attente en file (si elle s’applique) et la livraison. Ce délai est affiché avant la confirmation de la commande.",
+        "Paiement : immédiat ou en fin de file, au choix affiché avant confirmation. Le moment exact de l’encaissement est indiqué avant la validation de la commande.",
+        "Promotions KiffTech : remise de 10 % à 25 % pour tous les clients, calculée depuis un prix de référence officiel vérifié. Pour les abonnés, la remise peut aller jusqu’à 30 %. Avant confirmation, sont affichés : le prix de référence, sa source, sa date, le taux appliqué et le prix final.",
+        "Abonnements facultatifs : aucun abonnement n’est obligatoire pour acheter. Formule hebdomadaire : 2 € par semaine. Formule 24 heures : 5 € par tranche de 24 heures d’achats. Le prix et la durée sont affichés avant souscription.",
+        "Remboursement : si la commande n’est pas livrée dans le délai total de 45 jours, un remboursement intégral est effectué. Délai de remboursement : [À COMPLÉTER].",
+        "TVA et taxes : la TVA est calculée selon le pays de destination, et les taxes applicables sont affichées avant le paiement. Taux par pays : [À COMPLÉTER].",
+        "Mise en œuvre : à la date de cette version, les promotions et abonnements décrits ci-dessus ne sont pas encore disponibles dans l’application."
+      ]
+    },
+    "142": {
+      "titre": "Demandes de contact (formulaire de demande)",
+      "paragraphes": [
+        "Données collectées par le formulaire : type de demande, numéro de commande (facultatif), nom, adresse e-mail et description.",
+        "Stockage : le site n’enregistre pas ces données. Le formulaire ouvre votre messagerie, avec le message adressé à kiffstationadmin@gmail.com. Le traitement se fait ensuite dans cette messagerie.",
+        "Finalité : répondre à votre demande et assurer son suivi.",
+        "Base prévue : votre consentement, en envoyant le formulaire. Le système n’enregistre pas la preuve de ce consentement.",
+        "Marketing : aucun usage marketing. Tout usage futur exigera un consentement distinct.",
+        "Durée de conservation : [À COMPLÉTER]."
       ]
     }
   }
