@@ -1,0 +1,3657 @@
+{
+  "archive": "Fiches retirées du catalogue car sans média libre confirmé (16/11/2026). Restaurables depuis Git.",
+  "produits": [
+    {
+      "id": "alienware-m15-r3",
+      "marque": "Alienware",
+      "modele": "m15 R3",
+      "rayon": "ordinateurs-composants",
+      "annee": 2020,
+      "dateSortie": "2020-05-21",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop",
+      "description": "Ordinateur portable gaming de 15,6 pouces annoncé par Alienware en mai 2020. Le m15 R3 est proposé avec des processeurs Intel Core de 10e génération jusqu'au i9-10980HK, des cartes graphiques NVIDIA jusqu'à la GeForce RTX 2080 Super 8 Go Max-Q, jusqu'à 32 Go de DDR4-2666 et un stockage RAID de 4 To complété par 512 Go. Son châssis mesure 360,3 mm de large pour 17,9 à 20,5 mm d'épaisseur et un poids à partir de 2,11 kg ; il est refroidi par chambre à vapeur.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Configuration de base",
+              "prix": 1479.99,
+              "dispo": false,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop",
+                "precision": "Prix de départ relevé sur la fiche Dell archivée",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeur",
+          "valeur": "Jusqu'à Intel Core i9-10980HK (10e génération)"
+        },
+        {
+          "libelle": "Processeur graphique",
+          "valeur": "Jusqu'à NVIDIA GeForce RTX 2080 Super 8 Go GDDR6 avec Max-Q Design"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "Jusqu'à 32 Go DDR4-2666"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "Jusqu'à 4 To (2 × 2 To PCIe M.2 RAID 0) + 512 Go PCIe M.2"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "15,6 pouces, jusqu'à 300 Hz selon la configuration"
+        },
+        {
+          "libelle": "Refroidissement",
+          "valeur": "Chambre à vapeur entre le processeur et les caloducs en cuivre"
+        },
+        {
+          "libelle": "Système d'exploitation",
+          "valeur": "Windows 10 Home ou Windows 10 Pro"
+        },
+        {
+          "libelle": "Dimensions",
+          "valeur": "360,3 × 276 × 17,9 à 20,5 mm"
+        },
+        {
+          "libelle": "Poids",
+          "valeur": "À partir de 2,11 kg"
+        }
+      ],
+      "prix": {
+        "montant": 1479.99,
+        "devise": "USD",
+        "marche": "États-Unis, prix de départ",
+        "libelle": "Configuration de base, prix relevé sur la fiche Dell archivée",
+        "date": "2020-12-01",
+        "source": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Commercialisé à partir du 21 mai 2020 ; modèle remplacé depuis par les générations suivantes",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jouer à des jeux PC en 1080p ou en 4K selon la configuration graphique",
+        "Profiter d'un écran jusqu'à 300 Hz pour les jeux compétitifs",
+        "Configurer un stockage RAID 0 de 4 To pour les jeux volumineux",
+        "Utiliser la chambre à vapeur pour maintenir les performances en jeu",
+        "Travailler sur des projets créatifs avec un processeur jusqu'au i9-10980HK",
+        "Transporter le portable grâce à un poids à partir de 2,11 kg",
+        "Brancher un écran externe et des périphériques gaming",
+        "Choisir une configuration RTX 2080 Super pour le ray tracing",
+        "Utiliser Windows 10 Pro pour un usage professionnel",
+        "Jouer en réseau avec une connexion filaire ou Wi-Fi",
+        "Personnaliser les éclairages du châssis Alienware",
+        "Remplacer une tour de bureau par un portable gaming compact"
+      ],
+      "medias": {
+        "videos": [],
+        "images": []
+      },
+      "article": {
+        "titre": "Alienware m15 R3 : le portable gaming compact de 2020",
+        "contenu": [
+          "Annoncé en mai 2020, l'Alienware m15 R3 est présenté par Dell comme le portable gaming 15 pouces le plus fin et le plus puissant de la marque à cette date. Il reprend le format compact de la génération précédente, avec un châssis de 360,3 mm de large, 276 mm de profondeur et une épaisseur comprise entre 17,9 et 20,5 mm selon l'écran choisi.",
+          "La configuration peut aller jusqu'à un processeur Intel Core i9-10980HK de 10e génération, une carte graphique NVIDIA GeForce RTX 2080 Super 8 Go GDDR6 avec Max-Q Design, 32 Go de DDR4-2666 et un stockage RAID 0 de 4 To complété par 512 Go. L'écran de 15,6 pouces peut atteindre 300 Hz, ce qui vise clairement les joueurs compétitifs.",
+          "Le refroidissement repose sur une chambre à vapeur dédiée entre le processeur et les caloducs en cuivre. Alienware met en avant cette solution pour maintenir des fréquences élevées sur des sessions prolongées. Le poids démarre à 2,11 kg, ce qui reste contenu pour un portable gaming de cette puissance, mais reste supérieur à celui d'un ultraportable.",
+          "Le m15 R3 est proposé avec Windows 10 Home ou Windows 10 Pro. Dell insiste sur la personnalisation : les configurations varient fortement, avec plusieurs options d'écran, de GPU et de stockage. Le prix de départ relevé sur la fiche archivée est de 1 479,99 $, mais les configurations haut de gamme dépassent largement ce montant.",
+          "Ses points forts sont la puissance, l'écran rapide, le refroidissement par chambre à vapeur et la compacité relative. Ses limites tiennent au prix des configurations hautes, au poids, à l'autonomie limitée et à la chaleur produite en charge. Pour un usage nomade léger, un modèle plus sobre est préférable ; pour le jeu et la création, le m15 R3 assume son positionnement.",
+          "L'Alienware m15 R3 s'adresse aux joueurs et aux créateurs qui veulent un portable puissant sans passer à un 17 pouces. Il peut remplacer une tour pour le jeu, le montage ou la 3D, à condition d'accepter un encombrement et une consommation élevés. Les accessoires Alienware et les périphériques gaming complètent l'écosystème."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Fiche produit Dell archivée « Alienware m15 R3 Gaming Laptop » (snapshot du 01/12/2020) : processeur jusqu'au i9-10980HK, RTX 2080 Super 8 Go Max-Q, 32 Go DDR4-2666, stockage jusqu'à 4 To + 512 Go, écran 15,6 pouces jusqu'à 300 Hz, dimensions, poids, prix de départ",
+          "url": "https://www.dell.com/en-us/shop/cty/pdp/spd/alienware-m15-r3-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "Aucune photographie de l'Alienware m15 R3 sous licence libre vérifiée : images laissées vides plutôt que d'utiliser une photo d'un autre modèle",
+        "Aucune vidéo officielle Dell/Alienware du m15 R3 vérifiée : vidéo laissée vide plutôt que d'utiliser une vidéo tierce",
+        "Prix public officiel en euros non publié dans la source consultée : le montant affiché est le prix de départ américain",
+        "Autonomie et niveau sonore non détaillés dans la fiche consultée",
+        "Référence/SKU dépend de la configuration, non détaillée dans la source consultée"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "alienware-m15-r4",
+      "marque": "Alienware",
+      "modele": "m15 R4",
+      "rayon": "ordinateurs-composants",
+      "annee": 2021,
+      "dateSortie": "2021-01-26",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop",
+      "description": "Ordinateur portable gaming Alienware m15 R4, mis à jour avec processeurs Intel Core de 10e génération et GPU NVIDIA GeForce RTX série 30 (annonce CES 2021).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core 10e génération (selon communication produit)"
+        },
+        {
+          "libelle": "Graphiques",
+          "valeur": "NVIDIA GeForce RTX série 30 (selon communication produit)"
+        },
+        {
+          "libelle": "Format",
+          "valeur": "Portable gaming 15 pouces"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Alienware m15 R4 (2021)",
+        "contenu": [
+          "Ordinateur portable gaming Alienware m15 R4, mis à jour avec processeurs Intel Core de 10e génération et GPU NVIDIA GeForce RTX série 30 (annonce CES 2021).",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Page produit officielle Dell/Alienware m15 R4",
+          "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m15-r4-gaming-laptop/spd/alienware-m15-r4-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "alienware-x14",
+      "marque": "Alienware",
+      "modele": "x14",
+      "rayon": "ordinateurs-composants",
+      "annee": 2022,
+      "dateSortie": "2022-01-04",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/blog/alienware-and-dell-gaming-launch-new-products-at-ces-2022/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop",
+      "description": "Ordinateur portable gaming Alienware x14 annoncé au CES 2022, format fin et léger de 14 pouces avec processeurs Intel Core de 12e génération.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Format",
+          "valeur": "14 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core de 12e génération (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Alienware x14 (2022)",
+        "contenu": [
+          "Ordinateur portable gaming Alienware x14 annoncé au CES 2022, format fin et léger de 14 pouces avec processeurs Intel Core de 12e génération.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Dell Blog (CES 2022)",
+          "url": "https://www.dell.com/en-us/blog/alienware-and-dell-gaming-launch-new-products-at-ces-2022/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Alienware x14",
+          "url": "https://www.dell.com/en-us/shop/dell-laptops/alienware-x14-gaming-laptop/spd/alienware-x14-r1-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "alienware-m16",
+      "marque": "Alienware",
+      "modele": "m16",
+      "rayon": "ordinateurs-composants",
+      "annee": 2023,
+      "dateSortie": "2023-01-03",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/blog/alienware-revamps-its-iconic-laptop-armada-at-ces-2023/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop",
+      "description": "Ordinateur portable gaming Alienware m16 annoncé au CES 2023, nouveau format 16 pouces de la gamme M avec options Intel/AMD et NVIDIA selon configuration.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Format",
+          "valeur": "16 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Options Intel Core 13e génération / AMD Ryzen selon configuration (annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Alienware m16 (2023)",
+        "contenu": [
+          "Ordinateur portable gaming Alienware m16 annoncé au CES 2023, nouveau format 16 pouces de la gamme M avec options Intel/AMD et NVIDIA selon configuration.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Dell Blog (CES 2023)",
+          "url": "https://www.dell.com/en-us/blog/alienware-revamps-its-iconic-laptop-armada-at-ces-2023/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Alienware m16",
+          "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-gaming-laptop/spd/alienware-m16-r1-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "alienware-m16-r2",
+      "marque": "Alienware",
+      "modele": "m16 R2",
+      "rayon": "ordinateurs-composants",
+      "annee": 2024,
+      "dateSortie": "2024-01-08",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/blog/ces-2024-dell-technologies-unveils-pioneering-devices-and-experiences/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop",
+      "description": "Alienware m16 R2 présenté au CES 2024, version repensée plus compacte de 16 pouces avec processeurs Intel Core Ultra.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Format",
+          "valeur": "16 pouces repensé (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core Ultra (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Alienware m16 R2 (2024)",
+        "contenu": [
+          "Alienware m16 R2 présenté au CES 2024, version repensée plus compacte de 16 pouces avec processeurs Intel Core Ultra.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Dell Blog (CES 2024)",
+          "url": "https://www.dell.com/en-us/blog/ces-2024-dell-technologies-unveils-pioneering-devices-and-experiences/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Alienware m16 R2",
+          "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-m16-r2-gaming-laptop/spd/alienware-m16-r2-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "alienware-area-51-16-2025",
+      "marque": "Alienware",
+      "modele": "16 Area-51 (2025)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-01-06",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/blog/ces-2025-alienware-revamps-its-gaming-laptop-portfolio/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop",
+      "description": "Ordinateur portable gaming Alienware 16 Area-51 annoncé au CES 2025, nouveau design de la gamme Area-51 avec composants de nouvelle génération.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Format",
+          "valeur": "16 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Gammes",
+          "valeur": "Plateforme Area-51 nouvelle génération (détails à confirmer sur fiche officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Alienware 16 Area-51 (2025) (2025)",
+        "contenu": [
+          "Ordinateur portable gaming Alienware 16 Area-51 annoncé au CES 2025, nouveau design de la gamme Area-51 avec composants de nouvelle génération.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Dell Blog (CES 2025)",
+          "url": "https://www.dell.com/en-us/blog/ces-2025-alienware-revamps-its-gaming-laptop-portfolio/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Alienware 16 Area-51",
+          "url": "https://www.dell.com/en-us/shop/gaming-and-games/alienware-16-area-51-laptop/spd/alienware-16-area51-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "alienware-16x-aurora-2026",
+      "marque": "Alienware",
+      "modele": "16X Aurora (2026)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2026,
+      "dateSortie": "2026-01-06",
+      "sourceAnnee": {
+        "url": "https://www.dell.com/en-us/blog/dell-technologies-at-ces-2026/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop",
+      "description": "Ordinateur portable gaming Alienware 16X Aurora présenté/mis à jour autour du CES 2026, avec options d’affichage OLED antireflet et processeurs récents selon configuration.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Format",
+          "valeur": "16 pouces (selon communication officielle)"
+        },
+        {
+          "libelle": "Affichage",
+          "valeur": "Options OLED antireflet annoncées (détails à confirmer)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Alienware 16X Aurora (2026) (2026)",
+        "contenu": [
+          "Ordinateur portable gaming Alienware 16X Aurora présenté/mis à jour autour du CES 2026, avec options d’affichage OLED antireflet et processeurs récents selon configuration.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Dell Blog (CES 2026)",
+          "url": "https://www.dell.com/en-us/blog/dell-technologies-at-ces-2026/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Alienware 16X Aurora",
+          "url": "https://www.dell.com/en-us/shop/gaming-and-games/new-alienware-16x-aurora-gaming-laptop/spd/alienware-16x-aurora-ac16251-gaming-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "hp-reverb-g2",
+      "marque": "HP",
+      "modele": "Reverb G2",
+      "rayon": "vr-ar",
+      "annee": 2020,
+      "dateSortie": null,
+      "sourceAnnee": {
+        "url": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html",
+      "ficheFabricant": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html",
+      "description": "Casque de réalité virtuelle filaire développé par HP en collaboration avec Valve et Microsoft, annoncé le 28 mai 2020 et disponible à l'automne 2020. Le Reverb G2 affiche 2K × 2K par œil, un champ de vision de 114°, des lentilles conçues par Valve, un suivi inside-out à quatre caméras, un réglage manuel de l'IPD et un audio spatial. Il fonctionne avec Windows Mixed Reality et SteamVR, et est vendu 599 $.",
+      "variantes": [
+        {
+          "groupe": "Édition",
+          "options": [
+            {
+              "libelle": "Casque et deux contrôleurs",
+              "prix": 599,
+              "dispo": false,
+              "lienOfficiel": {
+                "url": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html",
+                "precision": "Prix de lancement annoncé par HP pour les États-Unis",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Écran",
+          "valeur": "2K × 2K par œil (2160 × 2160 pixels)"
+        },
+        {
+          "libelle": "Champ de vision",
+          "valeur": "114°"
+        },
+        {
+          "libelle": "Lentilles",
+          "valeur": "Conçues par Valve, dalle full RGB stripe"
+        },
+        {
+          "libelle": "Suivi",
+          "valeur": "Inside-out par quatre caméras"
+        },
+        {
+          "libelle": "IPD",
+          "valeur": "Réglage manuel de la distance interpupillaire"
+        },
+        {
+          "libelle": "Audio",
+          "valeur": "Haut-parleurs intégrés avec audio spatial"
+        },
+        {
+          "libelle": "Masque",
+          "valeur": "Basculable à 90° pour passer du virtuel au réel"
+        },
+        {
+          "libelle": "Contrôleurs",
+          "valeur": "Deux contrôleurs inclus, pré-appairables en Bluetooth"
+        },
+        {
+          "libelle": "Compatibilité",
+          "valeur": "Windows Mixed Reality et SteamVR"
+        },
+        {
+          "libelle": "Connexion",
+          "valeur": "Casque filaire"
+        }
+      ],
+      "prix": {
+        "montant": 599,
+        "devise": "USD",
+        "marche": "États-Unis, prix de lancement",
+        "libelle": "Casque et deux contrôleurs",
+        "date": "2020-05-28",
+        "source": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Précommandes ouvertes le 28 mai 2020, disponibilité annoncée pour l'automne 2020 ; modèle aujourd'hui arrêté",
+        "date": "2026-11-14",
+        "source": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html"
+      },
+      "accessoires": [
+        {
+          "nom": "Contrôleurs HP Reverb G2",
+          "compatibilite": "Contrôleurs fournis avec le casque, pré-appairables en Bluetooth",
+          "source": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html"
+        }
+      ],
+      "bundles": [],
+      "usages": [
+        "Jouer à des jeux SteamVR avec un casque à haute résolution",
+        "Utiliser Windows Mixed Reality pour les applications compatibles",
+        "Lire du texte et observer des textures fines grâce aux dalles 2K par œil",
+        "Profiter d'un champ de vision de 114° pour l'immersion",
+        "Ajuster manuellement l'IPD à sa morphologie",
+        "Basculer le masque à 90° pour repasser rapidement au monde réel",
+        "Utiliser les quatre caméras pour le suivi des contrôleurs",
+        "Écouter l'audio spatial intégré sans casque supplémentaire",
+        "Travailler ou créer dans des applications VR compatibles",
+        "S'initier à la VR avec un casque filaire stable",
+        "Comparer les rendus des jeux PC VR à haute densité de pixels",
+        "Utiliser les contrôleurs pré-appairés en Bluetooth"
+      ],
+      "medias": {
+        "videos": [],
+        "images": []
+      },
+      "article": {
+        "titre": "HP Reverb G2 : la haute résolution avec Valve et Microsoft",
+        "contenu": [
+          "Annoncé le 28 mai 2020, le HP Reverb G2 est le fruit d'une collaboration entre HP, Valve et Microsoft. HP apporte son expérience du Reverb G1, Valve conçoit les lentilles et Microsoft fournit la plateforme Windows Mixed Reality. Le casque est présenté comme une évolution haut de gamme du Reverb, avec un objectif clair : offrir une image très nette pour les jeux et les applications professionnelles.",
+          "La caractéristique principale est la résolution : 2K × 2K par œil, soit 2160 × 2160 pixels, avec des dalles full RGB stripe et des lentilles signées Valve. Le champ de vision atteint 114°, ce qui améliore l'immersion par rapport au G1. HP insiste sur la netteté du texte et des textures, un point important pour la lecture, la conception et les simulateurs.",
+          "Le suivi est assuré par quatre caméras en inside-out, sans balises externes. HP annonce un volume de suivi des contrôleurs doublé par rapport à la génération précédente. Le réglage de l'IPD est manuel, et le masque peut basculer à 90° pour passer rapidement du virtuel au réel. L'audio spatial est intégré au casque, avec des haut-parleurs dédiés.",
+          "Le Reverb G2 est un casque filaire, compatible Windows Mixed Reality et SteamVR. Il est vendu 599 $ avec deux contrôleurs pré-appairables en Bluetooth. HP annonce des précommandes à partir du 28 mai 2020 et une disponibilité à l'automne 2020. Le casque vise autant les joueurs PC que les professionnels qui utilisent la VR pour la formation, la visualisation ou la collaboration.",
+          "Ses points forts sont la résolution, la qualité des lentilles, le confort du masque basculable et la compatibilité avec deux écosystèmes. Ses limites tiennent au câble, à la nécessité d'un PC compatible et à un prix supérieur à celui des casques autonomes. Le suivi inside-out, bien qu'amélioré, reste dépendant de l'éclairage de la pièce et de la disposition des caméras.",
+          "Le HP Reverb G2 s'adresse aux utilisateurs qui privilégient la qualité d'image et la compatibilité PC plutôt que la mobilité. Il convient aux simulations, à la visualisation architecturale, à la formation et aux jeux SteamVR exigeants. Pour un usage nomade ou sans PC, un casque autonome comme le Quest 2 est plus adapté ; pour la netteté et le confort d'un casque filaire, le Reverb G2 reste une référence de 2020."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué HP « HP, Valve, and Microsoft Removing Distance Barriers with Next-Gen Virtual Reality Headset » (28/05/2020) : résolution 2K × 2K par œil, champ de vision 114°, lentilles Valve, quatre caméras, IPD manuel, audio spatial, prix de 599 $, disponibilité à l'automne 2020",
+          "url": "https://www.hp.com/us-en/newsroom/press-releases/2020/hp-valve-microsoft-next-gen-virtual-reality-headset.html",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "Aucune photographie du HP Reverb G2 sous licence libre vérifiée : images laissées vides plutôt que d'utiliser une photo d'un autre modèle",
+        "Aucune vidéo officielle HP du Reverb G2 de 2020 vérifiée : vidéo laissée vide plutôt que d'utiliser une vidéo tierce",
+        "Jour exact de disponibilité non communiqué par HP (annonce d'une disponibilité à l'automne 2020)",
+        "Fréquence de rafraîchissement, poids et longueur de câble non relevés dans le communiqué consulté",
+        "Prix public officiel en euros non publié dans la source consultée : le montant affiché est le prix de lancement américain"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "hp-spectre-x360-14-2021",
+      "marque": "HP",
+      "modele": "Spectre x360 14 (2021)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2021,
+      "dateSortie": "2021-01-10",
+      "sourceAnnee": {
+        "url": "https://www.hp.com/us-en/newsroom/press-releases/2021/hp-at-ces-2021.html",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+      "ficheFabricant": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+      "description": "Ordinateur portable convertible HP Spectre x360 14 présenté lors du CES 2021, au format 13,5/14 pouces avec écran 3:2 selon la génération, orienté mobilité premium.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Type",
+          "valeur": "PC portable convertible 2-en-1 (selon communication HP)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core 11e génération (selon annonce CES 2021, à confirmer)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "HP Spectre x360 14 (2021) (2021)",
+        "contenu": [
+          "Ordinateur portable convertible HP Spectre x360 14 présenté lors du CES 2021, au format 13,5/14 pouces avec écran 3:2 selon la génération, orienté mobilité premium.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "HP Newsroom (CES 2021)",
+          "url": "https://www.hp.com/us-en/newsroom/press-releases/2021/hp-at-ces-2021.html",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Famille HP Spectre x360 (officiel)",
+          "url": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "hp-spectre-x360-13-5-2022",
+      "marque": "HP",
+      "modele": "Spectre x360 13.5 (2022)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2022,
+      "dateSortie": "2022-05-19",
+      "sourceAnnee": {
+        "url": "https://www.hp.com/us-en/newsroom/press-releases/2022/hp-powers-todays-hustle-create-without-limitation.html",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+      "ficheFabricant": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+      "description": "HP Spectre x360 13.5 pouces 2-en-1 annoncé en mai 2022, plateforme Intel Evo avec processeurs Intel Core de 12e génération.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Type",
+          "valeur": "PC portable convertible 13,5 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core de 12e génération (plateforme Intel Evo, selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "HP Spectre x360 13.5 (2022) (2022)",
+        "contenu": [
+          "HP Spectre x360 13.5 pouces 2-en-1 annoncé en mai 2022, plateforme Intel Evo avec processeurs Intel Core de 12e génération.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "HP Newsroom (mai 2022)",
+          "url": "https://www.hp.com/us-en/newsroom/press-releases/2022/hp-powers-todays-hustle-create-without-limitation.html",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "hp-spectre-x360-14-2024",
+      "marque": "HP",
+      "modele": "Spectre x360 14 (2024)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2024,
+      "dateSortie": "2024-01-08",
+      "sourceAnnee": {
+        "url": "https://www.hp.com/us-en/newsroom/press-releases/2024/hp-at-ces-2024.html",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+      "ficheFabricant": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+      "description": "HP Spectre x360 14 annoncé au CES 2024, PC convertible premium avec processeurs Intel Core Ultra et fonctions IA.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Type",
+          "valeur": "PC portable convertible 14 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core Ultra (selon annonce CES 2024)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.hp.com/us-en/shop/slp/spectre-family/spectre-x360-laptops"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "HP Spectre x360 14 (2024) (2024)",
+        "contenu": [
+          "HP Spectre x360 14 annoncé au CES 2024, PC convertible premium avec processeurs Intel Core Ultra et fonctions IA.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "HP Newsroom (CES 2024)",
+          "url": "https://www.hp.com/us-en/newsroom/press-releases/2024/hp-at-ces-2024.html",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "hp-omnibook-ultra-2026",
+      "marque": "HP",
+      "modele": "OmniBook Ultra (2026)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2026,
+      "dateSortie": "2026-01-05",
+      "sourceAnnee": {
+        "url": "https://www.hp.com/us-en/newsroom/press-releases/2026/hp-at-ces-2026.html",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html",
+      "ficheFabricant": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html",
+      "description": "Gamme HP OmniBook Ultra présentée/mise à jour autour du CES 2026, PC portable premium de HP intégrant des fonctions IA (détails de configuration à confirmer).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Catégorie",
+          "valeur": "PC portable premium (gamme OmniBook Ultra, selon communication HP)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "HP OmniBook Ultra (2026) (2026)",
+        "contenu": [
+          "Gamme HP OmniBook Ultra présentée/mise à jour autour du CES 2026, PC portable premium de HP intégrant des fonctions IA (détails de configuration à confirmer).",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "HP Newsroom (CES 2026)",
+          "url": "https://www.hp.com/us-en/newsroom/press-releases/2026/hp-at-ces-2026.html",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle HP OmniBook Ultra",
+          "url": "https://www.hp.com/us-en/laptops-and-2-in-1s/omnibook-ultra.html",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "linux-raspberry-pi-500-plus",
+      "marque": "Linux",
+      "modele": "Raspberry Pi 500+",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-09-25",
+      "sourceAnnee": {
+        "url": "https://www.raspberrypi.com/news/the-ultimate-all-in-one-pc-raspberry-pi-500-plus-on-sale-now-at-200/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/",
+      "ficheFabricant": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/",
+      "description": "Ordinateur tout-en-un Raspberry Pi 500+ au format clavier, annoncé en septembre 2025, basé sur la plateforme Raspberry Pi 5 avec clavier mécanique, SSD M.2 et 16 Go de RAM.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeur",
+          "valeur": "Quad-core Arm Cortex-A76 2,4 GHz (plateforme Raspberry Pi 5, selon annonce officielle)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "16 Go RAM (selon annonce officielle)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD Raspberry Pi 256 Go préinstallé (M.2, selon annonce officielle)"
+        },
+        {
+          "libelle": "Clavier",
+          "valeur": "Clavier mécanique avec switches Gateron et rétroéclairage RGB (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Linux Raspberry Pi 500+ (2025)",
+        "contenu": [
+          "Ordinateur tout-en-un Raspberry Pi 500+ au format clavier, annoncé en septembre 2025, basé sur la plateforme Raspberry Pi 5 avec clavier mécanique, SSD M.2 et 16 Go de RAM.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Raspberry Pi News (Raspberry Pi 500+)",
+          "url": "https://www.raspberrypi.com/news/the-ultimate-all-in-one-pc-raspberry-pi-500-plus-on-sale-now-at-200/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Raspberry Pi 500+",
+          "url": "https://www.raspberrypi.com/products/raspberry-pi-500-plus/",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "meta-quest-pro",
+      "marque": "Meta",
+      "modele": "Quest Pro",
+      "rayon": "vr-ar",
+      "annee": 2022,
+      "dateSortie": "2022-10-25",
+      "sourceAnnee": {
+        "url": "https://www.meta.com/blog/meta-quest-pro-price-release-date-specs/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.meta.com/quest/quest-pro/",
+      "ficheFabricant": "https://www.meta.com/quest/quest-pro/",
+      "description": "Casque de réalité virtuelle/mixte Meta Quest Pro, annoncé en octobre 2022 et commercialisé à partir du 25 octobre 2022, orienté usages avancés et productivité.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.meta.com/quest/quest-pro/",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Type",
+          "valeur": "Casque VR/mixte autonome (selon fiche officielle)"
+        },
+        {
+          "libelle": "Processeur",
+          "valeur": "Snapdragon XR2+ Gen 1 (selon annonce officielle)"
+        },
+        {
+          "libelle": "Fonctions",
+          "valeur": "Suivi oculaire et expressions faciales (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.meta.com/quest/quest-pro/"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Meta Meta Quest Pro (2022)",
+        "contenu": [
+          "Casque de réalité virtuelle/mixte Meta Quest Pro, annoncé en octobre 2022 et commercialisé à partir du 25 octobre 2022, orienté usages avancés et productivité.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Meta Blog (annonce Quest Pro)",
+          "url": "https://www.meta.com/blog/meta-quest-pro-price-release-date-specs/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Meta Quest Pro",
+          "url": "https://www.meta.com/quest/quest-pro/",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "microsoft-surface-laptop-4",
+      "marque": "Microsoft",
+      "modele": "Surface Laptop 4",
+      "rayon": "ordinateurs-composants",
+      "annee": 2021,
+      "dateSortie": "2021-04-15",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/devices/2021/04/13/introducing-surface-laptop-4-and-new-accessories-for-enhanced-meeting-experiences/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4",
+      "ficheFabricant": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4",
+      "description": "Ordinateur portable Microsoft Surface Laptop 4 annoncé en avril 2021, proposé en formats 13,5\" et 15\" avec choix de processeurs Intel ou AMD.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Formats",
+          "valeur": "13,5 pouces et 15 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Options Intel Core 11e génération ou AMD Ryzen Microsoft Surface Edition (selon annonce officielle)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "PixelSense tactile (détails à confirmer)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Microsoft Surface Laptop 4 (2021)",
+        "contenu": [
+          "Ordinateur portable Microsoft Surface Laptop 4 annoncé en avril 2021, proposé en formats 13,5\" et 15\" avec choix de processeurs Intel ou AMD.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Microsoft Devices Blog (Surface Laptop 4)",
+          "url": "https://blogs.windows.com/devices/2021/04/13/introducing-surface-laptop-4-and-new-accessories-for-enhanced-meeting-experiences/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Surface Laptop 4",
+          "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-4",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "microsoft-surface-laptop-5",
+      "marque": "Microsoft",
+      "modele": "Surface Laptop 5",
+      "rayon": "ordinateurs-composants",
+      "annee": 2022,
+      "dateSortie": "2022-10-25",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/devices/2022/10/12/new-surface-devices-help-you-do-more-work-and-express-more-play/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn",
+      "ficheFabricant": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn",
+      "description": "Ordinateur portable Microsoft Surface Laptop 5 annoncé en octobre 2022, équipé de processeurs Intel Core de 12e génération et de Thunderbolt 4.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core de 12e génération (selon fiche officielle)"
+        },
+        {
+          "libelle": "Connectivité",
+          "valeur": "Thunderbolt 4 (selon annonce officielle)"
+        },
+        {
+          "libelle": "Formats",
+          "valeur": "13,5 pouces et 15 pouces (selon fiche officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Microsoft Surface Laptop 5 (2022)",
+        "contenu": [
+          "Ordinateur portable Microsoft Surface Laptop 5 annoncé en octobre 2022, équipé de processeurs Intel Core de 12e génération et de Thunderbolt 4.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Microsoft Devices Blog (annonce Surface 2022)",
+          "url": "https://blogs.windows.com/devices/2022/10/12/new-surface-devices-help-you-do-more-work-and-express-more-play/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Surface Laptop 5",
+          "url": "https://www.microsoft.com/en-us/d/surface-laptop-5/8xn49v61s1bn",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "microsoft-surface-laptop-studio-2",
+      "marque": "Microsoft",
+      "modele": "Surface Laptop Studio 2",
+      "rayon": "ordinateurs-composants",
+      "annee": 2023,
+      "dateSortie": "2023-10-03",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/devices/2023/09/21/introducing-microsoft-copilot-in-windows-and-new-surface-devices-that-empower-you-to-be-more-productive-and-creative/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz",
+      "ficheFabricant": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz",
+      "description": "Ordinateur portable créatif Microsoft Surface Laptop Studio 2 annoncé en septembre 2023, avec charnière dynamique, processeurs Intel Core de 13e génération et options GPU NVIDIA.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core de 13e génération (selon annonce officielle)"
+        },
+        {
+          "libelle": "Graphiques",
+          "valeur": "Options NVIDIA GeForce RTX (selon fiche officielle)"
+        },
+        {
+          "libelle": "Format",
+          "valeur": "Écran tactile avec charnière dynamique (selon fiche officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Microsoft Surface Laptop Studio 2 (2023)",
+        "contenu": [
+          "Ordinateur portable créatif Microsoft Surface Laptop Studio 2 annoncé en septembre 2023, avec charnière dynamique, processeurs Intel Core de 13e génération et options GPU NVIDIA.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Microsoft Devices Blog (annonce 2023)",
+          "url": "https://blogs.windows.com/devices/2023/09/21/introducing-microsoft-copilot-in-windows-and-new-surface-devices-that-empower-you-to-be-more-productive-and-creative/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Surface Laptop Studio 2",
+          "url": "https://www.microsoft.com/en-us/d/surface-laptop-studio-2/8rqr54krf1dz",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "microsoft-surface-laptop-7th-edition",
+      "marque": "Microsoft",
+      "modele": "Surface Laptop (7th Edition)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2024,
+      "dateSortie": "2024-06-18",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/devices/2024/05/20/introducing-copilot-pcs/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition",
+      "ficheFabricant": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition",
+      "description": "Surface Laptop 7th Edition, PC Copilot+ annoncé en mai 2024 et lancé en juin 2024, équipé de processeurs Snapdragon X Elite/Plus.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Snapdragon X Elite ou X Plus (selon fiche officielle)"
+        },
+        {
+          "libelle": "Catégorie",
+          "valeur": "Copilot+ PC (selon annonce officielle)"
+        },
+        {
+          "libelle": "Formats",
+          "valeur": "13,8 pouces et 15 pouces (selon fiche officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Microsoft Surface Laptop (7th Edition) (2024)",
+        "contenu": [
+          "Surface Laptop 7th Edition, PC Copilot+ annoncé en mai 2024 et lancé en juin 2024, équipé de processeurs Snapdragon X Elite/Plus.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Microsoft Devices Blog (Copilot+ PCs)",
+          "url": "https://blogs.windows.com/devices/2024/05/20/introducing-copilot-pcs/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Surface Laptop 7th Edition",
+          "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "microsoft-surface-laptop-13-inch",
+      "marque": "Microsoft",
+      "modele": "Surface Laptop 13-inch (1st Edition)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-05-20",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/devices/2025/05/06/meet-the-new-surface-laptop-and-surface-pro/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch",
+      "ficheFabricant": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch",
+      "description": "Surface Laptop 13 pouces (1re édition) annoncé en mai 2025 comme Copilot+ PC compact équipé de processeur Snapdragon X Plus.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeur",
+          "valeur": "Snapdragon X Plus (selon fiche officielle)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "13 pouces (détails à confirmer sur fiche officielle)"
+        },
+        {
+          "libelle": "Catégorie",
+          "valeur": "Copilot+ PC (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Microsoft Surface Laptop 13-inch (1st Edition) (2025)",
+        "contenu": [
+          "Surface Laptop 13 pouces (1re édition) annoncé en mai 2025 comme Copilot+ PC compact équipé de processeur Snapdragon X Plus.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Microsoft Devices Blog (annonce mai 2025)",
+          "url": "https://blogs.windows.com/devices/2025/05/06/meet-the-new-surface-laptop-and-surface-pro/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Surface Laptop 13-inch",
+          "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop-13-inch",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "microsoft-surface-laptop-8th-edition",
+      "marque": "Microsoft",
+      "modele": "Surface Laptop (8th Edition)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2026,
+      "dateSortie": "2026-06-16",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/devices/2026/06/16/introducing-the-next-surface-pro-and-surface-laptop-built-for-performance-and-flexibility/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.microsoft.com/en-us/surface/devices/surface-laptop",
+      "ficheFabricant": "https://www.microsoft.com/en-us/surface/devices/surface-laptop",
+      "description": "Surface Laptop (8e édition) annoncé en juin 2026, équipé de processeurs Snapdragon X2 pour des performances et une autonomie améliorées.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Snapdragon X2 (selon annonce officielle)"
+        },
+        {
+          "libelle": "Formats",
+          "valeur": "13,8 pouces et 15 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu'à 20 h (13,8\") / 19 h (15\") selon communication officielle (à confirmer)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.microsoft.com/en-us/surface/devices/surface-laptop"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Utilisation quotidienne",
+        "Usage professionnel ou personnel selon catégorie",
+        "Consultation et configuration via ressources officielles",
+        "Intégration dans un environnement compatible",
+        "Mise à jour et maintenance selon fabricant",
+        "Transport et utilisation nomade si applicable",
+        "Connexion aux accessoires compatibles",
+        "Apprentissage et prise en main",
+        "Usage multimédia selon capacités",
+        "Exploitation des fonctions principales du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Microsoft Surface Laptop (8th Edition) (2026)",
+        "contenu": [
+          "Surface Laptop (8e édition) annoncé en juin 2026, équipé de processeurs Snapdragon X2 pour des performances et une autonomie améliorées.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Microsoft Devices Blog (juin 2026)",
+          "url": "https://blogs.windows.com/devices/2026/06/16/introducing-the-next-surface-pro-and-surface-laptop-built-for-performance-and-flexibility/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle Surface Laptop",
+          "url": "https://www.microsoft.com/en-us/surface/devices/surface-laptop",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "msi-ge76-raider-2021",
+      "marque": "MSI",
+      "modele": "GE76 Raider (2021)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2021,
+      "dateSortie": "2021-01-13",
+      "sourceAnnee": {
+        "url": "https://www.msi.com/news/detail/MSI-Unveils-GS66-Stealth-GE76-Raider-and-GP66-GP76-Leopard-with-NVIDIA-GeForce-RTX-30-Series-Laptop-GPUs-140618",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview",
+      "ficheFabricant": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview",
+      "description": "Ordinateur portable gaming MSI GE76 Raider annoncé au CES 2021, équipé de GPU NVIDIA GeForce RTX série 30 pour ordinateurs portables.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Graphiques",
+          "valeur": "NVIDIA GeForce RTX série 30 (selon annonce officielle)"
+        },
+        {
+          "libelle": "Format",
+          "valeur": "Portable gaming 17 pouces (selon gamme GE76)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "MSI GE76 Raider (2021) (2021)",
+        "contenu": [
+          "Ordinateur portable gaming MSI GE76 Raider annoncé au CES 2021, équipé de GPU NVIDIA GeForce RTX série 30 pour ordinateurs portables.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "MSI News (CES 2021)",
+          "url": "https://www.msi.com/news/detail/MSI-Unveils-GS66-Stealth-GE76-Raider-and-GP66-GP76-Leopard-with-NVIDIA-GeForce-RTX-30-Series-Laptop-GPUs-140618",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle MSI GE76 Raider",
+          "url": "https://www.msi.com/Laptop/GE76-Raider-11UX/Overview",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "msi-raider-ge67hx-2022",
+      "marque": "MSI",
+      "modele": "Raider GE67 HX (2022)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2022,
+      "dateSortie": "2022-01-04",
+      "sourceAnnee": {
+        "url": "https://www.msi.com/news/detail/MSI-Unveils-2022-Laptop-Lineup-for-Metaverse-and-Gaming-140876",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview",
+      "ficheFabricant": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview",
+      "description": "Ordinateur portable gaming MSI Raider GE67 HX annoncé au CES 2022, doté d’un écran OLED et de processeurs Intel Core de 12e génération (selon annonce).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core de 12e génération (selon annonce officielle)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "Option OLED (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "MSI Raider GE67 HX (2022) (2022)",
+        "contenu": [
+          "Ordinateur portable gaming MSI Raider GE67 HX annoncé au CES 2022, doté d’un écran OLED et de processeurs Intel Core de 12e génération (selon annonce).",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "MSI News (CES 2022)",
+          "url": "https://www.msi.com/news/detail/MSI-Unveils-2022-Laptop-Lineup-for-Metaverse-and-Gaming-140876",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle MSI Raider GE67 HX",
+          "url": "https://www.msi.com/Laptop/Raider-GE67-HX-12UX/Overview",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "msi-titan-gt77-hx-2023",
+      "marque": "MSI",
+      "modele": "Titan GT77 HX (2023)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2023,
+      "dateSortie": "2023-01-03",
+      "sourceAnnee": {
+        "url": "https://www.msi.com/news/detail/MSI-Announces-the-All-New-Award-Winning-RTX-40-Series-Laptop-Lineup-141149",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview",
+      "ficheFabricant": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview",
+      "description": "Ordinateur portable gaming phare MSI Titan GT77 HX présenté au CES 2023, équipé de GPU NVIDIA GeForce RTX série 40 et de processeurs Intel Core de 13e génération (selon annonce).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Graphiques",
+          "valeur": "NVIDIA GeForce RTX série 40 (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core de 13e génération (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "MSI Titan GT77 HX (2023) (2023)",
+        "contenu": [
+          "Ordinateur portable gaming phare MSI Titan GT77 HX présenté au CES 2023, équipé de GPU NVIDIA GeForce RTX série 40 et de processeurs Intel Core de 13e génération (selon annonce).",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "MSI News (CES 2023)",
+          "url": "https://www.msi.com/news/detail/MSI-Announces-the-All-New-Award-Winning-RTX-40-Series-Laptop-Lineup-141149",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle MSI Titan GT77 HX",
+          "url": "https://www.msi.com/Laptop/Titan-GT77-HX-13VX/Overview",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "msi-titan-18-hx-2024",
+      "marque": "MSI",
+      "modele": "Titan 18 HX (2024)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2024,
+      "dateSortie": "2024-01-08",
+      "sourceAnnee": {
+        "url": "https://www.msi.com/news/detail/MSI-Unveils-Waves-of-AI-Ready-Laptops-at-CES-2024-142964",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview",
+      "ficheFabricant": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview",
+      "description": "Ordinateur portable gaming MSI Titan 18 HX dévoilé au CES 2024, format 18 pouces avec processeurs Intel Core de 14e génération HX (selon annonce).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Format",
+          "valeur": "18 pouces (selon annonce officielle)"
+        },
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core 14e génération HX (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "MSI Titan 18 HX (2024) (2024)",
+        "contenu": [
+          "Ordinateur portable gaming MSI Titan 18 HX dévoilé au CES 2024, format 18 pouces avec processeurs Intel Core de 14e génération HX (selon annonce).",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "MSI News (CES 2024)",
+          "url": "https://www.msi.com/news/detail/MSI-Unveils-Waves-of-AI-Ready-Laptops-at-CES-2024-142964",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle MSI Titan 18 HX",
+          "url": "https://www.msi.com/Laptop/Titan-18-HX-A14VX/Overview",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "msi-titan-18-hx-dragon-edition-2025",
+      "marque": "MSI",
+      "modele": "Titan 18 HX Dragon Edition Norse Myth (2025)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-01-07",
+      "sourceAnnee": {
+        "url": "https://www.msi.com/news/detail/MSI-Unveils-New-Laptop-Lineup-Featuring-NVIDIA-GeForce-RTX-50-Series-at-CES-2025-145200",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview",
+      "ficheFabricant": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview",
+      "description": "Édition spéciale MSI Titan 18 HX Dragon Edition Norse Myth présentée au CES 2025, équipée de GPU NVIDIA GeForce RTX série 50 selon l’annonce.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Édition",
+          "valeur": "Dragon Edition Norse Myth (édition spéciale, annonce CES 2025)"
+        },
+        {
+          "libelle": "Graphiques",
+          "valeur": "NVIDIA GeForce RTX série 50 (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "MSI Titan 18 HX Dragon Edition Norse Myth (2025) (2025)",
+        "contenu": [
+          "Édition spéciale MSI Titan 18 HX Dragon Edition Norse Myth présentée au CES 2025, équipée de GPU NVIDIA GeForce RTX série 50 selon l’annonce.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "MSI News (CES 2025)",
+          "url": "https://www.msi.com/news/detail/MSI-Unveils-New-Laptop-Lineup-Featuring-NVIDIA-GeForce-RTX-50-Series-at-CES-2025-145200",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle MSI Titan 18 HX Dragon Edition",
+          "url": "https://www.msi.com/Laptop/Titan-18-HX-Dragon-Edition-Norse-Myth-A2XWJG/Overview",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "msi-raider-16-max-2026",
+      "marque": "MSI",
+      "modele": "Raider 16 Max (2026)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2026,
+      "dateSortie": "2026-04-15",
+      "sourceAnnee": {
+        "url": "https://www.msi.com/news/detail/MSI-Unveils-New-Raider-and-Crosshair-Gaming-Laptops-with-Up-to-300W-Combined-Power--Delivering-Industry-leading-Performance--148460",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview",
+      "ficheFabricant": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview",
+      "description": "Ordinateur portable gaming MSI Raider 16 Max annoncé en avril 2026, avec processeurs Intel Core Ultra 200HX Plus et GPU NVIDIA GeForce RTX série 50 selon l’annonce.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Standard",
+              "prix": null,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeurs",
+          "valeur": "Intel Core Ultra 200HX Plus (selon annonce officielle)"
+        },
+        {
+          "libelle": "Graphiques",
+          "valeur": "NVIDIA GeForce RTX série 50 (selon annonce officielle)"
+        }
+      ],
+      "prix": null,
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-14",
+        "source": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Jeu vidéo et divertissement",
+        "Travail créatif ou bureautique selon configuration",
+        "Utilisation nomade ou sédentaire selon format",
+        "Connexion d’accessoires et périphériques compatibles",
+        "Multitâche et applications exigeantes",
+        "Streaming et multimédia",
+        "Mise à jour et maintenance selon fabricant",
+        "Apprentissage et prise en main",
+        "Exploitation des performances matérielles",
+        "Usage selon capacités officielles du produit"
+      ],
+      "medias": {
+        "images": [],
+        "videos": [
+          {
+            "id": "1I4AAWjFxCo",
+            "titre": "Raider 16 Max HX B2W - Light 'em Up | MSI",
+            "chaine": "MSI Gaming",
+            "url": "https://www.youtube.com/watch?v=1I4AAWjFxCo",
+            "type": "officielle-fabricant-editeur",
+            "dateVerification": "2026-11-14"
+          }
+        ]
+      },
+      "article": {
+        "titre": "MSI Raider 16 Max (2026) (2026)",
+        "contenu": [
+          "Ordinateur portable gaming MSI Raider 16 Max annoncé en avril 2026, avec processeurs Intel Core Ultra 200HX Plus et GPU NVIDIA GeForce RTX série 50 selon l’annonce.",
+          "Les informations non confirmées sont indiquées dans les champs manquants."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "MSI News (avril 2026)",
+          "url": "https://www.msi.com/news/detail/MSI-Unveils-New-Raider-and-Crosshair-Gaming-Laptops-with-Up-to-300W-Combined-Power--Delivering-Industry-leading-Performance--148460",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Page produit officielle MSI Raider 16 Max",
+          "url": "https://www.msi.com/Laptop/Raider-16-Max-HX-B2XW/Overview",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes ou à confirmer",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
+        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
+        "Liste d’usages vérifiés à compléter (objectif 10–20)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Prix final à confirmer",
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "apple-watch-series-6",
+      "marque": "Apple",
+      "modele": "Apple Watch Series 6",
+      "rayon": "accessoires-gadgets",
+      "annee": 2020,
+      "dateSortie": "2020-09-18",
+      "sourceAnnee": {
+        "url": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://support.apple.com/en-euro/111918",
+      "ficheFabricant": "https://support.apple.com/en-euro/111918",
+      "description": "Montre connectée Apple annoncée le 15 septembre 2020 et disponible le 18 septembre 2020. L'Apple Watch Series 6 introduit un capteur et une app Oxygène sanguin, une puce S6 SiP, un altimètre toujours activé, un écran Retina toujours activé jusqu'à 2,5 fois plus lumineux au poignet baissé en extérieur, la recharge rapide et watchOS 7.",
+      "variantes": [
+        {
+          "groupe": "Boîtier / connectivité",
+          "options": [
+            {
+              "libelle": "GPS 40 mm aluminium",
+              "prix": 399,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/",
+                "precision": "Prix de départ annoncé par Apple (GPS)",
+                "verifie": "2026-11-14"
+              }
+            },
+            {
+              "libelle": "GPS + Cellular 40 mm aluminium",
+              "prix": 499,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/",
+                "precision": "Prix de départ annoncé par Apple (GPS + Cellular)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "S6 SiP avec processeur bicœur 64 bits ; puce W3 ; puce U1 (Ultra Wideband)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "Écran Retina LTPO OLED toujours activé ; 40 mm 324×394 px (759 mm²) ou 44 mm 368×448 px (977 mm²) ; luminosité 1000 nits"
+        },
+        {
+          "libelle": "Santé / capteurs",
+          "valeur": "Capteur d’oxygène sanguin (app Oxygène sanguin), capteur électrique cardiaque (app ECG), capteur optique cardiaque 3e génération, altimètre toujours activé, accéléromètre, gyroscope, capteur de luminosité ambiante"
+        },
+        {
+          "libelle": "Résistance à l’eau",
+          "valeur": "Étanche jusqu’à 50 m (ISO 22810:2010)"
+        },
+        {
+          "libelle": "Connectivité",
+          "valeur": "Modèles GPS et GPS + Cellular ; Wi-Fi 802.11b/g/n 2,4 GHz et 5 GHz ; Bluetooth 5.0 ; LTE/UMTS sur modèles cellulaires"
+        },
+        {
+          "libelle": "Capacité",
+          "valeur": "32 Go"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu’à 18 heures (usage typique, selon Apple)"
+        },
+        {
+          "libelle": "Recharge",
+          "valeur": "Batterie lithium-ion rechargeable ; câble de charge magnétique ; recharge plus rapide (charge complète en moins de 1,5 h, selon Apple)"
+        },
+        {
+          "libelle": "Dimensions",
+          "valeur": "40 mm : 40 × 34 × 10,7 mm ; 44 mm : 44 × 38 × 10,7 mm"
+        },
+        {
+          "libelle": "Compatibilité",
+          "valeur": "Requiert iPhone 6s ou ultérieur avec iOS 14 ou ultérieur (selon fiche technique Apple)"
+        }
+      ],
+      "prix": {
+        "montant": 399,
+        "devise": "USD",
+        "marche": "États-Unis, prix de départ (GPS)",
+        "libelle": "Apple Watch Series 6 (GPS), prix de départ annoncé",
+        "date": "2020-09-15",
+        "source": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Disponible à partir du 18 septembre 2020 (modèle de génération antérieure, disponibilité actuelle à confirmer)",
+        "date": "2026-11-14",
+        "source": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Mesurer la saturation en oxygène du sang à la demande ou en arrière-plan avec l’app Oxygène sanguin",
+        "Suivre l’activité quotidienne (anneaux Bouger, Exercice, Se tenir debout) et les entraînements",
+        "Enregistrer un électrocardiogramme (ECG) lorsque la fonctionnalité est disponible et prise en charge",
+        "Consulter l’altitude en temps réel grâce à l’altimètre toujours activé",
+        "Recevoir notifications, appels et messages depuis l’iPhone jumelé",
+        "Utiliser Apple Pay au poignet selon disponibilité régionale",
+        "Suivre le sommeil et le lavage des mains avec watchOS 7",
+        "Nager en eau peu profonde grâce à l’étanchéité 50 m (usage non destiné à la plongée)",
+        "Utiliser Siri et les apps watchOS pour des tâches rapides",
+        "Partager des cadrans et utiliser la configuration familiale (Family Setup) selon conditions",
+        "Recharger rapidement la montre pour un usage quotidien",
+        "Suivre des entraînements en intérieur/extérieur avec GPS sur modèles compatibles"
+      ],
+      "medias": {
+        "images": [],
+        "videos": [
+          {
+            "id": "TCMnrssX1NE",
+            "titre": "Introducing Apple Watch Series 6 — It Already Does That",
+            "chaine": "Apple",
+            "url": "https://www.youtube.com/watch?v=TCMnrssX1NE",
+            "type": "officielle-fabricant-editeur",
+            "dateVerification": "2026-11-14"
+          }
+        ]
+      },
+      "article": {
+        "titre": "Apple Watch Series 6 : capteur d’oxygène sanguin et puce S6",
+        "contenu": [
+          "Annoncée le 15 septembre 2020, l’Apple Watch Series 6 ajoute un capteur et une application dédiés à la mesure de l’oxygène sanguin (SpO2), en complément des fonctions de santé déjà présentes comme l’ECG et la détection de fréquence cardiaque. Apple met en avant une approche bien-être et des études de recherche associées, sans en faire un dispositif de diagnostic médical.",
+          "Côté matériel, la Series 6 embarque la puce S6 SiP (jusqu’à 20 % plus rapide que la génération précédente selon Apple), un écran Retina toujours activé plus lumineux au poignet baissé en extérieur, un altimètre toujours activé et la puce U1 pour la bande ultra-large. La montre conserve une autonomie annoncée d’une journée (jusqu’à 18 heures) avec une recharge plus rapide.",
+          "La Series 6 est proposée en boîtiers 40 mm et 44 mm, en versions GPS et GPS + Cellular, avec plusieurs finitions (aluminium, acier inoxydable, titane selon marché). Elle nécessite un iPhone compatible et fonctionne avec watchOS 7, qui apporte notamment le suivi du sommeil, la configuration familiale et de nouveaux cadrans.",
+          "Les points forts résident dans l’intégration santé/fitness, la luminosité de l’écran et les performances. Les limites à considérer sont la dépendance à l’iPhone, l’autonomie d’une journée et le fait que certaines fonctions (ECG, appels cellulaires, etc.) dépendent de la région, du modèle et des services disponibles."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué Apple « Apple Watch Series 6 delivers breakthrough wellness and fitness capabilities » (15/09/2020) : capteur Oxygène sanguin, S6, altimètre toujours activé, disponibilité 18/09/2020, prix de départ 399 $ (GPS) / 499 $ (GPS+Cellular)",
+          "url": "https://www.apple.com/newsroom/2020/09/apple-watch-series-6-delivers-breakthrough-wellness-and-fitness-capabilities/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Fiche technique Apple Support « Apple Watch Series 6 - Technical Specifications » : dimensions, écran, capteurs, connectivité, capacité 32 Go, autonomie, compatibilité",
+          "url": "https://support.apple.com/en-euro/111918",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes",
+        "Prix public officiel actuel et variantes détaillées (marché/devise, finitions, bracelets) à confirmer",
+        "Disponibilité/stock actuel à confirmer"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "samsung-galaxy-watch3",
+      "marque": "Samsung",
+      "modele": "Galaxy Watch3",
+      "rayon": "accessoires-gadgets",
+      "annee": 2020,
+      "dateSortie": "2020-08-06",
+      "sourceAnnee": {
+        "url": "https://news.samsung.com/global/galaxy-watch3-and-galaxy-buds-live-now-available",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://news.samsung.com/us/galaxy-watch3-buds-live-available-unpacked-2020",
+      "ficheFabricant": "https://news.samsung.com/global/galaxy-watch3-and-galaxy-buds-live-now-available",
+      "description": "Montre connectée Samsung annoncée le 5 août 2020 et disponible à partir du 6 août 2020 dans certains marchés. La Galaxy Watch3 combine une lunette rotative, un boîtier plus fin/léger que la Galaxy Watch d’origine, des tailles 41 mm et 45 mm, des variantes Bluetooth et LTE, et des fonctions de suivi santé et forme physique sous Tizen.",
+      "variantes": [
+        {
+          "groupe": "Taille / connectivité",
+          "options": [
+            {
+              "libelle": "41 mm Bluetooth",
+              "prix": 399.99,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://news.samsung.com/us/galaxy-watch3-buds-live-available-unpacked-2020",
+                "precision": "Prix de départ annoncé (États-Unis, Bluetooth 41 mm)",
+                "verifie": "2026-11-14"
+              }
+            },
+            {
+              "libelle": "45 mm Bluetooth",
+              "prix": 429.99,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://news.samsung.com/us/galaxy-watch3-buds-live-available-unpacked-2020",
+                "precision": "Prix de départ annoncé (États-Unis, Bluetooth 45 mm)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Tailles / écran",
+          "valeur": "41 mm : 1,2\" (30 mm) Super AMOLED 360×360 ; 45 mm : 1,4\" (34 mm) Super AMOLED 360×360, affichage toujours actif, verre Corning Gorilla Glass DX"
+        },
+        {
+          "libelle": "Processeur / mémoire",
+          "valeur": "Exynos 9110 double cœur 1,15 GHz ; 1 Go de RAM ; 8 Go de stockage interne"
+        },
+        {
+          "libelle": "Système",
+          "valeur": "Tizen Based Wearable OS 5.5"
+        },
+        {
+          "libelle": "Batterie",
+          "valeur": "41 mm : 247 mAh ; 45 mm : 340 mAh ; recharge sans fil WPC"
+        },
+        {
+          "libelle": "Connectivité",
+          "valeur": "Bluetooth 5.0, Wi-Fi b/g/n, NFC, GPS/Glonass/Beidou/Galileo ; LTE sur modèles LTE"
+        },
+        {
+          "libelle": "Capteurs",
+          "valeur": "Accéléromètre, baromètre, gyroscope, capteur de luminosité, capteur optique de fréquence cardiaque, capteur électrique cardiaque (selon spécifications officielles)"
+        },
+        {
+          "libelle": "Durabilité",
+          "valeur": "5 ATM + IP68 / MIL-STD-810G"
+        },
+        {
+          "libelle": "Dimensions / poids",
+          "valeur": "41 mm : 41 × 42,5 × 11,3 mm, 48,2 g (acier, sans bracelet) ; 45 mm : 45 × 46,2 × 11,1 mm, 53,8 g (acier, sans bracelet)"
+        },
+        {
+          "libelle": "Compatibilité",
+          "valeur": "Android 5.0 ou supérieur (RAM 1,5 Go+) ; iOS : iPhone 5 ou supérieur, iOS 9.0 ou supérieur (selon Samsung)"
+        }
+      ],
+      "prix": {
+        "montant": 399.99,
+        "devise": "USD",
+        "marche": "États-Unis, prix de départ (41 mm Bluetooth)",
+        "libelle": "Galaxy Watch3 41 mm Bluetooth, prix de départ annoncé",
+        "date": "2020-08-05",
+        "source": "https://news.samsung.com/us/galaxy-watch3-buds-live-available-unpacked-2020"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Disponible à partir du 6 août 2020 dans certains marchés (modèle de génération antérieure, disponibilité actuelle à confirmer)",
+        "date": "2026-11-14",
+        "source": "https://news.samsung.com/global/galaxy-watch3-and-galaxy-buds-live-now-available"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Suivre l’activité physique et les entraînements avec les fonctions Samsung Health",
+        "Utiliser la lunette rotative pour naviguer dans les widgets, apps et notifications",
+        "Mesurer la fréquence cardiaque et utiliser les fonctions de suivi santé disponibles selon région/logiciel",
+        "Recevoir notifications et répondre aux messages depuis la montre",
+        "Passer des appels et utiliser la connectivité LTE sur modèles compatibles",
+        "Suivre le sommeil et consulter des analyses de repos (selon fonctions disponibles)",
+        "Utiliser le GPS pour suivre des parcours en extérieur",
+        "Payer avec Samsung Pay/NFC selon compatibilité et région",
+        "Personnaliser cadrans et bracelets",
+        "Recharger sans fil sur base compatible WPC",
+        "Consulter l’heure et les informations en affichage toujours actif",
+        "Utiliser la montre au quotidien avec résistance 5 ATM/IP68 (selon conditions d’usage)"
+      ],
+      "medias": {
+        "images": [],
+        "videos": [
+          {
+            "id": "ei03XweBm8M",
+            "titre": "Galaxy Watch3 | Official Unboxing | Samsung",
+            "chaine": "Samsung",
+            "url": "https://www.youtube.com/watch?v=ei03XweBm8M",
+            "type": "officielle-fabricant-editeur",
+            "dateVerification": "2026-11-14"
+          }
+        ]
+      },
+      "article": {
+        "titre": "Samsung Galaxy Watch3 : lunette rotative et suivi santé",
+        "contenu": [
+          "La Samsung Galaxy Watch3, présentée lors de l’événement Unpacked d’août 2020, reprend le design horloger et la lunette rotative appréciés de la gamme, dans un format annoncé comme plus fin et plus léger que la Galaxy Watch originale. Elle est proposée en 41 mm et 45 mm, en versions Bluetooth et LTE, avec boîtier en acier inoxydable (et version titane annoncée ultérieurement selon marché).",
+          "Sous Tizen (Wearable OS 5.5), elle embarque un processeur Exynos 9110, 1 Go de RAM, 8 Go de stockage et des écrans Super AMOLED toujours actifs. Samsung met l’accent sur les fonctions santé et bien-être (suivi d’activité, mesures cardiaques, et autres fonctions selon disponibilité régionale et mises à jour logicielles).",
+          "Les usages couvrent le suivi sportif, les notifications, les appels (notamment en LTE), la navigation via GPS et la personnalisation. Les limites incluent l’autonomie variable selon taille et usage, la dépendance à certaines fonctions/services selon smartphone et région, et le fait qu’il s’agit d’un modèle plus ancien dont la disponibilité et le support doivent être vérifiés."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Samsung Newsroom Global « Galaxy Watch3 and Galaxy Buds Live Now Available » (05/08/2020) : caractéristiques, tailles, disponibilité à partir du 6 août 2020",
+          "url": "https://news.samsung.com/global/galaxy-watch3-and-galaxy-buds-live-now-available",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Samsung Newsroom US « Galaxy Watch3 and Galaxy Buds Live, Available Starting Tomorrow » (05/08/2020) : prix de départ US (Bluetooth/LTE) et spécifications",
+          "url": "https://news.samsung.com/us/galaxy-watch3-buds-live-available-unpacked-2020",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes",
+        "Prix public officiel actuel en EUR et disponibilités marché France/UE à confirmer",
+        "Disponibilité/stock actuel à confirmer"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    },
+    {
+      "id": "sony-wh-1000xm4",
+      "marque": "Sony",
+      "modele": "WH-1000XM4",
+      "rayon": "smart-tech",
+      "annee": 2020,
+      "dateSortie": "2020-08-06",
+      "sourceAnnee": {
+        "url": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/",
+        "date": "2026-11-14"
+      },
+      "sourceFiche": "https://www.sony.com/electronics/support/wireless-headphones-bluetooth-headphones/wh-1000xm4/specifications",
+      "ficheFabricant": "https://www.sony.com/electronics/support/wireless-headphones-bluetooth-headphones/wh-1000xm4/specifications",
+      "description": "Casque circum-aural sans fil à réduction de bruit Sony WH-1000XM4, annoncé en août 2020. Il propose la réduction de bruit avec processeur HD QN1, la connexion multipoint Bluetooth, jusqu’à 30 heures d’autonomie (NC activé) et des fonctions comme Speak-to-Chat et DSEE Extreme.",
+      "variantes": [
+        {
+          "groupe": "Coloris",
+          "options": [
+            {
+              "libelle": "Noir / Argent (selon disponibilité)",
+              "prix": 349.99,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/",
+                "precision": "Prix de vente conseillé annoncé (349,99 $ US)",
+                "verifie": "2026-11-14"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Type",
+          "valeur": "Casque fermé, dynamique, circum-aural"
+        },
+        {
+          "libelle": "Transducteur",
+          "valeur": "40 mm, diaphragme LCP revêtu aluminium"
+        },
+        {
+          "libelle": "Réduction de bruit",
+          "valeur": "Réduction de bruit numérique avec processeur HD Noise Cancelling QN1 ; modes Ambient Sound, Quick Attention, optimisation pression atmosphérique"
+        },
+        {
+          "libelle": "Bluetooth",
+          "valeur": "Version 5.0 ; profils A2DP/AVRCP/HFP/HSP ; codecs SBC, AAC, LDAC ; portée ~10 m"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu’à 30 h (NC activé) / jusqu’à 38 h (NC désactivé) en lecture ; charge complète env. 3 h ; charge rapide (env. 5 h de lecture pour 10 min, selon Sony)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "Entrée mini-jack stéréo ; câble casque détachable ; USB Type-C pour la charge"
+        },
+        {
+          "libelle": "Fonctions",
+          "valeur": "Speak-to-Chat, connexion multipoint, capteur de port (pause/reprise), commande tactile, DSEE Extreme"
+        },
+        {
+          "libelle": "Contenu de la boîte",
+          "valeur": "Étui de transport, adaptateur avion, câble casque (env. 1,2 m), câble USB Type-C (env. 20 cm) — selon fiche Sony"
+        },
+        {
+          "libelle": "Poids",
+          "valeur": "Information à confirmer (voir fiche officielle)"
+        }
+      ],
+      "prix": {
+        "montant": 349.99,
+        "devise": "USD",
+        "marche": "États-Unis, prix de vente conseillé annoncé",
+        "libelle": "WH-1000XM4, prix annoncé au lancement",
+        "date": "2020-08-06",
+        "source": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Annoncé en août 2020 (modèle de génération antérieure, disponibilité actuelle à confirmer)",
+        "date": "2026-11-14",
+        "source": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Écouter de la musique sans fil en Bluetooth avec réduction de bruit active",
+        "Réduire les bruits ambiants en déplacement, au bureau ou en voyage",
+        "Basculer en mode son ambiant pour entendre les annonces ou son environnement",
+        "Connecter simultanément deux appareils Bluetooth (multipoint)",
+        "Passer des appels mains libres grâce aux microphones intégrés",
+        "Utiliser Speak-to-Chat pour converser sans retirer le casque",
+        "Profiter d’une longue autonomie (jusqu’à 30 h NC activé) sur de longs trajets",
+        "Écouter en filaire via câble mini-jack si nécessaire",
+        "Utiliser la charge rapide pour récupérer plusieurs heures d’écoute",
+        "Ranger et transporter le casque dans son étui de transport",
+        "Ajuster les paramètres audio/NC via l’application Sony | Headphones Connect",
+        "Utiliser l’optimisation selon port/pression atmosphérique (selon fonctions Sony)"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "article": {
+        "titre": "Sony WH-1000XM4 : réduction de bruit et fonctions intelligentes",
+        "contenu": [
+          "Le Sony WH-1000XM4, présenté en août 2020, succède au WH-1000XM3 en conservant la base de réduction de bruit de Sony (double capteur de bruit et processeur HD QN1) tout en ajoutant des fonctions logicielles comme Speak-to-Chat, la détection de port pour mettre en pause/reprendre, et la connexion multipoint à deux appareils Bluetooth.",
+          "Sur le plan audio et autonomie, Sony annonce le support de codecs Bluetooth dont LDAC, la technologie DSEE Extreme, et jusqu’à 30 heures d’écoute avec réduction de bruit activée (38 heures sans). La charge rapide permet de récupérer plusieurs heures d’écoute en quelques minutes, selon les conditions indiquées par le fabricant.",
+          "Ce casque vise les utilisateurs recherchant une forte isolation et un usage nomade/quotidien (trajets, télétravail, voyages). Les points d’attention incluent le poids et l’encombrement d’un circum-aural, l’absence d’étanchéité à l’eau/sueur pour le sport intensif, et la nécessité de vérifier la disponibilité/prix actuels et les accessoires inclus selon le marché."
+        ]
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué Sony « WH-1000XM4 » (06/08/2020) : annonce, fonctions (Speak-to-Chat, multipoint, DSEE Extreme), prix de vente conseillé 349,99 $ US",
+          "url": "https://www.sony.com/en/SonyInfo/News/Press/202008/20-072E/",
+          "date": "2026-11-14"
+        },
+        {
+          "libelle": "Fiche technique Sony Support WH-1000XM4 : spécifications (Bluetooth, autonomie, transducteur, contenu de la boîte, fonctions NC)",
+          "url": "https://www.sony.com/electronics/support/wireless-headphones-bluetooth-headphones/wh-1000xm4/specifications",
+          "date": "2026-11-14"
+        }
+      ],
+      "manquants": [
+        "3 à 5 photographies sous licence libre avec attribution/licence vérifiées (fichiers locaux) manquantes",
+        "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer/ajouter",
+        "Prix public officiel actuel en EUR et disponibilité/stock à confirmer",
+        "Poids exact à confirmer sur source officielle"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Disponibilité/stock non confirmée",
+          "Livraison non définie",
+          "Taxes non définies"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": null,
+        "mode": "express_international",
+        "libelle": "Livraison internationale expresse gratuite",
+        "delai": "Express international"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "Taxes non prises en charge",
+        "prisEnCharge": false
+      },
+      "stock": 999,
+      "stockSource": "déclaré par le responsable : règle 999, confirmée auprès du fournisseur hors site (non affichée)"
+    }
+  ]
+}
