@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-11-16T08:26:39.535Z",
+  "mode": "agent",
+  "params": {
+    "provider": "commons",
+    "per": 3,
+    "rayon": null,
+    "id": "apple-iphone-15-pro",
+    "dryRun": true
+  },
+  "products": [
+    {
+      "id": "apple-iphone-15-pro",
+      "marque": "Apple",
+      "modele": "iPhone 15 Pro",
+      "rayon": "smartphones",
+      "annee": 2023,
+      "existantes": 3,
+      "suggested": []
+    }
+  ]
+}

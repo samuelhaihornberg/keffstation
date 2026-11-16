@@ -22,3 +22,11 @@ URL d’origine · mention de droits mot pour mot · licence ou conditions · au
 
 ## Règle d’intégration
 Seuls les médias `droits_verifies` sont intégrés. Les autres restent dans le registre, sans publication.
+
+## Piste « marque privée KiffTech » (accessoires fournis par un fournisseur personnalisable)
+Quand un produit n’a pas de marque officielle à rechercher, l’agent :
+1. Cherche d’abord la marque du produit sur son site officiel (si elle existe, la piste officielle s’applique).
+2. Sinon, enregistre le produit sous la marque « KiffTech » (marque privée), avec le fournisseur comme source technique.
+3. Ne crée aucun « prix fabricant barré » : il n’existe pas de prix officiel de référence. Aucune remise n’est affichée tant qu’il n’y a pas d’historique de prix vérifiable (prix le plus bas des 30 derniers jours).
+4. Documents exigés avant mise en vente : fiche technique du fournisseur, déclaration de conformité (CE), rapport UN38.3 pour les batteries lithium, identité du fournisseur. Sans ces documents, le produit reste hors vente.
+5. Médias : photos du fournisseur seulement avec autorisation écrite de réutilisation commerciale ; sinon photos prises par vous après réception. Aucune image Google ou réseau sans licence vérifiée.
