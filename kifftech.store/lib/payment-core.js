@@ -16,6 +16,20 @@ function moneyOrNull(obj) {
   return null;
 }
 
+export const RAYON_ACCESSOIRES = 'accessoires-gadgets';
+
+// Paliers de lot (accessoires et gadgets uniquement), selon la quantité totale dans la caisse.
+export const PALIERS_ACCESSOIRES = [
+  { min: 10, taux: 0.25 },
+  { min: 5, taux: 0.20 },
+  { min: 2, taux: 0.15 },
+];
+
+export function tauxPalierAccessoires(quantite) {
+  const palier = PALIERS_ACCESSOIRES.find(x => quantite >= x.min);
+  return palier ? palier.taux : 0;
+}
+
 export function selectedOptionForGroup(groupe, index) {
   const i = Number.isInteger(index) ? index : 0;
   return (groupe.options || [])[i] || (groupe.options || [])[0] || null;
@@ -89,6 +103,7 @@ export function buildOrder(catalogue, items) {
   let shippingTotal = 0;
   let taxesTotal = 0;
 
+  const prepared = [];
   for (const item of rawItems) {
     if (!item || typeof item.productId !== 'string') return { ok: false, error: 'Article invalide.' };
     const product = map.get(item.productId);
@@ -106,8 +121,19 @@ export function buildOrder(catalogue, items) {
 
     if (!currency) currency = selection.devise;
     if (selection.devise !== currency) return { ok: false, error: 'Devise unique requise pour le paiement.' };
+    prepared.push({ product, qty, selection });
+  }
 
-    const lineSubtotal = roundMoney(selection.prix * qty);
+  // Paliers de lot : appliqués aux accessoires et gadgets, selon la quantité totale de la caisse.
+  const quantiteAccessoires = prepared
+    .filter(x => x.product.rayon === RAYON_ACCESSOIRES)
+    .reduce((s, x) => s + x.qty, 0);
+  const tauxPalier = tauxPalierAccessoires(quantiteAccessoires);
+
+  for (const { product, qty, selection } of prepared) {
+    const estAccessoire = product.rayon === RAYON_ACCESSOIRES && tauxPalier > 0;
+    const unitAmount = estAccessoire ? roundMoney(selection.prix * (1 - tauxPalier)) : selection.prix;
+    const lineSubtotal = roundMoney(unitAmount * qty);
     const lineShipping = roundMoney(selection.shipping * qty);
     const lineTaxes = roundMoney(selection.taxes * qty);
     subtotal = roundMoney(subtotal + lineSubtotal);
@@ -119,7 +145,9 @@ export function buildOrder(catalogue, items) {
       title: `${product.marque} ${product.modele}`,
       variant: selection.label || null,
       quantity: qty,
-      unitAmount: selection.prix,
+      unitAmount,
+      prixCatalogue: selection.prix,
+      remiseLot: estAccessoire ? tauxPalier : 0,
       currency,
       lineSubtotal,
       lineShipping,

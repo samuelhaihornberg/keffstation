@@ -8,7 +8,7 @@ import { LEGAL } from './data/legal.js';
 function legalReady() {
   return Boolean(LEGAL.termsUrl && LEGAL.termsVersion && LEGAL.termsValidated === true);
 }
-import { resolveSelection, sellability, formatSellabilityReason, buildOrder } from './lib/payment-core.js';
+import { resolveSelection, sellability, formatSellabilityReason, buildOrder, RAYON_ACCESSOIRES, tauxPalierAccessoires } from './lib/payment-core.js';
 
 // ---------- RAYONS (Catégories de produits) ----------
 const RAYONS = [
@@ -170,6 +170,11 @@ const cartManager = {
     let shippingDefined = true;
     let taxesDefined = true;
     let pricedDefined = true;
+    const quantiteAccessoires = state.cart.reduce((s, item) => {
+      const p = productsMap.get(item.productId);
+      return p && p.rayon === RAYON_ACCESSOIRES ? s + item.quantity : s;
+    }, 0);
+    const tauxLot = tauxPalierAccessoires(quantiteAccessoires);
     for (const item of state.cart) {
       const p = productsMap.get(item.productId);
       if (!p) continue;
@@ -177,9 +182,11 @@ const cartManager = {
       const devise = sel.devise || null;
       totalItems += item.quantity;
       uniqueItems += 1;
-      if (devise) parDevise.set(devise, Math.round(((parDevise.get(devise) || 0) + (Number(sel.prix || 0) * item.quantity)) * 100) / 100);
+      const remise = p.rayon === RAYON_ACCESSOIRES && tauxLot > 0 ? tauxLot : 0;
+      const prixUnitaire = typeof sel.prix === 'number' ? Math.round(sel.prix * (1 - remise) * 100) / 100 : sel.prix;
+      if (devise) parDevise.set(devise, Math.round(((parDevise.get(devise) || 0) + (Number(prixUnitaire || 0) * item.quantity)) * 100) / 100);
       if (typeof sel.prix !== 'number' || !Number.isFinite(sel.prix) || !devise) pricedDefined = false;
-      else subtotal = Math.round((subtotal + sel.prix * item.quantity) * 100) / 100;
+      else subtotal = Math.round((subtotal + prixUnitaire * item.quantity) * 100) / 100;
       if (typeof sel.shipping === 'number' && Number.isFinite(sel.shipping)) shipping = Math.round((shipping + sel.shipping * item.quantity) * 100) / 100;
       else shippingDefined = false;
       if (typeof sel.taxes === 'number' && Number.isFinite(sel.taxes)) taxes = Math.round((taxes + sel.taxes * item.quantity) * 100) / 100;
