@@ -9,9 +9,9 @@
   "theme_color": "#070816",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='65' font-size='60' text-anchor='middle'%3E🔮%3C/text%3E%3C/svg%3E",
+      "src": "https://samuelhaihornberg.github.io/keffstation/logo%20kiffstation.png",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
