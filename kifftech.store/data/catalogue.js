@@ -3019,6 +3019,16 @@ export const CATALOGUE = {
                 "precision": "Page officielle fabricant (configuration précise à confirmer)",
                 "verifie": "2026-11-20"
               }
+            },
+            {
+              "libelle": "256 Go",
+              "prix": 449.99,
+              "dispo": null,
+              "lienOfficiel": {
+                "url": "https://www.meta.com/quest/quest-3s/",
+                "precision": "Page officielle fabricant (configuration précise à confirmer)",
+                "verifie": "2026-11-20"
+              }
             }
           ]
         }
@@ -3041,7 +3051,7 @@ export const CATALOGUE = {
         "montant": 349.99,
         "devise": "USD",
         "marche": "États-Unis, TTC",
-        "libelle": "Meta Quest 3S — prix officiel actuel (128 Go, mise à jour post-lancement)",
+        "libelle": "Meta Quest 3S — prix officiel actuel (128 Go : 349,99 $ ; 256 Go : 449,99 $)",
         "date": "2026-11-20",
         "source": "https://www.meta.com/quest/quest-3s/"
       },
