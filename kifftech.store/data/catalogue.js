@@ -3476,6 +3476,12 @@ export const CATALOGUE = {
         "date": "2026-11-20",
         "source": "https://www.newegg.com/p/N82E16834155429"
       },
+      "prixKiffTech": {
+        "montant": 999,
+        "devise": "EUR",
+        "libelle": "Prix de vente KiffTech fixé par le responsable (non issu de la grille promotionnelle, non converti depuis le prix revendeur)",
+        "date": "2026-11-20"
+      },
       "disponibilite": {
         "statut": "archive",
         "libelle": "Annoncé le 21 avril 2020, disponible à partir de mai 2020 ; modèles remplacés depuis",

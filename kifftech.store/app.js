@@ -998,6 +998,11 @@ class KiffTech{
     const prixLigne = prix
       ? `<div><span class="price-label">Prix public officiel</span> <strong>${formatPrice(prix.montant, prix.devise)}</strong> (${sanitizeHTML(prix.marche || '')}${prix.libelle ? ', ' + sanitizeHTML(prix.libelle) : ''})${prix.date ? ', vérifié le ' + this.formatDate(prix.date) : ''} ${this.sourceLink(prix.source)}</div>`
       : '<div><span class="price-label">Prix public officiel</span> Prix officiel à vérifier</div>';
+    const histo = p.prixHistoriqueRevendeur;
+    const kt = p.prixKiffTech;
+    const histoLigne = histo && kt
+      ? `<div class="price-kifftech"><span class="price-label">Prix historique revendeur</span> <s>${formatPrice(histo.montant, histo.devise)}</s> (${sanitizeHTML(histo.typePreuve || '')}, ${sanitizeHTML(histo.variante || '')}) ${this.sourceLink(histo.source)}<br/><span class="price-label">Prix KiffTech</span> <strong>${formatPrice(kt.montant, kt.devise)}</strong> · ${sanitizeHTML(kt.libelle || '')}</div>`
+      : '';
     const promoLigne = promo && promo.prixPromotionnel != null
       ? `<div class="promo-kifftech"><span class="price-label">Promotion KiffTech</span> <strong>−${promo.pourcentage}%</strong> · Prix promotionnel : <strong>${formatPrice(promo.prixPromotionnel, promo.devise)}</strong> (calculé sur le prix officiel vérifié ${formatPrice(promo.prixOfficiel, promo.devise)})<br/><span class="price-label">Prix officiel barré</span> <s>${formatPrice(promo.prixOfficiel, promo.devise)}</s><br/><span class="price-label">Année de sortie</span> ${promo.annee} · Devise ${promo.devise}<br/>${promo.source ? this.sourceLink(promo.source) : ''}${promo.dateVerification ? ' · vérifié le ' + this.formatDate(promo.dateVerification) : ''}</div>`
       : `<div class="promo-kifftech"><span class="price-label">Promotion KiffTech</span> Prix promotionnel indisponible (prix officiel du modèle/variante non vérifié${promo && promo.statut === 'annee-manquante' ? ' · champ "annee" à vérifier pour le calcul' : ''}${promo && promo.statut === 'prix-officiel-manquant' ? ' · champ prix officiel à vérifier' : ''})</div>`;
@@ -1007,6 +1012,7 @@ class KiffTech{
     return `
       <div class="price-block">
         ${prixLigne}
+        ${histoLigne}
         ${promoLigne}
         ${dispoLigne}
         <div><span class="price-label">Achat</span> ${this.getEtatCatalogue(p).achetable ? 'Offre vendable (prix final, variante, disponibilité, livraison et taxes confirmés).' : 'Non achetable : prix final, disponibilité, livraison et/ou taxes non confirmés.'}</div>
