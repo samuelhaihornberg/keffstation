@@ -1917,7 +1917,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Standard",
-              "prix": null,
+              "prix": 4,
               "dispo": null,
               "lienOfficiel": {
                 "url": "https://www.raspberrypi.com/products/raspberry-pi-pico/",
@@ -2058,7 +2058,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Standard",
-              "prix": null,
+              "prix": 6,
               "dispo": null,
               "lienOfficiel": {
                 "url": "https://www.raspberrypi.com/products/raspberry-pi-pico-w/",
@@ -2429,7 +2429,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Standard",
-              "prix": null,
+              "prix": 5,
               "dispo": null,
               "lienOfficiel": {
                 "url": "https://www.raspberrypi.com/products/raspberry-pi-pico-2/",
@@ -3614,7 +3614,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Console seule",
-              "prix": null,
+              "prix": 499.99,
               "dispo": true,
               "lienOfficiel": {
                 "url": "https://www.nintendo.com/fr-fr/Hardware/Nintendo-Switch-2/Nintendo-Switch-2-2785301.html",
@@ -4122,7 +4122,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Standard",
-              "prix": null,
+              "prix": 799.99,
               "dispo": null,
               "lienOfficiel": null
             }
@@ -5030,7 +5030,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Standard",
-              "prix": null,
+              "prix": 1299.99,
               "dispo": null,
               "lienOfficiel": null
             }
@@ -5453,7 +5453,7 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Sans lecteur de disque",
-              "prix": null,
+              "prix": 899.99,
               "dispo": true,
               "lienOfficiel": {
                 "url": "https://direct.playstation.com/fr-fr/buy-consoles/playstation5-pro-console-2-tb",
