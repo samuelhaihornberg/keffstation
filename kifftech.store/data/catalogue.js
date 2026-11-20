@@ -1942,7 +1942,14 @@ export const CATALOGUE = {
           "valeur": "USB 1.1, GPIO (détails à confirmer sur fiche officielle)"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 4,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Raspberry Pi Pico — MSRP officiel de lancement (annonce « on sale »)",
+        "date": "2026-11-20",
+        "source": "https://www.raspberrypi.com/news/raspberry-pi-silicon-pico-now-on-sale/"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -2076,7 +2083,14 @@ export const CATALOGUE = {
           "valeur": "264 Ko SRAM, 2 Mo flash (selon fiche officielle)"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 6,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Raspberry Pi Pico W — MSRP officiel de lancement (annonce « your $6 IoT platform »)",
+        "date": "2026-11-20",
+        "source": "https://www.raspberrypi.com/news/raspberry-pi-pico-w-your-6-iot-platform/"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -2440,7 +2454,14 @@ export const CATALOGUE = {
           "valeur": "Compatibilité matérielle/logicielle avec la série Pico (selon annonce officielle)"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 5,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Raspberry Pi Pico 2 — MSRP officiel de lancement (annonce « on sale now »)",
+        "date": "2026-11-20",
+        "source": "https://www.raspberrypi.com/news/raspberry-pi-pico-2-our-new-5-microcontroller-board-on-sale-now/"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -2991,12 +3012,12 @@ export const CATALOGUE = {
           "options": [
             {
               "libelle": "Standard",
-              "prix": null,
+              "prix": 349.99,
               "dispo": null,
               "lienOfficiel": {
                 "url": "https://www.meta.com/quest/quest-3s/",
                 "precision": "Page officielle fabricant (configuration précise à confirmer)",
-                "verifie": "2026-11-14"
+                "verifie": "2026-11-20"
               }
             }
           ]
@@ -3016,7 +3037,14 @@ export const CATALOGUE = {
           "valeur": "Options 128 Go / 256 Go (selon fiche officielle)"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 349.99,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Meta Quest 3S — prix officiel actuel (128 Go, mise à jour post-lancement)",
+        "date": "2026-11-20",
+        "source": "https://www.meta.com/quest/quest-3s/"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -3528,10 +3556,15 @@ export const CATALOGUE = {
           "libelle": "Communiqué MSI repris par TechPowerUp « MSI Announces Bravo 15 and Bravo 17 Notebooks » (21/04/2020) : date d'annonce",
           "url": "https://www.techpowerup.com/forums/threads/msi-announces-bravo-15-and-bravo-17-notebooks-with-4800h-and-rx-5500m.266048/",
           "date": "2026-11-14"
+        },
+        {
+          "libelle": "Newegg (annonce précommande 21/04/2020, reprise par TechPowerUp) : Bravo 17 précommande à 1 099 $ — prix historique revendeur, PAS MSRP MSI vérifié",
+          "url": "https://techaeris.com/2020/04/20/new-msi-gaming-laptops-offer-up-15-and-17-inch-options-for-around-us1000",
+          "date": "2026-11-20"
         }
       ],
       "manquants": [
-        "Prix public officiel non publié sur la fiche MSI consultée : aucun montant affiché par prudence",
+        "MSRP MSI officiel du Bravo 17 non vérifié sur source fabricant lisible : le montant de 1 099 $ (Newegg, annonce précommande du 21/04/2020) est un prix historique revendeur, pas un MSRP MSI — à confirmer avec MSI",
         "Autonomie annoncée non détaillée dans les sources consultées",
         "Référence/SKU dépend de la configuration (A4DDR ou A4DDK), non détaillée dans la source consultée",
         "Jour exact de mise en vente non communiqué (annonce le 21 avril 2020, disponibilité annoncée en mai 2020)"
@@ -3663,7 +3696,14 @@ export const CATALOGUE = {
           "valeur": "5 à 35 °C, humidité 20 à 80 %"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 499.99,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Nintendo Switch 2 (Console seule) — MSRP officiel actuel (révisé le 01/09/2026)",
+        "date": "2026-11-20",
+        "source": "https://www.nintendo.com/us/whatsnew/price-revision-for-nintendo-switch-2-system"
+      },
       "disponibilite": {
         "statut": "disponible",
         "libelle": "Console en vente depuis le 05/06/2025 (sortie officielle), actuellement commercialisée",
@@ -4123,7 +4163,14 @@ export const CATALOGUE = {
           "valeur": "Android avec interface One UI (version de lancement à confirmer)"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 799.99,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Samsung Galaxy S21 5G — MSRP officiel de lancement (annonce du 14/01/2021)",
+        "date": "2026-11-20",
+        "source": "https://news.samsung.com/global/galaxy-s21-5g-galaxy-s21-plus-5g-and-galaxy-s21-ultra-5g-samsungs-latest-flagship-smartphone-series-unveiled"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle et stock à confirmer sur boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -4181,7 +4228,6 @@ export const CATALOGUE = {
         }
       ],
       "manquants": [
-        "Prix public officiel actuel en EUR et variante de référence non confirmés sur source FR consultée",
         "Disponibilité/stock actuel à confirmer",
         "Variantes exactes (couleurs/stockage) et liens officiels par configuration à confirmer",
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
@@ -4304,7 +4350,14 @@ export const CATALOGUE = {
         }
       ],
       "contenuBoite": "Non détaillé dans la fiche officielle consultée",
-      "prix": null,
+      "prix": {
+        "montant": 1199.99,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Samsung Galaxy S22 Ultra — MSRP officiel de lancement (annonce du 25/02/2022)",
+        "date": "2026-11-20",
+        "source": "https://news.samsung.com/global/samsung-galaxy-s22-ultra-offers-the-ultimate-and-most-premium-s-series-experience-yet"
+      },
       "disponibilite": {
         "statut": "disponible",
         "libelle": "Commercialisation annoncée à partir du 25 février 2022",
@@ -5006,7 +5059,14 @@ export const CATALOGUE = {
           "valeur": "5G, Wi-Fi, Bluetooth, USB-C (détails à confirmer)"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 1299.99,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Samsung Galaxy S25 Ultra — MSRP officiel de lancement (annonce du 22/01/2025)",
+        "date": "2026-11-20",
+        "source": "https://news.samsung.com/us/samsung-galaxy-s25-series-sets-the-standard-of-ai-phone-as-a-true-ai-companion-unpacked2025"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle et stock à confirmer sur boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -5442,7 +5502,14 @@ export const CATALOGUE = {
           "valeur": "Édition sans lecteur de disque"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 899.99,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "PlayStation 5 Pro — prix officiel actuel (mise à jour post-lancement)",
+        "date": "2026-11-20",
+        "source": "https://www.playstation.com/fr-fr/ps5/ps5-pro/"
+      },
       "disponibilite": {
         "statut": "disponible",
         "libelle": "Console en vente depuis le 07/11/2024, actuellement commercialisée par Sony",
@@ -5548,7 +5615,6 @@ export const CATALOGUE = {
         }
       ],
       "manquants": [
-        "Prix public officiel actuel non vérifiable sur les sources consultées (page Sony non statique) : aucun montant affiché par prudence",
         "Référence/SKU (CFI-…) non confirmée",
         "Caractéristiques complémentaires (poids exact, connectique détaillée, ventirad) à confirmer sur une source fabricant lisible"
       ],
@@ -5768,7 +5834,7 @@ export const CATALOGUE = {
       "marque": "Valve",
       "modele": "Index (kit VR)",
       "rayon": "vr-ar",
-      "annee": 2021,
+      "annee": 2019,
       "dateSortie": "2019-06-28",
       "sourceAnnee": {
         "url": "https://store.steampowered.com/valveindex",
@@ -5808,7 +5874,14 @@ export const CATALOGUE = {
           "valeur": "Suivi SteamVR (stations de base) selon fiche officielle"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 999,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Valve Index (kit complet — tête, manettes, stations de base) — MSRP officiel de lancement",
+        "date": "2026-11-20",
+        "source": "https://store.steampowered.com/valveindex"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -6002,11 +6075,16 @@ export const CATALOGUE = {
           "libelle": "Site officiel Steam Deck",
           "url": "https://www.steamdeck.com/",
           "date": "2026-11-14"
+        },
+        {
+          "libelle": "Steam News (Steam Deck OLED 512 Go/1 To — hausse de prix du 27/05/2026 ; LCD 256 Go retiré du catalogue / indisponible depuis le 17/02/2026 ; arrêt de production du LCD)",
+          "url": "https://store.steampowered.com/news/app/1675180/view/3117055056380003048",
+          "date": "2026-11-20"
         }
       ],
       "manquants": [
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
-        "Prix public officiel actuel en EUR/devise, variantes et stock/disponibilité à confirmer sur source officielle",
+        "Modèle LCD (variante 256 Go) désormais arrêté (arrêt de production annoncé le 19/12/2025) : MSRP officiel de lancement du 256 Go à enregistrer comme preuve (sources croisées Valve/Steam : lancement 25/02/2022)",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
