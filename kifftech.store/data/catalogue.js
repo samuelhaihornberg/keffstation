@@ -6751,6 +6751,155 @@ export const CATALOGUE = {
       "motsCles": [
         "neon light cable 3 in 1"
       ]
+    },
+    {
+      "id": "dell-xps-16-da16260",
+      "marque": "Dell",
+      "modele": "XPS 16 (DA16260)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2026,
+      "sourceAnnee": {
+        "url": "https://www.pcmag.com/reviews/dell-xps-16-2026",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://www.dell.com/fr-fr/shop/laptop-computers/spd/xps16da16260",
+      "ficheFabricant": "https://www.dell.com/fr-fr/shop/laptop-computers/spd/xps16da16260",
+      "description": "Ordinateur portable Dell XPS 16 (modèle DA16260) : écran 16 pouces 2K 120 Hz, processeur Intel Core Ultra 7 355, 16 Go de mémoire LPDDR5x, SSD 512 Go, clavier rétroéclairé français et chargeur USB-C 100 W inclus. Configuration de base vendue par Dell France ; les options de processeur, mémoire, stockage et écran sont décrites dans les caractéristiques.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Core Ultra 7 355 · 16 Go · SSD 512 Go · écran 2K non tactile (configuration de base)",
+              "prix": 2726.41,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://www.dell.com/fr-fr/shop/laptop-computers/spd/xps16da16260",
+                "precision": "Configuration de base Dell France (page produit, options modifiables sur la page)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeur",
+          "valeur": "Intel Core Ultra 7 355 série 3 (8 cœurs, 12 Mo de cache, jusqu'à 4,7 GHz)"
+        },
+        {
+          "libelle": "Système d'exploitation",
+          "valeur": "Windows 11 Famille, Copilot+ PC (Windows 11 Professionnel en option)"
+        },
+        {
+          "libelle": "Carte graphique",
+          "valeur": "Intel Graphics (intégrée)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "16 Go LPDDR5x, jusqu'à 7 467 MT/s"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 512 Go M.2 2230, PCIe Gen 4 x4, TLC"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "16,0 pouces, 2K (1920 × 1200), non tactile, 1 à 120 Hz, 500 nits (option OLED 3,2K tactile)"
+        },
+        {
+          "libelle": "Clavier",
+          "valeur": "Clavier rétroéclairé, français (Europe)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "3 ports Thunderbolt 4 (USB-C) avec DisplayPort 2.1 et Power Delivery ; prise jack audio universelle"
+        },
+        {
+          "libelle": "Réseau sans fil",
+          "valeur": "Intel Wi-Fi 7 BE211 2x2 + Bluetooth 6.0"
+        },
+        {
+          "libelle": "Batterie",
+          "valeur": "70 Wh"
+        },
+        {
+          "libelle": "Poids de départ",
+          "valeur": "1,74 kg (écran LCD 2K) ; 1,65 kg (écran OLED 3,2K)"
+        },
+        {
+          "libelle": "Alimentation",
+          "valeur": "Adaptateur secteur USB-C 100 W inclus"
+        }
+      ],
+      "prix": {
+        "montant": 2726.41,
+        "devise": "EUR",
+        "marche": "France, TTC",
+        "libelle": "Dell XPS 16 DA16260 — prix fabricant Dell France, configuration de base (2 272,01 € HT)",
+        "date": "2026-11-20",
+        "source": "https://www.dell.com/fr-fr/shop/laptop-computers/spd/xps16da16260"
+      },
+      "disponibilite": {
+        "statut": "disponible",
+        "libelle": "Affiché à la vente sur dell.com/fr-fr (bouton « Acheter maintenant ») ; stock déclaré par le responsable",
+        "date": "2026-11-20",
+        "source": "https://www.dell.com/fr-fr/shop/laptop-computers/spd/xps16da16260"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Montage vidéo et retouche photo sur écran 16 pouces",
+        "Travail bureautique et visioconférence avec Wi-Fi 7",
+        "Usage nomade avec batterie de 70 Wh",
+        "Connexion d'écrans externes via DisplayPort 2.1 en USB-C",
+        "Charge rapide et alimentation USB-C 100 W"
+      ],
+      "medias": {
+        "images": [],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Dell France, page produit XPS 16 (DA16260) : prix, configuration de base, caractéristiques",
+          "url": "https://www.dell.com/fr-fr/shop/laptop-computers/spd/xps16da16260",
+          "date": "2026-11-20"
+        },
+        {
+          "libelle": "PCMag, test du Dell XPS 16 (2026) : année de sortie et prix de départ américain (2 039,99 $)",
+          "url": "https://www.pcmag.com/reviews/dell-xps-16-2026",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Photo du modèle exact sous licence libre avec attribution : aucune trouvée (images Dell protégées par droits d'auteur) — paiement bloqué tant que non ajoutée",
+        "Vidéo officielle de présentation du modèle à confirmer (vidéo Dell de remplacement des modules USB-C seulement trouvée)",
+        "Prix de référence fabricant hors configuration de base non relevé pour chaque option ; options payantes à valider sur la page Dell",
+        "Date de sortie précise à confirmer ; année 2026 retenue d'après la fiche et la critique PCMag",
+        "Bundle périphériques (écran, clavier, souris, casque, multiprise) non constitué : décision en attente"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Photo sous licence du modèle exact manquante",
+          "Livraison et taxes à confirmer sur la fiche"
+        ]
+      },
+      "livraison": {
+        "montant": 0,
+        "devise": "EUR",
+        "mode": "livraison_france",
+        "libelle": "Livraison gratuite Dell France (selon page produit)",
+        "delai": "Selon Dell"
+      },
+      "taxes": {
+        "montant": 0,
+        "libelle": "TVA incluse dans le prix TTC",
+        "prisEnCharge": true
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
     }
   ]
 };
