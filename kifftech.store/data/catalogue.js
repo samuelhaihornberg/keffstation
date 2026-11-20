@@ -6925,6 +6925,340 @@ export const CATALOGUE = {
       },
       "stock": 99,
       "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
+    },
+    {
+      "id": "apple-macbook-air-m1-2020",
+      "marque": "Apple",
+      "modele": "MacBook Air M1 (A2337) 13 pouces",
+      "rayon": "ordinateurs-composants",
+      "annee": 2020,
+      "dateSortie": "2020-11-17",
+      "sourceAnnee": {
+        "url": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac",
+      "ficheFabricant": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac",
+      "description": "Ordinateur portable Apple MacBook Air M1 (modèle A2337, 2020), premier Mac à puce Apple silicon : écran 13,3 pouces, puce M1 (CPU 8 cœurs, GPU 7 cœurs), 8 Go de mémoire unifiée et SSD 256 Go pour la configuration de base, sans ventilateur. Annoncé le 10 novembre 2020 à 999 $ (US) en configuration de base.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Base : M1 (CPU 8 cœurs, GPU 7 cœurs) · 8 Go · SSD 256 Go",
+              "prix": 999,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac",
+                "precision": "Prix de lancement officiel US de la configuration de base (communiqué Apple, novembre 2020)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "Apple M1 (CPU 8 cœurs, GPU 7 cœurs ou 8 cœurs selon configuration)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "8 Go de mémoire unifiée (jusqu'à 16 Go)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 256 Go (jusqu'à 2 To selon configuration)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "13,3 pouces Retina, 2560 × 1600"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu'à 18 heures de lecture vidéo (selon Apple)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "2 ports Thunderbolt 3 / USB 4, prise casque"
+        },
+        {
+          "libelle": "Refroidissement",
+          "valeur": "Sans ventilateur"
+        }
+      ],
+      "prix": {
+        "montant": 999,
+        "devise": "USD",
+        "marche": "États-Unis, prix public",
+        "libelle": "MacBook Air M1 13 pouces, configuration de base — prix de lancement officiel Apple US (novembre 2020)",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Modèle M1 remplacé dans la gamme Apple ; disponibilité actuelle à confirmer",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Bureautique et navigation au quotidien",
+        "Montage vidéo léger et retouche photo",
+        "Travail nomade sans ventilateur",
+        "Visioconférence et streaming",
+        "Développement et applications macOS"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/macbook-air-m1-1.jpg",
+            "alt": "MacBook Air M1 2020 coloris or, vue 1",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "KKPCW (Kyu3)",
+            "attribution": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_1.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_1.jpg",
+            "attributionDemandee": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M1 (A2337), 13,3 pouces (2020)",
+            "datePhoto": "4 février 2021",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-air-m1-2.jpg",
+            "alt": "MacBook Air M1 2020 coloris or, vue 2",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "KKPCW (Kyu3)",
+            "attribution": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_2.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_2.jpg",
+            "attributionDemandee": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M1 (A2337), 13,3 pouces (2020)",
+            "datePhoto": "4 février 2021",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-air-m1-3.jpg",
+            "alt": "MacBook Air M1 2020 coloris or, vue 3",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "KKPCW (Kyu3)",
+            "attribution": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_3.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_3.jpg",
+            "attributionDemandee": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M1 (A2337), 13,3 pouces (2020)",
+            "datePhoto": "4 février 2021",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-air-m1-4.jpg",
+            "alt": "MacBook Air M1 2020 coloris or, vue 4",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "KKPCW (Kyu3)",
+            "attribution": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_4.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Macbook_Air_2020_(M1)_-_4.jpg",
+            "attributionDemandee": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M1 (A2337), 13,3 pouces (2020)",
+            "datePhoto": "4 février 2021",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Apple Newsroom, « Introducing the next generation of Mac » (MacBook Air M1 à 999 $)",
+          "url": "https://apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac",
+          "date": "2026-11-20"
+        },
+        {
+          "libelle": "Commons, catégorie MacBook Air (4th generation, M1) : fichiers 1 à 4 (CC BY-SA 4.0)",
+          "url": "https://commons.wikimedia.org/wiki/Category:MacBook_Air_(4th_generation_(2020%E2%80%932024),_M1)",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix officiel en EUR non relevé : seul le prix de lancement US (999 $) est documenté, affiché en dollars sans conversion",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré par le responsable)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
+    },
+    {
+      "id": "apple-macbook-pro-16-m2-max-2023",
+      "marque": "Apple",
+      "modele": "MacBook Pro 16 pouces (M2 Max)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2023,
+      "dateSortie": "2023-01-24",
+      "sourceAnnee": {
+        "url": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max",
+      "ficheFabricant": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max",
+      "description": "Ordinateur portable Apple MacBook Pro 16 pouces avec puce M2 Max (2023) : écran Liquid Retina XDR 16,2 pouces, puce M2 Max (CPU 12 cœurs, GPU 38 cœurs), 32 Go de mémoire unifiée et SSD 1 To pour la configuration de base M2 Max. Commandable à partir du 17 janvier 2023, disponible le 24 janvier 2023, à partir de 3 499 $ (US).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Base M2 Max : CPU 12 cœurs, GPU 38 cœurs · 32 Go · SSD 1 To",
+              "prix": 3499,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max",
+                "precision": "Prix de lancement officiel US à partir de la configuration M2 Max 16 pouces (communiqué Apple, janvier 2023)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "Apple M2 Max (CPU 12 cœurs, GPU 38 cœurs selon configuration)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "32 Go de mémoire unifiée (jusqu'à 96 Go selon configuration)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 1 To (jusqu'à 8 To selon configuration)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "16,2 pouces Liquid Retina XDR, 3456 × 2234"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu'à 22 heures de lecture vidéo (selon Apple)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "3 ports Thunderbolt 4, HDMI, port carte SDXC, prise casque, MagSafe 3"
+        }
+      ],
+      "prix": {
+        "montant": 3499,
+        "devise": "USD",
+        "marche": "États-Unis, prix public",
+        "libelle": "MacBook Pro 16 pouces M2 Max — prix de lancement officiel Apple US (janvier 2023), configuration de base M2 Max",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Modèle M2 remplacé dans la gamme Apple ; disponibilité actuelle à confirmer",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Montage vidéo 4K et étalonnage",
+        "Création graphique et 3D",
+        "Développement logiciel et compilation",
+        "Production musicale",
+        "Travail sur écran externe avec HDMI"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/macbook-pro-16-m2max-1.jpg",
+            "alt": "MacBook Pro 16 pouces M2 Max, vue 1",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "SimonWaldherr",
+            "attribution": "Photo : SimonWaldherr — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_2.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_2.jpg",
+            "attributionDemandee": "Photo : SimonWaldherr — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Pro 16 pouces M2 Max (2023)",
+            "datePhoto": "1er au 5 février 2023",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-pro-16-m2max-2.jpg",
+            "alt": "MacBook Pro 16 pouces M2 Max, vue 2",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "SimonWaldherr",
+            "attribution": "Photo : SimonWaldherr — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_3.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_3.jpg",
+            "attributionDemandee": "Photo : SimonWaldherr — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Pro 16 pouces M2 Max (2023)",
+            "datePhoto": "1er au 5 février 2023",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-pro-16-m2max-3.jpg",
+            "alt": "MacBook Pro 16 pouces M2 Max, vue 3",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "SimonWaldherr",
+            "attribution": "Photo : SimonWaldherr — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_4.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_4.jpg",
+            "attributionDemandee": "Photo : SimonWaldherr — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Pro 16 pouces M2 Max (2023)",
+            "datePhoto": "1er au 5 février 2023",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-pro-16-m2max-4.jpg",
+            "alt": "MacBook Pro 16 pouces M2 Max, vue 4",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "SimonWaldherr",
+            "attribution": "Photo : SimonWaldherr — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_5.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_5.jpg",
+            "attributionDemandee": "Photo : SimonWaldherr — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Pro 16 pouces M2 Max (2023)",
+            "datePhoto": "1er au 5 février 2023",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Apple Newsroom, annonce MacBook Pro M2 Pro et M2 Max (janvier 2023)",
+          "url": "https://apple.com/newsroom/2023/01/apple-unveils-macbook-pro-featuring-m2-pro-and-m2-max",
+          "date": "2026-11-20"
+        },
+        {
+          "libelle": "Commons, catégorie MacBook Pro M2 : fichiers « Apple MacBook Pro 16 M2 Max » 2 à 5 (CC BY-SA 4.0)",
+          "url": "https://commons.wikimedia.org/wiki/Category:MacBook_Pro_M2",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix officiel en EUR non relevé : seul le prix de lancement US (3 499 $) est documenté, affiché en dollars sans conversion",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré par le responsable)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
     }
   ]
 };
