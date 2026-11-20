@@ -703,6 +703,8 @@ body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden}
 .variant-chip.is-unavailable{border-style:dashed;color:var(--fg-muted);}
 .variant-price{display:flex;flex-direction:column;gap:.15rem;margin-top:.25rem;}
 .variant-price-value{font-size:1.4rem;font-weight:800;color:var(--accent);}
+.variant-price-value .variant-price-ref{display:inline-block;font-size:.7em;font-weight:600;}
+.variant-price-value .variant-price-ref s{text-decoration:line-through;color:var(--fg-muted);font-weight:600;}
 .variant-price-note{font-size:.7rem;color:var(--fg-muted);}
 .variant-box .detail-actions{flex-wrap:wrap;margin-top:.75rem;padding-top:.75rem;}
 .variant-box .detail-actions .btn-primary{flex:1 1 220px;}
