@@ -7259,6 +7259,483 @@ export const CATALOGUE = {
       },
       "stock": 99,
       "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
+    },
+    {
+      "id": "apple-macbook-air-m4-13-2025",
+      "marque": "Apple",
+      "modele": "MacBook Air M4 13 pouces",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-03-12",
+      "sourceAnnee": {
+        "url": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+      "ficheFabricant": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+      "description": "Ordinateur portable Apple MacBook Air M4 13 pouces (2025), écran Liquid Retina 13,6 pouces, puce M4, 16 Go de mémoire unifiée et SSD 256 Go pour la configuration de base, sans ventilateur. Annoncé le 5 mars 2025 à 999 $ (US), disponible le 12 mars 2025.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Base M4 · 16 Go · SSD 256 Go · 13 pouces",
+              "prix": 999,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+                "precision": "Prix de lancement officiel US de la configuration de base (communiqué)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "Apple M4 (CPU 10 cœurs, GPU 8 cœurs selon configuration)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "16 Go de mémoire unifiée (jusqu'à 32 Go)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 256 Go (jusqu'à 2 To selon configuration)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "13,6 pouces Liquid Retina, 2560 × 1664"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu'à 18 heures de lecture vidéo (selon Apple)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "2 ports Thunderbolt 4 / USB 4, prise casque, MagSafe 3"
+        }
+      ],
+      "prix": {
+        "montant": 999,
+        "devise": "USD",
+        "marche": "États-Unis, prix public",
+        "libelle": "MacBook Air M4 13 pouces — prix de lancement officiel US, configuration de base",
+        "date": "2026-11-20",
+        "source": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/"
+      },
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle et stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-20",
+        "source": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Bureautique et navigation au quotidien",
+        "Montage vidéo léger et retouche photo",
+        "Travail nomade sans ventilateur",
+        "Visioconférence avec caméra 12 Mpx",
+        "Développement et applications macOS"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/macbook-air-m4-13-1.jpg",
+            "alt": "MacBook Air M4 13 pouces argent, vue du dessus",
+            "licence": "CC0 1.0 (domaine public)",
+            "auteur": "AzureSaturn",
+            "attribution": "Photo : AzureSaturn — CC0 1.0 (domaine public), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(13-inch,_M4,_Silver).jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(13-inch,_M4,_Silver).jpg",
+            "attributionDemandee": "Photo : AzureSaturn — CC0 1.0 (domaine public), via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M4 13 pouces",
+            "datePhoto": "23 décembre 2025",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué officiel : prix de lancement US",
+          "url": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix officiel en EUR non relevé : seul le prix de lancement US (999 $) est documenté",
+        "Une seule photo du modèle exact (1 image, dans la fourchette 1 à 5)",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
+    },
+    {
+      "id": "apple-macbook-air-m4-15-2025",
+      "marque": "Apple",
+      "modele": "MacBook Air M4 15 pouces",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-03-12",
+      "sourceAnnee": {
+        "url": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+      "ficheFabricant": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+      "description": "Ordinateur portable Apple MacBook Air M4 15 pouces (2025), écran Liquid Retina 15,3 pouces, puce M4, 16 Go de mémoire unifiée et SSD 256 Go pour la configuration de base, sans ventilateur. Annoncé le 5 mars 2025 à 1 199 $ (US), disponible le 12 mars 2025.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Base M4 · 16 Go · SSD 256 Go · 15 pouces",
+              "prix": 1199,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+                "precision": "Prix de lancement officiel US de la configuration de base (communiqué)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "Apple M4 (CPU 10 cœurs, GPU 10 cœurs selon configuration)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "16 Go de mémoire unifiée (jusqu'à 32 Go)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 256 Go (jusqu'à 2 To selon configuration)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "15,3 pouces Liquid Retina, 2880 × 1864"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu'à 18 heures de lecture vidéo (selon Apple)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "2 ports Thunderbolt 4 / USB 4, prise casque, MagSafe 3"
+        }
+      ],
+      "prix": {
+        "montant": 1199,
+        "devise": "USD",
+        "marche": "États-Unis, prix public",
+        "libelle": "MacBook Air M4 15 pouces — prix de lancement officiel US, configuration de base",
+        "date": "2026-11-20",
+        "source": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/"
+      },
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle et stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-20",
+        "source": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Montage vidéo sur grand écran",
+        "Travail multi-fenêtres et bureautique",
+        "Travail nomade sans ventilateur",
+        "Visioconférence avec caméra 12 Mpx",
+        "Développement et applications macOS"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/macbook-air-m4-15-1.jpg",
+            "alt": "MacBook Air M4 15 pouces argent, vue du dessus",
+            "licence": "CC0 1.0 (domaine public)",
+            "auteur": "AzureSaturn",
+            "attribution": "Photo : AzureSaturn — CC0 1.0 (domaine public), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(15-inch,_M4,_Silver).jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(15-inch,_M4,_Silver).jpg",
+            "attributionDemandee": "Photo : AzureSaturn — CC0 1.0 (domaine public), via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M4 15 pouces",
+            "datePhoto": "23 décembre 2025",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué officiel : prix de lancement US",
+          "url": "https://www.apple.com/newsroom/2025/03/apple-introduces-the-new-macbook-air-with-the-m4-chip-and-a-sky-blue-color/",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix officiel en EUR non relevé : seul le prix de lancement US (1 199 $) est documenté",
+        "Une seule photo du modèle exact (1 image, dans la fourchette 1 à 5)",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
+    },
+    {
+      "id": "apple-macbook-pro-14-m5-2025",
+      "marque": "Apple",
+      "modele": "MacBook Pro 14 pouces M5",
+      "rayon": "ordinateurs-composants",
+      "annee": 2025,
+      "dateSortie": "2025-10-22",
+      "sourceAnnee": {
+        "url": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip",
+      "ficheFabricant": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip",
+      "description": "Ordinateur portable Apple MacBook Pro 14 pouces avec puce M5 (2025), écran Liquid Retina XDR 14,2 pouces, 16 Go de mémoire unifiée et SSD 512 Go pour la configuration de base. Annoncé le 15 octobre 2025 à 1 599 $ (US), disponible le 22 octobre 2025.",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Base M5 · 16 Go · SSD 512 Go · 14 pouces",
+              "prix": 1599,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip",
+                "precision": "Prix de lancement officiel US de la configuration de base (communiqué)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "Apple M5 (CPU 10 cœurs, GPU 10 cœurs selon configuration)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "16 Go de mémoire unifiée (jusqu'à 64 Go)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 512 Go (jusqu'à 8 To selon configuration)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "14,2 pouces Liquid Retina XDR, 3024 × 1964"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "3 ports Thunderbolt 4, HDMI, prise casque, MagSafe 3, lecteur de carte SDXC"
+        }
+      ],
+      "prix": {
+        "montant": 1599,
+        "devise": "USD",
+        "marche": "États-Unis, prix public",
+        "libelle": "MacBook Pro 14 pouces M5 — prix de lancement officiel US, configuration de base",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip"
+      },
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle et stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Montage vidéo et étalonnage",
+        "Création graphique et 3D",
+        "Développement logiciel et compilation",
+        "Production musicale",
+        "Travail sur écran externe avec HDMI"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/macbook-pro-14-m5-1.jpg",
+            "alt": "MacBook Pro 14 pouces M5 noir sidéral, vue du dessus",
+            "licence": "CC0 1.0 (domaine public)",
+            "auteur": "AzureSaturn",
+            "attribution": "Photo : AzureSaturn — CC0 1.0 (domaine public), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:MacBook_Pro_(14-inch,_M5,_Space_Black).jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:MacBook_Pro_(14-inch,_M5,_Space_Black).jpg",
+            "attributionDemandee": "Photo : AzureSaturn — CC0 1.0 (domaine public), via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Pro 14 pouces M5",
+            "datePhoto": "23 décembre 2025",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué officiel : prix de lancement US",
+          "url": "https://apple.com/newsroom/2025/10/apple-unveils-new-14-inch-macbook-pro-powered-by-the-m5-chip",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix officiel en EUR non relevé : seul le prix de lancement US (1 599 $) est documenté",
+        "Une seule photo du modèle exact (1 image, dans la fourchette 1 à 5)",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
+    },
+    {
+      "id": "dell-xps-13-9300-2020",
+      "marque": "Dell",
+      "modele": "XPS 13 9300 (2020)",
+      "rayon": "ordinateurs-composants",
+      "annee": 2020,
+      "dateSortie": "2020-01-07",
+      "sourceAnnee": {
+        "url": "https://blogs.windows.com/windowsexperience/2020/01/02/ces-2020-dell-introduces-a-smaller-thinner-xps-13-and-a-new-alienware-gaming-monitor",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://www.dell.com/en-us/shop/cty/spd/xps-13-9300-laptop",
+      "ficheFabricant": "https://www.dell.com/en-us/shop/cty/spd/xps-13-9300-laptop",
+      "description": "Ordinateur portable Dell XPS 13 9300 (2020), écran 13,4 pouces 16:10, processeur Intel Core de 10e génération (Ice Lake), coloris noir ou blanc. Annoncé au CES 2020, disponible le 7 janvier 2020 à partir de 999,99 $ (US).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Modèle standard 9300 (configuration de base)",
+              "prix": 999.99,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://blogs.windows.com/windowsexperience/2020/01/02/ces-2020-dell-introduces-a-smaller-thinner-xps-13-and-a-new-alienware-gaming-monitor",
+                "precision": "Prix de lancement officiel US de la configuration de base (communiqué)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Processeur",
+          "valeur": "Intel Core de 10e génération (Ice Lake)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "13,4 pouces 16:10, 1920 × 1200 (écran 4K en option)"
+        },
+        {
+          "libelle": "Caméra",
+          "valeur": "Webcam infrarouge (Windows Hello)"
+        },
+        {
+          "libelle": "Système",
+          "valeur": "Windows 10"
+        }
+      ],
+      "prix": {
+        "montant": 999.99,
+        "devise": "USD",
+        "marche": "États-Unis, prix public",
+        "libelle": "XPS 13 9300 (2020) — prix de lancement officiel US, configuration de base",
+        "date": "2026-11-20",
+        "source": "https://blogs.windows.com/windowsexperience/2020/01/02/ces-2020-dell-introduces-a-smaller-thinner-xps-13-and-a-new-alienware-gaming-monitor"
+      },
+      "disponibilite": {
+        "statut": "inconnu",
+        "libelle": "Disponibilité actuelle et stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
+        "date": "2026-11-20",
+        "source": "https://blogs.windows.com/windowsexperience/2020/01/02/ces-2020-dell-introduces-a-smaller-thinner-xps-13-and-a-new-alienware-gaming-monitor"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Bureautique et navigation au quotidien",
+        "Montage photo léger",
+        "Travail nomade",
+        "Visioconférence avec caméra infrarouge",
+        "Usage en mobilité avec écran compact"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/dell-xps-13-9300-1.jpg",
+            "alt": "Dell XPS 13 9300 (2020), vue de face",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "Green-Curtain",
+            "attribution": "Photo : Green-Curtain — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:Dell_XPS_13_9300.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:Dell_XPS_13_9300.jpg",
+            "attributionDemandee": "Photo : Green-Curtain — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "modeleCorrespondant": "Dell XPS 13 9300 (2020)",
+            "datePhoto": "9 octobre 2020",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Communiqué officiel : prix de lancement US",
+          "url": "https://blogs.windows.com/windowsexperience/2020/01/02/ces-2020-dell-introduces-a-smaller-thinner-xps-13-and-a-new-alienware-gaming-monitor",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix de référence : prix de lancement US du modèle standard, en dollars ; pas de prix officiel en EUR relevé",
+        "Une seule photo du modèle exact (1 image, dans la fourchette 1 à 5) ; l'image est extraite d'une photo comparative avec la 9350",
+        "Caractéristiques détaillées à compléter",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré)"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
     }
   ]
 };
