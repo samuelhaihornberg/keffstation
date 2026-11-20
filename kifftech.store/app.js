@@ -802,10 +802,19 @@ class KiffTech{
     const tauxBrut = Number(TAUX_PROMO_PAR_ANNEE[String(annee ?? '')]);
     const taux = Number.isFinite(tauxBrut) && tauxBrut > 0 ? tauxBrut : null;
     const choice = Array.isArray(choiceIndices) ? choiceIndices : (p ? this.currentChoice(p) : []);
-    const sel = p ? resolveSelection(p, choice) : null;
-    const rawOfficial = sel ? sel.prix : (p ? (p.prix && p.prix.montant) : null);
-    const official = (typeof rawOfficial === 'number' && Number.isFinite(rawOfficial)) ? rawOfficial : null;
-    const devise = (sel && sel.devise) || (p && p.prix && p.prix.devise) || (p && p.currency) || 'EUR';
+    // Prix officiel : montant confirmé de la variante sélectionnée, sinon le prix officiel du produit.
+    // Une variante sans montant confirmé (ex. accessoire ou option liée) ne remet pas le prix officiel à null.
+    let official = (p && p.prix && typeof p.prix.montant === 'number') ? p.prix.montant : (typeof p?.price === 'number' ? p.price : null);
+    let devise = (p && p.prix && p.prix.devise) || p?.currency || 'EUR';
+    for (let g = 0; g < (p?.variantes || []).length; g++) {
+      const option = (p.variantes[g].options || [])[choice[g] ?? 0];
+      if (!option) continue;
+      if (typeof option.prix === 'number' && Number.isFinite(option.prix)) {
+        official = option.prix;
+        if (option.devise) devise = option.devise;
+      }
+    }
+    const officialMontant = (typeof official === 'number' && Number.isFinite(official)) ? official : null;
     const source = (p && p.prix && p.prix.source) || (promoSource && promoSource.source) || null;
     const dateVerification = (p && p.prix && p.prix.date) || (promoSource && promoSource.dateVerification) || null;
     if(!p) return null;
@@ -814,12 +823,12 @@ class KiffTech{
       // Année de sortie hors grille ou non renseignée : le calcul de promo est impossible.
       return { ...base, prixOfficiel: null, pourcentage: null, prixPromotionnel: null, statut: 'annee-manquante', manquant: 'annee' };
     }
-    if(official === null){
+    if(officialMontant === null){
       // Prix officiel non vérifié (ou variante/devise sans montant officiel) : la promo ne doit pas être fabriquée.
       return { ...base, prixOfficiel: null, pourcentage: taux, prixPromotionnel: null, statut: 'prix-officiel-manquant', manquant: 'prix-officiel' };
     }
-    const prixPromotionnel = roundMoney2(official * (1 - taux / 100));
-    return { ...base, prixOfficiel: official, pourcentage: taux, prixPromotionnel, statut: 'ok', manquant: [] };
+    const prixPromotionnel = roundMoney2(officialMontant * (1 - taux / 100));
+    return { ...base, prixOfficiel: officialMontant, pourcentage: taux, prixPromotionnel, statut: 'ok', manquant: [] };
   }
 
   renderProductDetail(){

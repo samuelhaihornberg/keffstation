@@ -6012,7 +6012,14 @@ export const CATALOGUE = {
           "valeur": "SteamOS"
         }
       ],
-      "prix": null,
+      "prix": {
+        "montant": 529,
+        "devise": "USD",
+        "marche": "États-Unis, TTC",
+        "libelle": "Steam Deck (LCD, variante 256 Go) — MSRP officiel de lancement (modèle LCD retiré du catalogue Valve)",
+        "date": "2026-11-20",
+        "source": "https://store.steampowered.com/news/app/1675180/view/3117055056380003048"
+      },
       "disponibilite": {
         "statut": "inconnu",
         "libelle": "Disponibilité actuelle/stock à confirmer sur la boutique officielle ; ne pas considérer comme disponible pour paiement immédiat sans vérification.",
@@ -6084,7 +6091,7 @@ export const CATALOGUE = {
       ],
       "manquants": [
         "1 à 2 vidéos officielles fabricant (YouTube, embed) à confirmer",
-        "Modèle LCD (variante 256 Go) désormais arrêté (arrêt de production annoncé le 19/12/2025) : MSRP officiel de lancement du 256 Go à enregistrer comme preuve (sources croisées Valve/Steam : lancement 25/02/2022)",
+        "Modèle LCD (variante 256 Go) désormais arrêté (arrêt de production annoncé le 19/12/2025) : MSRP officiel de lancement enregistré (529 USD, variante 256 Go, 25/02/2022) — prix actuel non publié par Valve pour ce modèle retiré",
         "Caractéristiques détaillées complètes, contenu de la boîte et compatibilités à confirmer",
         "Liste d’usages vérifiés à compléter (objectif 10–20)"
       ],
