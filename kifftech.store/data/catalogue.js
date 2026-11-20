@@ -3467,6 +3467,15 @@ export const CATALOGUE = {
         }
       ],
       "prix": null,
+      "prixHistoriqueRevendeur": {
+        "montant": 1099,
+        "devise": "USD",
+        "marche": "États-Unis",
+        "typePreuve": "prix historique de revendeur (Newegg, lancement 2020) — PAS un MSRP officiel MSI vérifié",
+        "variante": "MSI Bravo 17 A4DDR-009 : Ryzen 7 4800H, 16 Go RAM, RX 5500M, SSD 512 Go + HDD 1 To, écran 144 Hz",
+        "date": "2026-11-20",
+        "source": "https://www.newegg.com/p/N82E16834155429"
+      },
       "disponibilite": {
         "statut": "archive",
         "libelle": "Annoncé le 21 avril 2020, disponible à partir de mai 2020 ; modèles remplacés depuis",
@@ -3568,13 +3577,14 @@ export const CATALOGUE = {
           "date": "2026-11-14"
         },
         {
-          "libelle": "Newegg (annonce précommande 21/04/2020, reprise par TechPowerUp) : Bravo 17 précommande à 1 099 $ — prix historique revendeur, PAS MSRP MSI vérifié",
-          "url": "https://techaeris.com/2020/04/20/new-msi-gaming-laptops-offer-up-15-and-17-inch-options-for-around-us1000",
+          "libelle": "Newegg, fiche MSI Bravo 17 A4DDR-009 (configuration Ryzen 7 4800H, 16 Go, RX 5500M, 512 Go SSD + 1 To HDD) : 1 099 $ signalé comme prix historique revendeur — PAS MSRP MSI vérifié",
+          "url": "https://www.newegg.com/p/N82E16834155429",
           "date": "2026-11-20"
         }
       ],
       "manquants": [
-        "MSRP MSI officiel du Bravo 17 non vérifié sur source fabricant lisible : le montant de 1 099 $ (Newegg, annonce précommande du 21/04/2020) est un prix historique revendeur, pas un MSRP MSI — à confirmer avec MSI",
+        "MSRP MSI officiel du Bravo 17 non vérifié sur source fabricant lisible : le montant de 1 099 $ (Newegg, configuration A4DDR-009) est un prix historique revendeur, pas un MSRP MSI — prix officiel non renseigné (champ prix = null), à confirmer avec MSI",
+        "Référence saisie « A4DDR-0091 » : les fiches Newegg trouvées portent « A4DDR-009 » (configuration identique) — référence exacte à confirmer",
         "Autonomie annoncée non détaillée dans les sources consultées",
         "Référence/SKU dépend de la configuration (A4DDR ou A4DDK), non détaillée dans la source consultée",
         "Jour exact de mise en vente non communiqué (annonce le 21 avril 2020, disponibilité annoncée en mai 2020)"
