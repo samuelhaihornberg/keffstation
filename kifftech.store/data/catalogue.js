@@ -6751,6 +6751,180 @@ export const CATALOGUE = {
       "motsCles": [
         "neon light cable 3 in 1"
       ]
+    },
+    {
+      "id": "apple-macbook-air-m2-a2681",
+      "marque": "Apple",
+      "modele": "MacBook Air M2 (A2681) 13,6 pouces",
+      "rayon": "ordinateurs-composants",
+      "annee": 2022,
+      "dateSortie": "2022-07-15",
+      "sourceAnnee": {
+        "url": "https://apple.com/newsroom/2022/07/all-new-macbook-air-with-m2-available-to-order-starting-friday-july-8",
+        "date": "2026-11-20"
+      },
+      "sourceFiche": "https://www.apple.com/macbook-air-m2/",
+      "ficheFabricant": "https://www.apple.com/macbook-air-m2/",
+      "description": "Ordinateur portable Apple MacBook Air M2 (modèle A2681), écran Liquid Retina 13,6 pouces, puce Apple M2 (CPU 8 cœurs, GPU 8 cœurs), 8 Go de mémoire unifiée et SSD 256 Go pour la configuration de base. Annoncé en juin 2022, commandable à partir du 8 juillet 2022 aux États-Unis, à partir de 1 199 $ (prix de lancement officiel US).",
+      "variantes": [
+        {
+          "groupe": "Configuration",
+          "options": [
+            {
+              "libelle": "Base : M2 (CPU 8 cœurs, GPU 8 cœurs) · 8 Go · SSD 256 Go · 13,6 pouces",
+              "prix": 1199,
+              "dispo": true,
+              "lienOfficiel": {
+                "url": "https://apple.com/newsroom/2022/07/all-new-macbook-air-with-m2-available-to-order-starting-friday-july-8",
+                "precision": "Prix de lancement officiel US de la configuration de base (communiqué Apple)",
+                "verifie": "2026-11-20"
+              }
+            }
+          ]
+        }
+      ],
+      "caracteristiques": [
+        {
+          "libelle": "Puce",
+          "valeur": "Apple M2 (CPU 8 cœurs, GPU 8 cœurs ; jusqu'à CPU 8 cœurs / GPU 10 cœurs selon configuration)"
+        },
+        {
+          "libelle": "Mémoire",
+          "valeur": "8 Go de mémoire unifiée (jusqu'à 24 Go selon configuration)"
+        },
+        {
+          "libelle": "Stockage",
+          "valeur": "SSD 256 Go (jusqu'à 2 To selon configuration)"
+        },
+        {
+          "libelle": "Écran",
+          "valeur": "13,6 pouces Liquid Retina, 2560 × 1664, 500 nits"
+        },
+        {
+          "libelle": "Autonomie",
+          "valeur": "Jusqu'à 18 heures de lecture vidéo (selon Apple)"
+        },
+        {
+          "libelle": "Connectique",
+          "valeur": "2 ports Thunderbolt / USB 4, prise casque, connecteur MagSafe 3"
+        },
+        {
+          "libelle": "Caméra",
+          "valeur": "Webcam 1080p"
+        },
+        {
+          "libelle": "Couleurs",
+          "valeur": "Minuit, Lumière stellaire, Gris sidéral, Argent"
+        }
+      ],
+      "prix": {
+        "montant": 1199,
+        "devise": "USD",
+        "marche": "États-Unis, prix public hors taxes",
+        "libelle": "MacBook Air M2 13,6 pouces, configuration de base — prix de lancement officiel Apple US (juillet 2022)",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2022/07/all-new-macbook-air-with-m2-available-to-order-starting-friday-july-8"
+      },
+      "disponibilite": {
+        "statut": "archive",
+        "libelle": "Modèle M2 remplacé dans la gamme Apple ; disponibilité actuelle à confirmer",
+        "date": "2026-11-20",
+        "source": "https://apple.com/newsroom/2022/07/all-new-macbook-air-with-m2-available-to-order-starting-friday-july-8"
+      },
+      "accessoires": [],
+      "bundles": [],
+      "usages": [
+        "Bureautique et navigation au quotidien",
+        "Montage vidéo léger et retouche photo",
+        "Travail nomade avec autonomie longue durée",
+        "Visioconférence avec caméra 1080p",
+        "Développement et applications macOS"
+      ],
+      "medias": {
+        "images": [
+          {
+            "fichier": "img/macbook-air-m2-1.jpg",
+            "alt": "MacBook Air M2 (A2681), vue de face",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "メイド理世 (Mei Lishi)",
+            "attribution": "Photo : メイド理世 (Mei Lishi) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(A2681)_front.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(A2681)_front.jpg",
+            "attributionDemandee": "Photo : メイド理世 (Mei Lishi) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M2 (A2681), 13,6 pouces",
+            "datePhoto": "14 janvier 2024",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-air-m2-2.jpg",
+            "alt": "MacBook Air M2 (A2681), vue arrière",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "メイド理世 (Mei Lishi)",
+            "attribution": "Photo : メイド理世 (Mei Lishi) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(A2681)_rear.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:MacBook_Air_(A2681)_rear.jpg",
+            "attributionDemandee": "Photo : メイド理世 (Mei Lishi) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M2 (A2681), 13,6 pouces",
+            "datePhoto": "14 janvier 2024",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-air-m2-3.jpg",
+            "alt": "MacBook Air M2 coloris Minuit",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "KKPCW (Kyu3)",
+            "attribution": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:M2_Macbook_Air_Midnight_model_-_1.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:M2_Macbook_Air_Midnight_model_-_1.jpg",
+            "attributionDemandee": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M2 (A2681), 13,6 pouces",
+            "datePhoto": "30 juillet 2022",
+            "dateVerification": "2026-11-20"
+          },
+          {
+            "fichier": "img/macbook-air-m2-4.jpg",
+            "alt": "MacBook Air M2 coloris Lumière stellaire",
+            "licence": "CC BY-SA 4.0",
+            "auteur": "KKPCW (Kyu3)",
+            "attribution": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons",
+            "source": "https://commons.wikimedia.org/wiki/File:M2_Macbook_Air_Starlight_model.jpg",
+            "sourceOriginale": "https://commons.wikimedia.org/wiki/File:M2_Macbook_Air_Starlight_model.jpg",
+            "attributionDemandee": "Photo : KKPCW (Kyu3) — licence CC BY-SA 4.0, via Wikimedia Commons",
+            "modeleCorrespondant": "Apple MacBook Air M2 (A2681), 13,6 pouces",
+            "datePhoto": "30 juillet 2022",
+            "dateVerification": "2026-11-20"
+          }
+        ],
+        "videos": []
+      },
+      "sourcesVerifiees": [
+        {
+          "libelle": "Apple Newsroom, communiqué de commande du MacBook Air M2 (prix de départ 1 199 $ US)",
+          "url": "https://apple.com/newsroom/2022/07/all-new-macbook-air-with-m2-available-to-order-starting-friday-july-8",
+          "date": "2026-11-20"
+        },
+        {
+          "libelle": "Commons, photos du A2681 (CC BY-SA 4.0) : fichiers front et rear",
+          "url": "https://commons.wikimedia.org/wiki/Category:MacBook_Air_M2",
+          "date": "2026-11-20"
+        }
+      ],
+      "manquants": [
+        "Prix officiel en EUR non relevé : seul le prix de lancement US (1 199 $) est documenté, affiché en dollars sans conversion",
+        "Livraison et taxes à définir avant toute vente",
+        "Disponibilité actuelle et stock de revente à confirmer (stock 99 déclaré par le responsable)",
+        "Photos Midnight et Starlight : fond et écran floutés par l'auteur (retouche sur le fond) ; à remplacer si une version non retouchée est trouvée"
+      ],
+      "etatCatalogue": {
+        "presentAuCatalogue": true,
+        "achetableMaintenant": false,
+        "raisonNonAchetable": [
+          "Livraison et taxes non définies",
+          "Disponibilité actuelle à confirmer"
+        ]
+      },
+      "stock": 99,
+      "stockSource": "déclaré par le responsable : 99 unités, à confirmer auprès du fournisseur"
     }
   ]
 };
