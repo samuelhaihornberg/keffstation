@@ -1716,48 +1716,49 @@ body.overlay-open .vitrine-nav { opacity: 0; pointer-events: none; }
 /* ---------- Vidéo de présentation (dans le flux, sous la barre de navigation) ---------- */
 
 .intro-video {
+  --intro-h: min(80vh, 760px);
   position: relative;
   z-index: 1;
-  padding: calc(var(--header-h) + 14px) clamp(12px, 3vw, 24px) 0;
-  display: flex;
-  justify-content: center;
+  padding: calc(var(--header-h) + 12px) 12px 0;
+  display: block;
 }
 
 .intro-video-figure {
-  width: min(100%, 580px);
+  width: 100%;
   margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
 }
 
+/* La vidéo est verticale (9:16) : le cadre suit ses proportions pour occuper tout le fond disponible */
 .intro-video-player {
   display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-sm);
+  height: var(--intro-h);
+  width: min(100%, calc(var(--intro-h) * 9 / 16));
+  object-fit: contain;
+  border-radius: var(--radius);
   border: 1px solid var(--line-strong);
   background: #05060f;
-  object-fit: contain;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .55), 0 0 40px rgba(30, 107, 255, .12);
 }
 
 .intro-video-fallback {
   display: grid;
+  justify-items: center;
   gap: 8px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  background: #05060f;
-  padding: 0 0 12px;
-  overflow: hidden;
 }
 
 .intro-video-fallback[hidden] { display: none; }
 
 .intro-video-fallback img {
   display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
+  height: var(--intro-h);
+  width: min(100%, calc(var(--intro-h) * 9 / 16));
   object-fit: contain;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: #05060f;
 }
 
 .intro-video-fallback p {
@@ -1767,7 +1768,6 @@ body.overlay-open .vitrine-nav { opacity: 0; pointer-events: none; }
 }
 
 .intro-video-caption {
-  margin-top: 8px;
   color: var(--muted);
   font-size: .85rem;
   text-align: center;
@@ -1889,6 +1889,8 @@ body.overlay-open .vitrine-nav { opacity: 0; pointer-events: none; }
 
 @media (max-width: 640px) {
   :root { --nav-h: 58px; --header-h: 60px; }
+
+  .intro-video { --intro-h: min(78vh, 720px); }
 
   .vitrine {
     padding-top: 16px;
