@@ -5,7 +5,8 @@ const APPS = [
   {
     num: "Kifftech",
     title: "Kifftech",
-    desc: "KiffTech.store — catalogue PWA jeux vidéo & smart tech (fiches produits, médias vérifiés, panier). Paiement PayPal/carte via backend Node (server.js) lorsque configuré et offres vendables.",
+    desc: "KiffTech.store — catalogue PWA jeux vidéo & smart tech (fiches produits, médias vérifiés, panier). Paiement PayPal via les fonctions Supabase lorsque configuré et offres vendables.",
+    short: "Catalogue high-tech : fiches produits vérifiées, panier et paiement PayPal lorsque le service de paiement est configuré.",
     tags: ["PWA", "Catalogue", "KiffTech.store"],
     appUrl: "./kifftech.store/",
     embedUrl: "./kifftech.store/",
@@ -21,6 +22,7 @@ const APPS = [
     num: "ViArtificial labs",
     title: "ViArtificial Labs",
     desc: "Plateforme IA local-first : SuperBots, conversation, moteurs linguistiques, éditeur cos, tokenizer, embeddings, génération contrôlée, quantization GGUF. Inférence zéro serveur dans le navigateur.",
+    short: "Plateforme IA local-first : SuperBots, conversation, moteurs linguistiques et éditeur cos.",
     tags: ["cos", "SuperBots", "BLM", "motor.s", "NLP", "LLM", "Local-first"],
     appUrl: "./viartificial-labs/",
     embedUrl: "./viartificial-labs/",
@@ -62,6 +64,7 @@ const APPS = [
     num: "Videogames",
     title: "Videogames",
     desc: "Catalogue jeux, emulation, cloud gaming, mods, benchmarks. PAWAW, Rollspunch, indés, retro, AAA.",
+    short: "Catalogue jeux, émulation, cloud gaming, mods et benchmarks.",
     tags: ["Jeux", "Gaming", "Emulation", "Cloud"],
     appUrl: "./videogames/",
     embedUrl: "./videogames/",
@@ -80,6 +83,7 @@ const APPS = [
     num: "Blogum",
     title: "Blogum",
     desc: "Blog maker, profil social network, rencontres, sphères d'audience, profils caméléons, échelle de proximité, espaces hybrides blog ↔ forum, réactions émotionnelles.",
+    short: "Blog maker et réseau social : profils, sphères d'audience et réactions émotionnelles.",
     tags: ["Blog", "Réseau social", "Rencontres", "Feedback"],
     appUrl: "./blogum/",
     embedUrl: "./blogum/",
@@ -329,18 +333,27 @@ class KeffStation {
       node.style.top = `${pos.y}%`;
       node.style.setProperty('--app-color', app.color || '#1e6bff');
       node.title = app.title;
-      node.setAttribute('aria-label', `Ouvrir ${app.num}`);
-      renderAppIcon(app.num, node, 44);
-      node.addEventListener('click', () => this.openApp(i));
+      node.setAttribute('aria-label', `Sélectionner ${app.title}`);
+      renderAppIcon(app.num, node, 52);
+      node.addEventListener('click', () => this.selectApp(i));
       this.ringApps.appendChild(node);
       this.nodes.push(node);
+
+      const label = document.createElement('span');
+      label.className = 'ring-app-label';
+      label.textContent = app.title;
+      label.setAttribute('aria-hidden', 'true');
+      label.style.left = `${pos.x}%`;
+      label.style.top = `${pos.y}%`;
+      label.classList.add(pos.y < 40 ? 'is-top' : (pos.y > 60 ? 'is-bottom' : 'is-side'));
+      this.ringApps.appendChild(label);
 
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.dataset.index = i;
-      dot.setAttribute('aria-label', `Ouvrir ${app.num}`);
-      renderAppIcon(app.num, dot, 44);
-      dot.addEventListener('click', () => this.openApp(i));
+      dot.setAttribute('aria-label', `Sélectionner ${app.title}`);
+      renderAppIcon(app.num, dot, 48);
+      dot.addEventListener('click', () => this.selectApp(i));
       this.nav.appendChild(dot);
     });
 
@@ -357,7 +370,38 @@ class KeffStation {
     });
     this.dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
     this.flipCoreLogo(direction);
+    this.updateSelectCard(index);
     if (open) this.openApp(index);
+  }
+
+  selectApp(index) {
+    this.setFocus(index, false, index >= this.current ? 1 : -1);
+  }
+
+  // ---- Carte de l'application sélectionnée (nom, description courte, bouton d'accès) ----
+  updateSelectCard(index) {
+    const app = this.apps[index];
+    const card = document.getElementById('app-select-card');
+    if (!app || !card) return;
+    card.style.setProperty('--accent', app.color || '#1e6bff');
+    const title = document.getElementById('app-select-title');
+    const desc = document.getElementById('app-select-desc');
+    const open = document.getElementById('app-select-open');
+    if (title) title.textContent = app.title;
+    if (desc) desc.textContent = app.short || app.desc;
+    if (open) open.textContent = `Ouvrir ${app.title} →`;
+  }
+
+  launchApp(index) {
+    const app = this.apps[index];
+    if (!app) return;
+    if (app.num === 'Kifftech' || app.num === 'Blogum') {
+      window.location.href = app.appUrl || app.embedUrl;
+    } else if (app.embedUrl) {
+      this.openEmbed(app);
+    } else if (app.appUrl) {
+      window.location.href = app.appUrl;
+    }
   }
 
   // ---- Retourner le logo central comme une pièce de monnaie (coin flip) ----
@@ -436,6 +480,15 @@ class KeffStation {
   }
 
   setupEventListeners() {
+    // Carte de sélection : précédent, suivant, ouvrir.
+    document.getElementById('app-select-prev')?.addEventListener('click', () => {
+      this.setFocus((this.current - 1 + this.apps.length) % this.apps.length, false, -1);
+    });
+    document.getElementById('app-select-next')?.addEventListener('click', () => {
+      this.setFocus((this.current + 1) % this.apps.length, false, 1);
+    });
+    document.getElementById('app-select-open')?.addEventListener('click', () => this.launchApp(this.current));
+
     // Flèches clavier : navigue dans l'anneau ; Entrée ouvre.
     document.addEventListener('keydown', (e) => {
       if (this.embedOverlay.classList.contains('visible')) {

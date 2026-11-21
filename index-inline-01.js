@@ -1,41 +1,5 @@
 
 
-(function () {
-
-  var headerVideo = document.querySelector('.video-frame-media');
-
-  if (!headerVideo) return;
-
-  headerVideo.muted = true;
-
-  headerVideo.defaultMuted = true;
-
-  function tryPlay() {
-
-    var p = headerVideo.play();
-
-    if (p && typeof p.catch === 'function') p.catch(function () {});
-
-  }
-
-  tryPlay();
-
-  headerVideo.addEventListener('canplay', tryPlay, { once: true });
-
-  document.addEventListener('visibilitychange', function () {
-
-    if (document.visibilityState === 'visible') tryPlay();
-
-  });
-
-  document.addEventListener('touchstart', tryPlay, { once: true, passive: true });
-
-  document.addEventListener('click', tryPlay, { once: true });
-
-})();
-
-
-
 /* ===== Sélecteur d'articles — gestion des pages et ouverture des apps ===== */
 
 (function () {
@@ -61,21 +25,13 @@
   // Titres par page (mis à jour selon la langue)
 
   var pageTitles = [
+    'KiffTech — Articles',
 
     'ViArtificial Labs — Articles',
 
-    'cos Editor — Articles',
+    'Videogames — Articles',
 
-    'Linguistic Motors — Articles',
-
-    'Critiques-Services — Articles',
-
-    'KiffTech — Articles',
-
-    'Tricktrocjob — Articles',
-
-    'Videogames — Articles'
-
+    'Blogum — Articles'
   ];
 
 
@@ -83,21 +39,13 @@
   // URLs des apps par page
 
   var pageAppUrls = [
+    './kifftech.store/',
 
     './viartificial-labs/',
 
-    './cos-editor/',
+    './videogames/',
 
-    './linguistic-motors/',
-
-    'https://samuelhaihornberg.github.io/critiques-services.com/',
-
-    'https://samuelhaihornberg.github.io/Kifftech.store/',
-
-    './tricktrocjob/',
-
-    './videogames/'
-
+    './blogum/'
   ];
 
 
@@ -105,21 +53,13 @@
   // Noms des apps par page
 
   var pageAppNames = [
+    'KiffTech',
 
     'ViArtificial Labs',
 
-    'cos Editor',
+    'Videogames',
 
-    'Linguistic Motors',
-
-    'Critiques-Services',
-
-    'KiffTech',
-
-    'Tricktrocjob',
-
-    'Videogames'
-
+    'Blogum'
   ];
 
 
