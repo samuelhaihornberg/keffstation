@@ -130,12 +130,26 @@
     <div class="header-inner">
       <img class="platform-logo" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/54a60611305ecfc6396b57d388783b40df0fc436/logo%20kiffstation.png" alt="KiffStation logo" width="48" height="48">
       <h1 class="platform-title">KiffStation</h1>
-      <video class="platform-video" src="https://raw.githubusercontent.com/samuelhaihornberg/keffstation/main/header.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de la plateforme KiffStation"></video>
       <a class="platform-btn platform-btn-stats" id="btn-stats" href="./stats/" data-i18n-title="stats_open_title" data-i18n-aria="stats_open_title" title="Statistiques publiques — vues, durée de vue et clics" aria-label="Statistiques publiques"><span class="platform-btn-icon" aria-hidden="true">📊</span><span class="platform-btn-label" data-i18n="stats_open">Stats</span></a>
       <button class="platform-btn platform-btn-capture" id="btn-capture" type="button" aria-label="Voir la vitrine en plein écran">⛶</button>
     </div>
   </header>
-  <div class="vitrine" id="vitrine">
+
+  <section class="intro-video" aria-label="Présentation de KiffStation">
+    <figure class="intro-video-figure">
+      <video id="intro-video" class="intro-video-player" src="./header.mp4" poster="./header-poster.png" controls playsinline preload="metadata" aria-describedby="intro-video-caption">
+        <p>Votre navigateur ne peut pas lire cette vidéo.</p>
+      </video>
+      <div class="intro-video-fallback" id="intro-video-fallback" hidden>
+        <img src="./header-poster.png" alt="Logo KiffStation" width="1280" height="720">
+        <p>La vidéo de présentation est indisponible pour le moment.</p>
+      </div>
+      <figcaption id="intro-video-caption" class="intro-video-caption">Présentation de la plateforme KiffStation</figcaption>
+    </figure>
+  </section>
+
+  <main class="vitrine" id="vitrine">
+    <p class="vitrine-hint" id="vitrine-hint">Sélectionnez une icône pour choisir une app</p>
 
 
 
@@ -174,6 +188,18 @@
 
           </div>
 
+    <section class="app-select-card" id="app-select-card" aria-label="Application sélectionnée">
+      <div class="app-select-row">
+        <button type="button" class="app-select-nav" id="app-select-prev" aria-label="Application précédente">‹</button>
+        <div class="app-select-body" aria-live="polite">
+          <h2 class="app-select-title" id="app-select-title">Kifftech</h2>
+          <p class="app-select-desc" id="app-select-desc"></p>
+        </div>
+        <button type="button" class="app-select-nav" id="app-select-next" aria-label="Application suivante">›</button>
+      </div>
+      <button type="button" class="app-select-open" id="app-select-open">Ouvrir Kifftech →</button>
+    </section>
+
 
 
 
@@ -184,7 +210,7 @@
     
     
 
-  </div>
+  </main>
 
 
 
