@@ -428,19 +428,29 @@ function autoriserLocal(){
   // Chargement automatique des LLM locaux après consentement cookie ViArtificial Labs.
   // Aucun clic manuel sur « Charger » n'est requis pour le fonctionnement normal.
   setState('checking');afficherMoteurUtilise('Chargement automatique du modèle local…');
+  // Afficher la barre de progression si elle existe
+  var loadBar=document.getElementById('loadBar');if(loadBar)loadBar.hidden=false;
+  var progFill=document.getElementById('progFill');if(progFill)progFill.style.width='0%';
+  var progText=document.getElementById('progText');if(progText)progText.textContent='Préparation…';
   ViaLocalEngine.initAutoLoad(function(p){
     setState('checking');afficherMoteurUtilise('Chargement du modèle local : '+(p.progress||0)+'%');
     try{var pt=document.getElementById('progFill');if(pt)pt.style.width=(p.progress||0)+'%';}catch(e){}
     try{var pg=document.getElementById('progText');if(pg)pg.textContent=(p.detail||'Chargement…');}catch(e){}
+    // Afficher le progrès dans le statut
+    try{var st=document.getElementById('stEngine');if(st)st.textContent='Chargement : '+(p.progress||0)+'%';}catch(e){}
   }).then(function(r){
     if(r&&r.state==='waiting-consent'){setState('needs-consent');afficherMoteurUtilise('En attente du consentement cookie.');return;}
     setState('ready');afficherMoteurUtilise('Modèle local prêt — BLLM actifs');
     try{paintEngineStatus();}catch(e){}
+    // Masquer la barre de progression
+    if(loadBar)loadBar.hidden=true;
   }).catch(function(e){
     var c=e&&e.code;
     if(c==='NEEDS_CONSENT'){setState('needs-consent');afficherMoteurUtilise('Consentement requis.');return;}
     if(c==='ABORTED'){setState('idle');afficherMoteurUtilise('Chargement annulé.');return;}
     setState('error');afficherMoteurUtilise('Échec chargement : '+(e&&e.message?e.message:e));
+    // Afficher l'erreur dans la barre de statut
+    try{var st2=document.getElementById('stEngine');if(st2)st2.textContent='Erreur : '+(e&&e.message?e.message:e);}catch(e2){}
   });
 }
 document.getElementById('consentGo').onclick=autoriserLocal;

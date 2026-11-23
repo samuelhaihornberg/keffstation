@@ -63,7 +63,7 @@ body[data-min="1"] .msn{display:none}
 .chip{flex-shrink:0;min-height:48px;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#b9c0e6;font-size:.85rem}
 .chip.on{border-color:#ffd23f;color:#ffd23f;background:rgba(255,210,63,.08)}
 .msg.sys{align-self:center;background:transparent;border:1px dashed rgba(255,255,255,.25);color:#b9c0e6;font-size:.82rem;max-width:96%}
-@media (max-width:720px){#consentBar{margin:8px 10px 0}#chips{margin:8px 10px 0}}
+@media (max-width:720px){#consentBar{margin:8px 10px 0;padding:10px 12px;border-radius:12px}#chips{margin:8px 10px 0}#consentBar p{font-size:.85rem}#consentGo,#consentLater,#consentDetails{min-height:44px;font-size:.9rem;padding:8px 12px}#consentBar .consentBtns{flex-wrap:wrap;gap:8px}#progFill{height:8px;border-radius:4px}#progText{font-size:.8rem}}
 .statusline{margin:10px 16px 0;font-size:.82rem;color:#b9c0e6}
 #gearBtn{min-width:48px;min-height:48px;border-radius:12px;border:1px solid rgba(255,210,63,.5);background:rgba(255,210,63,.08);color:#ffd23f;font-size:1.3rem}
 @media (max-width:720px){html,body{font-size:17px}.stage{flex-direction:column;padding:10px}body[data-mode="side"] .stage{flex-direction:column}body[data-mode="side"] .msn{position:static;width:100%}.msn{width:100%}#thread{max-height:none;min-height:44dvh}.msg{font-size:1rem;max-width:96%}textarea{min-height:56px}form.composer{padding-bottom:max(10px,env(safe-area-inset-bottom))}header.top{padding:10px 12px}#settings{margin:8px 10px 0}.statusline{margin:8px 10px 0}}
