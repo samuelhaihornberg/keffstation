@@ -767,7 +767,26 @@ function runItem(item){
     var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
     if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
     if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'synthèse','Génération de la réponse');
+    // KEF : créer un relevé pour cette réponse
+    var kefReleve=null;
+    if(typeof ViaKEF!=='undefined'&&ViaKEF.creerReleve){
+      var genreKEF='conversation';
+      if(bot.id==='guideoplan')genreKEF='ingenierie';
+      else if(bot.id==='via'||bot.id==='theo')genreKEF='conversation';
+      kefReleve=ViaKEF.creerReleve('reponse',genreKEF);
+      kefReleve.botId=bot.id;
+      ViaKEF.enregistrerDimension(kefReleve,'induction',50);
+    }
+    var debutGeneration=Date.now();
     return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+      var finGeneration=Date.now();
+      if(kefReleve){
+        ViaKEF.enregistrerDimension(kefReleve,'vitesse',Math.max(0,100-(finGeneration-debutGeneration)/50));
+        ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',70);
+        ViaKEF.enregistrerCompute(kefReleve,finGeneration-debutGeneration,'mesure','temps de génération');
+        var resultatKEF=ViaKEF.calculerKEF(kefReleve);
+        ViaKEF.enregistrerKEF(bot.id,null,kefReleve,resultatKEF);
+      }
       try{if(item.sessionId){var _cur=null;try{_cur=sessionActiveId(bot.id);}catch(e){}if(_cur&&_cur!==item.sessionId){try{sd.box.remove();}catch(xR){}try{if(window.BLMContrat)BLMContrat.tracer(orch,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
       r=blmCorrigerReponse(orch,r);
       r=verifierFinaleBLM(orch,r);
@@ -777,7 +796,7 @@ function runItem(item){
       if(tracker)ViaCOSCircuit.libererVerrous(null,tracker);
     },function(e){
       if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'annule','Annulé');sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
-      else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
+      else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));if(kefReleve){ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',0);ViaKEF.enregistrerKEF(bot.id,null,kefReleve,ViaKEF.calculerKEF(kefReleve));}sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
     }).then(function(){genCtl=null;});
   }).then(function(){
     if(item.cancelled)return;
