@@ -750,23 +750,34 @@ function runItem(item){
     try{if(window.BLMContrat){BLMContrat.tracer({},'registre','bibliotheques-bot-'+botId,bibs.join(','));BLMContrat.tracer({},'parcours','bllm-selection-'+botId,bllmSel.blocs.join(','));}}catch(e){}
     setState('responding',bot.name);
     var sd=addStream(bot);
+    // Tracker de statut COS/CU
+    var tracker=null;
+    if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.creerTracker){
+      tracker=ViaCOSCircuit.creerTracker();
+      ViaCOSCircuit.mettreAJourStatut(tracker,'distribution','Envoi aux moteurs');
+    }
     genCtl=new AbortController();
     var h=H(bot.id);h.push({role:'user',content:item.text});
     var orch=orchestrerBLM(item.text,bot,h);
     try{if(window.BLMContrat){BLMContrat.tracer(orch,'registre','selection-'+botId,motifChoix||'');BLMContrat.tracer(orch,'parcours','requete-'+(item.id||'?'),botId);}}catch(xSel){}
+    if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'traitement','Préparation entrée moteur');
     var prep=preparerEntreeMoteur(orch,item.text,bot);
-    if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
+    if(!prep.ok){if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',prep.message);sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
     try{window.__viaDernierParcours='local CPU/WASM · '+bot.name+' · intention '+((orch&&orch.intention)||'?')+' · '+((prep.msgs||[]).length)+' message(s) · BLLM '+etiquetteBLLM()+' · bibs:'+bibs.join(',')+' · samit:'+((samitisation&&samitisation.boucles)?samitisation.boucles.join(','):'aucune');if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xP){}
     var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
     if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
+    if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'synthèse','Génération de la réponse');
     return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
       try{if(item.sessionId){var _cur=null;try{_cur=sessionActiveId(bot.id);}catch(e){}if(_cur&&_cur!==item.sessionId){try{sd.box.remove();}catch(xR){}try{if(window.BLMContrat)BLMContrat.tracer(orch,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
       r=blmCorrigerReponse(orch,r);
       r=verifierFinaleBLM(orch,r);
+      if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'affichage','Affichage de la réponse');
       sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
+      if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'terminée','Réponse complète');
+      if(tracker)ViaCOSCircuit.libererVerrous(null,tracker);
     },function(e){
-      if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
-      else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
+      if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'annule','Annulé');sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
+      else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
     }).then(function(){genCtl=null;});
   }).then(function(){
     if(item.cancelled)return;
