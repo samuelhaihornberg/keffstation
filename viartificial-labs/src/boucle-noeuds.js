@@ -302,4 +302,4 @@
     enregistrerPassage: enregistrerPassage, getPassages: getPassages,
     resumer: resumer, GPU_DISPONIBLE: GPU_DISPONIBLE
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

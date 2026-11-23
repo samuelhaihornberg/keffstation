@@ -172,4 +172,4 @@
     remplirResultat: remplirResultat,
     refInline: refInline, refLourde: refLourde, refModelCible: refModelCible
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

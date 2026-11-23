@@ -223,4 +223,4 @@
     return d;
   }
   global.ViaBibliotheques = { lister: lister, get: get, utilisePar: utilisePar, domaines: domaines, BIBLIOTHEQUES: BIBLIOTHEQUES };
-})(window);
+})(typeof window !== "undefined" ? window : global);

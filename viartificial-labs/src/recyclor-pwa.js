@@ -256,4 +256,4 @@
     enregistrerUsage: enregistrerUsage, libererUsage: libererUsage, estUtilisePar: estUtilisePar,
     resumer: resumer
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

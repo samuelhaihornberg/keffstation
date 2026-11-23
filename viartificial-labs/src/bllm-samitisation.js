@@ -335,4 +335,4 @@
     getCheminsExplores: function () { return Array.from(cheminsExplores); },
     getConceptsExamines: function () { return Array.from(conceptsExamines); }
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

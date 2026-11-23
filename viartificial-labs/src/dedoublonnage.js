@@ -144,4 +144,4 @@
   if (typeof window !== 'undefined') {
     window.ViaDedoublonnage = { identiteConnexion: identiteConnexion, dedoublonner: dedoublonner, typerConnexion: typerConnexion, migrerConnexions: migrerConnexions, compterConnexions: compterConnexions };
   }
-})(window);
+})(typeof window !== "undefined" ? window : global);

@@ -102,4 +102,4 @@
     blocs: function () { return BLLM_ETAT.blocs; },
     liens: function () { return BLLM_ETAT.liens; }
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

@@ -155,4 +155,4 @@
     enregistrerKEF: enregistrerKEF,
     historique: historique
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

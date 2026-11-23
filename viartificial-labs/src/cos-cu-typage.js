@@ -262,4 +262,4 @@
     getCompteurs: getCompteurs,
     migrerConnexionExistante: migrerConnexionExistante
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

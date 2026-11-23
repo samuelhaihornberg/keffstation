@@ -92,4 +92,4 @@
   if (typeof window !== 'undefined') {
     window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc };
   }
-})(window);
+})(typeof window !== "undefined" ? window : global);

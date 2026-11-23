@@ -137,4 +137,4 @@
   if (typeof window !== 'undefined') {
     window.ViaSyntheseTernaire = { VERDICTS: VERDICTS, creerElementTernaire: creerElementTernaire, evaluerElement: evaluerElement, syntheseTernaire: syntheseTernaire, reevaluerElement: reevaluerElement, preparerClarificationSuperBot: preparerClarificationSuperBot };
   }
-})(window);
+})(typeof window !== "undefined" ? window : global);

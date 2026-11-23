@@ -126,4 +126,4 @@
     incrementerUsager: incrementerUsager, decrementerUsager: decrementerUsager,
     journalTransition: journalTransition, resumer: resumer, nouvelId: nouvelId
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

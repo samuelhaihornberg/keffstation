@@ -231,4 +231,4 @@
     GROUPES_TACHES: GROUPES_TACHES,
     ETATS_VISIBLES: ETATS_VISIBLES
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);

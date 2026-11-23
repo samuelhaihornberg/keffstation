@@ -214,4 +214,4 @@
     getTrace: getTrace,
     getTraces: getTraces
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);
