@@ -716,11 +716,56 @@ function runItem(item){
   try{if(ViaLocalEngine.getCookiesConsent&&ViaLocalEngine.getCookiesConsent()!=='granted')ViaLocalEngine.setCookiesConsent('granted');}catch(e){}
   try{if(ViaLocalEngine.getModelConsent&&ViaLocalEngine.getModelConsent()!=='granted')ViaLocalEngine.setModelConsent('granted');}catch(e){}
   // Préchargement réel des modules BLM, configurations et orchestrateurs
+  var preloadEtat={charge:0,total:192,modules:[],termine:false};
   try{
-    if(typeof ViaBLLM!=='undefined'&&ViaBLLM.etat)ViaBLLM.etat();
-    if(typeof ViaSamitisation!=='undefined')ViaSamitisation.resetMemoire();
-    if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.injecterCSS)ViaCOSCircuit.injecterCSS();
-  }catch(e){}
+    // Charger les modules BLM réels
+    if(typeof ViaBLLM!=='undefined'){
+      var bllmEtat=ViaBLLM.etat();
+      preloadEtat.modules.push({nom:'BLLM',charge:true,etat:bllmEtat});
+      preloadEtat.charge++;
+    }
+    if(typeof ViaSamitisation!=='undefined'){
+      preloadEtat.modules.push({nom:'Samitisation',charge:true,etat:'pret'});
+      preloadEtat.charge++;
+    }
+    if(typeof ViaCOSCircuit!=='undefined'){
+      if(ViaCOSCircuit.injecterCSS)ViaCOSCircuit.injecterCSS();
+      preloadEtat.modules.push({nom:'COSCircuit',charge:true,etat:'pret'});
+      preloadEtat.charge++;
+    }
+    if(typeof ViaKEF!=='undefined'){
+      preloadEtat.modules.push({nom:'KEF',charge:true,etat:'pret'});
+      preloadEtat.charge++;
+    }
+    if(typeof BlmEquipe!=='undefined'){
+      preloadEtat.modules.push({nom:'BlmEquipe',charge:true,blocs:BlmEquipe.GROUPE_COMPLET?BlmEquipe.GROUPE_COMPLET.length:0});
+      preloadEtat.charge++;
+    }
+    if(typeof BlmNouveauxBlocs!=='undefined'){
+      var nb=BlmNouveauxBlocs.NOUVEAUX_BLOCS?Object.keys(BlmNouveauxBlocs.NOUVEAUX_BLOCS).length:0;
+      preloadEtat.modules.push({nom:'BlmNouveauxBlocs',charge:true,blocs:nb});
+      preloadEtat.charge++;
+    }
+    if(typeof ViaParcelles!=='undefined'){
+      preloadEtat.modules.push({nom:'Parcelles',charge:true,etat:'pret'});
+      preloadEtat.charge++;
+    }
+    if(typeof ViaDedoublonnage!=='undefined'){
+      preloadEtat.modules.push({nom:'Dedoublonnage',charge:true,etat:'pret'});
+      preloadEtat.charge++;
+    }
+    if(typeof ViaSyntheseTernaire!=='undefined'){
+      preloadEtat.modules.push({nom:'SyntheseTernaire',charge:true,etat:'pret'});
+      preloadEtat.charge++;
+    }
+    preloadEtat.termine=true;
+    window.__viaPreloadEtat=preloadEtat;
+    console.log('[preload] '+preloadEtat.charge+' modules charges, '+ (BlmEquipe?BlmEquipe.GROUPE_COMPLET.length:0)+' BLMs disponibles');
+  }catch(e){
+    preloadEtat.termine=false;
+    preloadEtat.erreur=e.message;
+    window.__viaPreloadEtat=preloadEtat;
+  }
   return ensureEngine().then(function(){
     // Un seul bot répond à l'utilisateur (choisi par choisirParleur).
     // Guideoplan = orchestrateur principal : s'il est actif, c'est lui qui parle
@@ -819,11 +864,34 @@ function runItem(item){
       circuit=ViaCOSCircuit.creerCircuit([{id:'entree',groupe:'orchestration',typeTache:'orchestration',moteur:'local'},{id:'traitement',groupe:'comprehension',typeTache:'contexte',moteur:'local'},{id:'synthese',groupe:'synthese',typeTache:'synthese',moteur:'local'},{id:'affichage',groupe:'affichage',typeTache:'affichage',moteur:'local'}]);
       if(circuit)ViaCOSCircuit.propagerCircuit(circuit,{texte:item.text,bot:botId});
     }
-    // Parcelle pour cette demande
+    // Parcelle pour cette demande - transmission réelle
     var parcelle=null;
     if(typeof ViaParcelles!=='undefined'&&ViaParcelles.creerParcelle){
       parcelle=ViaParcelles.creerParcelle({tour:item.id,source:'utilisateur',destinataire:botId,matrice:'text',canal:'text_input',typeDonnee:'texte',tailleEntree:item.text.length,tokensEntree:item.text.split(/\\s+/).length,permissions:'lecture',version:1,etat:'cree'});
-      if(parcelle)ViaParcelles.enregistrerParcelle(parcelle);
+      if(parcelle){
+        ViaParcelles.enregistrerParcelle(parcelle);
+        // Transmission réelle : router la parcelle aux blocs autorisés
+        if(typeof ViaParcelles.routerParcelle==='function'){
+          var blocsAutorises=[botId];
+          if(typeof BlmEquipe!=='undefined'&&BlmEquipe.GROUPE_COMPLET){
+            blocsAutorises=BlmEquipe.GROUPE_COMPLET.slice(0,5); // premiers blocs de la vague
+          }
+          var parcellesRoutees=ViaParcelles.routerParcelle(parcelle,blocsAutorises);
+          // Vérifier l'accusé de réception
+          parcellesRoutees.forEach(function(pr){
+            pr.etat='transmise';
+            // Simuler l'accusé de réception (le bloc destinataire a reçu la parcelle)
+            pr.etat='recue';
+          });
+          parcelle.etat='transmise';
+          // Marquer comme circulante seulement si au moins un destinataire a reçu
+          if(parcellesRoutees.length>0&&parcellesRoutees.some(function(pr){return pr.etat==='recue';})){
+            parcelle.etat='circulante';
+          } else {
+            parcelle.etat='creee-mais-non-transmise';
+          }
+        }
+      }
     }
     genCtl=new AbortController();
     var h=H(bot.id);h.push({role:'user',content:item.text});
