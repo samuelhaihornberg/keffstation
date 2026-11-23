@@ -925,7 +925,20 @@ function runItem(item){
       ViaKEF.enregistrerDimension(kefReleve,'induction',50);
     }
     var debutGeneration=Date.now();
-    return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+    var debutGeneration=Date.now();
+    var dispatchPromise;
+    if(typeof ViaDispatchUnifie!=='undefined'&&ViaDispatchUnifie.dispatcher){
+      dispatchPromise=ViaDispatchUnifie.dispatcher({taskId:item.id,moteur:rmMoteur.moteur==='local-cpu-wasm'?'local':rmMoteur.moteur.replace('-distant',''),bot:bot,messages:prep.msgs,signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}});
+    } else {
+      dispatchPromise=ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){return {taskId:item.id,moteurReel:'local',statut:'termine',sortie:r,erreur:null,temps:{debut:debutGeneration,fin:Date.now(),duree:Date.now()-debutGeneration},provenance:'fallback'};});
+    }
+    return dispatchPromise.then(function(dispatchResult){
+      // Vérifier le résultat du dispatch
+      if(dispatchResult.statut!=='termine'){
+        if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',dispatchResult.erreur);
+        sd.box.remove();addOnce('sys','Moteur indisponible : '+(dispatchResult.erreur||'aucun backend opérationnel'));lastFailure={stage:'response',item:item};setState('error',dispatchResult.erreur);genCtl=null;return Promise.resolve();
+      }
+      var r=dispatchResult.sortie;
       var finGeneration=Date.now();
       if(kefReleve){
         // Vitesse : mesurée (temps de génération)
