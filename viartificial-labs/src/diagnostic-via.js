@@ -119,8 +119,21 @@
       if (global.ViaParcelles) {
         var parcelles = global.ViaParcelles.listerParcelles ? global.ViaParcelles.listerParcelles() : [];
         var circulantes = parcelles.filter(function (p) { return p.etat === 'circulante'; });
-        diag.parcelleTransmise.etat = circulantes.length > 0 ? 'transmise' : (parcelles.length > 0 ? 'creee' : 'aucune');
-        diag.parcelleTransmise.detail = circulantes.length + ' circulantes / ' + parcelles.length + ' créées';
+        var envoyees = parcelles.filter(function (p) { return p.etat === 'envoyee-reception-en-attente'; });
+        var nonTransmises = parcelles.filter(function (p) { return p.etat === 'creee-mais-non-transmise'; });
+        if (circulantes.length > 0) {
+          diag.parcelleTransmise.etat = 'transmise';
+          diag.parcelleTransmise.detail = circulantes.length + ' circulantes, ' + envoyees.length + ' envoyées (attente), ' + nonTransmises.length + ' non transmises';
+        } else if (envoyees.length > 0) {
+          diag.parcelleTransmise.etat = 'envoyee';
+          diag.parcelleTransmise.detail = envoyees.length + ' envoyées (réception en attente), ' + nonTransmises.length + ' non transmises';
+        } else if (parcelles.length > 0) {
+          diag.parcelleTransmise.etat = 'creee';
+          diag.parcelleTransmise.detail = parcelles.length + ' créées, 0 transmises';
+        } else {
+          diag.parcelleTransmise.etat = 'aucune';
+          diag.parcelleTransmise.detail = 'aucune parcelle créée';
+        }
       } else {
         diag.parcelleTransmise.etat = 'non-disponible';
         diag.parcelleTransmise.detail = 'ViaParcelles non disponible';
