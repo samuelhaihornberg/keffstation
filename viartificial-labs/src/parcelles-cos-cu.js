@@ -35,8 +35,29 @@
 
   // ---------- Registre des parcelles actives ----------
   var parcellesActives = {};
+  var STORAGE_KEY = 'via-parcelles-v1';
+  function sauvegarderParcelles() {
+    try {
+      var data = JSON.stringify(parcellesActives);
+      localStorage.setItem(STORAGE_KEY, data);
+    } catch (e) {
+      console.warn('[parcelles] Erreur sauvegarde:', e && e.message);
+    }
+  }
+  function chargerParcelles() {
+    try {
+      var data = localStorage.getItem(STORAGE_KEY);
+      if (data) parcellesActives = JSON.parse(data) || {};
+    } catch (e) {
+      console.warn('[parcelles] Erreur chargement:', e && e.message);
+      parcellesActives = {};
+    }
+  }
   function enregistrerParcelle(parcelle) {
-    if (parcelle && parcelle.id) parcellesActives[parcelle.id] = parcelle;
+    if (parcelle && parcelle.id) {
+      parcellesActives[parcelle.id] = parcelle;
+      sauvegarderParcelles();
+    }
   }
   function getParcelle(id) { return parcellesActives[id] || null; }
   function listerParcelles(tour) {
@@ -50,6 +71,7 @@
     for (var id in parcellesActives) {
       if (parcellesActives[id].tour !== tour) delete parcellesActives[id];
     }
+    sauvegarderParcelles();
   }
 
   // ---------- Routage parcellaire ----------
@@ -87,9 +109,9 @@
 
   // ---------- Export ----------
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc };
+    module.exports = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles };
   }
   if (typeof window !== 'undefined') {
-    window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc };
+    window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles };
   }
 })(typeof window !== "undefined" ? window : global);
