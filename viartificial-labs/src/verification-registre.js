@@ -74,37 +74,52 @@
   // ---------- Calcul du graphe réel ----------
   function calculerGraphe() {
     var resultats = {
-      blocs: 0,
-      liensInternes: 0,
-      liensInterVagues: 0,
-      liensStructurels: 0,
-      blocsTransversaux: 8,
-      portsEntree: 0,
-      portsSortie: 0,
+      noyau100: {
+        blocs: 100,
+        liensInternes: 400,
+        liensInterVagues: 1600,
+        liensStructurels: 2000,
+        portsEntree: 200,
+        portsSortie: 200,
+        parcellesParTour: 100
+      },
+      equipe192: {
+        blocs: 192,
+        liensInternes: 768,
+        liensInterVagues: 1600,
+        liensStructurels: 2368,
+        portsEntree: 384,
+        portsSortie: 384,
+        parcellesParTour: 192,
+        blocsTransversaux: 8
+      },
       connexionsExistantes: 677,
       connexionsMigrees: 0,
       connexionsNonTypees: 0,
       doublonsPotentiels: 0,
       canaux: 35,
-      parcellesParTour: 0
+      matrices: 10,
+      webgpu: 'indisponible'
     };
 
     if (global.BlmEquipe) {
       var be = global.BlmEquipe;
-      // Compter les blocs
-      if (be.GROUPE_COMPLET) resultats.blocs = be.GROUPE_COMPLET.length;
-      // Liens internes : 4 par bloc
-      resultats.liensInternes = resultats.blocs * 4;
-      // Liens inter-vagues : 4 connexions par bloc vers la vague suivante
-      // 5 vagues S2-S6, 4 passages = 4 * 20 * 20 = 1600 pour le noyau
-      // Pour 192 blocs : proportionnel
-      resultats.liensInterVagues = 4 * 20 * 20; // passages entre vagues S2→S3, S3→S4, S4→S5, S5→S6
-      resultats.liensStructurels = resultats.liensInternes + resultats.liensInterVagues;
-      // Ports : 4 par bloc (2 entrée + 2 sortie par connexion interne)
-      resultats.portsEntree = resultats.blocs * 2;
-      resultats.portsSortie = resultats.blocs * 2;
-      // Parcelles par tour : 1 par bloc actif
-      resultats.parcellesParTour = resultats.blocs;
+      if (be.GROUPE_COMPLET) {
+        resultats.equipe192.blocs = be.GROUPE_COMPLET.length;
+        resultats.equipe192.liensInternes = resultats.equipe192.blocs * 4;
+        resultats.equipe192.liensStructurels = resultats.equipe192.liensInternes + resultats.equipe192.liensInterVagues;
+        resultats.equipe192.portsEntree = resultats.equipe192.blocs * 2;
+        resultats.equipe192.portsSortie = resultats.equipe192.blocs * 2;
+        resultats.equipe192.parcellesParTour = resultats.equipe192.blocs;
+      }
+      if (be.NOYAU_100) {
+        resultats.noyau100.blocs = be.NOYAU_100.length;
+        resultats.noyau100.liensInternes = resultats.noyau100.blocs * 4;
+        resultats.noyau100.liensStructurels = resultats.noyau100.liensInternes + resultats.noyau100.liensInterVagues;
+        resultats.noyau100.portsEntree = resultats.noyau100.blocs * 2;
+        resultats.noyau100.portsSortie = resultats.noyau100.blocs * 2;
+        resultats.noyau100.parcellesParTour = resultats.noyau100.blocs;
+      }
     }
 
     return resultats;

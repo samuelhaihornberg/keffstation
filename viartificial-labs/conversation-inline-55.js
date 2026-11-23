@@ -756,6 +756,18 @@ function runItem(item){
       tracker=ViaCOSCircuit.creerTracker();
       ViaCOSCircuit.mettreAJourStatut(tracker,'distribution','Envoi aux moteurs');
     }
+    // Circuit COS/CU pour cette réponse
+    var circuit=null;
+    if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.creerCircuit){
+      circuit=ViaCOSCircuit.creerCircuit([{id:'entree',groupe:'orchestration',typeTache:'orchestration',moteur:'local'},{id:'traitement',groupe:'comprehension',typeTache:'contexte',moteur:'local'},{id:'synthese',groupe:'synthese',typeTache:'synthese',moteur:'local'},{id:'affichage',groupe:'affichage',typeTache:'affichage',moteur:'local'}]);
+      if(circuit)ViaCOSCircuit.propagerCircuit(circuit,{texte:item.text,bot:botId});
+    }
+    // Parcelle pour cette demande
+    var parcelle=null;
+    if(typeof ViaParcelles!=='undefined'&&ViaParcelles.creerParcelle){
+      parcelle=ViaParcelles.creerParcelle({tour:item.id,source:'utilisateur',destinataire:botId,matrice:'text',canal:'text_input',typeDonnee:'texte',tailleEntree:item.text.length,tokensEntree:item.text.split(/\\s+/).length,permissions:'lecture',version:1,etat:'cree'});
+      if(parcelle)ViaParcelles.enregistrerParcelle(parcelle);
+    }
     genCtl=new AbortController();
     var h=H(bot.id);h.push({role:'user',content:item.text});
     var orch=orchestrerBLM(item.text,bot,h);
@@ -790,10 +802,21 @@ function runItem(item){
       try{if(item.sessionId){var _cur=null;try{_cur=sessionActiveId(bot.id);}catch(e){}if(_cur&&_cur!==item.sessionId){try{sd.box.remove();}catch(xR){}try{if(window.BLMContrat)BLMContrat.tracer(orch,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
       r=blmCorrigerReponse(orch,r);
       r=verifierFinaleBLM(orch,r);
+      // Synthèse ternaire : évaluer la réponse
+      if(typeof ViaSyntheseTernaire!=='undefined'&&ViaSyntheseTernaire.creerElementTernaire){
+        var elemTernaire=ViaSyntheseTernaire.creerElementTernaire({id:'resp-'+item.id,proposition:r,etatReel:'repondu'});
+        elemTernaire.appuis=[{type:'favorable',source:'moteur',texte:r}];
+        var synthResult=ViaSyntheseTernaire.syntheseTernaire([elemTernaire],{texte:item.text});
+        if(synthResult.peutEtre.length>0){
+          var clarifications=ViaSyntheseTernaire.preparerClarificationSuperBot(synthResult.peutEtre,{texte:item.text});
+          if(clarifications.length>0){addOnce('sys','Précision souhaitée : '+clarifications[0].question);}
+        }
+      }
       if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'affichage','Affichage de la réponse');
       sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
       if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'terminée','Réponse complète');
       if(tracker)ViaCOSCircuit.libererVerrous(null,tracker);
+      if(circuit)ViaCOSCircuit.annulerCircuit(circuit);
     },function(e){
       if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'annule','Annulé');sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
       else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));if(kefReleve){ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',0);ViaKEF.enregistrerKEF(bot.id,null,kefReleve,ViaKEF.calculerKEF(kefReleve));}sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
