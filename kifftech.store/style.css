@@ -90,7 +90,7 @@ body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden}
 .bar-left{display:flex;align-items:center;gap:.6rem}
 .logo{width:28px;height:28px;filter:drop-shadow(0 0 8px var(--accent))}
 .app-name{font-size:1.1rem;font-weight:800;letter-spacing:.02em;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
-.bar-center{flex:1;display:flex;justify-content:center;max-width:480px;min-width:0}
+.bar-center{flex:1;display:flex;justify-content:center;max-width:520px;min-width:0}
 .main-tabs{display:flex;gap:.2rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:.2rem;scrollbar-width:none}
 .main-tabs::-webkit-scrollbar{display:none}
 .main-tab{
@@ -811,3 +811,75 @@ body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden}
 .kt-terms{display:flex;gap:.5rem;align-items:flex-start;font-size:.8rem;color:var(--fg-muted);line-height:1.45;padding:.6rem .7rem;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.02)}
 .kt-terms input{margin-top:.2rem;width:18px;height:18px;flex:0 0 auto;accent-color:var(--accent)}
 .kt-terms a{color:var(--accent)}
+
+/* ===== Adaptation mobile, tablette et tactile (la version ordinateur reste la référence) ===== */
+/* Bandeau de droits : centré au-dessus de la barre du bas, il ne masque plus la navigation */
+.media-rights-banner{left:50%;right:auto;bottom:calc(var(--bottom-bar-h) + var(--safe-bottom) + .6rem);width:min(920px,calc(100% - 2rem));transform:translateX(-50%);max-height:46vh;overflow-y:auto}
+/* Badges de carte empilés au lieu de se chevaucher */
+.catalog-product .product-thumb{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:.3rem;padding:.5rem}
+.catalog-product .product-thumb>.product-badge{position:static}
+/* Rendu sûr : aucun contenu long ne peut élargir la page */
+body>*{min-width:0}
+button,a,input,select,textarea,label,[role="tab"],summary{touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,255,200,.18)}
+/* Liens d’information et icônes de la barre du bas : visibles seulement hors ordinateur */
+.quick-links{display:none}
+.tab-ico{display:none}
+.tab-ico svg{width:22px;height:22px;display:block;margin:0 auto}
+@media (max-width:1259px){
+  :root{color-scheme:dark}
+  body{overflow-wrap:break-word;overflow-wrap:anywhere}
+  img{max-width:100%;height:auto}
+  .bar-center,.top-bar .btn-about{display:none}
+  .quick-links{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.6rem calc(1rem + var(--safe-left)) .6rem calc(1rem + var(--safe-right));background:var(--bg-elevated);border-bottom:1px solid var(--border)}
+  .quick-links .btn-about{justify-content:center;text-align:center;min-height:44px;padding:.5rem .6rem;font-size:.8rem;line-height:1.25;white-space:normal}
+  .tab-ico{display:block}
+  .bottom-bar{height:calc(var(--bottom-bar-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom)}
+  .bottom-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));justify-content:stretch;gap:.15rem;overflow:visible;padding:.3rem .25rem}
+  .bottom-tabs .main-tab{flex-direction:column;justify-content:center;gap:.1rem;min-width:0;min-height:52px;height:100%;padding:.2rem .1rem;border-radius:12px;font-size:.68rem;letter-spacing:0;text-transform:none;line-height:1.15;text-align:center;white-space:normal;hyphens:auto;-webkit-hyphens:auto}
+  .bottom-tabs .main-tab[aria-selected="true"]{background:var(--accent-dim);color:var(--accent);box-shadow:none}
+  .bottom-tabs .main-tab:hover{transform:none}
+}
+@media (max-width:599px){
+  .products-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;padding:.75rem calc(.75rem + var(--safe-left)) .75rem calc(.75rem + var(--safe-right))}
+  .panel-header{padding:.75rem calc(.75rem + var(--safe-left)) .5rem calc(.75rem + var(--safe-right))}
+  .panel-header h2{font-size:1.1rem;margin-bottom:.5rem}
+  .product-detail,.subscriptions-layout,.import-layout,.settings-layout,.bilan-layout{padding-left:calc(.75rem + var(--safe-left));padding-right:calc(.75rem + var(--safe-right))}
+  .subscriptions-layout{flex-direction:column;align-items:stretch}
+  .sub-card{max-width:none;min-height:0}
+  .novelties{margin:8px 12px 0}
+  .novelties-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .demo-notice{margin:8px 12px 0}
+  .filter-bar select{min-width:0;flex:1 1 40%}
+  .filter-bar input{min-width:0;flex:1 1 100%}
+  .product-badge{font-size:.62rem}
+  .catalog-product .product-info{padding:.6rem}
+  .catalog-product .product-title{font-size:.85rem}
+  .catalog-product .product-meta,.product-meta{font-size:.7rem}
+  .product-price-note{font-size:.7rem}
+  .media-rights-banner{width:calc(100% - 1rem);padding:.7rem .8rem}
+  .media-rights-content p{flex-basis:100%;font-size:.8rem}
+  .media-rights-actions{width:100%}
+  .media-rights-actions button{flex:1 1 0;min-height:44px}
+  input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px}
+}
+/* Appareils tactiles (téléphone, tablette) : cibles d’au moins 44 px, pas de zoom à la saisie */
+@media (pointer:coarse){
+  .icon-btn,.btn-back,.icon-btn-sm{width:44px;height:44px;min-width:44px;min-height:44px}
+  .main-tab,.bottom-tab,.btn-about,.variant-chip,.thumb-btn,.btn-primary,.btn-secondary,.product-action,.btn-catalog,.btn-subscribe{min-height:44px}
+  input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px}
+  .filter-bar select,.filter-bar input,.catalog-toolbar select,.rayon-header-actions select,#rayonSort,#rayonBrandFilter{min-height:44px}
+  input[type=range]{height:28px}
+  input[type=checkbox]{width:22px;height:22px}
+  .setting-group label,.kt-terms{min-height:44px;align-items:center}
+  .media-credit a,.link-list a,.sources-list a,.price-block a,.detail-block a,.legal-nav a,.legal-page a,.product-price-note a{display:inline-flex;align-items:center;min-height:44px;padding:.2rem .1rem}
+  .rayon-btn{min-height:44px}
+  .slider-row input[type="range"]{height:28px}
+}
+/* Catalogue : toute la page défile (nouveautés puis rayons restent accessibles, la grille n’est plus écrasée) */
+#panel-catalog{overflow-y:auto;-webkit-overflow-scrolling:touch}
+#panel-catalog .products-grid{flex:none;overflow:visible}
+/* Badges « achetable » / « fiche incomplète » : fond sombre pour rester lisibles sur les photos */
+.catalog-product .product-badge.badge-buyable,.catalog-product .product-badge.badge-present,.catalog-product .product-badge.badge-info{background-image:linear-gradient(rgba(3,5,10,.72),rgba(3,5,10,.72))}
+@media (max-width:599px){
+  #panel-catalog .panel-header{position:static}
+}

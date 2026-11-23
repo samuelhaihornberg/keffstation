@@ -15,3 +15,9 @@ mark.todo{background:rgba(255,210,63,.18);color:#ffe6a1;border-radius:4px;paddin
 .legal-form label{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--fg-muted);}
 .legal-form input,.legal-form select,.legal-form textarea{font:inherit;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--fg);}
 .legal-form button{min-height:44px;padding:10px 16px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent),var(--blue,#0066ff));color:#001a14;font-weight:800;cursor:pointer;}
+.legal-page{min-width:0;width:100%;overflow-wrap:anywhere;}
+@media (max-width:599px){
+  .legal-page{padding:calc(var(--safe-top,0px) + 14px) 14px 40px;}
+  .legal-page h1{font-size:1.1rem;}
+  .legal-head{padding:12px;margin:8px 0 14px;}
+}

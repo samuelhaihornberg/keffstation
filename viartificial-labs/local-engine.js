@@ -1,4 +1,4 @@
-/* Moteur IA local COMMUN — CPU/WebAssembly via Web Worker (AUCUN WebGPU/WebLLM).
+/* Moteur IA local COMMUN — CPU/WebAssembly via Web Worker (AUCUN WebGPU/WebLLM, AUCUN Ollama).
    Docs officielles vérifiées (huggingface.co/docs/transformers.js v3 :
    api/pipelines pipeline text-generation + api/env) : messages [{role,content}],
    TextStreamer(skip_prompt), progress_callback, env.useBrowserCache.
@@ -11,7 +11,8 @@
      navigateur évite tout re-téléchargement inutile.
    - WASM réduit le risque mémoire mais ne le supprime pas : un navigateur peut
      fermer l'onglet sans prévenir (noté dans l'interface, jamais garanti).
-   États : idle→checking→needs-consent→downloading→loading→ready→generating→error. */
+   - NE DÉPEND PAS d'Ollama ni d'aucun serveur distant : modèles open source locaux uniquement.
+   États : idle→preparing→loading→ready→generating→error. Chargement auto après consentement cookie ViA. */
 (function (global) {
   'use strict';
   var MODELS = [
@@ -23,10 +24,22 @@
     { id: 'onnx-community/Qwen2.5-0.5B-Instruct', downloadMB: 800, license: 'Apache 2.0', auto: false, label: 'Qwen2.5 0.5B Instruct — (≈800 Mo mesurés, Apache 2.0, PC/Wi-Fi uniquement, choix explicite)' }
   ];
   // Accord modèle local UNIQUEMENT (téléchargement + stockage sur l'appareil).
-  // Ce n'est PAS un bandeau cookies : aucun traceur, aucun cookie facultatif ici.
+  // Ce consentement est propre à ViArtificial Labs ; il ne vaut pas pour les
+  // autres applications de KeffStation, et le consentement d'une autre
+  // application ne vaut pas pour ViArtificial Labs.
   var CONSENT_KEY = 'via-consent'; // {state:'granted'|'later'|'withdrawn', ts}
   function getConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
   function setConsent(state) { try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
+  // État du chargement : 'idle' | 'preparing' | 'loading' | 'ready' | 'unavailable' | 'error'
+  var LOAD_STATE = 'idle';
+  var LOAD_MODEL = null;
+  var LOAD_PROGRESS = 0;
+  var LOAD_DETAIL = '';
+  function getLoadState() { return { state: LOAD_STATE, model: LOAD_MODEL, progress: LOAD_PROGRESS, detail: LOAD_DETAIL }; }
+  function setLoadState(state, model, progress, detail) {
+    LOAD_STATE = state; LOAD_MODEL = model; LOAD_PROGRESS = progress || 0; LOAD_DETAIL = detail || '';
+    try { if (typeof paintEngineStatus === 'function') paintEngineStatus(); } catch (e) {}
+  }
   // Choix automatique : moteur CPU/WASM si WebAssembly disponible, sinon erreur
   // précise. WebGPU n'est PLUS requis (ni consulté pour le choix).
   // Défaut : SmolLM2-360M-Instruct-ONNX (≈390 Mo vérifiés). Qwen 800 Mo
@@ -78,15 +91,33 @@
   // Parcours : détection → sélection CPU/WASM → stockage → téléchargement →
   // chargement. Essai en cascade petit→grand via le worker (chaque modèle une
   // seule fois) ; le cache navigateur évite tout re-téléchargement inutile.
+  // Initialise automatiquement le chargement des LLM locaux après consentement cookie ViA.
+  // Ne nécessite aucun clic manuel sur « Charger » pour le fonctionnement normal.
+  async function initAutoLoad(onTick, wantId) {
+    var c = getConsent();
+    if (c !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement cookie ViArtificial Labs.'); return { state: 'waiting-consent', detail: 'Consentement requis.' }; }
+    setLoadState('preparing', wantId || MODELS[0].id, 0, 'Vérification de l’appareil et sélection du modèle…');
+    try {
+      var cap = await detect();
+      var pick = pickModel(cap, wantId);
+      if (pick.error) { setLoadState('unavailable', pick.model || wantId, 0, pick.message); throw Object.assign(new Error(pick.message), { code: 'NO_LOCAL' }); }
+      var needMB = pick.downloadMB || 200;
+      var st = await storageCheck(needMB);
+      if (!st.ok) { setLoadState('unavailable', pick.model || wantId, 0, 'Stockage insuffisant : il faut ≈' + needMB + ' Mo libres (utilisé ' + st.usageMB + ' / quota ' + st.quotaMB + ' Mo).'); throw Object.assign(new Error('Stockage insuffisant'), { code: 'STORAGE_FULL' }); }
+      if (!global.ViaWasmEngine) { setLoadState('error', pick.model || wantId, 0, 'Moteur CPU non chargé : recharge la page.'); throw Object.assign(new Error('Moteur CPU non chargé : recharge la page.'), { code: 'NOT_LOADED' }); }
+      setLoadState('loading', pick.model || wantId, 0, 'Téléchargement et chargement du modèle local en cours…');
+      return await global.ViaWasmEngine.load(wantId || null, function (p) {
+        setLoadState('loading', pick.model || wantId, p.progress || 0, p.detail || 'Chargement en cours…');
+      });
+    } catch (e) {
+      if (e.code === 'ABORTED') { setLoadState('idle', null, 0, 'Chargement annulé.'); return { state: 'aborted' }; }
+      throw e;
+    }
+  }
   async function autoLoad(onTick, wantId) {
-    var cap = await detect();
-    var pick = pickModel(cap, wantId);
-    if (pick.error) throw Object.assign(new Error(pick.message), { code: 'NO_LOCAL' });
-    var needMB = pick.downloadMB || 200;
-    var st = await storageCheck(needMB);
-    if (!st.ok) throw Object.assign(new Error('Stockage insuffisant : il faut ≈' + needMB + ' Mo libres (utilisé ' + st.usageMB + ' / quota ' + st.quotaMB + ' Mo). Libère de l’espace puis Réessaie.'), { code: 'STORAGE_FULL' });
-    if (!global.ViaWasmEngine) throw Object.assign(new Error('Moteur CPU non chargé : recharge la page.'), { code: 'NOT_LOADED' });
-    return global.ViaWasmEngine.load(wantId || null, onTick);
+    var c = getConsent();
+    if (c !== 'granted') throw Object.assign(new Error('Consentement requis : autorise le modèle local dans l’accord cookie ViArtificial Labs.'), { code: 'NEEDS_CONSENT' });
+    return initAutoLoad(onTick, wantId);
   }
   // Supprime les fichiers de modèles du cache navigateur (ciblé, sur demande explicite).
   async function deleteModels() {
@@ -107,9 +138,10 @@
     try { if (global.ViaWasmEngine) await global.ViaWasmEngine.unload(); } catch (e) {}
   }
   function summary() {
-    if (global.ViaWasmEngine) { var w = global.ViaWasmEngine.summary(); return { phase: w.phase, model: w.model, progress: w.progress, detail: w.detail, mode: w.mode, backend: 'wasm', tokenizer: w.tokenizer, threads: w.threads }; }
-    return { phase: 'idle', model: null, progress: 0, detail: '', mode: '—', backend: 'wasm' };
+    var ls = getLoadState();
+    if (global.ViaWasmEngine) { var w = global.ViaWasmEngine.summary(); return { phase: ls.state, model: w.model || ls.model, progress: w.progress || ls.progress, detail: w.detail || ls.detail, mode: w.mode, backend: 'wasm', tokenizer: w.tokenizer, threads: w.threads, loadState: ls.state, loadDetail: ls.detail }; }
+    return { phase: ls.state, model: ls.model, progress: ls.progress, detail: ls.detail, mode: '—', backend: 'wasm', loadState: ls.state, loadDetail: ls.detail };
   }
   function lastDetectFn() { return lastDetect; }
-  global.ViaLocalEngine = { MODELS: MODELS, detect: detect, lastDetect: lastDetectFn, modelInfo: modelInfo, setModel: setModel, autoLoad: autoLoad, pickModel: pickModel, storageCheck: storageCheck, getConsent: getConsent, setConsent: setConsent, deleteModels: deleteModels, chat: chat, unload: unload, summary: summary, CONSENT_KEY: CONSENT_KEY };
+  global.ViaLocalEngine = { MODELS: MODELS, detect: detect, lastDetect: lastDetectFn, modelInfo: modelInfo, setModel: setModel, autoLoad: autoLoad, initAutoLoad: initAutoLoad, pickModel: pickModel, storageCheck: storageCheck, getConsent: getConsent, setConsent: setConsent, deleteModels: deleteModels, chat: chat, unload: unload, summary: summary, getLoadState: getLoadState, CONSENT_KEY: CONSENT_KEY };
 })(window);

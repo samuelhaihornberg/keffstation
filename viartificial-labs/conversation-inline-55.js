@@ -72,12 +72,24 @@ function majBlmUsed(){
   try{if(blmStatus&&blmStatus.refuses&&blmStatus.refuses.length)t+=' — refusé(s) : '+blmStatus.refuses.join(', ');else if(blmStatus&&blmStatus.state==='error'&&blmStatus.message)t+=' — '+blmStatus.message;}catch(e){}
   el.textContent=t;
 }
+// Compatibilité BLLM : majBllmUsed() identique, termes unifiés.
+function majBllmUsed(){ majBlmUsed(); }
+// Affiche l'état des bibliothèques et des BLLM dans la barre dédiée.
+function majBllmStatusBar(){
+  try{
+    var bdb=document.getElementById('bllmDomaines');var bbq=document.getElementById('bllmBibliotheques');var bml=document.getElementById('bllmModeles');
+    if(bdb&&typeof ViaBLLM!=='undefined'){var d=ViaBLLM.domaines();bdb.textContent=d.length+' domaine(s) : '+d.slice(0,4).join(', ')+(d.length>4?'…':'');}
+    if(bbq&&typeof ViaBibliotheques!=='undefined'){var bl=ViaBibliotheques.lister();bbq.textContent=bl.length+' bibliothèque(s) : '+bl.slice(0,4).map(function(b){return b.nom;}).join(', ')+(bl.length>4?'…':'');}
+    if(bml&&typeof ViaLocalEngine!=='undefined'){var sm=ViaLocalEngine.summary();bml.textContent=(sm&&sm.model?sm.model:'—')+' — '+(sm&&sm.loadState?sm.loadState:'idle');}
+  }catch(e){}
+}
 function afficherMoteurUtilise(extra){
   try{
     var el=document.getElementById('engineUsed');
     if(el){var er=etatMoteurReel();var t='Moteur utilisé : '+(er.label||'—')+' — '+(er.etat||'?');if(extra)t+=' ('+extra+')';el.textContent=t;}
   }catch(e){}
   majBlmUsed();
+  majBllmStatusBar();
 }
 function appliquerMode(mode,silencieux){
   mode=(mode==='local'||mode==='hybride'||mode==='online')?mode:'local';
@@ -101,13 +113,20 @@ function demarrerMoteurLocal(raison){
   if(ViaLocalEngine.getConsent()!=='granted'){setState('needs-consent');afficherMoteurUtilise(raison?('local non autorisé — '+raison):'local non autorisé');return Promise.resolve(false);}
   var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
   if(ph==='ready'||ph==='generating'){setState('ready');afficherMoteurUtilise(raison||'déjà chargé');return Promise.resolve(true);}
-  loadArmed=true;
   if(ph==='downloading'||ph==='loading'||ph==='checking'){setState(ph==='downloading'?'downloading':ph==='checking'?'checking':'loading');afficherMoteurUtilise(raison||'chargement en cours');return Promise.resolve(true);}
   setState('checking');afficherMoteurUtilise(raison?('chargement — '+raison):'chargement');
-  return ensureEngine().then(function(){updateIdCard();setState('ready');afficherMoteurUtilise(raison||'chargé');pump();return true;},function(e){
+  // Chargement automatique des LLM locaux (via ViaLocalEngine.initAutoLoad), sans clic manuel.
+  return ViaLocalEngine.initAutoLoad(function(p){
+    setState('checking');afficherMoteurUtilise('Chargement du modèle local : '+(p.progress||0)+'%');
+    try{var pt=document.getElementById('progFill');if(pt)pt.style.width=(p.progress||0)+'%';}catch(e){}
+    try{var pg=document.getElementById('progText');if(pg)pg.textContent=(p.detail||'Chargement…');}catch(e){}
+  }).then(function(r){
+    if(r&&r.state==='waiting-consent'){setState('needs-consent');afficherMoteurUtilise('En attente du consentement cookie.');return false;}
+    updateIdCard();setState('ready');afficherMoteurUtilise(raison||'chargé');pump();return true;
+  }).catch(function(e){
     var c=e&&e.code;
     if(c==='NEEDS_CONSENT'){consentShown(true);setState('needs-consent');}
-    else if(c==='ABORTED'||c==='NEEDS_LOAD'){setState('idle');}
+    else if(c==='ABORTED'){setState('idle');}
     else{setState('error',explain(e));}
     afficherMoteurUtilise(raison?('échec — '+raison):'échec');
     return false;
@@ -116,7 +135,7 @@ function demarrerMoteurLocal(raison){
 function orchestrerDemarrage(){
   var mode=lireMode();window.__viaMode=mode;
   appliquerMode(mode,true);
-  majBlmUsed();
+  majBlmUsed();majBllmUsed();majBllmStatusBar();
   var en=cfgEnLigne();
   if(mode==='local'){
     if(ViaLocalEngine.getConsent()==='granted')return demarrerMoteurLocal('chargement automatique');
@@ -262,25 +281,31 @@ function etiquetteBLM(){
   if(blmStatus.state==='partial')return 'partiels ('+blmStatus.reussis+'/'+blmStatus.total+')';
   return 'erreur'+(blmStatus.total?(' ('+blmStatus.reussis+'/'+blmStatus.total+')'):'');
 }
+// Compatibilité : anciens noms BLM/BLSM/BRM/BRSM reliés au terme unique BLLM.
+// Utiliser étiquetteBLLM() dans le nouveau code ; etiquetteBLM() conservé pour compatibilité.
+function etiquetteBLLM(){ return etiquetteBLM(); }
+var ALIAS_BLLM = { BLM: 'BLLM', BLSM: 'BLLM', BRM: 'BLLM', BRSM: 'BLLM' };
+function nomCanoniqueBLLM(ancien){ return ALIAS_BLLM[ancien] || ancien; }
 function paintEngineStatus(){
   try{
     var er=etatMoteurReel();
     var se=document.getElementById('stEngine');if(se)se.textContent=er.label+' — '+er.etat;
     var sm=document.getElementById('stModel');if(sm)sm.textContent=er.model;
-    var sb=document.getElementById('stBLM');if(sb)sb.textContent=etiquetteBLM();
-    var sd=document.getElementById('stBLMDetail');
-    if(sd){if(blmStatus.state==='untested')sd.textContent='Auto-test non lancé : appuie sur « Charger le LLM + BLM » ou « Relancer l’auto-test BLM ».';else if(blmStatus.refuses&&blmStatus.refuses.length)sd.textContent='Exemples refusés : '+blmStatus.refuses.join(', ');else sd.textContent=blmStatus.message||'';}
+    var sb=document.getElementById('stBLLM');if(sb)sb.textContent=etiquetteBLLM();
+    var sd=document.getElementById('stBLLMDetail');
+    if(sd){if(blmStatus.state==='untested')sd.textContent='Auto-test non lancé : appuie sur « Charger le LLM + BLLM » ou « Relancer l’auto-test BLLM ».';else if(blmStatus.refuses&&blmStatus.refuses.length)sd.textContent='Exemples refusés : '+blmStatus.refuses.join(', ');else sd.textContent=blmStatus.message||'';}
     var sl=document.getElementById('stLLM');if(sl)sl.textContent='Test LLM : '+(er.llmDetail||'aucun test effectué');
     var sp=document.getElementById('stPath');if(sp)sp.textContent='Dernier parcours : '+(window.__viaDernierParcours||'aucune requête depuis le chargement');
     if(typeof afficherMoteurUtilise==='function')afficherMoteurUtilise();
   }catch(e){}
 }
-// Batterie BLM complète (85 exemples exigés) : rapporte les identifiants exacts
+// Batterie BLLM complète (85 exemples exigés) : rapporte les identifiants exacts
 // refusés. Ne déclare JAMAIS « chargés » si un seul exemple échoue.
+// Compatibilité : anciens noms BLM/BLSM/BRM/BRSM reliés au terme unique BLLM.
 function executerAutoTestBLM(){
   var B={comprehension:window.BLMComprehension,langue:window.BLMLangue,registre:window.BLMRegistre,memoire:window.BLMMemoire,philo:window.BLMPhilo,coherence:window.BLMCoherence,contrat:window.BLMContrat,correction:window.BLMCorrection,routage:window.BLMRoutage,savoir:window.BLMSavoir,budget:window.BLMBudget,couts:window.BLMCouts,conscience:window.BLMConscience,securite:window.BLMSecurite,journal:window.BLMJournal};
   try{
-    if(!window.BLMExemples||!window.BLMExemples.batterie)throw new Error('module d’exemples BLM absent');
+    if(!window.BLMExemples||!window.BLMExemples.batterie)throw new Error('module d’exemples BLLM absent');
     var bat=window.BLMExemples.batterie(B);
     var refuses=(bat.details||[]).filter(function(d){return d&&!d.ok&&!d.attente;}).map(function(d){return d.id+' ['+d.bloc+']';});
     blmStatus={state:bat.ok?'ok':(bat.reussis>0?'partial':'error'),total:bat.total,reussis:bat.reussis,refuses:refuses,message:bat.ok?'batterie complète réussie':'batterie incomplète',at:Date.now()};
@@ -292,6 +317,8 @@ function executerAutoTestBLM(){
   paintEngineStatus();
   return blmStatus;
 }
+// Alias BLLM : nom canonique pour les nouveaux appels.
+function executerAutoTestBLLM(){ return executerAutoTestBLM(); }
 // Test LLM réellement distinct du choix du fournisseur. Local : résumé du moteur.
 // Distant : un vrai échange court (pré-vol Ollama inclus), avec l'adresse testée
 // et le code d'erreur affichés en cas d'échec.
@@ -365,7 +392,7 @@ function paintPick(cap){
 // Version réellement chargée (à bumper à chaque publication : repère
 // anti-décalage local/Pages/cache) + moteur réellement utilisé (à distinguer
 // de « site accessible en ligne », qui ne dit rien de l'inférence).
-window.__VIA_BUILD = '2026-11-08-parcours13+110BLM';
+window.__VIA_BUILD = '2026-11-22-bllm-bibliotheques-llm-local-auto';
 function paintDiag(cap){
   var el=document.getElementById('diagDetail');if(!el)return;
   cap=cap||(ViaLocalEngine.lastDetect?ViaLocalEngine.lastDetect():null);
@@ -398,7 +425,23 @@ function autoriserLocal(){
   ViaLocalEngine.setConsent('granted');refreshConsent();
   requestPlatformPerms().then(function(){paintPerms();});
   if(lireMode()==='online'){setState('idle');afficherMoteurUtilise('local autorisé — mode en ligne conservé');return;}
-  demarrerMoteurLocal('accord donné');
+  // Chargement automatique des LLM locaux après consentement cookie ViArtificial Labs.
+  // Aucun clic manuel sur « Charger » n'est requis pour le fonctionnement normal.
+  setState('checking');afficherMoteurUtilise('Chargement automatique du modèle local…');
+  ViaLocalEngine.initAutoLoad(function(p){
+    setState('checking');afficherMoteurUtilise('Chargement du modèle local : '+(p.progress||0)+'%');
+    try{var pt=document.getElementById('progFill');if(pt)pt.style.width=(p.progress||0)+'%';}catch(e){}
+    try{var pg=document.getElementById('progText');if(pg)pg.textContent=(p.detail||'Chargement…');}catch(e){}
+  }).then(function(r){
+    if(r&&r.state==='waiting-consent'){setState('needs-consent');afficherMoteurUtilise('En attente du consentement cookie.');return;}
+    setState('ready');afficherMoteurUtilise('Modèle local prêt — BLLM actifs');
+    try{paintEngineStatus();}catch(e){}
+  }).catch(function(e){
+    var c=e&&e.code;
+    if(c==='NEEDS_CONSENT'){setState('needs-consent');afficherMoteurUtilise('Consentement requis.');return;}
+    if(c==='ABORTED'){setState('idle');afficherMoteurUtilise('Chargement annulé.');return;}
+    setState('error');afficherMoteurUtilise('Échec chargement : '+(e&&e.message?e.message:e));
+  });
 }
 document.getElementById('consentGo').onclick=autoriserLocal;
 var quickConsentBtn=document.getElementById('quickConsent');
@@ -476,34 +519,33 @@ function ensureEngine(){
 // Bouton unique de chargement : armé par l'utilisateur, jamais automatique.
 // Double-clic sans effet (promesse partagée + bouton désactivé pendant le chargement).
 function flushConvs(){try{for(var k in hists)saveConv(k);}catch(e){}}
-// Bouton « Charger le LLM + BLM » : toujours visible, quel que soit le fournisseur.
-// 1) initialise les BLM (indépendant du LLM) ; 2) charge ou teste le LLM sélectionné.
-// Ne touche ni aux conversations, ni aux caches, ni aux 4 boutons refresh/cache.
+// Bouton « Charger le LLM + BLLM » : recharge forcée, quel que soit le fournisseur.
+// Le chargement normal se fait automatiquement après consentement cookie ViArtificial Labs.
 document.getElementById('llmBlmBtn').onclick=function(){
   var btn=this,msg=document.getElementById('llmBlmMsg');
   if(!msg||btn.disabled)return;
   btn.disabled=true;
   function dire(t){msg.textContent=t;}
   function finir(){btn.disabled=false;paintEngineStatus();}
-  // 1) BLM : auto-test complet, indépendant du LLM. Un échec n'est jamais
+  // 1) BLLM : auto-test complet, indépendant du LLM. Un échec n'est jamais
   // transformé en succès et les identifiants refusés sont affichés.
-  var bs=executerAutoTestBLM();
-  var blmTxt='BLM : '+etiquetteBLM();
-  if(bs.refuses&&bs.refuses.length)blmTxt+=' — refusé(s) : '+bs.refuses.join(', ');
-  else if(bs.state!=='ok')blmTxt+=' — '+bs.message;
+  var bs=executerAutoTestBLLM();
+  var bllmTxt='BLLM : '+etiquetteBLLM();
+  if(bs.refuses&&bs.refuses.length)bllmTxt+=' — refusé(s) : '+bs.refuses.join(', ');
+  else if(bs.state!=='ok')bllmTxt+=' — '+bs.message;
   // 2) LLM réellement sélectionné : test séparé, résultat séparé.
   var baseTest=String(eng.baseUrl||'').trim();
   if((eng.provider==='ollama'||eng.provider==='custom')&&!baseTest){
     llmStatus={provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',state:'error',detail:'adresse vide : aucun serveur à contacter',at:Date.now()};
-    dire(blmTxt+' · LLM '+eng.provider+' : aucun serveur configuré. Renseigne une adresse réellement joignable dans Réglages, ou choisis le moteur local.');
+    dire(bllmTxt+' · LLM '+eng.provider+' : aucun serveur configuré. Renseigne une adresse réellement joignable dans Réglages, ou choisis le moteur local.');
     finir();return;
   }
   if(eng.provider==='local'){
-    flushConvs();loadArmed=true;setState('checking');dire(blmTxt+' · Chargement du modèle local…');
+    flushConvs();loadArmed=true;setState('checking');dire(bllmTxt+' · Chargement du modèle local…');
     ensureEngine().then(function(){updateIdCard();pump();return testerLLM();}).then(function(r){
-      dire(blmTxt+' · LLM local : '+(r.ok?'prêt — '+r.detail:'échec — '+r.detail));
+      dire(bllmTxt+' · LLM local : '+(r.ok?'prêt — '+r.detail:'échec — '+r.detail));
     },function(e){
-      return testerLLM().then(function(r){dire(blmTxt+' · LLM local : échec — '+((e&&e.message)?e.message:e)+' · '+r.detail);});
+      return testerLLM().then(function(r){dire(bllmTxt+' · LLM local : échec — '+((e&&e.message)?e.message:e)+' · '+r.detail);});
     }).then(finir);
   }else if(eng.provider==='ollama'||eng.provider==='custom'){
     var avert=[];
@@ -555,7 +597,22 @@ if(pReloadBtn)pReloadBtn.onclick=function(){
   ensureEngine().then(function(){updateIdCard();setState('ready');afficherMoteurUtilise('rechargé manuellement');pump();},function(e){var c=e&&e.code;if(c==='NEEDS_CONSENT'){consentShown(true);setState('needs-consent');}else if(c==='ABORTED'||c==='NEEDS_LOAD'){setState('idle');}else{setState('error',explain(e));}});
 };
 botsById={};cfg.bots.forEach(function(x){botsById[x.id]=x;});
-selectedBots=botsById[q]?[q]:[cfg.bots[0].id];
+// Duos siamois : paires de bots qui peuvent répondre ensemble dans une même conversation.
+// GuideoPlan reste seul (hors duos). Chaque duo est un tableau d'identifiants de bots.
+var DUOS=[['via','theo'],['geeko','geekette'],['golemotor','btb'],['guideoplan']];
+function duoDe(botId){
+  for(var d=0;d<DUOS.length;d++)if(DUOS[d].indexOf(botId)>=0)return DUOS[d];
+  return [botId];
+}
+function tousLesBotsDuDuo(botId){return duoDe(botId).filter(function(id){return !!botsById[id];});}
+// État d'activation par conversation (clé = bot principal de la conversation, depuis l'URL).
+var ACTIVE_KEY='via-active-bots-'+q;
+function lireBotsActifs(){
+  try{var v=JSON.parse(localStorage.getItem(ACTIVE_KEY)||'null');if(Array.isArray(v)&&v.length)return v.filter(function(id){return !!botsById[id];});}catch(e){}
+  var def=tousLesBotsDuDuo(q);return def.length?def:[q];
+}
+function ecrireBotsActifs(ids){try{localStorage.setItem(ACTIVE_KEY,JSON.stringify(ids.slice(0,10)));}catch(e){}}
+selectedBots=lireBotsActifs();
 renderChips();
 renderBotPick();
 try{if(typeof ViaDico!=='undefined'){window.__viaDicoTxt=window.__viaDicoTxt||{};['via','geeko','geekette','theo'].forEach(function(id){ViaDico.textePour(id).then(function(t){window.__viaDicoTxt[id]=t;}).catch(function(){});});}}catch(e){}
@@ -565,30 +622,35 @@ afficherBot(b.id);
 try{var _sb=document.getElementById('sessBot');if(_sb)_sb.onchange=function(){renderSeances();};var _sn=document.getElementById('sessNew');if(_sn)_sn.onclick=function(){var _sb2=document.getElementById('sessBot');var _bb=_sb2?_sb2.value:null;if(!_bb||!(typeof botsById!=='undefined'&&botsById[_bb]))_bb=(typeof q!=='undefined'&&botsById[q])?q:'geeko';nouvelleSeance(_bb);};}catch(e){}
 try{if(window.BLMJournal)window.BLMJournal.ecrire(window.BLMJournal.lire());}catch(e){}
 try{window.addEventListener('pagehide',function(){try{for(var k in hists)saveConv(k);}catch(e){}});}catch(e){}
-function renderChips(){var box=document.getElementById('chips');if(!box)return;box.innerHTML='';cfg.bots.forEach(function(x){var on=selectedBots.indexOf(x.id)>-1;var c=document.createElement('button');c.type='button';c.className='chip'+(on?' on':'');c.textContent=x.avatar+' '+x.name;c.setAttribute('aria-pressed',on);c.onclick=function(){choisirBot(x.id);};box.appendChild(c);});}
-// Sélection unique : un seul bot répond, le choix est mémorisé localement.
+function renderChips(){var box=document.getElementById('chips');if(!box)return;box.innerHTML='';cfg.bots.forEach(function(x){var on=selectedBots.indexOf(x.id)>-1;var c=document.createElement('button');c.type='button';c.className='chip'+(on?' on':'');c.textContent=x.avatar+' '+x.name;c.setAttribute('aria-pressed',on);c.title=on?'Désactiver '+x.name+' dans cette conversation':'Activer '+x.name+' dans cette conversation';c.onclick=function(){basculerBot(x.id);};box.appendChild(c);});}
+// Bascule l'activation d'un bot dans la conversation courante. Au moins un bot reste actif.
+function basculerBot(id){
+  if(typeof botsById==='undefined'||!botsById[id])return;
+  try{flushConvs();}catch(eF){}
+  var idx=selectedBots.indexOf(id);
+  if(idx>=0)selectedBots.splice(idx,1);
+  else selectedBots.push(id);
+  if(selectedBots.length===0)selectedBots=[id];
+  q=selectedBots[0]; // bot principal pour l'affichage et l'URL de la conversation
+  try{localStorage.setItem('via-bot',q);}catch(e){}
+  ecrireBotsActifs(selectedBots);
+  var b=botsById[q];
+  var t=document.getElementById('title');if(t)t.textContent=(selectedBots.length>1?selectedBots.length+' bots actifs ':'')+b.avatar+' '+b.name+' — '+b.specialty;
+  var a=document.getElementById('avatar');if(a)a.textContent=b.avatar;
+  var w=document.getElementById('who');if(w)w.textContent=selectedBots.map(function(i){return botsById[i]?botsById[i].name:i;}).join(' + ');
+  var bp=document.getElementById('botPick');if(bp)bp.value=q;
+  var sb=document.getElementById('sessBot');if(sb)sb.value=q;
+  renderChips();
+  afficherBot(q);
+  try{assurerSeance(q);}catch(e){}
+  try{renderSeances();}catch(e){}
+}
 function renderBotPick(){
   var sel=document.getElementById('botPick');if(!sel)return;
   sel.innerHTML='';
   (cfg.bots||[]).forEach(function(x){var o=document.createElement('option');o.value=x.id;o.textContent=(x.avatar||'')+' '+x.name;sel.appendChild(o);});
   var cur=(selectedBots&&selectedBots[0])||q;try{sel.value=cur;}catch(e){}
-  sel.onchange=function(){choisirBot(this.value);};
-}
-function choisirBot(id){
-  if(typeof botsById==='undefined'||!botsById[id])return;
-  try{flushConvs();}catch(eF){}
-  selectedBots=[id];q=id;
-  try{localStorage.setItem('via-bot',id);}catch(e){}
-  var b=botsById[id];
-  var t=document.getElementById('title');if(t)t.textContent=b.avatar+' '+b.name+' — '+b.specialty;
-  var a=document.getElementById('avatar');if(a)a.textContent=b.avatar;
-  var w=document.getElementById('who');if(w)w.textContent=b.name;
-  var bp=document.getElementById('botPick');if(bp)bp.value=id;
-  var sb=document.getElementById('sessBot');if(sb)sb.value=id;
-  renderChips();
-  afficherBot(id);
-  try{assurerSeance(id);}catch(e){}
-  try{renderSeances();}catch(e){}
+  sel.onchange=function(){basculerBot(this.value);};
 }
 // Affiche la séance active du bot choisi ; sans séance, l'accueil prédéfini
 // (clairement étiqueté, jamais présenté comme une réponse IA).
@@ -619,50 +681,71 @@ function pump(){
 function runItem(item){
   if(eng.provider!=='local')return runRemote(item);
   return ensureEngine().then(function(){
-    var chain=Promise.resolve();
-    // Orchestrateur de sélection : un seul SuperBot prend la parole.
+    // Un seul bot répond à l'utilisateur (choisi par choisirParleur).
+    // Guideoplan = orchestrateur principal : s'il est actif, c'est lui qui parle
+    // et rassemble les contributions des autres bots dans une réponse cohérente.
     var choix=choisirParleur(selectedBots,item.text);
-    var parleurId=choix.id, motifChoix=choix.motif;
-    // Séance active du bot : contexte cloisonné ; la réponse sera rattachée
-    // à cette séance (item.sessionId) et ignorée si elle change entre-temps.
-    try{var _se=assurerSeance(parleurId);if(_se&&!item.sessionId)item.sessionId=_se.id;}catch(xS0){}
-    [parleurId].forEach(function(id){
-      chain=chain.then(function(){
-        if(item.cancelled)return;
-        var bot=botsById[id];if(!bot)return;
-        setState('responding',bot.name);
-        var sd=addStream(bot);
-        genCtl=new AbortController();
-        var h=H(bot.id);h.push({role:'user',content:item.text});
-        var orch=orchestrerBLM(item.text,bot,h);
-        try{if(window.BLMContrat){BLMContrat.tracer(orch,'registre','selection-'+bot.id,motifChoix||'');BLMContrat.tracer(orch,'parcours','requete-'+(item.id||'?'),bot.id);}}catch(xSel){}
-        var prep=preparerEntreeMoteur(orch,item.text,bot);
-        if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
-        try{window.__viaDernierParcours='local CPU/WASM · '+bot.name+' · intention '+((orch&&orch.intention)||'?')+' · '+((prep.msgs||[]).length)+' message(s) · BLM '+etiquetteBLM();if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xP){}
-        // BLM 066 : resoudreMoteur DÉTERMINE le moteur appelé (pas une trace).
-        var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
-        if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
-        return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
-          try{if(item.sessionId){var _cur=null;try{_cur=sessionActiveId(bot.id);}catch(e){}if(_cur&&_cur!==item.sessionId){try{sd.box.remove();}catch(xR){}try{if(window.BLMContrat)BLMContrat.tracer(orch,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
-          r=blmCorrigerReponse(orch,r);
-          r=verifierFinaleBLM(orch,r);
-          sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
-        },function(e){
-          if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
-          else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:bot.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
-        }).then(function(){genCtl=null;});
+    var botId=choix.id,motifChoix=choix.motif;
+    var bot=botsById[botId];if(!bot)return Promise.resolve();
+    // Bibliothèques et BLLM liées à ce bot pour cette demande.
+    var bibs=bibliothequesPourBot(botId);
+    var bllmSel=(typeof ViaBLLM!=='undefined'&&ViaBLLM.selectionner)?ViaBLLM.selectionner(orch&&orch.intention||'message',false,ViaBibliotheques):{blocs:[],liens:[],cooperation:[]};
+    // Samitisation : choix des boucles adaptées et préparation du contexte de raisonnement.
+    var samitisation=null;
+    if(typeof ViaSamitisation!=='undefined'&&ViaSamitisation.choisirBoucles){
+      var choixBoucles=ViaSamitisation.choisirBoucles(item.text,orch&&orch.intention||'message',orch&&orch.perimetre!==false);
+      samitisation={boucles:choixBoucles.boucles,raison:choixBoucles.raison};
+      // Application des boucles sélectionnées
+      var resultatsBoucles=[];
+      choixBoucles.boucles.forEach(function(nomBoucle){
+        var b=ViaSamitisation.BOUCLES[nomBoucle];
+        if(b&&typeof b.appliquer==='function'){
+          try{ resultatsBoucles.push(b.appliquer(item.text,ViaBibliotheques)); }catch(e){}
+        }
       });
-    });
-    return chain.then(function(){
-      if(item.cancelled)return;
-      return xreadTouch(item,item.dernierReponse);
-    }).then(function(){if(!item.cancelled){setState('ready');lastFailure=null;}});
-  },function(e){
-    if(e&&e.code==='NEEDS_CONSENT'){addOnce('sys','Autorise le téléchargement du modèle ci-dessus pour discuter (un seul accord, réutilisé ensuite).');consentShown(true);input.value=item.text;input.focus();}
-    else if(e&&e.code==='NEEDS_LOAD'){queue.unshift(item);addOnce('sys',explain(e));}
-    else if(e&&e.code==='ABORTED'){addOnce('sys','Chargement annulé.');}
-    else{lastFailure={stage:'engine',item:item};}
-  });
+      samitisation.resultats=resultatsBoucles;
+      // Dialectique si sélectionnée
+      if(choixBoucles.boucles.indexOf('dialectique')>=0){
+        samitisation.dialectique=ViaSamitisation.dialectique(item.text,null);
+      }
+      // Tableau de raisonnement si analyse complexe
+      if(choixBoucles.boucles.length>=2){
+        samitisation.tableau=ViaSamitisation.creerTableau('raisonnement',[]);
+      }
+      // Réinitialisation de la mémoire des chemins pour cette demande
+      ViaSamitisation.resetMemoire();
+    }
+    try{if(window.BLMContrat){BLMContrat.tracer({},'registre','bibliotheques-bot-'+botId,bibs.join(','));BLMContrat.tracer({},'parcours','bllm-selection-'+botId,bllmSel.blocs.join(','));}}catch(e){}
+    setState('responding',bot.name);
+    var sd=addStream(bot);
+    genCtl=new AbortController();
+    var h=H(bot.id);h.push({role:'user',content:item.text});
+    var orch=orchestrerBLM(item.text,bot,h);
+    try{if(window.BLMContrat){BLMContrat.tracer(orch,'registre','selection-'+botId,motifChoix||'');BLMContrat.tracer(orch,'parcours','requete-'+(item.id||'?'),botId);}}catch(xSel){}
+    var prep=preparerEntreeMoteur(orch,item.text,bot);
+    if(!prep.ok){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+prep.message);lastFailure={stage:'response',item:item};setState('error',prep.message);return Promise.resolve();}
+    try{window.__viaDernierParcours='local CPU/WASM · '+bot.name+' · intention '+((orch&&orch.intention)||'?')+' · '+((prep.msgs||[]).length)+' message(s) · BLLM '+etiquetteBLLM()+' · bibs:'+bibs.join(',')+' · samit:'+((samitisation&&samitisation.boucles)?samitisation.boucles.join(','):'aucune');if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xP){}
+    var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
+    if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
+    return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
+      try{if(item.sessionId){var _cur=null;try{_cur=sessionActiveId(bot.id);}catch(e){}if(_cur&&_cur!==item.sessionId){try{sd.box.remove();}catch(xR){}try{if(window.BLMContrat)BLMContrat.tracer(orch,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
+      r=blmCorrigerReponse(orch,r);
+      r=verifierFinaleBLM(orch,r);
+      sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
+    },function(e){
+      if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
+      else{sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
+    }).then(function(){genCtl=null;});
+  }).then(function(){
+    if(item.cancelled)return;
+    return xreadTouch(item,item.dernierReponse);
+  }).then(function(){if(!item.cancelled){setState('ready');lastFailure=null;}})
+  .catch(function(e){
+  if(e&&e.code==='NEEDS_CONSENT'){addOnce('sys','Autorise le téléchargement du modèle ci-dessus pour discuter (un seul accord, réutilisé ensuite).');consentShown(true);input.value=item.text;input.focus();}
+  else if(e&&e.code==='NEEDS_LOAD'){queue.unshift(item);addOnce('sys',explain(e));}
+  else if(e&&e.code==='ABORTED'){addOnce('sys','Chargement annulé.');}
+  else{lastFailure={stage:'engine',item:item};}
+});
 }
 function saveConv(id){try{var h=hists[id]||[];var L=lireSeances(id);var sid=sessionActiveId(id);var s=null;for(var i=0;i<L.length;i++)if(L[i]&&L[i].id===sid){s=L[i];break;}if(!s)return;if(h.length){s.messages=h.slice(-40);s.updatedAt=Date.now();if(/^Nouvelle discussion/.test(s.titre||'')){for(var j=0;j<h.length;j++){if(h[j]&&h[j].role==='user'&&String(h[j].content||'').trim()){s.titre=String(h[j].content).trim().slice(0,42);break;}}}}ecrireSeances(id,L);renderSeances();}catch(e){}}
 // --- Séances cloisonnées par bot : chaque séance a son id, ses messages, sa
@@ -750,8 +833,6 @@ function paintIdCard(card){
   var cs=document.getElementById('idcConsent');if(cs)cs.textContent=(c0&&c0.ts)?new Date(c0.ts).toLocaleString():'—';
 }
 function runRemote(item){
-  var choixR=choisirParleur(selectedBots,item.text);
-  var b0=botsById[choixR.id]||botsById[q]||botsById[selectedBots[0]];
   var mode=lireMode();
   if((eng.provider==='ollama'||eng.provider==='custom')&&!String(eng.baseUrl||'').trim()){
     if(mode==='hybride'&&ViaLocalEngine.getConsent()==='granted'&&!item.repliLocal){
@@ -767,41 +848,45 @@ function runRemote(item){
   // BLM 066 : le moteur réellement appelé est celui de resoudreMoteur.
   var rmDistant=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:eng.provider,ollamaUrl:eng.baseUrl,gpuDemande:false}):{moteur:eng.provider+'-distant',repli:'',physique:true};
   if(rmDistant.moteur==='aucun'){addOnce('sys','Erreur : '+rmDistant.repli+'. BLM : '+etiquetteBLM()+'.');setState('error',rmDistant.repli);lastFailure={stage:'response',item:item};working=false;return Promise.resolve();}
-  setState('responding',b0.name);
-  var wait=addWait(b0);
-  genCtl=new AbortController();
-  var key=document.getElementById('pKey').value||null;try{var _seR=assurerSeance(b0.id);if(_seR&&!item.sessionId)item.sessionId=_seR.id;}catch(xSR){}var h=H(b0.id);h.push({role:'user',content:item.text});
-  var orchR=orchestrerBLM(item.text,b0,h);
-  try{if(window.BLMContrat){BLMContrat.tracer(orchR,'registre','selection-'+b0.id,choixR.motif||'choix-distant');BLMContrat.tracer(orchR,'parcours','requete-'+(item.id||'?'),b0.id);}}catch(xSelR){}
-  var prepR=preparerEntreeMoteur(orchR,item.text,b0);
-  if(!prepR.ok){wait.remove();addOnce('sys','Erreur : '+prepR.message);lastFailure={stage:'response',item:item};setState('error',prepR.message);return Promise.resolve();}
-  try{window.__viaDernierParcours=(eng.provider==='ollama'?'Ollama':(eng.provider==='custom'?'Endpoint compatible OpenAI':eng.provider))+' · '+b0.name+' · intention '+((orchR&&orchR.intention)||'?')+' · '+((prepR.msgs||[]).length)+' message(s) · BLM '+etiquetteBLM();if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xPR){}
-  return ViaProviders.chat(eng,b0,prepR.msgs,genCtl.signal,key).then(function(r){
-    try{if(item.sessionId){var _curR=null;try{_curR=sessionActiveId(b0.id);}catch(e){}if(_curR&&_curR!==item.sessionId){wait.remove();try{if(window.BLMContrat)BLMContrat.tracer(orchR,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
-    r=blmCorrigerReponse(orchR,r);
-    r=verifierFinaleBLM(orchR,r);
-    window.__viaLLMVerifie=true;window.__viaLLMVerifieKey=cfgKey(eng);
-    llmStatus={provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',state:'ok',detail:'réponse réellement reçue',at:Date.now()};
-    wait.remove();var moteurDistant=(eng.provider==='ollama'?'Ollama distant (réseau)':(eng.provider==='custom'?'Endpoint distant (réseau)':eng.provider));addPulsed(b0,r,moteurDistant);setState('ready');lastFailure=null;finaliserSortie(b0,h,r,orchR,'succes',item.id||'parcours-standard');afficherMoteurUtilise('réponse en ligne');
-  },function(e){
-    wait.remove();
-    if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
-    else{
-      if(mode==='hybride'&&ViaLocalEngine.getConsent()==='granted'&&!item.repliLocal){
-        try{if(h.length&&h[h.length-1]&&h[h.length-1].role==='user'&&h[h.length-1].content===item.text)h.pop();}catch(xH){}
-        addOnce('sys','Hybride : le serveur en ligne a échoué ('+String((e&&e.code)||'erreur')+') — bascule sur le moteur local.');
-        eng={provider:'local',baseUrl:'',model:''};try{ViaProviders.save(eng);}catch(xS){}
-        item.repliLocal=true;
-        try{fillSettings();}catch(xF){}
-        afficherMoteurUtilise('hybride — repli local après échec en ligne');
-        setState('checking');
-        return demarrerMoteurLocal('repli hybride').then(function(){return runItem(item);});
+  // Tous les bots actifs répondent, chacun avec sa propre séance et sa bulle clairement identifiée.
+  selectedBots.forEach(function(id){
+    var b0=botsById[id];if(!b0)return;
+    setState('responding',b0.name);
+    var wait=addWait(b0);
+    genCtl=new AbortController();
+    var key=document.getElementById('pKey').value||null;try{var _seR=assurerSeance(b0.id);if(_seR&&!item.sessionId)item.sessionId=_seR.id;}catch(xSR){}var h=H(b0.id);h.push({role:'user',content:item.text});
+    var orchR=orchestrerBLM(item.text,b0,h);
+    try{if(window.BLMContrat){BLMContrat.tracer(orchR,'registre','selection-'+b0.id,'actif');BLMContrat.tracer(orchR,'parcours','requete-'+(item.id||'?'),b0.id);}}catch(xSelR){}
+    var prepR=preparerEntreeMoteur(orchR,item.text,b0);
+    if(!prepR.ok){wait.remove();addOnce('sys','Erreur : '+prepR.message);lastFailure={stage:'response',item:item};setState('error',prepR.message);return Promise.resolve();}
+    try{window.__viaDernierParcours=(eng.provider==='ollama'?'Ollama':(eng.provider==='custom'?'Endpoint compatible OpenAI':eng.provider))+' · '+b0.name+' · intention '+((orchR&&orchR.intention)||'?')+' · '+((prepR.msgs||[]).length)+' message(s) · BLM '+etiquetteBLM();if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xPR){}
+    return ViaProviders.chat(eng,b0,prepR.msgs,genCtl.signal,key).then(function(r){
+      try{if(item.sessionId){var _curR=null;try{_curR=sessionActiveId(b0.id);}catch(e){}if(_curR&&_curR!==item.sessionId){wait.remove();try{if(window.BLMContrat)BLMContrat.tracer(orchR,'parcours','reponse-ignoree-seance-fermee',String(item.sessionId));}catch(xT){}genCtl=null;return;}}}catch(e){}
+      r=blmCorrigerReponse(orchR,r);
+      r=verifierFinaleBLM(orchR,r);
+      window.__viaLLMVerifie=true;window.__viaLLMVerifieKey=cfgKey(eng);
+      llmStatus={provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',state:'ok',detail:'réponse réellement reçue',at:Date.now()};
+      wait.remove();var moteurDistant=(eng.provider==='ollama'?'Ollama distant (réseau)':(eng.provider==='custom'?'Endpoint distant (réseau)':eng.provider));addPulsed(b0,r,moteurDistant);setState('ready');lastFailure=null;finaliserSortie(b0,h,r,orchR,'succes',item.id||'parcours-standard');afficherMoteurUtilise('réponse en ligne');
+    },function(e){
+      wait.remove();
+      if((e&&e.code)==='ABORTED'){add('sys','Réponse annulée à ta demande.');}
+      else{
+        if(mode==='hybride'&&ViaLocalEngine.getConsent()==='granted'&&!item.repliLocal){
+          try{if(h.length&&h[h.length-1]&&h[h.length-1].role==='user'&&h[h.length-1].content===item.text)h.pop();}catch(xH){}
+          addOnce('sys','Hybride : le serveur en ligne a échoué ('+String((e&&e.code)||'erreur')+') — bascule sur le moteur local.');
+          eng={provider:'local',baseUrl:'',model:''};try{ViaProviders.save(eng);}catch(xS){}
+          item.repliLocal=true;
+          try{fillSettings();}catch(xF){}
+          afficherMoteurUtilise('hybride — repli local après échec en ligne');
+          setState('checking');
+          return demarrerMoteurLocal('repli hybride').then(function(){return runItem(item);});
+        }
+        if(mode==='online')addOnce('sys','Mode en ligne : aucun repli automatique vers le local. Change de mode ou vérifie l’adresse dans Réglages (Avancé).');
+        if((e&&e.code)==='NOT_LOADED'&&ViaLocalEngine.getConsent()!=='granted')consentShown(true);
+        var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — POST refusé : cette adresse ne répond pas comme une API Ollama (URL et corps affichés ci-dessus). Choix : adresse d’un serveur réellement joignable, ou moteur local.';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b0.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orchR&&orchR.redemandes?orchR.redemandes.length:0)});}catch(ex){}
       }
-      if(mode==='online')addOnce('sys','Mode en ligne : aucun repli automatique vers le local. Change de mode ou vérifie l’adresse dans Réglages (Avancé).');
-      if((e&&e.code)==='NOT_LOADED'&&ViaLocalEngine.getConsent()!=='granted')consentShown(true);
-      var msg='Erreur : '+explain(e);if(eng.provider==='ollama'&&e&&e.code==='HTTP_405')msg+=' — POST refusé : cette adresse ne répond pas comme une API Ollama (URL et corps affichés ci-dessus). Choix : adresse d’un serveur réellement joignable, ou moteur local.';addOnce('sys',msg);lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b0.id,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orchR&&orchR.redemandes?orchR.redemandes.length:0)});}catch(ex){}
-    }
-  }).then(function(){genCtl=null;});
+    }).then(function(){genCtl=null;});
+  });
 }
 // Diagnostic serveur depuis le téléphone : sonde la racine (Ollama répond
 // « Ollama is running ») et /api/tags ({"models":...}). Identifie qui répond
@@ -908,11 +993,10 @@ function relierEtape(etat,deId,versId,etape){
   return false;
 }
 function choisirParleur(ids,texte){
-  // Orchestrateur de sélection : un seul bot parle. Priorité explicite SEULEMENT
-  // si la demande la contient (?bot= présent dans l'URL et bot connu) ; sinon
-  // mémoires pertinentes (noterPertinence), puis chevauchement mots/tags des
-  // fiches COS ; égalité persistante → ordre des chips. Personnalités et
-  // mémoires intactes.
+  // Orchestrateur de sélection : un seul bot parle (Guideoplan = orchestrateur principal).
+  // Guideoplan dirige les autres agents et rassemble leurs contributions dans une
+  // réponse cohérente. Les autres bots interviennent selon leurs rôles, sans donner
+  // plusieurs réponses concurrentes à l'utilisateur.
   var liste=(ids||[]).filter(function(id){return typeof botsById!=='undefined'&&botsById[id];});
   if(!liste.length) return {id:(ids||[])[0]||null,motif:'aucun'};
   if(liste.length===1) return {id:liste[0],motif:'choix-unique'};
@@ -940,7 +1024,32 @@ function choisirParleur(ids,texte){
       if(ch&&ch.id&&botsById[ch.id]) return ch;
     }
   }catch(x){}
+  // Guideoplan orchestrateur principal : si actif, il parle toujours et coordonne les autres bots.
+  if(liste.indexOf('guideoplan')>=0) return {id:'guideoplan',motif:'orchestrateur-principal-guideoplan'};
   return {id:liste[0],motif:'defaut-premier-choisi'};
+}
+// Liaison bibliothèques → bots → BLLM : retourne les bibliothèques pertinentes pour un bot.
+function bibliothequesPourBot(botId){
+  if(!botId)return [];
+  var b=botsById[botId];if(!b)return [];
+  var apps=(b.applications||[]);
+  var out=[];
+  var toutes=(typeof ViaBibliotheques!=='undefined'&&ViaBibliotheques)?ViaBibliotheques.lister():[];
+  for(var i=0;i<toutes.length;i++){
+    var bl=toutes[i];
+    var utile=false;
+    if(bl.utilisePar&&bl.utilisePar.indexOf('bots')>=0)utile=true;
+    if(bl.utilisePar&&bl.utilisePar.indexOf('bots.'+botId)>=0)utile=true;
+    if(botId==='guideoplan')utile=true;
+    if(apps&&apps.length){
+      if(bl.id==='savoir-general'||bl.id==='dico-langues'||bl.id==='dico-sociabilite')utile=true;
+      if(botId==='via'&&bl.id==='dico-via')utile=true;
+      if((botId==='geeko'||botId==='geekette')&&bl.id==='dico-geek')utile=true;
+      if(botId==='theo'&&bl.id==='dico-theo')utile=true;
+    }
+    if(utile&&out.indexOf(bl.id)<0)out.push(bl.id);
+  }
+  return out;
 }
 function finaliserSortie(bot,h,reponse,orch,issue,motif){
   // Orchestrateur de sortie (006) : un seul texte, journal sans brut, sauvegarde.
@@ -1174,7 +1283,9 @@ form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.
   if (window.ViaParcoursGeneration && typeof window.ViaParcoursGeneration.executerParcours === 'function') {
     var b = (typeof botsById !== 'undefined' && botsById[q]) || { id: 'via', name: 'ViA' };
     var estSalut = typeof estSalutation === 'function' && estSalutation(v);
-    if (window.ViaParcoursGeneration.estDisponible() || estSalut) {
+    // Le nouveau parcours (bloc 1) ne gère qu'un seul bot : avec plusieurs bots actifs,
+    // on passe par la file d'attente (runItem) qui fait répondre chaque bot activé.
+    if (selectedBots.length === 1 && (window.ViaParcoursGeneration.estDisponible() || estSalut)) {
       window.ViaParcoursGeneration.executerParcours(v, b,
         function(reponse){ input.focus(); },
         function(err){ /* fallback : l'ancien parcours ci-dessous prend le relais */ }
@@ -1183,7 +1294,7 @@ form.addEventListener('submit',function(e){e.preventDefault();var v=input.value.
       return;
     }
   }
-  var moteurPret=eng&&eng.provider==='local'&&ViaLocalEngine&&ViaLocalEngine.summary&&ViaLocalEngine.summary().phase==='ready';if(estSalutation(v)&&!moteurPret){var chx=choisirParleur(selectedBots,v);var b=botsById[chx.id];if(b){try{assurerSeance(b.id);}catch(e){}var h=H(b.id);h.push({role:'user',content:v});var orch0=null;try{orch0=orchestrerBLM(v,b,h);}catch(e){}var r0=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());var r=r0;try{if(orch0){r=blmCorrigerReponse(orch0,r0);r=verifierFinaleBLM(orch0,r);}}catch(e){r=r0;}h.push({role:'assistant',content:r});add('bot',r,b,'réponse directe (sans moteur)');saveConv(b.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b.id,issue:'succes',motif:'salutation-directe',verdict:'affiche',session:(function(){try{return sessionActiveId(b.id)||'';}catch(x){return '';}})(),redemandes:0});}catch(e){}}input.focus();return;}try{window.__qseq=(window.__qseq||0)+1;}catch(x){}queue.push({id:'q'+Date.now().toString(36)+(window.__qseq||0),text:v,cancelled:false});pump();input.focus();});
+  var moteurPret=eng&&eng.provider==='local'&&ViaLocalEngine&&ViaLocalEngine.summary&&ViaLocalEngine.summary().phase==='ready';if(estSalutation(v)&&!moteurPret){selectedBots.forEach(function(bid){var b=botsById[bid];if(!b)return;try{assurerSeance(b.id);}catch(e){}var h=H(b.id);h.push({role:'user',content:v});var orch0=null;try{orch0=orchestrerBLM(v,b,h);}catch(e){}var r0=reponseSociale(b,v,(function(){try{return localStorage.getItem('via-langue-'+b.id)||'fr';}catch(x){return 'fr';}})());var r=r0;try{if(orch0){r=blmCorrigerReponse(orch0,r0);r=verifierFinaleBLM(orch0,r);}}catch(e){r=r0;}h.push({role:'assistant',content:r});add('bot',r,b,'réponse directe (sans moteur)');saveConv(b.id);try{if(window.BLMJournal)window.BLMJournal.consigner({bot:b.id,issue:'succes',motif:'salutation-directe',verdict:'affiche',session:(function(){try{return sessionActiveId(b.id)||'';}catch(x){return '';}})(),redemandes:0});}catch(e){}});input.focus();return;}try{window.__qseq=(window.__qseq||0)+1;}catch(x){}queue.push({id:'q'+Date.now().toString(36)+(window.__qseq||0),text:v,cancelled:false});pump();input.focus();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
 var actCtl=null;
 function renderActs(){var el=document.getElementById('actList');el.innerHTML='';ViaActions.TOOLS.forEach(function(t){var d=document.createElement('div');var ok=ViaActions.available(t);d.textContent=(ok?'🟢 ':'🔴 ')+t.title+' — '+t.desc+' [accès : '+t.perms+']'+(t.sensitive?' [SENSIBLE : validation exigée]':'')+((t.needs&&!ok)?' [manquant : '+t.needs+']':'');var rb=document.createElement('button');rb.type='button';rb.textContent=ok?'Exécuter':'Indisponible';rb.style.cssText='margin-left:8px;min-height:44px;border-radius:999px;border:1px solid #ffd23f;background:transparent;color:#ffd23f';rb.disabled=!ok;rb.onclick=function(){execAct(t);};d.appendChild(rb);el.appendChild(d);});}

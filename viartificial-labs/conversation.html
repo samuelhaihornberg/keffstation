@@ -22,33 +22,33 @@
 <p data-i18n="viartificial-labs_moteur_en_attente_dautorisation" class="statusline" id="engineBanner" role="status">Moteur : en attente d’autorisation…</p>
 <div id="viaControls" aria-label="Conversation directe" data-i18n="viartificial-labs/conversation.html_bot_mode_local_sur_cet_appareil_hybride__1">
   <label data-i18n="viartificial-labs_bot">Bot <select id="botPick" aria-label="Choisir ViA ou un SuperBot"></select></label>
-  <label data-i18n="viartificial-labs_mode_local_sur_cet_appareil_hybride_blm_">Mode <select id="modePick" aria-label="Mode du moteur">
+  <label data-i18n="viartificial-labs_mode_local_sur_cet_appareil_hybride_bllm_">Mode <select id="modePick" aria-label="Mode du moteur">
     <option value="local">Local — sur cet appareil</option>
-    <option value="hybride">Hybride — BLM locaux + en ligne</option>
+    <option value="hybride">Hybride — BLLM locaux + en ligne</option>
     <option value="online">En ligne — serveur configuré</option>
   </select></label>
   <button data-i18n="viartificial-labs_autoriser_le_moteur_local" id="quickConsent" type="button" hidden>Autoriser le moteur local</button>
   <span data-i18n="viartificial-labs_moteur_utilis_" id="engineUsed" role="status">Moteur utilisé : —</span>
-  <span data-i18n="viartificial-labs_blm_auto-test_en_cours" id="blmUsed">BLM : auto-test en cours…</span>
+  <span data-i18n="viartificial-labs_bllm_auto-test_en_cours" id="bllmUsed">BLLM : auto-test en cours…</span>
 </div>
-<section id="consentBar" hidden aria-label="Accord modèle IA">
-<p data-i18n="viartificial-labs_autoriser_le_tlchargement_du_modle_ia_et"><strong data-i18n="viartificial-labs/conversation.html_autoriser_le_téléchargement_du_modèle_ia_13">Autoriser le téléchargement du modèle IA et son stockage sur cet appareil pour discuter avec les SuperBots ?</strong></p>
-<p data-i18n="viartificial-labs_modle_mo_tlcharger_une_seule_fois_wi-fi_" id="consentSize">Modèle <span id="consentModel">…</span> — ≈ <span id="consentMB">…</span> Mo à télécharger une seule fois (Wi-Fi conseillé). La progression réelle s’affiche pendant le téléchargement.</p>
+<section id="consentBar" hidden aria-label="Accord ViArtificial Labs — cookies et modèle IA">
+<p data-i18n="viartificial-labs_autoriser_le_tlchargement_du_modle_ia_et"><strong data-i18n="viartificial-labs/conversation.html_autoriser_le_téléchargement_du_modèle_ia_13">Autoriser le téléchargement du modèle IA local et son stockage sur cet appareil pour discuter avec ViA et les SuperBots ?</strong></p>
+<p data-i18n="viartificial-labs_modle_mo_tlcharger_une_seule_fois_wi-fi_" id="consentSize">Modèle <span id="consentModel">…</span> — ≈ <span id="consentMB">…</span> Mo à télécharger une seule fois (Wi-Fi conseillé). La progression réelle s'affiche pendant le téléchargement.</p>
 <p data-i18n="viartificial-labs_autoriserplus_tarddtails" class="consentBtns"><button data-i18n="viartificial-labs_autoriser" id="consentGo" type="button">Autoriser</button><button data-i18n="viartificial-labs_plus_tard" id="consentLater" type="button">Plus tard</button><button data-i18n="viartificial-labs_dtails" id="consentDetails" type="button">Détails</button></p>
 <p id="consentNoLocal" hidden style="font-size:.85rem;color:#ff9db1"></p>
 <div id="consentDetailText" hidden data-i18n="viartificial-labs/conversation.html_le_modèle_est_partagé_par_tous_les_super_2">
-<p data-i18n="viartificial-labs_le_modle_est_partag_par_tous_les_superbo">Le modèle est partagé par tous les SuperBots : chacun garde sa personnalité, sa mémoire et ses conversations. Licence : <span id="consentLicense"></span>. Fichiers stockés dans le cache du navigateur, réutilisés sans re-téléchargement ; une fois cet accord donné, le moteur local se charge automatiquement en arrière-plan. Aucun téléchargement sans cet accord.</p>
+<p data-i18n="viartificial-labs_le_modle_est_partag_par_tous_les_superbo">Le modèle local est partagé par tous les SuperBots de ViArtificial Labs : chacun garde sa personnalité, sa mémoire et ses conversations. Licence : <span id="consentLicense"></span>. Fichiers stockés dans le cache du navigateur, réutilisés sans re-téléchargement ; une fois cet accord donné, le moteur local se charge automatiquement en arrière-plan. Aucun téléchargement sans cet accord.</p>
 <h4 data-i18n="viartificial-labs_autorisations_de_la_plateforme_keffstati" style="font-size:.85rem;color:#fff">Autorisations de la plateforme KeffStation (KiffTech, Tricktrocjob, ViArtificial, Videogames)</h4>
 <ul id="permList">
 <li>🧠 Modèle IA local (≈ <span id="pmMB">…</span> Mo) : <strong id="psModel">—</strong></li>
 <li data-i18n="viartificial-labs__stockage_persistant_vite_la_purge_par_l">💾 Stockage persistant (évite la purge par le navigateur) : <strong id="psPersist">—</strong></li>
 <li data-i18n="viartificial-labs__notifications_fin_de_rponse_actions_">🔔 Notifications (fin de réponse, actions) : <strong id="psNotify">—</strong></li>
-<li data-i18n="viartificial-labs__micro_camra_partage_dcran_position_lusa">🎙️ Micro · 📷 Caméra · 🖥️ Partage d’écran · 📍 Position : <strong data-i18n="viartificial-labs/conversation.html_à_lusage_uniquement_14">à l’usage uniquement</strong> <span id="psMediaState"></span></li>
+<li data-i18n="viartificial-labs__micro_camra_partage_dcran_position_lusa">🎙️ Micro · 📷 Caméra · 🖥️ Partage d'écran · 📍 Position : <strong data-i18n="viartificial-labs/conversation.html_à_lusage_uniquement_14">à l'usage uniquement</strong> <span id="psMediaState"></span></li>
 <li data-i18n="viartificial-labs__hors-ligne_service_workers_des_4_pwa_">📴 Hors-ligne (service workers des 4 PWA) : <strong id="psSW">—</strong></li>
 <li data-i18n="viartificial-labs__cookies_traceurs_aucun">🍪 Cookies / traceurs : <strong data-i18n="viartificial-labs/conversation.html_aucun_15">aucun</strong></li>
 </ul>
-<p data-i18n="viartificial-labs_ceci_nest_pas_un_bandeau_cookies_aucun_t">Ceci n’est pas un bandeau cookies : aucun traceur, aucun cookie facultatif. Le bouton « Autoriser » accorde le modèle + stockage persistant + notifications ; micro, caméra, partage d’écran et position restent demandés séparément par le navigateur, uniquement par la fonction qui en a besoin. Accord retirable à tout moment dans ⚙️ Réglages (avec suppression des fichiers).</p>
-<p data-i18n="viartificial-labs_wasm_rduit_le_risque_de_fermeture_par_ma" style="font-size:.82rem;color:#8f96bd">WASM réduit le risque de fermeture par manque de mémoire mais ne le garantit pas : si le navigateur ferme l’onglet, relance la page — le cache évite de tout retélécharger.</p>
+<p data-i18n="viartificial-labs_ceci_nest_pas_un_bandeau_cookies_aucun_t">Cet accord de consentement est propre à ViArtificial Labs. Il ne vaut pas pour les autres applications de KeffStation (KiffTech, Tricktrocjob, Videogames), et le consentement d'une autre application ne vaut pas pour ViArtificial Labs. Le bouton « Autoriser » accorde le modèle local + stockage persistant + notifications ; micro, caméra, partage d'écran et position restent demandés séparément par le navigateur, uniquement par la fonction qui en a besoin. Accord retirable à tout moment dans ⚙️ Réglages (avec suppression des fichiers).</p>
+<p data-i18n="viartificial-labs_wasm_rduit_le_risque_de_fermeture_par_ma" style="font-size:.82rem;color:#8f96bd">WASM réduit le risque de fermeture par manque de mémoire mais ne le garantit pas : si le navigateur ferme l'onglet, relance la page — le cache évite de tout retélécharger.</p>
 </div>
 <div id="progWrap" hidden><div class="term" id="termLog" aria-hidden="true"></div><div id="progBar"><div id="progFill"></div></div><p id="progText" class="term" role="status"></p></div>
 </section>
@@ -58,20 +58,23 @@
 <div id="sessList" style="margin-top:8px"></div>
 <p data-i18n="viartificial-labs_chaque_sance_garde_son_contexte_spar_les" style="font-size:.78rem;color:#8f96bd">Chaque séance garde son contexte séparé. Les anciennes séances restent consultables mais ne rejoignent jamais le contexte sans reprise explicite.</p>
 </section>
-<div id="llmBlmBar" data-i18n="viartificial-labs/conversation.html_charger_le_llm_blm_4"><button data-i18n="viartificial-labs__charger_le_llm_blm" id="llmBlmBtn" type="button">⚡ Charger le LLM + BLM</button><p id="llmBlmMsg" role="status"></p></div>
+<div id="llmBlmBar" data-i18n="viartificial-labs/conversation.html_charger_le_llm_bllm_4"><button data-i18n="viartificial-labs__charger_le_llm_bllm" id="llmBlmBtn" type="button">⚡ Charger le LLM + BLLM</button><p id="llmBlmMsg" role="status"></p></div>
 <div id="loadBar" hidden style="margin:10px 16px 0;max-width:720px" data-i18n="viartificial-labs/conversation.html_charger_le_modèle_local_390_mo_wi_fi_rec_5"><button data-i18n="viartificial-labs__charger_le_modle_local_390_mo_wi-fi_rec" id="loadBtn" type="button" style="min-height:56px;width:100%;padding:12px 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#27d17f,#1e6bff);color:#fff;font-weight:700;font-size:1rem">📥 Charger le modèle local (≈390 Mo, Wi-Fi recommandé)</button><p data-i18n="viartificial-labs_un_seul_moteur_cpuwasm_partag_en_web_wor" style="font-size:.8rem;color:#8f96bd;margin-top:6px">Un seul moteur CPU/WASM partagé en Web Worker, conservé en cache. Aucun téléchargement sans ton appui.</p></div>
+<div id="bllmStatusBar" style="margin:8px 16px 0;padding:8px 12px;border:1px solid rgba(39,209,127,.35);border-radius:10px;background:rgba(39,209,127,.06);font-size:.82rem;color:#b9c0e6">
+  <strong>BLLM :</strong> <span id="bllmDomaines">—</span> · <strong>Bibliothèques :</strong> <span id="bllmBibliotheques">—</span> · <strong>Modèles locaux :</strong> <span id="bllmModeles">—</span>
+</div>
 <section id="settings" hidden aria-label="Réglages">
 <h2 data-i18n="viartificial-labs__rglages">⚙️ Réglages</h2>
 <p id="pMsg" role="status" style="font-size:.85rem;color:#b9c0e6"></p>
-<div id="engineStatus" role="status" aria-live="polite" style="margin:8px 0;border:1px solid rgba(39,209,127,.45);border-radius:12px;padding:10px 12px;background:rgba(39,209,127,.06);font-size:.82rem" data-i18n="viartificial-labs/conversation.html_état_réel_du_moteur_et_des_blm_moteur_ac_6">
-<h4 data-i18n="viartificial-labs_tat_rel_du_moteur_et_des_blm" style="font-size:.88rem;color:#fff;margin-bottom:6px">État réel du moteur et des BLM</h4>
+<div id="engineStatus" role="status" aria-live="polite" style="margin:8px 0;border:1px solid rgba(39,209,127,.45);border-radius:12px;padding:10px 12px;background:rgba(39,209,127,.06);font-size:.82rem" data-i18n="viartificial-labs/conversation.html_état_réel_du_moteur_et_des_bllm_moteur_ac_6">
+<h4 data-i18n="viartificial-labs_tat_rel_du_moteur_et_des_bllm" style="font-size:.88rem;color:#fff;margin-bottom:6px">État réel du moteur et des BLLM</h4>
 <p data-i18n="viartificial-labs_moteur_actif_">Moteur actif : <strong id="stEngine">—</strong></p>
 <p data-i18n="viartificial-labs_modle_utilis_">Modèle utilisé : <span id="stModel">—</span></p>
-<p data-i18n="viartificial-labs_blm_non_tests">BLM : <strong id="stBLM" data-i18n="viartificial-labs/conversation.html_non_testés_17">non testés</strong></p>
-<p data-i18n="viartificial-labs_auto-test_non_lanc" id="stBLMDetail" style="color:#b9c0e6">Auto-test non lancé.</p>
+<p data-i18n="viartificial-labs_bllm_non_tests">BLLM : <strong id="stBLLM" data-i18n="viartificial-labs/conversation.html_non_testés_17">non testés</strong></p>
+<p data-i18n="viartificial-labs_auto-test_non_lanc" id="stBLLMDetail" style="color:#b9c0e6">Auto-test non lancé.</p>
 <p data-i18n="viartificial-labs_test_llm_aucun_test_effectu" id="stLLM" style="color:#b9c0e6">Test LLM : aucun test effectué.</p>
 <p data-i18n="viartificial-labs_dernier_parcours_aucune_requte_depuis_le" id="stPath" style="color:#8f96bd">Dernier parcours : aucune requête depuis le chargement.</p>
-<p data-i18n="viartificial-labs_relancer_lauto-test_blm"><button data-i18n="viartificial-labs_relancer_lauto-test_blm" id="blmTestBtn" type="button">Relancer l’auto-test BLM</button></p>
+<p data-i18n="viartificial-labs_relancer_lauto-test_bllm"><button data-i18n="viartificial-labs_relancer_lauto-test_bllm" id="bllmTestBtn" type="button">Relancer l'auto-test BLLM</button></p>
 </div>
 <p data-i18n="viartificial-labs_accord_modle_ia_" style="font-size:.85rem">Accord modèle IA : <strong id="consentState">—</strong></p>
 <p data-i18n="viartificial-labs_pulsation_des_rponses_mot_mot" style="font-size:.85rem"><label data-i18n="viartificial-labs_pulsation_des_rponses_mot_mot" style="display:flex;gap:8px;align-items:center;min-height:48px"><input id="pulseChk" type="checkbox" checked style="width:44px;min-height:44px"> Pulsation des réponses (mot à mot)</label></p>
@@ -118,6 +121,9 @@
 <script src="./capabilities.js"></script>
 <script src="./local-wasm.js"></script>
 <script src="./local-engine.js"></script>
+<script src="./src/bibliotheques.js"></script>
+<script src="./src/bllm-core.js"></script>
+<script src="./src/bllm-samitisation.js"></script>
 <script src="./dico-loader.js"></script>
 <script src="conversation-inline-02.js" ></script>
 <script src="./src/memoire-classee.js"></script>
