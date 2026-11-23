@@ -110,6 +110,7 @@ function appliquerMode(mode,silencieux){
   if(!silencieux)afficherMoteurUtilise();
 }
 function demarrerMoteurLocal(raison){
+  loadArmed=true; // Auto-consent : toujours armé
   if(ViaLocalEngine.getConsent()!=='granted'){setState('needs-consent');afficherMoteurUtilise(raison?('local non autorisé — '+raison):'local non autorisé');return Promise.resolve(false);}
   var ph='';try{ph=ViaLocalEngine.summary().phase;}catch(e){}
   if(ph==='ready'||ph==='generating'){setState('ready');afficherMoteurUtilise(raison||'déjà chargé');return Promise.resolve(true);}
@@ -497,12 +498,32 @@ function paintTerm(){var el=document.getElementById('termLog');if(!el)return;var
 function ensureEngine(){
   var sm=ViaLocalEngine.summary();
   if(sm.phase==='ready')return Promise.resolve(true);
+  // Auto-consent : attendre que le moteur soit prêt (ne pas rejeter)
+  if(sm.phase==='loading'||sm.phase==='preparing'||sm.phase==='checking'||sm.phase==='downloading'){
+    return new Promise(function(resolve, reject) {
+      var attempts = 0;
+      var maxAttempts = 120;
+      var interval = setInterval(function() {
+        attempts++;
+        var s = ViaLocalEngine.summary();
+        if (s.phase === 'ready') { clearInterval(interval); resolve(true); }
+        else if (s.phase === 'error' || s.phase === 'unavailable') { clearInterval(interval); reject(new Error('Moteur non disponible: ' + (s.detail || ''))); }
+        else if (attempts >= maxAttempts) { clearInterval(interval); reject(new Error('Delai depasse: le moteur n est pas pret apres 60s')); }
+      }, 500);
+    });
+  }
   if(enginePromise){
     if(!promesseMoteurValide()){/* obsolète : on la jette, on repart proprement */}
     else return enginePromise;
   }
-  // JAMAIS de démarrage automatique : seul le bouton « Charger » arme le chargement.
-  if(!loadArmed){var e0=new Error('Chargement non demandé : appuie sur « Charger le modèle local ».');e0.code='NEEDS_LOAD';return Promise.reject(e0);}
+  // Auto-consent : démarrer le chargement automatiquement
+  loadArmed=true;
+  if(ViaLocalEngine.getConsent()==='granted'){
+    return ViaLocalEngine.initAutoLoad(function(p){
+      setState('checking');afficherMoteurUtilise('Chargement du modele local : '+(p.progress||0)+'%');
+    }).then(function(){return true;});
+  }
+  var e0=new Error('Chargement non demande');e0.code='NEEDS_LOAD';return Promise.reject(e0);
   enginePromise=(async function(){
     var c=ViaLocalEngine.getConsent();
     if(c!=='granted'){setState('needs-consent');consentShown(true);var e1=new Error('Autorisation requise pour télécharger le modèle.');e1.code='NEEDS_CONSENT';throw e1;}
@@ -688,6 +709,9 @@ function pump(){
 }
 function runItem(item){
   if(eng.provider!=='local')return runRemote(item);
+  // Afficher l'état de chargement si le moteur n'est pas encore prêt
+  var sm0=ViaLocalEngine.summary();
+  if(sm0.phase!=='ready'){setState('checking');afficherMoteurUtilise('Chargement du moteur en cours…');}
   return ensureEngine().then(function(){
     // Un seul bot répond à l'utilisateur (choisi par choisirParleur).
     // Guideoplan = orchestrateur principal : s'il est actif, c'est lui qui parle

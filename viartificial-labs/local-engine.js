@@ -37,6 +37,8 @@
   var LOAD_MODEL = null;
   var LOAD_PROGRESS = 0;
   var LOAD_DETAIL = '';
+  // Promesse d'initialisation partagée pour éviter les initialisations simultanées
+  var initPromise = null;
   function getLoadState() { return { state: LOAD_STATE, model: LOAD_MODEL, progress: LOAD_PROGRESS, detail: LOAD_DETAIL }; }
   function setLoadState(state, model, progress, detail) {
     LOAD_STATE = state; LOAD_MODEL = model; LOAD_PROGRESS = progress || 0; LOAD_DETAIL = detail || '';
@@ -96,7 +98,13 @@
   // Initialise automatiquement le chargement des LLM locaux après consentement cookie ViA.
   // Ne nécessite aucun clic manuel sur « Charger » pour le fonctionnement normal.
   async function initAutoLoad(onTick, wantId) {
+    // Promesse partagée : empêche les initialisations simultanées
+    if (initPromise) {
+      try { console.log('[local-engine] initAutoLoad : réutilisation de la promesse existante'); } catch (e) {}
+      return initPromise;
+    }
     try { console.log('[local-engine] initAutoLoad appelé. ViaWasmEngine disponible:', !!global.ViaWasmEngine); } catch (e) {}
+    initPromise = (async function () {
     var c = getConsent();
     if (c !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement cookie ViArtificial Labs.'); return { state: 'waiting-consent', detail: 'Consentement requis.' }; }
     setLoadState('preparing', wantId || MODELS[0].id, 0, 'Vérification de l’appareil et sélection du modèle…');
@@ -149,6 +157,7 @@
       if (e.code === 'ABORTED') { setLoadState('idle', null, 0, 'Chargement annulé.'); return { state: 'aborted' }; }
       throw e;
     }
+    })().finally(function () { initPromise = null; }); // fin de la promesse partagée, reset pour retry
   }
   async function autoLoad(onTick, wantId) {
     var c = getConsent();

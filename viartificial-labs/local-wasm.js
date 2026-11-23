@@ -87,7 +87,15 @@
   }
   async function chat(bot, history, opt) {
     if (!worker || S.phase !== 'ready') throw err('NOT_LOADED', 'Modèle non chargé : appuie sur « Charger le modèle local », puis réessaie.');
-    if (busy) throw err('BUSY', 'Génération déjà en cours : attends ou annule.');
+    // Attendre que le moteur ne soit plus occupé (max 30s)
+    if (busy) {
+      var waitAttempts = 0;
+      while (busy && waitAttempts < 60) {
+        await new Promise(function (resolve) { setTimeout(resolve, 500); });
+        waitAttempts++;
+      }
+      if (busy) throw err('BUSY_TIMEOUT', 'Le moteur est occupé depuis trop longtemps. Réessaie.');
+    }
     busy = true; set('generating', 'génération…');
     var o = opt || {};
     try {
