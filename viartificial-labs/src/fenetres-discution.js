@@ -351,10 +351,36 @@
         botDiv.textContent = 'Erreur : ' + (e && e.message ? e.message : e);
       });
     } else {
-      // Réponse simulée (sans moteur)
+      // Réponse conversationnelle (sans moteur LLM local)
       setTimeout(function () {
-        botDiv.textContent = 'Réponse simulée (moteur non chargé). Activez le moteur local pour une vraie réponse.';
-      }, 500);
+        var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0], specialty: '', personality: '' };
+        var langue = 'fr';
+        try { langue = localStorage.getItem('via-langue-' + bot.id) || 'fr'; } catch (e) {}
+        var rep = '';
+        // Utiliser reponseSociale si disponible (BLLM)
+        if (global.reponseSociale) {
+          rep = global.reponseSociale(bot, text, langue);
+        } else if (window.BLMUsages && window.BLMUsages.choisirFormule) {
+          try {
+            var dt = (window.BLMUsages.distinguerDemande) ? window.BLMUsages.distinguerDemande(text) : 'salutation-simple';
+            var f = window.BLMUsages.choisirFormule(dt, langue, text);
+            if (f && f.formule) rep = f.formule;
+          } catch (e) {}
+        }
+        if (!rep) {
+          // Réponse de repli conversationnelle basée sur le bot
+          var nom = bot.name || botIds[0];
+          if (/^(salut|bonjour|bonsoir|coucou|hello|yo|hey)/i.test(text.trim())) {
+            rep = "Salut ! C'est " + nom + ". Comment tu vas ?";
+          } else if (/[?]/.test(text)) {
+            rep = 'Bonne question. Laisse-moi réfléchir... (moteur local en cours de chargement pour une réponse plus complète)';
+          } else {
+            rep = "Je t'écoute. Continue, je suis là. (" + nom + ')';
+          }
+        }
+        botDiv.textContent = rep;
+        ajouterLecteurAudio(botDiv, rep);
+      }, 300);
     }
   }
 

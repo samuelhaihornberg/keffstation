@@ -741,10 +741,16 @@ function runItem(item){
     return xreadTouch(item,item.dernierReponse);
   }).then(function(){if(!item.cancelled){setState('ready');lastFailure=null;}})
   .catch(function(e){
-  if(e&&e.code==='NEEDS_CONSENT'){addOnce('sys','Autorise le téléchargement du modèle ci-dessus pour discuter (un seul accord, réutilisé ensuite).');consentShown(true);input.value=item.text;input.focus();}
-  else if(e&&e.code==='NEEDS_LOAD'){queue.unshift(item);addOnce('sys',explain(e));}
-  else if(e&&e.code==='ABORTED'){addOnce('sys','Chargement annulé.');}
-  else{lastFailure={stage:'engine',item:item};}
+  // Réponse conversationnelle de repli (sans moteur LLM)
+  var bot0=(botsById&&botsById[selectedBots[0]])||{id:selectedBots[0]||'via',name:selectedBots[0]||'ViA',specialty:'',personality:''};
+  var langue0='fr';try{langue0=localStorage.getItem('via-langue-'+bot0.id)||'fr';}catch(x){}
+  var rep0='';
+  if(typeof reponseSociale==='function'){rep0=reponseSociale(bot0,item.text,langue0);}
+  if(!rep0){rep0='Je t' + "'" + 'ecoute. ('+bot0.name+')';}
+  add('bot',rep0,bot0,'conversation (sans moteur)');
+  saveConv(bot0.id);
+  if(e&&e.code==='NEEDS_CONSENT'){consentShown(true);}
+  input.focus();
 });
 }
 function saveConv(id){try{var h=hists[id]||[];var L=lireSeances(id);var sid=sessionActiveId(id);var s=null;for(var i=0;i<L.length;i++)if(L[i]&&L[i].id===sid){s=L[i];break;}if(!s)return;if(h.length){s.messages=h.slice(-40);s.updatedAt=Date.now();if(/^Nouvelle discussion/.test(s.titre||'')){for(var j=0;j<h.length;j++){if(h[j]&&h[j].role==='user'&&String(h[j].content||'').trim()){s.titre=String(h[j].content).trim().slice(0,42);break;}}}}ecrireSeances(id,L);renderSeances();}catch(e){}}
