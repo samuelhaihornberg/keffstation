@@ -360,16 +360,14 @@ function testerLLM(timeoutMs){
 function fillSettings(){var pp=document.getElementById('pProvider');if(pp)pp.value=eng.provider;document.getElementById('pUrl').value=eng.baseUrl||'';document.getElementById('pModel').value=eng.model||'';llmStatus={state:'unverified',provider:eng.provider,baseUrl:eng.baseUrl||'',model:eng.model||'',detail:'aucun test effectué',at:0};if(eng.provider!=='local'){window.__viaLLMVerifie=false;window.__viaLLMVerifieKey='';}paintEngineStatus();}
 function consentShown(v){document.getElementById('consentBar').hidden=!v;}
 function refreshConsent(){
-  var c=ViaLocalEngine.getConsent();
-  // Accord retiré : on réaffiche la barre UNE fois (flag), puis on respecte le refus.
-  var reshown=false; try{reshown=!!localStorage.getItem('via-bar-reshown');}catch(e){}
-  if(c==='withdrawn'&&!reshown){consentShown(true);try{localStorage.setItem('via-bar-reshown','1');}catch(e){}}
-  else consentShown(c===null);
+  // Auto-consent activé : pas de barre de consentement, chargement automatique.
+  var c='granted';
+  try{ViaLocalEngine.setConsent('granted');}catch(e){}
+  consentShown(false);
   var st=document.getElementById('consentState');
-  if(st)st.textContent=c==='granted'?'accordé':c==='later'?'reporté (redemandé à l’envoi)':c==='withdrawn'?'retiré':'non demandé';
-  var qc=document.getElementById('quickConsent');if(qc)qc.hidden=!(c!=='granted'&&lireMode()!=='online');
+  if(st)st.textContent='accordé (auto)';
+  var qc=document.getElementById('quickConsent');if(qc)qc.hidden=true;
   paintPick(window.__viaCap||null);
-  var lic=document.getElementById('consentLicense');if(lic)lic.textContent='Apache 2.0 — usage autorisé pour discuter avec les SuperBots sur cet appareil.';
   paintStorage();paintIdCard();paintEngineStatus();
 }
 // Taille réelle par appareil détecté (sans télécharger) + blocage explicite

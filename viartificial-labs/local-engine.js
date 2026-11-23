@@ -28,7 +28,9 @@
   // autres applications de KeffStation, et le consentement d'une autre
   // application ne vaut pas pour ViArtificial Labs.
   var CONSENT_KEY = 'via-consent'; // {state:'granted'|'later'|'withdrawn', ts}
-  function getConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
+  function getConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null'); if (o && o.state) return o.state; } catch (e) {} // Auto-consent : chargement automatique comme ChatGPT/Grok/Gemini
+  try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ state: 'granted', ts: Date.now() })); } catch (e) {}
+  return 'granted'; }
   function setConsent(state) { try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
   // État du chargement : 'idle' | 'preparing' | 'loading' | 'ready' | 'unavailable' | 'error'
   var LOAD_STATE = 'idle';

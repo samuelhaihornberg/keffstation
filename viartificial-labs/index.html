@@ -127,8 +127,9 @@
   fetch('./bots.json').then(function(r){return r.json();}).then(function(data){
     window.botsById={};
     (data.bots||[]).forEach(function(b){window.botsById[b.id]=b;});
-    // Auto-chargement du moteur local si consentement déjà accordé
-    if(window.ViaLocalEngine&&window.ViaLocalEngine.getConsent()==='granted'){
+    // Auto-chargement du moteur local (sans consentement requis)
+    if(window.ViaLocalEngine){
+      try { window.ViaLocalEngine.setConsent('granted'); } catch(e) {}
       window.ViaLocalEngine.initAutoLoad(function(p){
         console.log('Chargement modèle local:', p.progress||0, '%');
       }).then(function(){
