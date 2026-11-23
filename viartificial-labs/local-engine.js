@@ -104,14 +104,25 @@
       var needMB = pick.downloadMB || 200;
       var st = await storageCheck(needMB);
       if (!st.ok) { setLoadState('unavailable', pick.model || wantId, 0, 'Stockage insuffisant : il faut ≈' + needMB + ' Mo libres (utilisé ' + st.usageMB + ' / quota ' + st.quotaMB + ' Mo).'); throw Object.assign(new Error('Stockage insuffisant'), { code: 'STORAGE_FULL' }); }
-      if (!global.ViaWasmEngine) { setLoadState('error', pick.model || wantId, 0, 'Moteur CPU non chargé : recharge la page.'); throw Object.assign(new Error('Moteur CPU non chargé : recharge la page.'), { code: 'NOT_LOADED' }); }
+      if (!global.ViaWasmEngine) {
+        var msg = 'Moteur CPU non disponible. Vérifiez que local-wasm.js est chargé et que votre navigateur supporte les Web Workers (Chrome, Firefox, Safari, Edge récents).';
+        setLoadState('error', pick.model || wantId, 0, msg);
+        throw Object.assign(new Error(msg), { code: 'NOT_LOADED' });
+      }
       setLoadState('loading', pick.model || wantId, 0, 'Téléchargement et chargement du modèle local en cours…');
-      var result = await global.ViaWasmEngine.load(wantId || null, function (p) {
-        setLoadState('loading', pick.model || wantId, p.progress || 0, p.detail || 'Chargement en cours…');
-      });
-      // Le modèle est maintenant chargé et prêt
-      setLoadState('ready', pick.model || wantId, 100, 'Modèle local prêt et chargé.');
-      return result;
+      try {
+        var loadResult = await global.ViaWasmEngine.load(wantId || null, function (p) {
+          setLoadState('loading', pick.model || wantId, p.progress || 0, p.detail || 'Chargement en cours…');
+        });
+        // Le modèle est maintenant chargé et prêt
+        setLoadState('ready', pick.model || wantId, 100, 'Modèle local prêt et chargé.');
+        return loadResult;
+      } catch (loadErr) {
+        var errMsg = (loadErr && loadErr.message) ? loadErr.message : 'Échec inconnu du chargement CPU';
+        var errCode = (loadErr && loadErr.code) ? loadErr.code : 'LOAD_ERROR';
+        setLoadState('error', pick.model || wantId, 0, errMsg);
+        throw Object.assign(new Error(errMsg), { code: errCode });
+      }
     } catch (e) {
       if (e.code === 'ABORTED') { setLoadState('idle', null, 0, 'Chargement annulé.'); return { state: 'aborted' }; }
       throw e;
