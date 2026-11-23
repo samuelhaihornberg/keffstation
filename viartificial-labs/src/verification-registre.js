@@ -24,8 +24,11 @@
     }
 
     // Vérifier BlmEquipe
-    if (global.BlmEquipe) {
-      var be = global.BlmEquipe;
+    var be = global.BlmEquipe;
+    if (!be && typeof require !== 'undefined') {
+      try { be = require('./blm-equipe.js'); } catch (e) {}
+    }
+    if (be) {
       // Vérifier GROUPE_COMPLET
       if (be.GROUPE_COMPLET) {
         resultats.totalTrouve = be.GROUPE_COMPLET.length;
@@ -43,13 +46,14 @@
       // Vérifier les vagues
       if (be.VAGUES) {
         be.VAGUES.forEach(function (v) {
-          if (resultats.vagues[v.nom.replace('socle-', '').replace('comprendre-', '').replace('contexte-', '').replace('decider-', '').replace('juger-', '').replace('finaliser-', '')]) {
-            // normalize
-          }
-          var waveKey = v.nom.split('-')[0].toUpperCase().replace('SOCLE', 'S1').replace('COMPRENDRE', 'S2').replace('CONTEXTE', 'S3').replace('DECIDER', 'S4').replace('JUGER', 'S5').replace('FINALISER', 'S6');
-          if (resultats.vagues[waveKey]) {
-            resultats.vagues[waveKey] = v.blocs || [];
-          }
+          var waveKey = 'S1';
+          if (v.nom.indexOf('socle') >= 0) waveKey = 'S1';
+          else if (v.nom.indexOf('comprendre') >= 0) waveKey = 'S2';
+          else if (v.nom.indexOf('contexte') >= 0) waveKey = 'S3';
+          else if (v.nom.indexOf('decider') >= 0) waveKey = 'S4';
+          else if (v.nom.indexOf('juger') >= 0) waveKey = 'S5';
+          else if (v.nom.indexOf('finaliser') >= 0) waveKey = 'S6';
+          resultats.vagues[waveKey] = v.blocs || [];
         });
       }
       // Vérifier NOYAU_100
@@ -59,8 +63,12 @@
     }
 
     // Vérifier BlmNouveauxBlocs
-    if (global.BlmNouveauxBlocs && global.BlmNouveauxBlocs.NOUVEAUX_BLOCS) {
-      var nb = Object.keys(global.BlmNouveauxBlocs.NOUVEAUX_BLOCS);
+    var nbMod = global.BlmNouveauxBlocs;
+    if (!nbMod && typeof require !== 'undefined') {
+      try { nbMod = require('./blm-nouveaux-blocs.js'); } catch (e) {}
+    }
+    if (nbMod && nbMod.NOUVEAUX_BLOCS) {
+      var nb = Object.keys(nbMod.NOUVEAUX_BLOCS);
       // Vérifier que 111-192 sont présents
       for (var i = 111; i <= 192; i++) {
         if (nb.indexOf(String(i)) < 0) resultats.manquants.push(String(i));
@@ -151,4 +159,4 @@
   if (typeof window !== 'undefined') {
     window.ViaVerificationRegistre = { verifierRegistre: verifierRegistre, calculerGraphe: calculerGraphe };
   }
-})(window);
+})(typeof window !== "undefined" ? window : global);
