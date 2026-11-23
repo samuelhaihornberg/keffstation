@@ -562,6 +562,50 @@
   height: 100% !important;
   border-radius: 0;
 }
+/* Responsive : mobile */
+@media (max-width: 720px) {
+  .via-window {
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    border-radius: 0;
+    min-width: 100%;
+    min-height: 100%;
+  }
+  .via-window-resize { display: none; }
+  .via-window-toolbar { gap: 2px; padding: 4px; }
+  .via-btn { padding: 3px 6px; font-size: 0.75rem; min-height: 36px; }
+  .via-window-messages { padding: 8px; }
+  .via-msg { max-width: 95%; font-size: 0.9rem; }
+  .via-window-input { font-size: 16px; }
+  .via-window-header { padding: 6px 8px; }
+  .via-window-title { font-size: 0.8rem; }
+  .via-window-controls button { width: 32px; height: 32px; }
+}
+/* Responsive : tablette */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .via-window {
+    max-width: 90vw;
+    max-height: 85vh;
+  }
+  .via-msg { max-width: 90%; }
+}
+/* Responsive : ordinateur */
+@media (min-width: 1101px) {
+  .via-window {
+    max-width: 80vw;
+    max-height: 90vh;
+  }
+}
+/* Safe area pour iPhone notch */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .via-window-input-area { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+}
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .via-window, .via-btn { transition: none !important; animation: none !important; }
+}
 .via-window-history-panel {
   position: absolute;
   top: 50px;
