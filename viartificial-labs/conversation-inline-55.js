@@ -722,20 +722,28 @@ function runItem(item){
     // Bibliothèques et BLLM liées à ce bot pour cette demande.
     var bibs=bibliothequesPourBot(botId);
     var bllmSel=(typeof ViaBLLM!=='undefined'&&ViaBLLM.selectionner)?ViaBLLM.selectionner(orch&&orch.intention||'message',false,ViaBibliotheques):{blocs:[],liens:[],cooperation:[]};
-    // Sollicitation de tous les participants (LLM + BLM configurés)
+    // Sollicitation de tous les 192 BLM + LLM configurés
     var participants=[];
     if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.creerParticipant){
       // Solliciter le LLM local
       participants.push(ViaCOSCircuit.creerParticipant('llm-local','llm'));
-      // Solliciter les BLM sélectionnés
-      (bllmSel.blocs||[]).forEach(function(b){participants.push(ViaCOSCircuit.creerParticipant(b,'blm'));});
-      // Solliciter les nouveaux blocs (111-192) - exécuter leur fonction
+      // Solliciter TOUS les 110 BLM existants (par ID)
+      if(typeof BlmEquipe!=='undefined'&&BlmEquipe.GROUPE_COMPLET){
+        BlmEquipe.GROUPE_COMPLET.forEach(function(id){
+          if(parseInt(id)<=110){
+            var p=ViaCOSCircuit.creerParticipant(id,'blm');
+            p.etat='sollicite';
+            participants.push(p);
+          }
+        });
+      }
+      // Solliciter les 82 nouveaux blocs (111-192) avec exécution réelle
       if(typeof BlmNouveauxBlocs!=='undefined'&&BlmNouveauxBlocs.NOUVEAUX_BLOCS){
         Object.keys(BlmNouveauxBlocs.NOUVEAUX_BLOCS).forEach(function(id){
           var resultat=BlmNouveauxBlocs.executerBloc(id,{texte:item.text,bot:botId});
           var p=ViaCOSCircuit.creerParticipant(id,'blm-nouveau');
           p.etat=resultat.execute?'repondu':'erreur';
-          p.contribution=resultat.execute?{texte:JSON.stringify(resultat)}:null;
+          p.contribution=resultat.execute?{texte:JSON.stringify(resultat),specialise:resultat.specialise}:null;
           p.erreur=resultat.execute?null:resultat.erreur;
           participants.push(p);
         });

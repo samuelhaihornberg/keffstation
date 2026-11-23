@@ -97,11 +97,14 @@
         blocsTransversaux: 8
       },
       connexionsExistantes: 677,
+      sourceConnexions: 'ABSENTE - aucune donnée source avec 677 connexions trouvée dans le dépôt',
+      migrationBloquee: true,
+      fichierImportNecessaire: 'connexions-677.json ou matrice-v1.csv avec les 677 liens',
       connexionsMigrees: 0,
       connexionsNonTypees: 0,
       doublonsExacts: 0,
       doublonsPotentiels: 0,
-      connexionsDistinctes: 677,
+      connexionsDistinctes: 0, // non calculable sans données source
       canaux: 35,
       matrices: 10,
       webgpu: 'indisponible',

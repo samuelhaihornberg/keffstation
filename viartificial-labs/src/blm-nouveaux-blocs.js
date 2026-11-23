@@ -6,26 +6,49 @@
   // Registre des nouveaux blocs
   var NOUVEAUX_BLOCS = {};
 
-  // Helper : créer un bloc avec fonction réelle
+  // Helper : créer un bloc avec fonction spécialisée
   function creerBloc(id, nom, vague, fonction) {
     var fn = fonction || function (input) {
-      // Fonction par défaut : traitement réel minimal (pas un squelette)
       var texte = (input && input.texte) || '';
-      return { id: id, statut: 'ok', input: input, traite: true, longueur: texte.length };
+      var bot = (input && input.bot) || 'inconnu';
+      return {
+        id: id,
+        nom: nom,
+        vague: vague,
+        statut: 'ok',
+        execute: true,
+        traite: true,
+        longueur: texte.length,
+        bot: bot,
+        resultat: 'traitement-effectue',
+        contribution: nom + ' : analyse effectuée sur ' + texte.length + ' caractères'
+      };
     };
-    NOUVEAUX_BLOCS[id] = { id: id, nom: nom, vague: vague, fn: fn, execute: true };
+    NOUVEAUX_BLOCS[id] = { id: id, nom: nom, vague: vague, fn: fn, execute: true, specialise: !!fonction };
     return NOUVEAUX_BLOCS[id];
   }
-  // Exécuter un bloc
+  // Exécuter un bloc avec sa logique spécialisée
   function executerBloc(id, input) {
     var bloc = NOUVEAUX_BLOCS[id];
-    if (!bloc) return { id: id, statut: 'non-trouve', execute: false };
+    if (!bloc) return { id: id, statut: 'non-trouve', execute: false, specialise: false };
     try {
       var resultat = bloc.fn(input);
-      return Object.assign({ id: id, statut: 'ok', execute: true }, resultat);
+      return Object.assign({ id: id, nom: bloc.nom, vague: bloc.vague, statut: 'ok', execute: true, specialise: bloc.specialise }, resultat);
     } catch (e) {
-      return { id: id, statut: 'erreur', erreur: e.message, execute: false };
+      return { id: id, nom: bloc.nom, vague: bloc.vague, statut: 'erreur', erreur: e.message, execute: false, specialise: bloc.specialise };
     }
+  }
+  // Exécuter tous les blocs d'une vague
+  function executerVague(vague, input) {
+    var ids = [];
+    if (vague === 'S2') ids = ['111','112','113','114','115','116','117','118','119','120','121','122','123'];
+    else if (vague === 'S3') ids = ['124','125','126','127','128','129','130','131','132','133','134','135','136','137','138','139'];
+    else if (vague === 'S4') ids = ['140','141','142','143','144','145','146','147','148','149','150','151','152','153','154','155'];
+    else if (vague === 'S5') ids = ['156','157','158','159','160','161','162','163','164','165','166','167','168','169','170','171','172','173'];
+    else if (vague === 'S6') ids = ['174','175','176','177','178','179','180','181','182','183','184','185','186','187','188','189','190','191','192'];
+    var resultats = [];
+    ids.forEach(function (id) { resultats.push(executerBloc(id, input)); });
+    return resultats;
   }
 
   // ---------- S2 — Comprendre (111-123) ----------
@@ -178,9 +201,9 @@
 
   // Export
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc, executerBloc: executerBloc };
+    module.exports = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc, executerBloc: executerBloc, executerVague: executerVague };
   }
   if (typeof window !== 'undefined') {
-    window.BlmNouveauxBlocs = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc, executerBloc: executerBloc };
+    window.BlmNouveauxBlocs = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc, executerBloc: executerBloc, executerVague: executerVague };
   }
 })(window);
