@@ -65,28 +65,34 @@
 
     <section class="superbots-grid">
       <div class="bot-card">
-        <span class="bot-icon">🧠</span>
+        <span class="bot-icon">🪞</span>
         <h3 class="bot-title">ViA</h3>
-        <p class="bot-desc">Assistant personnel, coach, analyste. Configurez votre miroir IA avec personnalité, ton et limites.</p>
-        <button class="bot-btn">Configurer ViA</button>
+        <p class="bot-desc">Sociabilité : échanges chaleureux, conversation naturelle et relances adaptées.</p>
+        <button class="bot-btn" data-bot="via">Ouvrir ViA</button>
       </div>
       <div class="bot-card">
-        <span class="bot-icon">🗣️</span>
+        <span class="bot-icon">🛡️</span>
         <h3 class="bot-title">BTB + Golem</h3>
-        <p class="bot-desc">BTB valide, Golem exécute. Pipeline CI/CD, tests auto, rollback auto. Architecture zero-trust.</p>
-        <button class="bot-btn">Ouvrir BTB + Golem</button>
+        <p class="bot-desc">Architecture, moteurs, débogage bit par bit. Duo technique pour les projets.</p>
+        <button class="bot-btn" data-bots="btb,golemotor">Ouvrir BTB + Golem</button>
       </div>
       <div class="bot-card">
-        <span class="bot-icon">👾</span>
-        <h3 class="bot-title">Geeko Geekette</h3>
-        <p class="bot-desc">Dev companion : revues code, debug, doc auto, tests unitaires. Intégration VS Code, GitHub, GitLab.</p>
-        <button class="bot-btn">Lancer Geeko</button>
+        <span class="bot-icon">🧑‍💻</span>
+        <h3 class="bot-title">Geeko + Geekette</h3>
+        <p class="bot-desc">Partenaires de jeu et projets. Fun, complicité dev et stratégie.</p>
+        <button class="bot-btn" data-bots="geeko,geekette">Ouvrir Geeko + Geekette</button>
       </div>
       <div class="bot-card">
         <span class="bot-icon">🧭</span>
         <h3 class="bot-title">Guideoplan — Orchestrateur principal</h3>
         <p class="bot-desc">Dirige les autres agents et rassemble leurs contributions dans une réponse cohérente. Plans personnels et professionnels, organisation et suivi.</p>
-        <button class="bot-btn">Ouvrir Guideoplan</button>
+        <button class="bot-btn" data-bot="guideoplan">Ouvrir Guideoplan</button>
+      </div>
+      <div class="bot-card">
+        <span class="bot-icon">📚</span>
+        <h3 class="bot-title">Theo</h3>
+        <p class="bot-desc">Narration, interprétation, lecture et traduction en direct.</p>
+        <button class="bot-btn" data-bot="theo">Ouvrir Theo</button>
       </div>
     </section>
 
@@ -113,6 +119,28 @@
     ViArtificial-Labs — Plateforme IA local-first • KeffStation
   </footer>
 <script src="./clear-cache.js"></script>
+<script src="./src/fenetres-discution.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.ViaFenetres) {
+      window.ViaFenetres.injecterCSS();
+      window.ViaFenetres.init('main');
+      // Wire up bot buttons
+      document.querySelectorAll('.bot-btn[data-bot]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          window.ViaFenetres.ouvrirBot(btn.dataset.bot);
+        });
+      });
+      document.querySelectorAll('.bot-btn[data-bots]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var bots = btn.dataset.bots.split(',');
+          if (bots.length === 2) window.ViaFenetres.ouvrirDuo(bots[0], bots[1]);
+          else window.ViaFenetres.ouvrirFenetre(bots, 'Scéance — ' + bots.join(' + '));
+        });
+      });
+    }
+  });
+</script>
 <script defer src="../page-transition.js"></script>
 </body>
 </html>
