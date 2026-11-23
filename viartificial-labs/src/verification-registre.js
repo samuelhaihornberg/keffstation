@@ -81,7 +81,9 @@
         liensStructurels: 2000,
         portsEntree: 200,
         portsSortie: 200,
-        parcellesParTour: 100
+        parcellesEntree: 100,
+        parcellesSortie: 100,
+        blocsTransversaux: 0
       },
       equipe192: {
         blocs: 192,
@@ -90,35 +92,50 @@
         liensStructurels: 2368,
         portsEntree: 384,
         portsSortie: 384,
-        parcellesParTour: 192,
+        parcellesEntree: 192,
+        parcellesSortie: 192,
         blocsTransversaux: 8
       },
       connexionsExistantes: 677,
       connexionsMigrees: 0,
       connexionsNonTypees: 0,
+      doublonsExacts: 0,
       doublonsPotentiels: 0,
+      connexionsDistinctes: 677,
       canaux: 35,
       matrices: 10,
-      webgpu: 'indisponible'
+      webgpu: 'indisponible',
+      fluxExterne: {
+        entreeUtilisateur: 1,
+        reponseFinale: 1
+      },
+      typesRoutes: {
+        directes: 'connexions entre blocs adjacents',
+        busPartage: 'parcelles partagées via ViaParcelles.routerParcelle()'
+      }
     };
 
     if (global.BlmEquipe) {
       var be = global.BlmEquipe;
       if (be.GROUPE_COMPLET) {
-        resultats.equipe192.blocs = be.GROUPE_COMPLET.length;
-        resultats.equipe192.liensInternes = resultats.equipe192.blocs * 4;
+        var n = be.GROUPE_COMPLET.length;
+        resultats.equipe192.blocs = n;
+        resultats.equipe192.liensInternes = n * 4;
         resultats.equipe192.liensStructurels = resultats.equipe192.liensInternes + resultats.equipe192.liensInterVagues;
-        resultats.equipe192.portsEntree = resultats.equipe192.blocs * 2;
-        resultats.equipe192.portsSortie = resultats.equipe192.blocs * 2;
-        resultats.equipe192.parcellesParTour = resultats.equipe192.blocs;
+        resultats.equipe192.portsEntree = n * 2;
+        resultats.equipe192.portsSortie = n * 2;
+        resultats.equipe192.parcellesEntree = n;
+        resultats.equipe192.parcellesSortie = n;
       }
       if (be.NOYAU_100) {
-        resultats.noyau100.blocs = be.NOYAU_100.length;
-        resultats.noyau100.liensInternes = resultats.noyau100.blocs * 4;
+        var n100 = be.NOYAU_100.length;
+        resultats.noyau100.blocs = n100;
+        resultats.noyau100.liensInternes = n100 * 4;
         resultats.noyau100.liensStructurels = resultats.noyau100.liensInternes + resultats.noyau100.liensInterVagues;
-        resultats.noyau100.portsEntree = resultats.noyau100.blocs * 2;
-        resultats.noyau100.portsSortie = resultats.noyau100.blocs * 2;
-        resultats.noyau100.parcellesParTour = resultats.noyau100.blocs;
+        resultats.noyau100.portsEntree = n100 * 2;
+        resultats.noyau100.portsSortie = n100 * 2;
+        resultats.noyau100.parcellesEntree = n100;
+        resultats.noyau100.parcellesSortie = n100;
       }
     }
 

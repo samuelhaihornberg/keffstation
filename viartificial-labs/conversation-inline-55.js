@@ -722,6 +722,23 @@ function runItem(item){
     // Bibliothèques et BLLM liées à ce bot pour cette demande.
     var bibs=bibliothequesPourBot(botId);
     var bllmSel=(typeof ViaBLLM!=='undefined'&&ViaBLLM.selectionner)?ViaBLLM.selectionner(orch&&orch.intention||'message',false,ViaBibliotheques):{blocs:[],liens:[],cooperation:[]};
+    // Sollicitation de tous les participants (LLM + BLM configurés)
+    var participants=[];
+    if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.creerParticipant){
+      // Solliciter le LLM local
+      participants.push(ViaCOSCircuit.creerParticipant('llm-local','llm'));
+      // Solliciter les BLM sélectionnés
+      (bllmSel.blocs||[]).forEach(function(b){participants.push(ViaCOSCircuit.creerParticipant(b,'blm'));});
+      // Solliciter les nouveaux blocs (111-192) comme squelettes
+      if(typeof BlmNouveauxBlocs!=='undefined'&&BlmNouveauxBlocs.NOUVEAUX_BLOCS){
+        Object.keys(BlmNouveauxBlocs.NOUVEAUX_BLOCS).forEach(function(id){
+          participants.push(ViaCOSCircuit.creerParticipant(id,'blm-nouveau'));
+        });
+      }
+      if(typeof ViaCOSCircuit.solliciterParticipants==='function'){
+        ViaCOSCircuit.solliciterParticipants(participants,item.text,{bot:botId});
+      }
+    }
     // Samitisation : choix des boucles adaptées et préparation du contexte de raisonnement.
     var samitisation=null;
     if(typeof ViaSamitisation!=='undefined'&&ViaSamitisation.choisirBoucles){
