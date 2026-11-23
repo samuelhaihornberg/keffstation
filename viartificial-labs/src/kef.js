@@ -39,8 +39,11 @@
       perimetre: p, // 'reponse', 'session', 'famille', 'periode'
       genre: g,
       dimensions: {},
-      feedback: { origine: null, valeur: null, associeA: null },
-      compute: { valeur: null, type: 'indisponible', detail: '' },
+      // Chaque dimension porte : valeur, statut (mesure/estimation/indisponible), unite, source, horodatage
+      dimensionStatuts: {},
+      feedback: { origine: null, valeur: null, associeA: null, type: null, horodatage: null },
+      compute: { valeur: null, type: 'indisponible', detail: '', source: null, confiance: 0 },
+      vitesse: { debut: null, fin: null, dureeMs: null, tempsMoteur: null, tempsAttente: null, tailleEntree: null, tailleSortie: null, debit: null },
       ts: Date.now(),
       botId: null,
       familleId: null
@@ -48,10 +51,17 @@
   }
 
   // ---------- Enregistrer une dimension ----------
-  function enregistrerDimension(releve, dimension, valeur) {
+  // statut: 'mesure', 'estimation', 'indisponible'
+  function enregistrerDimension(releve, dimension, valeur, statut, unite, source) {
     if (!releve || !DIMENSIONS[dimension]) return;
-    var v = Math.max(0, Math.min(100, valeur || 0));
+    var v = (valeur === null || valeur === undefined) ? null : Math.max(0, Math.min(100, valeur));
     releve.dimensions[dimension] = v;
+    releve.dimensionStatuts[dimension] = {
+      statut: statut || 'indisponible',
+      unite: unite || 'score/100',
+      source: source || 'inconnu',
+      horodatage: Date.now()
+    };
   }
 
   // ---------- Enregistrer le compute ----------
@@ -82,35 +92,46 @@
     var total = 0;
     var poidsTotal = 0;
     var details = {};
+    var dimensionsDisponibles = 0;
+    var dimensionsIndisponibles = 0;
     for (var dim in DIMENSIONS) {
       var val = releve.dimensions[dim];
-      if (typeof val === 'number') {
+      var statut = releve.dimensionStatuts && releve.dimensionStatuts[dim] ? releve.dimensionStatuts[dim].statut : 'indisponible';
+      if (typeof val === 'number' && statut !== 'indisponible') {
         var p = pond[dim] || 0;
         total += val * p;
         poidsTotal += p;
-        details[dim] = { valeur: val, poids: p, contribution: val * p };
+        details[dim] = { valeur: val, statut: statut, poids: p, contribution: val * p };
+        dimensionsDisponibles++;
+      } else {
+        details[dim] = { valeur: null, statut: 'indisponible', poids: 0, contribution: 0 };
+        dimensionsIndisponibles++;
       }
     }
-    // Feedback : bonus/malus selon l'origine
-    if (releve.feedback && releve.feedback.valeur) {
+    // Feedback : bonus/malus selon l'origine (seulement si feedback réel)
+    if (releve.feedback && releve.feedback.valeur && releve.feedback.origine) {
       var fb = releve.feedback.valeur;
       var bonus = 0;
       if (fb === 'remerciement') bonus = 5;
-      else if (fb === 'correction') bonus = -3; // correction = signal d'amélioration
-      else if (fb === 'passage-suivant') bonus = 2; // signal implicite d'appréciation
+      else if (fb === 'correction') bonus = -3;
+      else if (fb === 'passage-suivant') bonus = 2;
       else if (fb === 'note') bonus = 0;
       total += bonus;
-      details.feedback = { valeur: fb, bonus: bonus };
+      details.feedback = { valeur: fb, origine: releve.feedback.origine, bonus: bonus, horodatage: releve.feedback.horodatage };
     }
     // Normaliser par le poids total utilisé
     var kef = poidsTotal > 0 ? (total / poidsTotal) : 0;
-    // Borner [0, 100]
     kef = Math.max(0, Math.min(100, kef));
+    // Marquer comme partiel si des dimensions sont indisponibles
+    var partiel = dimensionsIndisponibles > 0;
     return {
       kef: Math.round(kef * 100) / 100,
       details: details,
       perimetre: releve.perimetre,
       genre: genre,
+      partiel: partiel,
+      dimensionsDisponibles: dimensionsDisponibles,
+      dimensionsIndisponibles: dimensionsIndisponibles,
       ts: releve.ts
     };
   }
