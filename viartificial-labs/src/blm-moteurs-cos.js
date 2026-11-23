@@ -90,13 +90,20 @@ function dispatcher(moteurId, tache) {
     resultat.execute = true;
     resultat.resultat = 'repli (sans moteur)';
   } else if (moteurId === 'gpu') {
-    // WebGPU : détecter réellement
+    // WebGPU : détecter réellement (pas juste navigator.gpu)
     var hasGPU = false;
+    var hasBackend = false;
     try { hasGPU = !!(navigator.gpu); } catch (e) {}
-    if (hasGPU) {
+    // Vérifier si un backend WebGPU réel est implémenté
+    try { hasBackend = !!(global.ViaWebGPUBackend && global.ViaWebGPUBackend.execute); } catch (e) {}
+    if (hasGPU && hasBackend) {
+      resultat.execute = true;
+      resultat.resultat = 'WebGPU backend réel disponible';
+    } else if (hasGPU && !hasBackend) {
       resultat.execute = false;
-      resultat.erreur = 'WebGPU détecté mais aucun backend implémenté dans le projet';
+      resultat.erreur = 'WebGPU detecte (navigator.gpu) mais aucun backend d inference implemente dans le projet';
     } else {
+      resultat.execute = false;
       resultat.erreur = 'WebGPU non supporté par ce navigateur';
     }
   } else {
@@ -110,8 +117,8 @@ function verifierMoteursReels() {
   var etat = {};
   // CPU/WASM local
   try { etat['local'] = global.ViaLocalEngine && global.ViaLocalEngine.summary && global.ViaLocalEngine.summary().phase === 'ready'; } catch (e) { etat['local'] = false; }
-  // GPU WebGPU
-  try { etat['gpu'] = !!(navigator.gpu); } catch (e) { etat['gpu'] = false; }
+  // GPU WebGPU : détecter le backend réel, pas juste navigator.gpu
+  try { etat['gpu'] = !!(navigator.gpu) && !!(global.ViaWebGPUBackend && global.ViaWebGPUBackend.execute); } catch (e) { etat['gpu'] = false; }
   // Distant Ollama
   try { var cfg = global.ViaProviders ? global.ViaProviders.load() : null; etat['ollama'] = !!(cfg && cfg.provider === 'ollama' && cfg.baseUrl); } catch (e) { etat['ollama'] = false; }
   // Distant custom

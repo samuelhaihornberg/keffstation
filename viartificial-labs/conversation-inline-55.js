@@ -712,6 +712,15 @@ function runItem(item){
   // Afficher l'état de chargement si le moteur n'est pas encore prêt
   var sm0=ViaLocalEngine.summary();
   if(sm0.phase!=='ready'){setState('checking');afficherMoteurUtilise('Chargement du moteur en cours…');}
+  // Vérifier les deux consentements
+  try{if(ViaLocalEngine.getCookiesConsent&&ViaLocalEngine.getCookiesConsent()!=='granted')ViaLocalEngine.setCookiesConsent('granted');}catch(e){}
+  try{if(ViaLocalEngine.getModelConsent&&ViaLocalEngine.getModelConsent()!=='granted')ViaLocalEngine.setModelConsent('granted');}catch(e){}
+  // Préchargement réel des modules BLM, configurations et orchestrateurs
+  try{
+    if(typeof ViaBLLM!=='undefined'&&ViaBLLM.etat)ViaBLLM.etat();
+    if(typeof ViaSamitisation!=='undefined')ViaSamitisation.resetMemoire();
+    if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.injecterCSS)ViaCOSCircuit.injecterCSS();
+  }catch(e){}
   return ensureEngine().then(function(){
     // Un seul bot répond à l'utilisateur (choisi par choisirParleur).
     // Guideoplan = orchestrateur principal : s'il est actif, c'est lui qui parle
@@ -826,6 +835,16 @@ function runItem(item){
     try{window.__viaDernierParcours='local CPU/WASM · '+bot.name+' · intention '+((orch&&orch.intention)||'?')+' · '+((prep.msgs||[]).length)+' message(s) · BLLM '+etiquetteBLLM()+' · bibs:'+bibs.join(',')+' · samit:'+((samitisation&&samitisation.boucles)?samitisation.boucles.join(','):'aucune');if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xP){}
     var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
     if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
+    // Dispatch réel vers le moteur sélectionné
+    var dispatchResult=null;
+    if(typeof BlmMoteursCos!=='undefined'&&BlmMoteursCos.dispatcher){
+      dispatchResult=BlmMoteursCos.dispatcher(rmMoteur.moteur==='local-cpu-wasm'?'local':rmMoteur.moteur.replace('-distant',''),{tache:'generation',bot:botId});
+      if(!dispatchResult.execute){
+        // Aucun moteur opérationnel → afficher l'indisponibilité
+        if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',dispatchResult.erreur);
+        sd.box.remove();addOnce('sys','Moteur indisponible : '+(dispatchResult.erreur||'aucun backend opérationnel'));lastFailure={stage:'response',item:item};setState('error',dispatchResult.erreur);return Promise.resolve();
+      }
+    }
     if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'synthèse','Génération de la réponse');
     // KEF : créer un relevé pour cette réponse
     var kefReleve=null;
@@ -972,7 +991,7 @@ function paintIdCard(card){
   var er={};try{er=etatMoteurReel();}catch(e){}
   var m=document.getElementById('idcModel');if(m)m.textContent=(er.model||'—');
   var l=document.getElementById('idcLoaded');if(l)l.textContent=(er.label||'?')+' — '+(er.etat||'?')+(card?(' · dernier chargement local : '+card.lastLoaded+' ('+card.loads+' chargement(s))'):'');
-  var c0=null;try{c0=JSON.parse(localStorage.getItem(ViaLocalEngine.CONSENT_KEY||'via-consent')||'null');}catch(e){}
+  var c0=null;try{c0=JSON.parse(localStorage.getItem(ViaLocalEngine.CONSENT_KEY_MODEL||'via-model-consent')||'null');}catch(e){}
   var cs=document.getElementById('idcConsent');if(cs)cs.textContent=(c0&&c0.ts)?new Date(c0.ts).toLocaleString():'—';
 }
 function runRemote(item){
