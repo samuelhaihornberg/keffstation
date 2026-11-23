@@ -11,6 +11,12 @@
 
   function init(containerId) {
     container = document.getElementById(containerId) || document.body;
+    // Créer la barre de zoom globale
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', creerBarreZoom);
+    } else {
+      creerBarreZoom();
+    }
   }
 
   // ---------- Création d'une fenêtre de discussion ----------
@@ -43,6 +49,9 @@
       '<button class="via-btn via-btn-share" title="Partager l\'écran">🖥️</button>' +
       '<button class="via-btn via-btn-file" title="Envoyer un fichier/média">📎</button>' +
       '<button class="via-btn via-btn-dictate" title="Dictée vocale">🎤</button>' +
+      '<button class="via-btn via-btn-zoom-in" title="Zoom +">🔍+</button>' +
+      '<button class="via-btn via-btn-zoom-out" title="Zoom -">🔍-</button>' +
+      '<button class="via-btn via-btn-zoom-reset" title="Zoom 100%">1:1</button>' +
       '</div>' +
       '<div class="via-window-messages"></div>' +
       '<div class="via-window-input-area">' +
@@ -143,8 +152,12 @@
     var btnFile = win.querySelector('.via-btn-file');
     var btnDict = win.querySelector('.via-btn-dictate');
     var btnSend = win.querySelector('.via-btn-send');
+    var btnZoomIn = win.querySelector('.via-btn-zoom-in');
+    var btnZoomOut = win.querySelector('.via-btn-zoom-out');
+    var btnZoomReset = win.querySelector('.via-btn-zoom-reset');
     var input = win.querySelector('.via-window-input');
     var msgs = win.querySelector('.via-window-messages');
+    var zoomLevel = 1.0;
 
     // Nouvelle scéance
     btnNew.addEventListener('click', function () {
@@ -261,6 +274,55 @@
         recognition.start();
         recognizing = true;
         btnDict.classList.add('via-dictating');
+      }
+    });
+
+    // Zoom
+    function appliquerZoom() {
+      var body = win.querySelector('.via-window-body');
+      if (body) {
+        body.style.transform = 'scale(' + zoomLevel + ')';
+        body.style.transformOrigin = 'top left';
+        body.style.width = (100 / zoomLevel) + '%';
+        body.style.height = (100 / zoomLevel) + '%';
+      }
+      win.setAttribute('data-zoom', zoomLevel.toFixed(2));
+    }
+    if (btnZoomIn) btnZoomIn.addEventListener('click', function () {
+      zoomLevel = Math.min(2.0, zoomLevel + 0.1);
+      appliquerZoom();
+    });
+    if (btnZoomOut) btnZoomOut.addEventListener('click', function () {
+      zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+      appliquerZoom();
+    });
+    if (btnZoomReset) btnZoomReset.addEventListener('click', function () {
+      zoomLevel = 1.0;
+      appliquerZoom();
+    });
+    // Pinch-to-zoom sur mobile
+    var lastTouchDist = 0;
+    win.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (lastTouchDist > 0) {
+          var delta = dist - lastTouchDist;
+          if (delta > 5) { zoomLevel = Math.min(2.0, zoomLevel + 0.05); appliquerZoom(); }
+          else if (delta < -5) { zoomLevel = Math.max(0.5, zoomLevel - 0.05); appliquerZoom(); }
+        }
+        lastTouchDist = dist;
+      }
+    }, { passive: false });
+    win.addEventListener('touchend', function () { lastTouchDist = 0; });
+    // Raccourcis clavier Ctrl+/Ctrl-
+    win.addEventListener('keydown', function (e) {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '+' || e.key === '=') { zoomLevel = Math.min(2.0, zoomLevel + 0.1); appliquerZoom(); e.preventDefault(); }
+        else if (e.key === '-') { zoomLevel = Math.max(0.5, zoomLevel - 0.1); appliquerZoom(); e.preventDefault(); }
+        else if (e.key === '0') { zoomLevel = 1.0; appliquerZoom(); e.preventDefault(); }
       }
     });
 
@@ -650,6 +712,75 @@
     document.head.appendChild(style);
   }
 
+  // ---------- Zoom global de la page ----------
+  var pageZoom = 1.0;
+  function appliquerZoomPage() {
+    document.body.style.zoom = pageZoom;
+    // Fallback pour Firefox
+    if (!('zoom' in document.body.style)) {
+      document.body.style.transform = 'scale(' + pageZoom + ')';
+      document.body.style.transformOrigin = 'top left';
+    }
+    try { localStorage.setItem('via-page-zoom', String(pageZoom)); } catch (e) {}
+  }
+  function creerBarreZoom() {
+    if (document.getElementById('via-zoom-bar')) return;
+    var bar = document.createElement('div');
+    bar.id = 'via-zoom-bar';
+    bar.style.cssText = 'position:fixed;bottom:12px;right:12px;display:flex;gap:4px;z-index:9999;background:rgba(26,26,46,.9);padding:6px;border-radius:10px;border:1px solid rgba(184,77,255,.3);backdrop-filter:blur(8px);';
+    bar.innerHTML =
+      '<button id="via-zoom-out-global" title="Dézoomer" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:1rem;">−</button>' +
+      '<span id="via-zoom-level" style="color:#b84dff;font-weight:700;padding:6px 8px;font-size:0.85rem;min-width:48px;text-align:center;">100%</span>' +
+      '<button id="via-zoom-in-global" title="Zoomer" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:1rem;">+</button>' +
+      '<button id="via-zoom-reset-global" title="Réinitialiser" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.8rem;">1:1</button>';
+    document.body.appendChild(bar);
+    document.getElementById('via-zoom-in-global').addEventListener('click', function () {
+      pageZoom = Math.min(2.0, pageZoom + 0.1);
+      document.getElementById('via-zoom-level').textContent = Math.round(pageZoom * 100) + '%';
+      appliquerZoomPage();
+    });
+    document.getElementById('via-zoom-out-global').addEventListener('click', function () {
+      pageZoom = Math.max(0.5, pageZoom - 0.1);
+      document.getElementById('via-zoom-level').textContent = Math.round(pageZoom * 100) + '%';
+      appliquerZoomPage();
+    });
+    document.getElementById('via-zoom-reset-global').addEventListener('click', function () {
+      pageZoom = 1.0;
+      document.getElementById('via-zoom-level').textContent = '100%';
+      appliquerZoomPage();
+    });
+    // Raccourcis clavier globaux
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '+' || e.key === '=') { pageZoom = Math.min(2.0, pageZoom + 0.1); document.getElementById('via-zoom-level').textContent = Math.round(pageZoom * 100) + '%'; appliquerZoomPage(); e.preventDefault(); }
+        else if (e.key === '-') { pageZoom = Math.max(0.5, pageZoom - 0.1); document.getElementById('via-zoom-level').textContent = Math.round(pageZoom * 100) + '%'; appliquerZoomPage(); e.preventDefault(); }
+        else if (e.key === '0') { pageZoom = 1.0; document.getElementById('via-zoom-level').textContent = '100%'; appliquerZoomPage(); e.preventDefault(); }
+      }
+    });
+    // Pinch-to-zoom global sur mobile
+    var lastDist = 0;
+    document.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 2) {
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (lastDist > 0) {
+          var delta = dist - lastDist;
+          if (Math.abs(delta) > 10) {
+            if (delta > 0) pageZoom = Math.min(2.0, pageZoom + 0.05);
+            else pageZoom = Math.max(0.5, pageZoom - 0.05);
+            document.getElementById('via-zoom-level').textContent = Math.round(pageZoom * 100) + '%';
+            appliquerZoomPage();
+          }
+        }
+        lastDist = dist;
+      }
+    }, { passive: true });
+    document.addEventListener('touchend', function () { lastDist = 0; });
+    // Restaurer le zoom sauvegardé
+    try { var saved = parseFloat(localStorage.getItem('via-page-zoom')); if (saved && saved >= 0.5 && saved <= 2.0) { pageZoom = saved; document.getElementById('via-zoom-level').textContent = Math.round(pageZoom * 100) + '%'; appliquerZoomPage(); } } catch (e) {}
+  }
+
   // ---------- API publique ----------
   global.ViaFenetres = {
     init: init,
@@ -657,6 +788,7 @@
     ouvrirBot: ouvrirBot,
     ouvrirDuo: ouvrirDuo,
     injecterCSS: injecterCSS,
+    creerBarreZoom: creerBarreZoom,
     fenetres: function () { return fenetres; }
   };
 })(window);

@@ -144,6 +144,7 @@
     if (window.ViaFenetres) {
       window.ViaFenetres.injecterCSS();
       window.ViaFenetres.init('main');
+      window.ViaFenetres.creerBarreZoom();
       // Wire up bot buttons
       document.querySelectorAll('.bot-btn[data-bot]').forEach(function (btn) {
         btn.addEventListener('click', function () {
