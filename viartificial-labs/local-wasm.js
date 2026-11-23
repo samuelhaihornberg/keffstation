@@ -10,6 +10,7 @@
    - Un seul moteur + un seul modèle partagés ; personnalités via prompt système. */
 (function (global) {
   'use strict';
+  try { console.log('[local-wasm] chargement du module moteur CPU…'); } catch (e) {}
   var WORKER_URL = './local-wasm-worker.js';
   var CDN = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2/+esm';
   var CANDIDATES = [
@@ -44,9 +45,13 @@
   }
   function getWorker() {
     if (!worker) {
-      worker = new global.Worker(WORKER_URL, { type: 'module' });
-      worker.onmessage = onMsg;
-      worker.onerror = onErr;
+      try {
+        worker = new global.Worker(WORKER_URL, { type: 'module' });
+        worker.onmessage = onMsg;
+        worker.onerror = onErr;
+      } catch (e) {
+        throw err('WORKER_CREATE_FAIL', 'Impossible de créer le Web Worker : ' + (e && e.message ? e.message : e) + '. Vérifiez que votre navigateur supporte les Web Workers avec modules (Chrome/Firefox/Safari/Edge récents).');
+      }
     }
     return worker;
   }
@@ -119,4 +124,5 @@
   function summary() { return { phase: S.phase, model: S.model || picked, progress: S.progress, detail: S.detail, mode: S.phase === 'ready' || S.phase === 'generating' ? 'CPU/WASM local (worker)' : '—', backend: 'wasm', tokenizer: tokInfo.hasTemplate ? ('chat_template ' + tokInfo.source) : 'chat_template non chargé', threads: (typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated) ? 'multithread' : 'monothread (Pages sans COOP/COEP)' }; }
   function info() { return { candidates: CANDIDATES.map(function (c) { return c.id; }), picked: picked, tokenizer: tokInfo, device: 'wasm (CPU), monothread sans COOP/COEP', lib: '3.7.2', cdn: CDN, worker: WORKER_URL }; }
   global.ViaWasmEngine = { CANDIDATES: CANDIDATES, load: load, chat: chat, sysPrompt: sysPrompt, cancel: cancel, unload: unload, summary: summary, info: info, CDN: CDN, WORKER_URL: WORKER_URL };
+  try { console.log('[local-wasm] ViaWasmEngine exposé avec succès.'); } catch (e) {}
 })(window);

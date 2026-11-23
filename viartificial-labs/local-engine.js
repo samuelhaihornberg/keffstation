@@ -96,9 +96,29 @@
   // Initialise automatiquement le chargement des LLM locaux après consentement cookie ViA.
   // Ne nécessite aucun clic manuel sur « Charger » pour le fonctionnement normal.
   async function initAutoLoad(onTick, wantId) {
+    try { console.log('[local-engine] initAutoLoad appelé. ViaWasmEngine disponible:', !!global.ViaWasmEngine); } catch (e) {}
     var c = getConsent();
     if (c !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement cookie ViArtificial Labs.'); return { state: 'waiting-consent', detail: 'Consentement requis.' }; }
     setLoadState('preparing', wantId || MODELS[0].id, 0, 'Vérification de l’appareil et sélection du modèle…');
+    // Attendre que ViaWasmEngine soit disponible (max 5 secondes)
+    if (!global.ViaWasmEngine) {
+      for (var i = 0; i < 50; i++) {
+        await new Promise(function (resolve) { setTimeout(resolve, 100); });
+        if (global.ViaWasmEngine) break;
+      }
+    }
+    // Si toujours pas disponible, tenter de charger le script dynamiquement
+    if (!global.ViaWasmEngine) {
+      try {
+        var script = document.createElement('script');
+        script.src = './local-wasm.js';
+        document.head.appendChild(script);
+        for (var j = 0; j < 30; j++) {
+          await new Promise(function (resolve) { setTimeout(resolve, 100); });
+          if (global.ViaWasmEngine) break;
+        }
+      } catch (e) {}
+    }
     try {
       var cap = await detect();
       var pick = pickModel(cap, wantId);
@@ -107,7 +127,7 @@
       var st = await storageCheck(needMB);
       if (!st.ok) { setLoadState('unavailable', pick.model || wantId, 0, 'Stockage insuffisant : il faut ≈' + needMB + ' Mo libres (utilisé ' + st.usageMB + ' / quota ' + st.quotaMB + ' Mo).'); throw Object.assign(new Error('Stockage insuffisant'), { code: 'STORAGE_FULL' }); }
       if (!global.ViaWasmEngine) {
-        var msg = 'Moteur CPU non disponible. Vérifiez que local-wasm.js est chargé et que votre navigateur supporte les Web Workers (Chrome, Firefox, Safari, Edge récents).';
+        var msg = 'local-wasm.js non chargé ou ViaWasmEngine non exposé. Vérifiez la console du navigateur (F12) pour les erreurs de chargement. Étapes : 1) Vérifier que local-wasm.js est présent à côté de conversation.html, 2) Vérifier les erreurs réseau (onglet Network), 3) Vérifier que le navigateur supporte les Web Workers (Chrome/Firefox/Safari/Edge).';
         setLoadState('error', pick.model || wantId, 0, msg);
         throw Object.assign(new Error(msg), { code: 'NOT_LOADED' });
       }
