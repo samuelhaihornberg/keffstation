@@ -291,6 +291,51 @@
     botDiv.textContent = '…';
     msgs.appendChild(botDiv);
 
+    // Vérifier le consentement et charger le moteur si nécessaire
+    if (global.ViaLocalEngine && global.ViaLocalEngine.getConsent && global.ViaLocalEngine.getConsent() !== 'granted') {
+      var consentDiv = document.createElement('div');
+      consentDiv.className = 'via-msg via-msg-sys';
+      consentDiv.innerHTML = 'Autorisez le modèle local pour discuter. <button class="via-btn via-btn-consent">Autoriser</button>';
+      msgs.appendChild(consentDiv);
+      var btnConsent = consentDiv.querySelector('.via-btn-consent');
+      if (btnConsent) {
+        btnConsent.addEventListener('click', function () {
+          global.ViaLocalEngine.setConsent('granted');
+          global.ViaLocalEngine.initAutoLoad(function (p) {
+            botDiv.textContent = 'Chargement du modèle local : ' + (p.progress || 0) + '%…';
+          }).then(function () {
+            botDiv.textContent = 'Modèle prêt. Réessayez votre message.';
+          }).catch(function (e) {
+            botDiv.textContent = 'Échec du chargement : ' + (e && e.message ? e.message : e);
+          });
+        });
+      }
+      botDiv.remove();
+      return;
+    }
+    // Charger le moteur si consentement accordé mais pas encore chargé
+    if (global.ViaLocalEngine && global.ViaLocalEngine.getConsent && global.ViaLocalEngine.getConsent() === 'granted' &&
+        global.ViaLocalEngine.summary && global.ViaLocalEngine.summary().phase !== 'ready') {
+      botDiv.textContent = 'Chargement du modèle local…';
+      global.ViaLocalEngine.initAutoLoad(function (p) {
+        botDiv.textContent = 'Chargement du modèle local : ' + (p.progress || 0) + '%…';
+      }).then(function () {
+        // Moteur chargé, continuer avec la réponse
+        var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0] };
+        var msgs_arr = [{ role: 'user', content: text }];
+        global.ViaLocalEngine.chat(bot, msgs_arr, {
+          onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
+        }).then(function (r) {
+          botDiv.textContent = r;
+          ajouterLecteurAudio(botDiv, r);
+        }).catch(function (e) {
+          botDiv.textContent = 'Erreur : ' + (e && e.message ? e.message : e);
+        });
+      }).catch(function (e) {
+        botDiv.textContent = 'Échec du chargement : ' + (e && e.message ? e.message : e);
+      });
+      return;
+    }
     // Appel au moteur local si disponible
     if (global.ViaLocalEngine && global.ViaLocalEngine.summary && global.ViaLocalEngine.summary().phase === 'ready') {
       // Utiliser le moteur local

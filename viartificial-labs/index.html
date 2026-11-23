@@ -119,7 +119,26 @@
     ViArtificial-Labs — Plateforme IA local-first • KeffStation
   </footer>
 <script src="./clear-cache.js"></script>
+<script src="./providers.js"></script>
+<script src="./local-engine.js"></script>
 <script src="./src/fenetres-discution.js"></script>
+<script>
+  // Charger bots.json pour botsById
+  fetch('./bots.json').then(function(r){return r.json();}).then(function(data){
+    window.botsById={};
+    (data.bots||[]).forEach(function(b){window.botsById[b.id]=b;});
+    // Auto-chargement du moteur local si consentement déjà accordé
+    if(window.ViaLocalEngine&&window.ViaLocalEngine.getConsent()==='granted'){
+      window.ViaLocalEngine.initAutoLoad(function(p){
+        console.log('Chargement modèle local:', p.progress||0, '%');
+      }).then(function(){
+        console.log('Modèle local prêt');
+      }).catch(function(e){
+        console.warn('Échec chargement auto:', e&&e.message);
+      });
+    }
+  }).catch(function(e){console.warn('bots.json non chargé:', e);});
+</script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     if (window.ViaFenetres) {
