@@ -48,7 +48,7 @@
 
   function importerCSV(texte) {
     if (!texte || typeof texte !== 'string') return { ok: false, erreur: 'Texte CSV vide', importes: 0 };
-    var lignes = texte.split('\\n').filter(function (l) { return l.trim().length > 0; });
+    var lignes = texte.split('\n').filter(function (l) { return l.trim().length > 0; });
     if (lignes.length < 2) return { ok: false, erreur: 'CSV doit avoir au moins un en-tête et une ligne', importes: 0 };
     var header = lignes[0].split(',').map(function (h) { return h.trim().toLowerCase(); });
     var connexions = [];
@@ -77,6 +77,9 @@
     if (!DONNEES_SOURCE) return { ok: false, erreur: 'Aucune donnee source chargee. Importez d abord un fichier.', etat: 'BLOQUE' };
     // Utiliser le module dedoublonnage
     var dedoub = global.ViaDedoublonnage;
+    if (!dedoub && typeof require !== 'undefined') {
+      try { dedoub = require('./dedoublonnage.js'); } catch (e) {}
+    }
     if (!dedoub) return { ok: false, erreur: 'Module dedoublonnage non chargé', etat: 'BLOQUE' };
     var migration = dedoub.migrerConnexions(DONNEES_SOURCE);
     var dedoubResult = dedoub.dedoublonner(migration.typees);
