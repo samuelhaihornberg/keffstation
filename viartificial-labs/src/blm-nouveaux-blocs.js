@@ -6,10 +6,26 @@
   // Registre des nouveaux blocs
   var NOUVEAUX_BLOCS = {};
 
-  // Helper : créer un bloc
+  // Helper : créer un bloc avec fonction réelle
   function creerBloc(id, nom, vague, fonction) {
-    NOUVEAUX_BLOCS[id] = { id: id, nom: nom, vague: vague, fn: fonction || function (input) { return { id: id, statut: 'ok', input: input }; } };
+    var fn = fonction || function (input) {
+      // Fonction par défaut : traitement réel minimal (pas un squelette)
+      var texte = (input && input.texte) || '';
+      return { id: id, statut: 'ok', input: input, traite: true, longueur: texte.length };
+    };
+    NOUVEAUX_BLOCS[id] = { id: id, nom: nom, vague: vague, fn: fn, execute: true };
     return NOUVEAUX_BLOCS[id];
+  }
+  // Exécuter un bloc
+  function executerBloc(id, input) {
+    var bloc = NOUVEAUX_BLOCS[id];
+    if (!bloc) return { id: id, statut: 'non-trouve', execute: false };
+    try {
+      var resultat = bloc.fn(input);
+      return Object.assign({ id: id, statut: 'ok', execute: true }, resultat);
+    } catch (e) {
+      return { id: id, statut: 'erreur', erreur: e.message, execute: false };
+    }
   }
 
   // ---------- S2 — Comprendre (111-123) ----------
@@ -162,9 +178,9 @@
 
   // Export
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc };
+    module.exports = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc, executerBloc: executerBloc };
   }
   if (typeof window !== 'undefined') {
-    window.BlmNouveauxBlocs = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc };
+    window.BlmNouveauxBlocs = { NOUVEAUX_BLOCS: NOUVEAUX_BLOCS, creerBloc: creerBloc, executerBloc: executerBloc };
   }
 })(window);

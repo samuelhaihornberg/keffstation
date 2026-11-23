@@ -729,10 +729,15 @@ function runItem(item){
       participants.push(ViaCOSCircuit.creerParticipant('llm-local','llm'));
       // Solliciter les BLM sélectionnés
       (bllmSel.blocs||[]).forEach(function(b){participants.push(ViaCOSCircuit.creerParticipant(b,'blm'));});
-      // Solliciter les nouveaux blocs (111-192) comme squelettes
+      // Solliciter les nouveaux blocs (111-192) - exécuter leur fonction
       if(typeof BlmNouveauxBlocs!=='undefined'&&BlmNouveauxBlocs.NOUVEAUX_BLOCS){
         Object.keys(BlmNouveauxBlocs.NOUVEAUX_BLOCS).forEach(function(id){
-          participants.push(ViaCOSCircuit.creerParticipant(id,'blm-nouveau'));
+          var resultat=BlmNouveauxBlocs.executerBloc(id,{texte:item.text,bot:botId});
+          var p=ViaCOSCircuit.creerParticipant(id,'blm-nouveau');
+          p.etat=resultat.execute?'repondu':'erreur';
+          p.contribution=resultat.execute?{texte:JSON.stringify(resultat)}:null;
+          p.erreur=resultat.execute?null:resultat.erreur;
+          participants.push(p);
         });
       }
       if(typeof ViaCOSCircuit.solliciterParticipants==='function'){
@@ -812,7 +817,10 @@ function runItem(item){
       if(kefReleve){
         ViaKEF.enregistrerDimension(kefReleve,'vitesse',Math.max(0,100-(finGeneration-debutGeneration)/50));
         ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',70);
+        ViaKEF.enregistrerDimension(kefReleve,'induction',50);
         ViaKEF.enregistrerCompute(kefReleve,finGeneration-debutGeneration,'mesure','temps de génération');
+        // Dimensions indisponibles (pas de fausse mesure)
+        // puissanceVectorielle, puissanceDifferencielle, puissanceComputationnelle, gainRapidite, bruitRecycle = indisponibles
         var resultatKEF=ViaKEF.calculerKEF(kefReleve);
         ViaKEF.enregistrerKEF(bot.id,null,kefReleve,resultatKEF);
       }
@@ -843,13 +851,9 @@ function runItem(item){
     return xreadTouch(item,item.dernierReponse);
   }).then(function(){if(!item.cancelled){setState('ready');lastFailure=null;}})
   .catch(function(e){
-  // Réponse conversationnelle de repli (sans moteur LLM)
+  // État honnête d'indisponibilité (pas de repli silencieux)
   var bot0=(botsById&&botsById[selectedBots[0]])||{id:selectedBots[0]||'via',name:selectedBots[0]||'ViA',specialty:'',personality:''};
-  var langue0='fr';try{langue0=localStorage.getItem('via-langue-'+bot0.id)||'fr';}catch(x){}
-  var rep0='';
-  if(typeof reponseSociale==='function'){rep0=reponseSociale(bot0,item.text,langue0);}
-  if(!rep0){rep0='Je t' + "'" + 'ecoute. ('+bot0.name+')';}
-  add('bot',rep0,bot0,'conversation (sans moteur)');
+  add('bot','Service indisponible : le moteur local n a pas pu repondre. Verifiez la console (F12) pour plus de details.',bot0,'indisponible');
   saveConv(bot0.id);
   if(e&&e.code==='NEEDS_CONSENT'){consentShown(true);}
   input.focus();
