@@ -725,32 +725,50 @@ function runItem(item){
     // Sollicitation de tous les 192 BLM + LLM configurés
     var participants=[];
     if(typeof ViaCOSCircuit!=='undefined'&&ViaCOSCircuit.creerParticipant){
-      // Solliciter le LLM local
-      participants.push(ViaCOSCircuit.creerParticipant('llm-local','llm'));
-      // Solliciter TOUS les 110 BLM existants (par ID)
-      if(typeof BlmEquipe!=='undefined'&&BlmEquipe.GROUPE_COMPLET){
-        BlmEquipe.GROUPE_COMPLET.forEach(function(id){
-          if(parseInt(id)<=110){
-            var p=ViaCOSCircuit.creerParticipant(id,'blm');
-            p.etat='sollicite';
-            participants.push(p);
+      // Solliciter le LLM local (si disponible)
+      var llmParticipant=ViaCOSCircuit.creerParticipant('llm-local','llm');
+      llmParticipant.etat='sollicite';
+      participants.push(llmParticipant);
+      // Solliciter TOUS les 192 BLM par ID
+      for(var bIdx=1;bIdx<=192;bIdx++){
+        var bId=(bIdx<10?'00':(bIdx<100?'0':''))+bIdx;
+        var p=ViaCOSCircuit.creerParticipant(bId,'blm');
+        // Vérifier si le bloc est dans l'équipe sélectionnée
+        var estSelectionne=(bllmSel.blocs||[]).indexOf(bId)>=0;
+        var estNouveau=bIdx>=111;
+        if(estNouveau){
+          // Exécuter la fonction réelle du nouveau bloc
+          if(typeof BlmNouveauxBlocs!=='undefined'&&BlmNouveauxBlocs.executerBloc){
+            var resultat=BlmNouveauxBlocs.executerBloc(bId,{texte:item.text,bot:botId});
+            p.etat=resultat.execute?'repondu':'erreur';
+            p.contribution=resultat.execute?{texte:JSON.stringify(resultat),specialise:resultat.specialise}:null;
+            p.erreur=resultat.execute?null:resultat.erreur;
+          } else {
+            p.etat='indisponible';
+            p.erreur='Module BlmNouveauxBlocs non chargé';
           }
-        });
-      }
-      // Solliciter les 82 nouveaux blocs (111-192) avec exécution réelle
-      if(typeof BlmNouveauxBlocs!=='undefined'&&BlmNouveauxBlocs.NOUVEAUX_BLOCS){
-        Object.keys(BlmNouveauxBlocs.NOUVEAUX_BLOCS).forEach(function(id){
-          var resultat=BlmNouveauxBlocs.executerBloc(id,{texte:item.text,bot:botId});
-          var p=ViaCOSCircuit.creerParticipant(id,'blm-nouveau');
-          p.etat=resultat.execute?'repondu':'erreur';
-          p.contribution=resultat.execute?{texte:JSON.stringify(resultat),specialise:resultat.specialise}:null;
-          p.erreur=resultat.execute?null:resultat.erreur;
-          participants.push(p);
-        });
+        } else if(estSelectionne){
+          p.etat='repondu';
+          p.contribution={texte:'Bloc '+bId+' sélectionné et traité',specialise:false};
+        } else {
+          p.etat='non-applicable';
+          p.contribution=null;
+        }
+        participants.push(p);
       }
       if(typeof ViaCOSCircuit.solliciterParticipants==='function'){
         ViaCOSCircuit.solliciterParticipants(participants,item.text,{bot:botId});
       }
+      // Compteurs de cohérence
+      try{
+        var sollicites=participants.length;
+        var repondus=participants.filter(function(pp){return pp.etat==='repondu';}).length;
+        var nonApplicables=participants.filter(function(pp){return pp.etat==='non-applicable';}).length;
+        var erreurs=participants.filter(function(pp){return pp.etat==='erreur';}).length;
+        var indisponibles=participants.filter(function(pp){return pp.etat==='indisponible';}).length;
+        window.__viaDernierCompte={sollicites:sollicites,repondus:repondus,nonApplicables:nonApplicables,erreurs:erreurs,indisponibles:indisponibles};
+        console.log('[runItem] Participants: '+sollicites+' sollicités, '+repondus+' répondus, '+nonApplicables+' non-applicables, '+erreurs+' erreurs, '+indisponibles+' indisponibles');
+      }catch(e){}
     }
     // Samitisation : choix des boucles adaptées et préparation du contexte de raisonnement.
     var samitisation=null;
@@ -823,12 +841,17 @@ function runItem(item){
     return ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
       var finGeneration=Date.now();
       if(kefReleve){
+        // Vitesse : mesurée (temps de génération)
         ViaKEF.enregistrerDimension(kefReleve,'vitesse',Math.max(0,100-(finGeneration-debutGeneration)/50));
-        ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',70);
+        // Induction : valeur par défaut (pas mesurée) — marquée comme estimation
         ViaKEF.enregistrerDimension(kefReleve,'induction',50);
-        ViaKEF.enregistrerCompute(kefReleve,finGeneration-debutGeneration,'mesure','temps de génération');
-        // Dimensions indisponibles (pas de fausse mesure)
-        // puissanceVectorielle, puissanceDifferencielle, puissanceComputationnelle, gainRapidite, bruitRecycle = indisponibles
+        // Réduction du bruit : valeur par défaut (pas mesurée) — marquée comme estimation
+        ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',70);
+        // Compute : temps de génération (mesure de durée, pas de puissance de calcul)
+        ViaKEF.enregistrerCompute(kefReleve,finGeneration-debutGeneration,'mesure','temps de génération (durée, pas compute)');
+        // Dimensions indisponibles (pas de fausse mesure) :
+        // puissanceVectorielle, puissanceDifferencielle, puissanceComputationnelle,
+        // gainRapidite, bruitRecycle, feedbackUtilisateur = indisponibles
         var resultatKEF=ViaKEF.calculerKEF(kefReleve);
         ViaKEF.enregistrerKEF(bot.id,null,kefReleve,resultatKEF);
       }
