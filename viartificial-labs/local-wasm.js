@@ -64,7 +64,15 @@
     });
   }
   async function load(modelId, onTick) {
-    if (busy) throw err('BUSY', 'Moteur occupé : une opération est déjà en cours (pas de boucle).');
+    // Si le moteur est occupé, attendre au lieu de rejeter
+    if (busy) {
+      var waitAttempts = 0;
+      while (busy && waitAttempts < 60) {
+        await new Promise(function (resolve) { setTimeout(resolve, 500); });
+        waitAttempts++;
+      }
+      if (busy) throw err('BUSY_TIMEOUT', 'Le moteur est occupé depuis trop longtemps. Réessaie.');
+    }
     busy = true; set('downloading', 'runtime…', 0);
     try {
       if (onTick) onTick({ group: 'runtime', phase: 'downloading', progress: 5, text: 'runtime…', detail: 'runtime…' });

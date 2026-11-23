@@ -99,12 +99,14 @@
   // Ne nécessite aucun clic manuel sur « Charger » pour le fonctionnement normal.
   async function initAutoLoad(onTick, wantId) {
     // Promesse partagée : empêche les initialisations simultanées
+    // IMPORTANT : définir initPromise SYNCHRONEMENT avant toute opération async
     if (initPromise) {
       try { console.log('[local-engine] initAutoLoad : réutilisation de la promesse existante'); } catch (e) {}
       return initPromise;
     }
-    try { console.log('[local-engine] initAutoLoad appelé. ViaWasmEngine disponible:', !!global.ViaWasmEngine); } catch (e) {}
+    // Créer la promesse immédiatement (synchrone) pour éviter la race condition
     initPromise = (async function () {
+      try { console.log('[local-engine] initAutoLoad appelé. ViaWasmEngine disponible:', !!global.ViaWasmEngine); } catch (e) {}
     var c = getConsent();
     if (c !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement cookie ViArtificial Labs.'); return { state: 'waiting-consent', detail: 'Consentement requis.' }; }
     setLoadState('preparing', wantId || MODELS[0].id, 0, 'Vérification de l’appareil et sélection du modèle…');
