@@ -23,14 +23,20 @@
     { id: 'onnx-community/SmolLM2-360M-Instruct-ONNX', downloadMB: 390, license: 'Apache 2.0', auto: true, label: 'SmolLM2 360M Instruct — (≈390 Mo, Apache 2.0, défaut)' },
     { id: 'onnx-community/Qwen2.5-0.5B-Instruct', downloadMB: 800, license: 'Apache 2.0', auto: false, label: 'Qwen2.5 0.5B Instruct — (≈800 Mo mesurés, Apache 2.0, PC/Wi-Fi uniquement, choix explicite)' }
   ];
-  // Accord modèle local UNIQUEMENT (téléchargement + stockage sur l'appareil).
-  // Ce consentement est propre à ViArtificial Labs ; il ne vaut pas pour les
-  // autres applications de KeffStation, et le consentement d'une autre
-  // application ne vaut pas pour ViArtificial Labs.
-  var CONSENT_KEY = 'via-consent'; // {state:'granted'|'later'|'withdrawn', ts}
-  function getConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null'); if (o && o.state) return o.state; } catch (e) {} // Auto-consent : chargement automatique comme ChatGPT/Grok/Gemini
-  try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ state: 'granted', ts: Date.now() })); } catch (e) {}
-  return 'granted'; }
+  // Double consentement : cookies Keffstation + chargement moteur SuperBot
+  // CONSENT_KEY_COOKIES = consentement cookies général Keffstation
+  // CONSENT_KEY_MODEL = consentement chargement moteur SuperBot ViArtificial Labs
+  var CONSENT_KEY_COOKIES = 'keffstation-cookies-consent';
+  var CONSENT_KEY_MODEL = 'via-model-consent';
+  function getCookiesConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_COOKIES) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
+  function setCookiesConsent(state) { try { localStorage.setItem(CONSENT_KEY_COOKIES, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
+  function getModelConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_MODEL) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
+  function setModelConsent(state) { try { localStorage.setItem(CONSENT_KEY_MODEL, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
+  // Compatibilité : getConsent/setConsent pointent vers le consentement modèle
+  function getConsent() { return getModelConsent(); }
+  function setConsent(state) { return setModelConsent(state); }
+  // Les deux consentements doivent être accordés pour le préchargement
+  function bothConsentsGranted() { return getCookiesConsent() === 'granted' && getModelConsent() === 'granted'; }
   function setConsent(state) { try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
   // État du chargement : 'idle' | 'preparing' | 'loading' | 'ready' | 'unavailable' | 'error'
   var LOAD_STATE = 'idle';
@@ -107,8 +113,10 @@
     // Créer la promesse immédiatement (synchrone) pour éviter la race condition
     initPromise = (async function () {
       try { console.log('[local-engine] initAutoLoad appelé. ViaWasmEngine disponible:', !!global.ViaWasmEngine); } catch (e) {}
-    var c = getConsent();
-    if (c !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement cookie ViArtificial Labs.'); return { state: 'waiting-consent', detail: 'Consentement requis.' }; }
+    // Vérifier les deux consentements
+    if (getCookiesConsent() !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement cookies Keffstation.'); return { state: 'waiting-cookies', detail: 'Consentement cookies requis.' }; }
+    if (getModelConsent() !== 'granted') { setLoadState('idle', null, 0, 'En attente du consentement chargement moteur SuperBot.'); return { state: 'waiting-model', detail: 'Consentement modèle requis.' }; }
+    var c = 'granted';
     setLoadState('preparing', wantId || MODELS[0].id, 0, 'Vérification de l’appareil et sélection du modèle…');
     // Attendre que ViaWasmEngine soit disponible (max 5 secondes)
     if (!global.ViaWasmEngine) {
@@ -190,5 +198,5 @@
     return { phase: ls.state, model: ls.model, progress: ls.progress, detail: ls.detail, mode: '—', backend: 'wasm', loadState: ls.state, loadDetail: ls.detail };
   }
   function lastDetectFn() { return lastDetect; }
-  global.ViaLocalEngine = { MODELS: MODELS, detect: detect, lastDetect: lastDetectFn, modelInfo: modelInfo, setModel: setModel, autoLoad: autoLoad, initAutoLoad: initAutoLoad, pickModel: pickModel, storageCheck: storageCheck, getConsent: getConsent, setConsent: setConsent, deleteModels: deleteModels, chat: chat, unload: unload, summary: summary, getLoadState: getLoadState, CONSENT_KEY: CONSENT_KEY };
+  global.ViaLocalEngine = { MODELS: MODELS, detect: detect, lastDetect: lastDetectFn, modelInfo: modelInfo, setModel: setModel, autoLoad: autoLoad, initAutoLoad: initAutoLoad, pickModel: pickModel, storageCheck: storageCheck, getConsent: getConsent, setConsent: setConsent, getCookiesConsent: getCookiesConsent, setCookiesConsent: setCookiesConsent, getModelConsent: getModelConsent, setModelConsent: setModelConsent, bothConsentsGranted: bothConsentsGranted, deleteModels: deleteModels, chat: chat, unload: unload, summary: summary, getLoadState: getLoadState, CONSENT_KEY_COOKIES: CONSENT_KEY_COOKIES, CONSENT_KEY_MODEL: CONSENT_KEY_MODEL };
 })(window);

@@ -44,6 +44,82 @@ function declarer(m) {
 function estActif() { return COS_ACTIF === true; }
 function activer() { COS_ACTIF = true; return true; }
 function desactiver() { COS_ACTIF = false; return true; }
+
+// Dispatch réel vers les moteurs disponibles
+function dispatcher(moteurId, tache) {
+  var resultat = { moteur: moteurId, execute: false, erreur: null, resultat: null };
+  if (moteurId === 'local') {
+    // Vérifier si le moteur local est réellement disponible
+    if (global.ViaLocalEngine && global.ViaLocalEngine.summary) {
+      var sm = global.ViaLocalEngine.summary();
+      if (sm.phase === 'ready') {
+        resultat.execute = true;
+        resultat.resultat = 'moteur local prêt';
+      } else {
+        resultat.erreur = 'moteur local non prêt: ' + sm.phase;
+      }
+    } else {
+      resultat.erreur = 'ViaLocalEngine non disponible';
+    }
+  } else if (moteurId === 'ollama') {
+    // Vérifier l'endpoint réellement configuré
+    if (global.ViaProviders && global.ViaProviders.load) {
+      var cfg = global.ViaProviders.load();
+      if (cfg.provider === 'ollama' && cfg.baseUrl) {
+        resultat.execute = true;
+        resultat.resultat = 'endpoint ollama configuré: ' + cfg.baseUrl;
+      } else {
+        resultat.erreur = 'endpoint ollama non configuré';
+      }
+    } else {
+      resultat.erreur = 'ViaProviders non disponible';
+    }
+  } else if (moteurId === 'custom') {
+    if (global.ViaProviders && global.ViaProviders.load) {
+      var cfg2 = global.ViaProviders.load();
+      if (cfg2.provider === 'custom' && cfg2.baseUrl) {
+        resultat.execute = true;
+        resultat.resultat = 'endpoint custom configuré: ' + cfg2.baseUrl;
+      } else {
+        resultat.erreur = 'endpoint custom non configuré';
+      }
+    } else {
+      resultat.erreur = 'ViaProviders non disponible';
+    }
+  } else if (moteurId === 'repli') {
+    resultat.execute = true;
+    resultat.resultat = 'repli (sans moteur)';
+  } else if (moteurId === 'gpu') {
+    // WebGPU : détecter réellement
+    var hasGPU = false;
+    try { hasGPU = !!(navigator.gpu); } catch (e) {}
+    if (hasGPU) {
+      resultat.execute = false;
+      resultat.erreur = 'WebGPU détecté mais aucun backend implémenté dans le projet';
+    } else {
+      resultat.erreur = 'WebGPU non supporté par ce navigateur';
+    }
+  } else {
+    resultat.erreur = 'moteur inconnu: ' + moteurId;
+  }
+  return resultat;
+}
+
+// Vérifier la disponibilité réelle des moteurs
+function verifierMoteursReels() {
+  var etat = {};
+  // CPU/WASM local
+  try { etat['local'] = global.ViaLocalEngine && global.ViaLocalEngine.summary && global.ViaLocalEngine.summary().phase === 'ready'; } catch (e) { etat['local'] = false; }
+  // GPU WebGPU
+  try { etat['gpu'] = !!(navigator.gpu); } catch (e) { etat['gpu'] = false; }
+  // Distant Ollama
+  try { var cfg = global.ViaProviders ? global.ViaProviders.load() : null; etat['ollama'] = !!(cfg && cfg.provider === 'ollama' && cfg.baseUrl); } catch (e) { etat['ollama'] = false; }
+  // Distant custom
+  try { var cfg2 = global.ViaProviders ? global.ViaProviders.load() : null; etat['custom'] = !!(cfg2 && cfg2.provider === 'custom' && cfg2.baseUrl); } catch (e) { etat['custom'] = false; }
+  // Repli (toujours disponible)
+  etat['repli'] = true;
+  return etat;
+}
 // Choix du moteur dans le parcours (NOUVEAU 2026-11-03) : local CPU/WASM si
 // disponible ; Ollama distant seulement si adresse configurée ; GPU UNIQUEMENT
 // si moteur + appareil le prennent réellement en charge — aucun moteur WebGPU
@@ -99,4 +175,7 @@ function selectionner(etat, plan, env, besoins) {
   if (rm.moteur === 'custom-distant') return [{ id: 'custom', type: 'inference', polarite: 'emetteur', etat: 'en-charge', motif: '066-custom-configure' }];
   return [{ id: 'repli', type: 'memoire', polarite: 'neutre', etat: 'indisponible', motif: '066-' + String(rm.repli || 'aucun-moteur').slice(0, 60) }];
 }
-module.exports = { TYPES: COS_TYPES, ETATS: COS_ETATS, POLARITES: COS_POLARITES, REGISTRE: REGISTRE, ROUTES: ROUTES, declarer: declarer, selectionner: selectionner, estActif: estActif, activer: activer, desactiver: desactiver, resoudreMoteur: resoudreMoteur };
+module.exports = { TYPES: COS_TYPES, ETATS: COS_ETATS, POLARITES: COS_POLARITES, REGISTRE: REGISTRE, ROUTES: ROUTES, declarer: declarer, selectionner: selectionner, estActif: estActif, activer: activer, desactiver: desactiver, resoudreMoteur: resoudreMoteur, dispatcher: dispatcher, verifierMoteursReels: verifierMoteursReels };
+if (typeof window !== 'undefined') {
+  window.BlmMoteursCos = { TYPES: COS_TYPES, ETATS: COS_ETATS, POLARITES: COS_POLARITES, REGISTRE: REGISTRE, ROUTES: ROUTES, declarer: declarer, selectionner: selectionner, estActif: estActif, activer: activer, desactiver: desactiver, resoudreMoteur: resoudreMoteur, dispatcher: dispatcher, verifierMoteursReels: verifierMoteursReels };
+}
