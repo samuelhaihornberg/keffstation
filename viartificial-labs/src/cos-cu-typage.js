@@ -4,14 +4,20 @@
 // Réutilise les structures existantes (cos-langage.js, blm-equipe.js, cos-circuit-taches.js, kef.js).
 'use strict';
 (function (global) {
-  // ---------- 1. TYPES DES CINQ MATRICES ----------
-  var MATRIX_IDS = ['background', 'text', 'image', 'engine', 'context_semantic'];
+  // ---------- 1. TYPES DES DIX MATRICES ----------
+  var MATRIX_IDS = ['background', 'text', 'image', 'engine', 'context_semantic',
+    'audio_voice', 'sources_proofs', 'learning_kef', 'security_permissions', 'actions_applications'];
   var MATRIX_LABELS = {
     background: 'Thème, fond, mise en page visuelle, animation des conduits et éclats lumineux',
     text: 'Entrée utilisateur, contexte textuel transmis, fragments générés et réponse affichée',
     image: 'Références d\'images, métadonnées, requêtes de génération et résultats image',
     engine: 'Tâches, orchestration, modèles sollicités, compute et états d\'exécution',
-    context_semantic: 'Sens, historique pertinent, préférences disponibles, mémoire, feedback et relations sémantiques'
+    context_semantic: 'Sens, historique pertinent, préférences disponibles, mémoire, feedback et relations sémantiques',
+    audio_voice: 'Audio entrant, transcription, ton, génération vocale, lien audio-texte',
+    sources_proofs: 'Documents, sources, dates, références, fraîcheur, fiabilité, citations, déductions',
+    learning_kef: 'Feedbacks explicites/implicites, calcul KEF, évolution des familles de blocs, préférences',
+    security_permissions: 'Autorisations, confidentialité, limites, permissions avant transmission ou action',
+    actions_applications: 'Actions Keffstation (Blogum, etc.), distinction action réelle vs scène fictive'
   };
   function creerMatrice(id) {
     if (MATRIX_IDS.indexOf(id) < 0) return null;
@@ -25,7 +31,11 @@
     'image_generation_request', 'image_output', 'semantic_context',
     'memory_reference', 'user_feedback', 'style_instruction',
     'compute_request', 'compute_result', 'kef_metrics', 'status_update',
-    'visual_layout', 'animation_event'
+    'visual_layout', 'animation_event',
+    'audio_input', 'transcript', 'voice_request', 'audio_output',
+    'source_request', 'source_record', 'evidence', 'citation',
+    'permission_check', 'access_scope', 'policy_result',
+    'app_action_request', 'app_action_result', 'action_status'
   ];
   // Association canal → matrice
   var CANAL_MATRICE = {
@@ -34,7 +44,11 @@
     control: 'engine', task_request: 'engine', task_result: 'engine', compute_request: 'engine',
     compute_result: 'engine', kef_metrics: 'engine', status_update: 'engine',
     semantic_context: 'context_semantic', memory_reference: 'context_semantic', user_feedback: 'context_semantic',
-    visual_layout: 'background', animation_event: 'background'
+    visual_layout: 'background', animation_event: 'background',
+    audio_input: 'audio_voice', transcript: 'audio_voice', voice_request: 'audio_voice', audio_output: 'audio_voice',
+    source_request: 'sources_proofs', source_record: 'sources_proofs', evidence: 'sources_proofs', citation: 'sources_proofs',
+    permission_check: 'security_permissions', access_scope: 'security_permissions', policy_result: 'security_permissions',
+    app_action_request: 'actions_applications', app_action_result: 'actions_applications', action_status: 'actions_applications'
   };
   function canalVersMatrice(canalType) {
     return CANAL_MATRICE[canalType] || null;
