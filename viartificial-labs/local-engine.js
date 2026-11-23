@@ -106,9 +106,12 @@
       if (!st.ok) { setLoadState('unavailable', pick.model || wantId, 0, 'Stockage insuffisant : il faut ≈' + needMB + ' Mo libres (utilisé ' + st.usageMB + ' / quota ' + st.quotaMB + ' Mo).'); throw Object.assign(new Error('Stockage insuffisant'), { code: 'STORAGE_FULL' }); }
       if (!global.ViaWasmEngine) { setLoadState('error', pick.model || wantId, 0, 'Moteur CPU non chargé : recharge la page.'); throw Object.assign(new Error('Moteur CPU non chargé : recharge la page.'), { code: 'NOT_LOADED' }); }
       setLoadState('loading', pick.model || wantId, 0, 'Téléchargement et chargement du modèle local en cours…');
-      return await global.ViaWasmEngine.load(wantId || null, function (p) {
+      var result = await global.ViaWasmEngine.load(wantId || null, function (p) {
         setLoadState('loading', pick.model || wantId, p.progress || 0, p.detail || 'Chargement en cours…');
       });
+      // Le modèle est maintenant chargé et prêt
+      setLoadState('ready', pick.model || wantId, 100, 'Modèle local prêt et chargé.');
+      return result;
     } catch (e) {
       if (e.code === 'ABORTED') { setLoadState('idle', null, 0, 'Chargement annulé.'); return { state: 'aborted' }; }
       throw e;
