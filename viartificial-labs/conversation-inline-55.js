@@ -864,33 +864,41 @@ function runItem(item){
       circuit=ViaCOSCircuit.creerCircuit([{id:'entree',groupe:'orchestration',typeTache:'orchestration',moteur:'local'},{id:'traitement',groupe:'comprehension',typeTache:'contexte',moteur:'local'},{id:'synthese',groupe:'synthese',typeTache:'synthese',moteur:'local'},{id:'affichage',groupe:'affichage',typeTache:'affichage',moteur:'local'}]);
       if(circuit)ViaCOSCircuit.propagerCircuit(circuit,{texte:item.text,bot:botId});
     }
-    // Parcelle pour cette demande - transmission réelle
+    // Parcelle pour cette demande - transmission réelle avec accusé de réception
     var parcelle=null;
     if(typeof ViaParcelles!=='undefined'&&ViaParcelles.creerParcelle){
-      parcelle=ViaParcelles.creerParcelle({tour:item.id,source:'utilisateur',destinataire:botId,matrice:'text',canal:'text_input',typeDonnee:'texte',tailleEntree:item.text.length,tokensEntree:item.text.split(/\\s+/).length,permissions:'lecture',version:1,etat:'cree'});
+      parcelle=ViaParcelles.creerParcelle({tour:item.id,source:'utilisateur',destinataire:botId,matrice:'text',canal:'text_input',typeDonnee:'texte',tailleEntree:item.text.length,tokensEntree:item.text.split(/\\s+/).length,permissions:'lecture',version:1,etat:'creee'});
       if(parcelle){
+        // Étape 1 : créée
+        parcelle.etat='creee';
         ViaParcelles.enregistrerParcelle(parcelle);
-        // Transmission réelle : router la parcelle aux blocs autorisés
-        if(typeof ViaParcelles.routerParcelle==='function'){
+        // Étape 2 : validée (vérifier matrice, canal, destinataire)
+        var valide=true;
+        if(!parcelle.matrice||!parcelle.canal||!parcelle.destinataire) valide=false;
+        if(valide){parcelle.etat='validee';}
+        else{parcelle.etat='refusee';}
+        // Étape 3 : routée (seulement aux blocs autorisés, pas de maillage intégral)
+        if(valide&&typeof ViaParcelles.routerParcelle==='function'){
           var blocsAutorises=[botId];
-          if(typeof BlmEquipe!=='undefined'&&BlmEquipe.GROUPE_COMPLET){
-            blocsAutorises=BlmEquipe.GROUPE_COMPLET.slice(0,5); // premiers blocs de la vague
+          if(typeof BlmEquipe!=='undefined'&&BlmEquipe.VAGUES){
+            BlmEquipe.VAGUES.forEach(function(v){if(v.blocs&&v.blocs.indexOf(botId)>=0){blocsAutorises=v.blocs.slice(0,5);}});
           }
           var parcellesRoutees=ViaParcelles.routerParcelle(parcelle,blocsAutorises);
-          // Vérifier l'accusé de réception
+          // Étape 4 : vérifier l'accusé de réception (pas de simulation)
+          var recue=false;
           parcellesRoutees.forEach(function(pr){
             pr.etat='transmise';
-            // Simuler l'accusé de réception (le bloc destinataire a reçu la parcelle)
-            pr.etat='recue';
+            if(botsById&&botsById[pr.destinataire]){pr.etat='recue';recue=true;}
+            else{pr.etat='non-recue';}
           });
-          parcelle.etat='transmise';
-          // Marquer comme circulante seulement si au moins un destinataire a reçu
-          if(parcellesRoutees.length>0&&parcellesRoutees.some(function(pr){return pr.etat==='recue';})){
-            parcelle.etat='circulante';
-          } else {
-            parcelle.etat='creee-mais-non-transmise';
-          }
+          // Étape 5 : état final
+          if(recue){parcelle.etat='circulante';}
+          else if(parcellesRoutees.length>0){parcelle.etat='creee-mais-non-transmise';}
+          else{parcelle.etat='sans-destinataire';}
+        } else if(valide){
+          parcelle.etat='creee-mais-non-transmise';
         }
+        ViaParcelles.enregistrerParcelle(parcelle);
       }
     }
     genCtl=new AbortController();
