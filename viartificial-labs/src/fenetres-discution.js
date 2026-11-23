@@ -369,17 +369,23 @@
           // Moteur chargé, générer la réponse
           var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0] };
           var msgs_arr = [{ role: 'user', content: text }];
-          global.ViaLocalEngine.chat(bot, msgs_arr, {
-            onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
-          }).then(function (r) {
-            botDiv.textContent = r;
-            ajouterLecteurAudio(botDiv, r);
-          }).catch(function (e) {
-            // Réponse conversationnelle de repli
-            var rep = "Je t'ecoute. (" + (bot.name || botIds[0]) + ')';
-            botDiv.textContent = rep;
-            ajouterLecteurAudio(botDiv, rep);
-          });
+          if (global.ViaDispatchUnifie && global.ViaDispatchUnifie.dispatcher) {
+            global.ViaDispatchUnifie.dispatcher({taskId:'fenetre-'+Date.now(), moteur:'local', bot:bot, messages:msgs_arr, onToken:function(t){botDiv.textContent+=t;msgs.scrollTop=msgs.scrollHeight;}}).then(function(res){
+              if(res.statut==='termine'){botDiv.textContent=res.sortie;ajouterLecteurAudio(botDiv,res.sortie);}
+              else{botDiv.textContent='Moteur indisponible : '+(res.erreur||'');}
+            }).catch(function(e){botDiv.textContent='Erreur : '+(e&&e.message?e.message:e);});
+          } else {
+            global.ViaLocalEngine.chat(bot, msgs_arr, {
+              onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
+            }).then(function (r) {
+              botDiv.textContent = r;
+              ajouterLecteurAudio(botDiv, r);
+            }).catch(function (e) {
+              var rep = "Je t'ecoute. (" + (bot.name || botIds[0]) + ')';
+              botDiv.textContent = rep;
+              ajouterLecteurAudio(botDiv, rep);
+            });
+          }
         } else if (s.phase === 'error' || s.phase === 'unavailable') {
           clearInterval(waitInterval);
           // Réponse conversationnelle de repli
@@ -402,15 +408,21 @@
       // Utiliser le moteur local
       var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0] };
       var msgs_arr = [{ role: 'user', content: text }];
-      global.ViaLocalEngine.chat(bot, msgs_arr, {
-        onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
-      }).then(function (r) {
-        botDiv.textContent = r;
-        // Lecteur audio pour la réponse
-        ajouterLecteurAudio(botDiv, r);
-      }).catch(function (e) {
-        botDiv.textContent = 'Erreur : ' + (e && e.message ? e.message : e);
-      });
+      if (global.ViaDispatchUnifie && global.ViaDispatchUnifie.dispatcher) {
+        global.ViaDispatchUnifie.dispatcher({taskId:'fenetre-'+Date.now(), moteur:'local', bot:bot, messages:msgs_arr, onToken:function(t){botDiv.textContent+=t;msgs.scrollTop=msgs.scrollHeight;}}).then(function(res){
+          if(res.statut==='termine'){botDiv.textContent=res.sortie;ajouterLecteurAudio(botDiv,res.sortie);}
+          else{botDiv.textContent='Moteur indisponible : '+(res.erreur||'');}
+        }).catch(function(e){botDiv.textContent='Erreur : '+(e&&e.message?e.message:e);});
+      } else {
+        global.ViaLocalEngine.chat(bot, msgs_arr, {
+          onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
+        }).then(function (r) {
+          botDiv.textContent = r;
+          ajouterLecteurAudio(botDiv, r);
+        }).catch(function (e) {
+          botDiv.textContent = 'Erreur : ' + (e && e.message ? e.message : e);
+        });
+      }
     } else {
       // Réponse conversationnelle (sans moteur LLM local)
       setTimeout(function () {
@@ -790,4 +802,4 @@
     creerBarreZoom: creerBarreZoom,
     fenetres: function () { return fenetres; }
   };
-})(window);
+})(typeof window !== "undefined" ? window : global);
