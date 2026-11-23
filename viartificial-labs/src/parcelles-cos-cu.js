@@ -18,7 +18,7 @@
       typeDonnee: p.typeDonnee || 'json',
       permissions: p.permissions || 'lecture',
       version: p.version || 1,
-      etat: p.etat || 'cree',
+      etat: p.etat || 'creee',
       // Mesures
       tailleEntree: p.tailleEntree || 0,
       tailleSortie: p.tailleSortie || 0,

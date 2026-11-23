@@ -888,14 +888,12 @@ function runItem(item){
           // Un accusé de réception réel nécessite que le destinataire traite la parcelle
           // Dans le parcours actuel, les blocs ne traitent pas les parcelles individuellement
           // Donc l'état reste "transmise" (envoyée) mais pas "reçue" (pas d'accusé réel)
-          var recue=false;
+          // Pas de simulation : aucun accusé de réception réel
           parcellesRoutees.forEach(function(pr){
-            pr.etat='transmise'; // envoyée mais pas encore accusée de réception
-            // Pas de simulation : l'accusé de réception nécessite un traitement réel du destinataire
+            pr.etat='envoyee-reception-en-attente';
           });
-          // Étape 5 : état final
-          // Pas de réception réelle → "créée mais non transmise"
-          parcelle.etat='creee-mais-non-transmise';
+          // État final : envoyée, réception en attente (pas "reçue" ni "circulante")
+          parcelle.etat='envoyee-reception-en-attente';
         } else if(valide){
           parcelle.etat='creee-mais-non-transmise';
         }
