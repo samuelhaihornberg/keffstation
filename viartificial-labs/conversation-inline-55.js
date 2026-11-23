@@ -885,16 +885,17 @@ function runItem(item){
           }
           var parcellesRoutees=ViaParcelles.routerParcelle(parcelle,blocsAutorises);
           // Étape 4 : vérifier l'accusé de réception (pas de simulation)
+          // Un accusé de réception réel nécessite que le destinataire traite la parcelle
+          // Dans le parcours actuel, les blocs ne traitent pas les parcelles individuellement
+          // Donc l'état reste "transmise" (envoyée) mais pas "reçue" (pas d'accusé réel)
           var recue=false;
           parcellesRoutees.forEach(function(pr){
-            pr.etat='transmise';
-            if(botsById&&botsById[pr.destinataire]){pr.etat='recue';recue=true;}
-            else{pr.etat='non-recue';}
+            pr.etat='transmise'; // envoyée mais pas encore accusée de réception
+            // Pas de simulation : l'accusé de réception nécessite un traitement réel du destinataire
           });
           // Étape 5 : état final
-          if(recue){parcelle.etat='circulante';}
-          else if(parcellesRoutees.length>0){parcelle.etat='creee-mais-non-transmise';}
-          else{parcelle.etat='sans-destinataire';}
+          // Pas de réception réelle → "créée mais non transmise"
+          parcelle.etat='creee-mais-non-transmise';
         } else if(valide){
           parcelle.etat='creee-mais-non-transmise';
         }
@@ -930,7 +931,7 @@ function runItem(item){
       else if(bot.id==='via'||bot.id==='theo')genreKEF='conversation';
       kefReleve=ViaKEF.creerReleve('reponse',genreKEF);
       kefReleve.botId=bot.id;
-      ViaKEF.enregistrerDimension(kefReleve,'induction',50);
+      ViaKEF.enregistrerDimension(kefReleve,'induction',50,'estimation','score/100','valeur par défaut');
     }
     var debutGeneration=Date.now();
     var debutGeneration=Date.now();
@@ -950,11 +951,11 @@ function runItem(item){
       var finGeneration=Date.now();
       if(kefReleve){
         // Vitesse : mesurée (temps de génération)
-        ViaKEF.enregistrerDimension(kefReleve,'vitesse',Math.max(0,100-(finGeneration-debutGeneration)/50));
+        ViaKEF.enregistrerDimension(kefReleve,'vitesse',Math.max(0,100-(finGeneration-debutGeneration)/50),'mesure','score/100','temps de génération');
         // Induction : valeur par défaut (pas mesurée) — marquée comme estimation
-        ViaKEF.enregistrerDimension(kefReleve,'induction',50);
+        ViaKEF.enregistrerDimension(kefReleve,'induction',50,'estimation','score/100','valeur par défaut');
         // Réduction du bruit : valeur par défaut (pas mesurée) — marquée comme estimation
-        ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',70);
+        ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',70,'estimation','score/100','valeur par défaut');
         // Compute : temps de génération (mesure de durée, pas de puissance de calcul)
         ViaKEF.enregistrerCompute(kefReleve,finGeneration-debutGeneration,'mesure','temps de génération (durée, pas compute)');
         // Dimensions indisponibles (pas de fausse mesure) :
@@ -983,7 +984,7 @@ function runItem(item){
       if(circuit)ViaCOSCircuit.annulerCircuit(circuit);
     },function(e){
       if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'annule','Annulé');sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
-      else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));if(kefReleve){ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',0);ViaKEF.enregistrerKEF(bot.id,null,kefReleve,ViaKEF.calculerKEF(kefReleve));}sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
+      else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));if(kefReleve){ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',0,'mesure','score/100','erreur moteur');ViaKEF.enregistrerKEF(bot.id,null,kefReleve,ViaKEF.calculerKEF(kefReleve));}sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
     }).then(function(){genCtl=null;});
   }).then(function(){
     if(item.cancelled)return;
