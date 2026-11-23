@@ -355,27 +355,46 @@
 
     // Auto-consent activé : pas de barrière de consentement, chargement automatique
     try { if (global.ViaLocalEngine && global.ViaLocalEngine.setConsent) global.ViaLocalEngine.setConsent('granted'); } catch (e) {}
-    // Charger le moteur si consentement accordé mais pas encore chargé
-    if (global.ViaLocalEngine && global.ViaLocalEngine.getConsent && global.ViaLocalEngine.getConsent() === 'granted' &&
-        global.ViaLocalEngine.summary && global.ViaLocalEngine.summary().phase !== 'ready') {
-      botDiv.textContent = 'Chargement du modèle local…';
-      global.ViaLocalEngine.initAutoLoad(function (p) {
-        botDiv.textContent = 'Chargement du modèle local : ' + (p.progress || 0) + '%…';
-      }).then(function () {
-        // Moteur chargé, continuer avec la réponse
-        var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0] };
-        var msgs_arr = [{ role: 'user', content: text }];
-        global.ViaLocalEngine.chat(bot, msgs_arr, {
-          onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
-        }).then(function (r) {
-          botDiv.textContent = r;
-          ajouterLecteurAudio(botDiv, r);
-        }).catch(function (e) {
-          botDiv.textContent = 'Erreur : ' + (e && e.message ? e.message : e);
-        });
-      }).catch(function (e) {
-        botDiv.textContent = 'Échec du chargement : ' + (e && e.message ? e.message : e);
-      });
+    // Attendre que le moteur soit prêt (ne pas bloquer)
+    if (global.ViaLocalEngine && global.ViaLocalEngine.summary && global.ViaLocalEngine.summary().phase !== 'ready') {
+      botDiv.textContent = 'Chargement du moteur…';
+      // Attendre que le moteur soit prêt
+      var waitAttempts = 0;
+      var waitInterval = setInterval(function () {
+        waitAttempts++;
+        var s = global.ViaLocalEngine.summary();
+        if (s.phase === 'ready') {
+          clearInterval(waitInterval);
+          botDiv.textContent = '';
+          // Moteur chargé, générer la réponse
+          var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0] };
+          var msgs_arr = [{ role: 'user', content: text }];
+          global.ViaLocalEngine.chat(bot, msgs_arr, {
+            onToken: function (t) { botDiv.textContent += t; msgs.scrollTop = msgs.scrollHeight; }
+          }).then(function (r) {
+            botDiv.textContent = r;
+            ajouterLecteurAudio(botDiv, r);
+          }).catch(function (e) {
+            // Réponse conversationnelle de repli
+            var rep = "Je t'ecoute. (" + (bot.name || botIds[0]) + ')';
+            botDiv.textContent = rep;
+            ajouterLecteurAudio(botDiv, rep);
+          });
+        } else if (s.phase === 'error' || s.phase === 'unavailable') {
+          clearInterval(waitInterval);
+          // Réponse conversationnelle de repli
+          var rep2 = "Je t'ecoute. (" + botIds[0] + ')';
+          botDiv.textContent = rep2;
+          ajouterLecteurAudio(botDiv, rep2);
+        } else if (waitAttempts >= 120) {
+          clearInterval(waitInterval);
+          var rep3 = "Je t'ecoute. (" + botIds[0] + ')';
+          botDiv.textContent = rep3;
+          ajouterLecteurAudio(botDiv, rep3);
+        } else {
+          botDiv.textContent = 'Chargement du moteur… ' + (s.progress || 0) + '%';
+        }
+      }, 500);
       return;
     }
     // Appel au moteur local si disponible
