@@ -135,52 +135,82 @@
     return 'defaut';
   }
 
+  // ---------- Compter les unités de progression (graphèmes visibles) ----------
+  function compterUnites(texte) {
+    // Compte les graphèmes visibles comme des unités (accents, emojis composés = 1 unité)
+    var unites = [];
+    var i = 0;
+    while (i < texte.length) {
+      var char = texte.charAt(i);
+      // Vérifier si c'est un emoji composé (surrogate pair)
+      if (i + 1 < texte.length && texte.charCodeAt(i) >= 0xD800 && texte.charCodeAt(i) <= 0xDBFF) {
+        unites.push(texte.substring(i, i + 2));
+        i += 2;
+      } else if (char === ' ' || char === '\\t' || char === '\\n' || char === '\\r') {
+        // Espace/tab/retour = 1 unité de progression (crée le bon espacement)
+        unites.push(char);
+        i++;
+      } else {
+        unites.push(char);
+        i++;
+      }
+    }
+    return unites;
+  }
+
   // ---------- Affichage progressif ----------
   function afficherProgressif(container, texte, options) {
     var opts = options || {};
     var vitesse = opts.vitesse || 15; // ms par caractère
     var onTermine = opts.onTermine || null;
     var animer = !REDUCED_MOTION && opts.animer !== false;
+    var onProgression = opts.onProgression || null;
 
     if (!container || !texte) return;
 
     // Vider le container
     container.textContent = '';
 
+    // Créer la barre de progression sémantique
+    var barreSemantique = document.createElement('div');
+    barreSemantique.className = 'via-barre-semantique';
+    barreSemantique.style.cssText = 'position:relative;width:100%;height:4px;background:rgba(184,77,255,.15);border-radius:2px;margin:4px 0 8px 0;overflow:hidden;';
+    var progressSemantique = document.createElement('div');
+    progressSemantique.style.cssText = 'height:100%;width:0%;background:linear-gradient(90deg,#b87333,#ffd700,#c0c0c0,#b84dff);border-radius:2px;transition:width 0.15s ease;box-shadow:0 0 8px rgba(255,215,0,.4);';
+    barreSemantique.appendChild(progressSemantique);
+    var texteProgression = document.createElement('span');
+    texteProgression.style.cssText = 'position:absolute;right:4px;top:-14px;font-size:0.65rem;color:#ffd700;font-weight:700;';
+    texteProgression.textContent = '0%';
+    barreSemantique.appendChild(texteProgression);
+    container.appendChild(barreSemantique);
+
     // Créer le conteneur de tubes
     var tubeContainer = document.createElement('span');
     tubeContainer.className = 'via-tube-container';
     container.appendChild(tubeContainer);
 
-    // Parser le texte en préservant les espaces, retours à la ligne et tabulations
-    var chars = [];
-    for (var i = 0; i < texte.length; i++) {
-      chars.push(texte.charAt(i));
-    }
+    // Parser le texte en unités de progression (graphèmes visibles)
+    var unites = compterUnites(texte);
+    var totalUnites = unites.length;
+    var unitesTerminees = 0;
 
-    // Détecter les mots-clés
-    var motsCles = detecterMotsCles(texte);
-
-    // Afficher caractère par caractère avec coordonnées vectorielles et précision subpixel
+    // Afficher unité par unité
     var i = 0;
     var interval = setInterval(function () {
       var stepStart = performance.now();
-      if (i < chars.length) {
-        var char = chars[i];
+      if (i < unites.length) {
+        var unite = unites[i];
         var span = document.createElement('span');
         span.className = 'via-tube-char';
-        span.textContent = char;
-        // Précision subpixel via CSS (pas de décalage de mise en page)
-        span.style.textRendering = 'optimizeLegibility';
-        span.style.webkitFontSmoothing = 'antialiased';
-        span.style.mozOsxFontSmoothing = 'grayscale';
+        span.textContent = unite;
 
         // Catégoriser
-        var cat = categoriserChar(char, texte.slice(0, i));
+        var cat = categoriserChar(unite, texte.slice(0, i));
         span.style.color = CATEGORIES_COULEURS[cat] || CATEGORIES_COULEURS.defaut;
 
         // Vérifier si c'est un mot-clé
         var estMotCle = false;
+        var motsCles = detecterMotsCles(texte);
         motsCles.forEach(function (mc) {
           var start = texte.indexOf(mc);
           if (start >= 0 && i >= start && i < start + mc.length) {
@@ -189,14 +219,13 @@
         });
         if (estMotCle) {
           span.classList.add('mot-cle');
-          // Splash de matière sur les mots-clés
           if (animer && Math.random() > 0.7) {
             creerSplashMatiere(tubeContainer, span);
           }
         }
 
         // Animation décorative : anneau extensible
-        if (animer && char.trim() && Math.random() > 0.85) {
+        if (animer && unite.trim() && Math.random() > 0.85) {
           var anneau = document.createElement('span');
           anneau.className = 'via-tube-anneau';
           tubeContainer.appendChild(anneau);
@@ -216,18 +245,31 @@
           span.style.transform = 'none';
         }
 
+        // Mettre à jour la progression
+        unitesTerminees++;
+        var pct = (unitesTerminees / totalUnites) * 100;
+        progressSemantique.style.width = pct + '%';
+        texteProgression.textContent = Math.round(pct) + '%';
+
+        // Callback de progression
+        if (onProgression) onProgression(pct, unite);
+
+        // Vérifier le temps d'étape (objectif ≤6ms)
+        var stepTime = performance.now() - stepStart;
+        if (stepTime > 6 && animer) {
+          animer = false;
+        }
+
         i++;
       } else {
         clearInterval(interval);
+        // S'assurer que la progression est à 100%
+        progressSemantique.style.width = '100%';
+        texteProgression.textContent = '100%';
         if (onTermine) onTermine();
       }
-      // Vérifier le temps d'étape (objectif ≤6ms)
-      var stepTime = performance.now() - stepStart;
-      if (stepTime > 6 && animer) {
-        // Simplifier l'animation si trop lent
-        animer = false;
-      }
     }, vitesse);
+
     // Céder le contrôle au navigateur
     if (animer) {
       requestAnimationFrame(function () {});
