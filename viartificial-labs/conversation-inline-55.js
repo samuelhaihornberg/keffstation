@@ -550,6 +550,28 @@ function ensureEngine(){
 function flushConvs(){try{for(var k in hists)saveConv(k);}catch(e){}}
 // Bouton « Charger le LLM + BLLM » : recharge forcée, quel que soit le fournisseur.
 // Le chargement normal se fait automatiquement après consentement cookie ViArtificial Labs.
+// Boutons de chargement individuels
+var btnLoadLLM=document.getElementById('btnLoadLLM');
+var btnLoadBLM=document.getElementById('btnLoadBLM');
+var btnLoadSuperBot=document.getElementById('btnLoadSuperBot');
+if(btnLoadLLM)btnLoadLLM.onclick=function(){
+  btnLoadLLM.disabled=true;btnLoadLLM.textContent='Chargement…';
+  if(ViaLocalEngine.getConsent()!=='granted')ViaLocalEngine.setConsent('granted');
+  ViaLocalEngine.initAutoLoad(function(p){btnLoadLLM.textContent='Chargement LLM : '+(p.progress||0)+'%';}).then(function(){btnLoadLLM.textContent='✅ LLM prêt';btnLoadLLM.disabled=false;paintEngineStatus();}).catch(function(e){btnLoadLLM.textContent='❌ '+(e&&e.message?e.message:e);btnLoadLLM.disabled=false;});
+};
+if(btnLoadBLM)btnLoadBLM.onclick=function(){
+  btnLoadBLM.disabled=true;btnLoadBLM.textContent='Chargement…';
+  executerAutoTestBLM();
+  btnLoadBLM.textContent='✅ BLM testé';
+  btnLoadBLM.disabled=false;
+  paintEngineStatus();
+};
+if(btnLoadSuperBot)btnLoadSuperBot.onclick=function(){
+  btnLoadSuperBot.disabled=true;btnLoadSuperBot.textContent='Chargement…';
+  if(ViaLocalEngine.getConsent()!=='granted')ViaLocalEngine.setConsent('granted');
+  ViaLocalEngine.initAutoLoad(function(p){btnLoadSuperBot.textContent='Chargement SuperBot : '+(p.progress||0)+'%';}).then(function(){btnLoadSuperBot.textContent='✅ SuperBot prêt';btnLoadSuperBot.disabled=false;paintEngineStatus();}).catch(function(e){btnLoadSuperBot.textContent='❌ '+(e&&e.message?e.message:e);btnLoadSuperBot.disabled=false;});
+};
+
 document.getElementById('llmBlmBtn').onclick=function(){
   var btn=this,msg=document.getElementById('llmBlmMsg');
   if(!msg||btn.disabled)return;
