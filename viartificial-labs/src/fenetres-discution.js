@@ -381,22 +381,15 @@
               botDiv.textContent = r;
               ajouterLecteurAudio(botDiv, r);
             }).catch(function (e) {
-              var rep = "Je t'ecoute. (" + (bot.name || botIds[0]) + ')';
-              botDiv.textContent = rep;
-              ajouterLecteurAudio(botDiv, rep);
+              botDiv.textContent = 'Moteur indisponible : ' + (e && e.message ? e.message : e);
             });
           }
         } else if (s.phase === 'error' || s.phase === 'unavailable') {
           clearInterval(waitInterval);
-          // Réponse conversationnelle de repli
-          var rep2 = "Je t'ecoute. (" + botIds[0] + ')';
-          botDiv.textContent = rep2;
-          ajouterLecteurAudio(botDiv, rep2);
+          botDiv.textContent = 'Moteur indisponible : ' + (s.detail || 'aucun backend opérationnel');
         } else if (waitAttempts >= 120) {
           clearInterval(waitInterval);
-          var rep3 = "Je t'ecoute. (" + botIds[0] + ')';
-          botDiv.textContent = rep3;
-          ajouterLecteurAudio(botDiv, rep3);
+          botDiv.textContent = 'Délai dépassé : le moteur n\'est pas prêt.';
         } else {
           botDiv.textContent = 'Chargement du moteur… ' + (s.progress || 0) + '%';
         }
@@ -424,41 +417,19 @@
         });
       }
     } else {
-      // Réponse conversationnelle (sans moteur LLM local)
-      setTimeout(function () {
-        var bot = (global.botsById && global.botsById[botIds[0]]) || { id: botIds[0], name: botIds[0], specialty: '', personality: '' };
-        var langue = 'fr';
-        try { langue = localStorage.getItem('via-langue-' + bot.id) || 'fr'; } catch (e) {}
-        var rep = '';
-        // Utiliser reponseSociale si disponible (BLLM)
-        if (global.reponseSociale) {
-          rep = global.reponseSociale(bot, text, langue);
-        } else if (window.BLMUsages && window.BLMUsages.choisirFormule) {
-          try {
-            var dt = (window.BLMUsages.distinguerDemande) ? window.BLMUsages.distinguerDemande(text) : 'salutation-simple';
-            var f = window.BLMUsages.choisirFormule(dt, langue, text);
-            if (f && f.formule) rep = f.formule;
-          } catch (e) {}
-        }
-        if (!rep) {
-          // Réponse de repli conversationnelle basée sur le bot
-          var nom = bot.name || botIds[0];
-          if (/^(salut|bonjour|bonsoir|coucou|hello|yo|hey)/i.test(text.trim())) {
-            rep = "Salut ! C'est " + nom + ". Comment tu vas ?";
-          } else if (/[?]/.test(text)) {
-            rep = 'Bonne question. Laisse-moi réfléchir... (moteur local en cours de chargement pour une réponse plus complète)';
-          } else {
-            rep = "Je t'écoute. Continue, je suis là. (" + nom + ')';
-          }
-        }
-        botDiv.textContent = rep;
-        ajouterLecteurAudio(botDiv, rep);
-      }, 300);
+      // Moteur non disponible → afficher honnêtement
+      botDiv.textContent = 'Moteur local non chargé. Ouvrez la page de conversation pour autoriser le chargement.';
     }
   }
 
   function ajouterLecteurAudio(container, texte) {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis || !texte || !texte.trim()) return;
+    // Vérifier que la synthèse vocale fonctionne réellement
+    var voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) {
+      // Pas de voix disponible → ne pas créer de lecteur
+      return;
+    }
     var player = document.createElement('div');
     player.className = 'via-audio-player-inline';
     player.innerHTML = '<button class="via-btn-play" title="Écouter la réponse">🔊</button>' +
