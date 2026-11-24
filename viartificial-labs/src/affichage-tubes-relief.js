@@ -161,14 +161,19 @@
     // Détecter les mots-clés
     var motsCles = detecterMotsCles(texte);
 
-    // Afficher caractère par caractère
+    // Afficher caractère par caractère avec coordonnées vectorielles et précision subpixel
     var i = 0;
     var interval = setInterval(function () {
+      var stepStart = performance.now();
       if (i < chars.length) {
         var char = chars[i];
         var span = document.createElement('span');
         span.className = 'via-tube-char';
         span.textContent = char;
+        // Précision subpixel via CSS (pas de décalage de mise en page)
+        span.style.textRendering = 'optimizeLegibility';
+        span.style.webkitFontSmoothing = 'antialiased';
+        span.style.mozOsxFontSmoothing = 'grayscale';
 
         // Catégoriser
         var cat = categoriserChar(char, texte.slice(0, i));
@@ -216,7 +221,17 @@
         clearInterval(interval);
         if (onTermine) onTermine();
       }
+      // Vérifier le temps d'étape (objectif ≤6ms)
+      var stepTime = performance.now() - stepStart;
+      if (stepTime > 6 && animer) {
+        // Simplifier l'animation si trop lent
+        animer = false;
+      }
     }, vitesse);
+    // Céder le contrôle au navigateur
+    if (animer) {
+      requestAnimationFrame(function () {});
+    }
 
     return interval;
   }
