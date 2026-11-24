@@ -25,6 +25,10 @@ function distinguerDemande(texte) {
   var n = ' ' + norme(t) + ' ';
   var linguistique = MARQUEURS_LINGUISTIQUE.some(function (m) { return n.indexOf(m) >= 0; });
   if (linguistique) return 'explication-linguistique';
+  // Salutation composée : "Salut, ça va ?" → salutation-simple
+  if (SALUT_SEUL.test(t.split(',')[0].trim()) && QUESTION_SOCIALE.test(norme(t.split(',').slice(1).join(' ')).trim())) return 'salutation-simple';
+  // Salutation + question sociale combinées
+  if (/salut|bonjour|bonsoir|coucou|hello/i.test(t) && /ça va|ca va|comment/i.test(t)) return 'salutation-simple';
   if (QUESTION_SOCIALE.test(norme(t).trim())) return 'question-sociale';
   if (SALUT_SEUL.test(t)) return 'salutation-simple';
   return 'conversation-ordinaire';
