@@ -797,6 +797,8 @@ function runItem(item){
     var bot=botsById[botId];if(!bot)return Promise.resolve();
     // Bibliothèques et BLLM liées à ce bot pour cette demande.
     var bibs=bibliothequesPourBot(botId);
+    var h=H(bot.id);h.push({role:'user',content:item.text});
+    var orch=orchestrerBLM(item.text,bot,h);
     var bllmSel=(typeof ViaBLLM!=='undefined'&&ViaBLLM.selectionner)?ViaBLLM.selectionner(orch&&orch.intention||'message',false,ViaBibliotheques):{blocs:[],liens:[],cooperation:[]};
     // Sollicitation de tous les 192 BLM + LLM configurés
     var participants=[];
@@ -923,8 +925,6 @@ function runItem(item){
       }
     }
     genCtl=new AbortController();
-    var h=H(bot.id);h.push({role:'user',content:item.text});
-    var orch=orchestrerBLM(item.text,bot,h);
     try{if(window.BLMContrat){BLMContrat.tracer(orch,'registre','selection-'+botId,motifChoix||'');BLMContrat.tracer(orch,'parcours','requete-'+(item.id||'?'),botId);}}catch(xSel){}
     if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'traitement','Préparation entrée moteur');
     var prep=preparerEntreeMoteur(orch,item.text,bot);
