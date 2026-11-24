@@ -32,7 +32,9 @@
   try { localStorage.setItem(CONSENT_KEY_COOKIES, JSON.stringify({ state: 'granted', ts: Date.now() })); } catch (e) {}
   return 'granted'; }
   function setCookiesConsent(state) { try { localStorage.setItem(CONSENT_KEY_COOKIES, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
-  function getModelConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_MODEL) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
+  function getModelConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_MODEL) || 'null'); if (o && o.state) return o.state; } catch (e) {} // Auto-consent modèle (comme cookies)
+  try { localStorage.setItem(CONSENT_KEY_MODEL, JSON.stringify({ state: 'granted', ts: Date.now() })); } catch (e) {}
+  return 'granted'; }
   function setModelConsent(state) { try { localStorage.setItem(CONSENT_KEY_MODEL, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
   // Compatibilité : getConsent/setConsent pointent vers le consentement modèle
   function getConsent() { return getModelConsent(); }
