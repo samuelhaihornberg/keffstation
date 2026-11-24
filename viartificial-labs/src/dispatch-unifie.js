@@ -4,7 +4,7 @@
 // Branche aux consommateurs existants (runItem, fenetres-discution).
 'use strict';
 (function (global) {
-  var TIMEOUT_DEFAUT = 60000; // 60s max
+  var TIMEOUT_DEFAUT = 15000; // 15s max
 
   // ---------- Types d'erreurs ----------
   var ERREURS = {
@@ -134,7 +134,9 @@
     var messages = p.messages || [];
     var signal = p.signal || null;
     var onToken = p.onToken || null;
-    var timeout = p.timeout || TIMEOUT_DEFAUT;
+    // Timeout selon le moteur : 15s pour les endpoints distants, 60s pour le local
+    var timeoutDefaut = (moteurSelectionne === 'ollama' || moteurSelectionne === 'custom') ? 15000 : TIMEOUT_DEFAUT;
+    var timeout = p.timeout || timeoutDefaut;
 
     // Valider les entrées
     if (!bot) return Promise.reject({ code: ERREURS.ENTREE_INVALIDE, message: 'bot manquant', taskId: taskId });
