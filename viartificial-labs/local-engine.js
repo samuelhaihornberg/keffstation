@@ -28,7 +28,9 @@
   // CONSENT_KEY_MODEL = consentement chargement moteur SuperBot ViArtificial Labs
   var CONSENT_KEY_COOKIES = 'keffstation-cookies-consent';
   var CONSENT_KEY_MODEL = 'via-model-consent';
-  function getCookiesConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_COOKIES) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
+  function getCookiesConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_COOKIES) || 'null'); if (o && o.state) return o.state; } catch (e) {} // Auto-consent cookies (comme le modèle)
+  try { localStorage.setItem(CONSENT_KEY_COOKIES, JSON.stringify({ state: 'granted', ts: Date.now() })); } catch (e) {}
+  return 'granted'; }
   function setCookiesConsent(state) { try { localStorage.setItem(CONSENT_KEY_COOKIES, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
   function getModelConsent() { try { var o = JSON.parse(localStorage.getItem(CONSENT_KEY_MODEL) || 'null'); return (o && o.state) || null; } catch (e) { return null; } }
   function setModelConsent(state) { try { localStorage.setItem(CONSENT_KEY_MODEL, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
@@ -37,7 +39,6 @@
   function setConsent(state) { return setModelConsent(state); }
   // Les deux consentements doivent être accordés pour le préchargement
   function bothConsentsGranted() { return getCookiesConsent() === 'granted' && getModelConsent() === 'granted'; }
-  function setConsent(state) { try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {} return state; }
   // État du chargement : 'idle' | 'preparing' | 'loading' | 'ready' | 'unavailable' | 'error'
   var LOAD_STATE = 'idle';
   var LOAD_MODEL = null;
