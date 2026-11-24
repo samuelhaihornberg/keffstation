@@ -998,7 +998,15 @@ function runItem(item){
         }
       }
       if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'affichage','Affichage de la réponse');
-      sd.body.textContent=r;try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
+      // Affichage progressif en tubes en relief (décoratif, ne retarde pas le texte)
+      if(typeof ViaAffichageTubes!=='undefined'&&ViaAffichageTubes.afficherProgressif){
+        ViaAffichageTubes.injecterCSS();
+        var reducedMotion=false;try{reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+        ViaAffichageTubes.afficherProgressif(sd.body,r,{vitesse:12,animer:!reducedMotion});
+      } else {
+        sd.body.textContent=r;
+      }
+      try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
       if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'terminée','Réponse complète');
       if(tracker)ViaCOSCircuit.libererVerrous(null,tracker);
       if(circuit)ViaCOSCircuit.annulerCircuit(circuit);
