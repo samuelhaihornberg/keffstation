@@ -1592,6 +1592,16 @@ document.getElementById('pulseChk').onchange=function(){try{localStorage.setItem
 try{document.getElementById('xreadChk').checked=xreadOn();}catch(e){}
 document.getElementById('xreadChk').onchange=function(){try{localStorage.setItem('via-xread',this.checked?'on':'off');}catch(e){}};
 document.getElementById('gearBtn').onclick=function(){var s=document.getElementById('settings');s.hidden=!s.hidden;if(!s.hidden){refreshConsent();paintPerms();paintDiag();}};
+// Toggle mode multi-bot
+var multiBotBtn=document.getElementById('multiBotBtn');
+if(multiBotBtn){
+  function majMultiBotBtn(){multiBotBtn.textContent=ViaModeMultiBot&&ViaModeMultiBot.estActif()?'🤖+ ON':'🤖+';multiBotBtn.style.background=ViaModeMultiBot&&ViaModeMultiBot.estActif()?'rgba(39,209,127,.3)':'rgba(184,77,255,.2)';}
+  majMultiBotBtn();
+  multiBotBtn.onclick=function(){
+    if(ViaModeMultiBot.estActif()){ViaModeMultiBot.desactiver();}else{ViaModeMultiBot.activer();}
+    majMultiBotBtn();
+  };
+}
 refreshConsent();paintDiag();
 // Auto-test BLM au chargement : purement local, sans moteur ni réseau. Il rend
 // l'état réel visible immédiatement (chargés / partiels / erreur + exemples
