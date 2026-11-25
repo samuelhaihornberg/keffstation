@@ -69,6 +69,9 @@
 <div id="bllmStatusBar" style="margin:8px 16px 0;padding:8px 12px;border:1px solid rgba(39,209,127,.35);border-radius:10px;background:rgba(39,209,127,.06);font-size:.82rem;color:#b9c0e6">
   <strong>BLLM :</strong> <span id="bllmDomaines">—</span> · <strong>Bibliothèques :</strong> <span id="bllmBibliotheques">—</span> · <strong>Modèles locaux :</strong> <span id="bllmModeles">—</span>
 </div>
+<div id="helloWorldBanner" style="margin:8px 16px 0;padding:12px 16px;border:1px solid rgba(184,77,255,.4);border-radius:10px;background:linear-gradient(135deg,rgba(184,77,255,.1),rgba(39,209,127,.1));font-size:1.2rem;font-weight:700;text-align:center;color:#b84dff;cursor:pointer;user-select:none;position:relative;overflow:hidden;min-height:60px;display:flex;align-items:center;justify-content:center;">
+  Hello World
+</div>
 <section id="settings" hidden aria-label="Réglages">
 <h2 data-i18n="viartificial-labs__rglages">⚙️ Réglages</h2>
 <p id="pMsg" role="status" style="font-size:.85rem;color:#b9c0e6"></p>
@@ -159,6 +162,13 @@
     if (window.ViaFenetres) {
       window.ViaFenetres.injecterCSS();
       window.ViaFenetres.creerBarreZoom();
+    }
+    // Initialiser le mini-jeu sur la bannière Hello World
+    var banner = document.getElementById('helloWorldBanner');
+    if (banner && window.ViaMiniJeuClics) {
+      window.ViaMiniJeuClics.initialiser(banner, { onClic: function (info) {
+        console.log('Mini-jeu clic:', info.jetons, 'jetons,', info.freq, 'Hz');
+      }});
     }
   });
 </script>
