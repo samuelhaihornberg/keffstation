@@ -94,7 +94,10 @@
     return base;
   }
   async function chat(bot, history, opt) {
-    if (!worker || S.phase !== 'ready') throw err('NOT_LOADED', 'Modèle non chargé : appuie sur « Charger le modèle local », puis réessaie.');
+    // Vérifier que le modèle est prêt (S.phase OU LOAD_STATE)
+    var phasePret = S.phase === 'ready' || S.phase === 'generating';
+    try { if (global.ViaLocalEngine && global.ViaLocalEngine.getLoadState) { var ls = global.ViaLocalEngine.getLoadState(); if (ls.state === 'ready') phasePret = true; } } catch (e) {}
+    if (!worker || !phasePret) throw err('NOT_LOADED', 'Modèle non chargé : appuie sur « Charger le modèle local », puis réessaie.');
     // Attendre que le moteur ne soit plus occupé (max 30s)
     if (busy) {
       var waitAttempts = 0;

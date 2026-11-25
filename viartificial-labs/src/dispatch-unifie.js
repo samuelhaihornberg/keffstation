@@ -5,7 +5,7 @@
 'use strict';
 (function (global) {
   var TIMEOUT_INTERNE = 60000; // 60s max (interne, jamais affiché)
-  var TIMEOUT_DEFAUT = 15000; // 15s pour l'affichage
+  var TIMEOUT_DEFAUT = 60000; // 60s pour l'affichage (pas affiché à l'utilisateur)
 
   // ---------- Types d'erreurs ----------
   var ERREURS = {
@@ -136,7 +136,8 @@
     var signal = p.signal || null;
     var onToken = p.onToken || null;
     // Timeout selon le moteur : 15s pour les endpoints distants, 60s pour le local
-    var timeoutDefaut = (moteurSelectionne === 'ollama' || moteurSelectionne === 'custom') ? 15000 : TIMEOUT_DEFAUT;
+    // Timeout par moteur : 30s pour le local (CPU/WASM), 15s pour les endpoints distants
+    var timeoutDefaut = (moteurSelectionne === 'local') ? 30000 : 15000;
     var timeout = p.timeout || timeoutDefaut;
 
     // Valider les entrées
