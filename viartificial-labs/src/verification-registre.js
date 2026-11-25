@@ -105,9 +105,15 @@
         blocsTransversaux: 8
       },
       connexionsExistantes: 677,
-      sourceConnexions: 'ABSENTE - aucune donnée source avec 677 connexions trouvée dans le dépôt',
+      sourceConnexions: 'ABSENTE - aucune donnée source avec 677 connexions trouvée dans le dépôt ni dans l historique Git',
       migrationBloquee: true,
       fichierImportNecessaire: 'connexions-677.json ou matrice-v1.csv (colonnes: source,destination,direction,portSource,portDestination,matrice,canal,fonction)',
+      rechercheEffectuee: {
+        fichiersJson: 'aucun fichier avec 677 connexions',
+        fichiersCsv: 'matrice-v1.csv contient 10047 lignes (pas 677)',
+        historiqueGit: 'aucun commit avec 677 connexions',
+        documentation: 'aucune référence à 677 dans les docs'
+      },
       connexionsMigrees: 0,
       connexionsNonTypees: 0,
       doublonsExacts: 0,
