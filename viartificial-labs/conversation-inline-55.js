@@ -1021,6 +1021,24 @@ function runItem(item){
       if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'terminée','Réponse complète');
       if(tracker)ViaCOSCircuit.libererVerrous(null,tracker);
       if(circuit)ViaCOSCircuit.annulerCircuit(circuit);
+      // Feedback KEF : boutons de retour utilisateur
+      if(kefReleve&&typeof ViaKEF!=='undefined'&&ViaKEF.enregistrerFeedback){
+        var fbDiv=document.createElement('div');
+        fbDiv.className='via-feedback';
+        fbDiv.style.cssText='display:flex;gap:4px;margin:4px 0;font-size:0.75rem;';
+        fbDiv.innerHTML='<button class="via-fb-btn" data-fb="remerciement" title="Utile">👍</button><button class="via-fb-btn" data-fb="correction" title="A corriger">✏️</button><button class="via-fb-btn" data-fb="passage-suivant" title="Passer a la suite">⏭️</button>';
+        sd.box.appendChild(fbDiv);
+        fbDiv.querySelectorAll('.via-fb-btn').forEach(function(btn){
+          btn.style.cssText='background:rgba(184,77,255,.15);border:1px solid rgba(184,77,255,.3);border-radius:4px;padding:2px 6px;cursor:pointer;';
+          btn.addEventListener('click',function(){
+            var fbType=btn.dataset.fb;
+            ViaKEF.enregistrerFeedback(kefReleve,'explicite',fbType,item.id);
+            ViaKEF.enregistrerKEF(bot.id,null,kefReleve,ViaKEF.calculerKEF(kefReleve));
+            fbDiv.querySelectorAll('.via-fb-btn').forEach(function(b){b.disabled=true;b.style.opacity='0.5';});
+            addOnce('sys','Feedback enregistre : '+fbType);
+          });
+        });
+      }
     },function(e){
       if((e&&e.code)==='ABORTED'||(e&&e.name)==='AbortError'){if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'annule','Annulé');sd.body.textContent+=' ⏹';addOnce('sys','Réponse interrompue : moteur déchargé pour libérer la mémoire. Recharge pour continuer.');item.cancelled=true;}
       else{if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',explain(e));if(kefReleve){ViaKEF.enregistrerDimension(kefReleve,'reductionBruit',0,'mesure','score/100','erreur moteur');ViaKEF.enregistrerKEF(bot.id,null,kefReleve,ViaKEF.calculerKEF(kefReleve));}sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+explain(e));lastFailure={stage:'response',item:item};setState('error',explain(e));try{if(window.BLMJournal)window.BLMJournal.consigner({bot:botId,issue:'erreur',motif:String((e&&e.code)||(e&&e.name)||'moteur'),verdict:'',redemandes:(orch&&orch.redemandes?orch.redemandes.length:0)});}catch(ex){}throw e;}
