@@ -789,12 +789,22 @@ function runItem(item){
     window.__viaPreloadEtat=preloadEtat;
   }
   return ensureEngine().then(function(){
-    // Un seul bot répond à l'utilisateur (choisi par choisirParleur).
-    // Guideoplan = orchestrateur principal : s'il est actif, c'est lui qui parle
-    // et rassemble les contributions des autres bots dans une réponse cohérente.
-    var choix=choisirParleur(selectedBots,item.text);
-    var botId=choix.id,motifChoix=choix.motif;
-    var bot=botsById[botId];if(!bot)return Promise.resolve();
+    // Mode multi-bot : VIA orchestre, les bots interviennent à tour de rôle
+    var multiBotActif = typeof ViaModeMultiBot !== 'undefined' && ViaModeMultiBot.estActif();
+    var choix, botId, motifChoix, bot;
+    if (multiBotActif) {
+      // VIA est le bot principal
+      choix = { id: 'via', motif: 'mode-multi-bot-via-orchestrateur' };
+      botId = 'via';
+      motifChoix = choix.motif;
+      bot = botsById[botId];
+      if (!bot) return Promise.resolve();
+    } else {
+      // Mode normal : un seul bot répond
+      choix = choisirParleur(selectedBots, item.text);
+      botId = choix.id; motifChoix = choix.motif;
+      bot = botsById[botId]; if (!bot) return Promise.resolve();
+    }
     // Bibliothèques et BLLM liées à ce bot pour cette demande.
     var bibs=bibliothequesPourBot(botId);
     var h=H(bot.id);h.push({role:'user',content:item.text});
