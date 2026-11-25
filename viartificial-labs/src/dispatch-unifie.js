@@ -4,7 +4,8 @@
 // Branche aux consommateurs existants (runItem, fenetres-discution).
 'use strict';
 (function (global) {
-  var TIMEOUT_DEFAUT = 15000; // 15s max
+  var TIMEOUT_INTERNE = 60000; // 60s max (interne, jamais affiché)
+  var TIMEOUT_DEFAUT = 15000; // 15s pour l'affichage
 
   // ---------- Types d'erreurs ----------
   var ERREURS = {
@@ -171,15 +172,17 @@
     // Exécution asynchrone avec timeout et annulation
     return new Promise(function (resolve, reject) {
       var timeoutId = setTimeout(function () {
+        // Ne pas marquer le moteur comme indisponible : état d'attente
         resolve({
           taskId: taskId,
           moteurDemande: moteurDemande,
           moteurReel: moteurSelectionne,
           statut: 'timeout',
           sortie: null,
-          erreur: 'Délai dépassé (' + timeout + 'ms)',
+          erreur: 'Moteur en chargement — délai dépassé',
           temps: { debut: debut, fin: Date.now(), duree: Date.now() - debut },
-          provenance: 'dispatch-unifie'
+          provenance: 'dispatch-unifie',
+          peutBooster: true
         });
       }, timeout);
 
