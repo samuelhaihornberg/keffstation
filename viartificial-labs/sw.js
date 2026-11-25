@@ -1,4 +1,4 @@
-const CACHE = 'viartificial-labs-v34'; // v34 : fix affichage reponse (pas de Je t'ecoute, timeout etat d'attente, cache bust).
+const CACHE = 'viartificial-labs-v35'; // v35 : fix timeout dans la bulle, pas de texte vide, cache bust.
 const ASSETS = ['./', './index.html', './xsstream.html', './conversation.html', './bots.json', './providers.js', './memory.js', './actions.js', './local-engine.js', './local-wasm.js', './local-wasm-worker.js', './responsive.css', './capabilities.js', './manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :

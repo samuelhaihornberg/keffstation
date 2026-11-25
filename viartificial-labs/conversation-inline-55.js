@@ -391,7 +391,7 @@ function paintPick(cap){
 // Version réellement chargée (à bumper à chaque publication : repère
 // anti-décalage local/Pages/cache) + moteur réellement utilisé (à distinguer
 // de « site accessible en ligne », qui ne dit rien de l'inférence).
-window.__VIA_BUILD = '2026-11-23-fix-moteur-occupe-v2';
+window.__VIA_BUILD = '2026-11-25-fix-affichage-reponse';
 function paintDiag(cap){
   var el=document.getElementById('diagDetail');if(!el)return;
   cap=cap||(ViaLocalEngine.lastDetect?ViaLocalEngine.lastDetect():null);
