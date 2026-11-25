@@ -973,7 +973,8 @@ function runItem(item){
       if(dispatchResult.statut==='timeout'){
         // Afficher l'état d'attente, pas une erreur
         if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'traitement','Moteur en chargement — délai dépassé');
-        sd.body.textContent='Moteur en chargement — délai dépassé';
+        // Le tampon partiel est vidé, le statut d'attente est hors de la conversation
+        sd.body.textContent='';
         setState('checking');afficherMoteurUtilise('Moteur en chargement — délai dépassé');
         genCtl=null;
         return Promise.resolve();
@@ -1017,6 +1018,7 @@ function runItem(item){
       } else {
         sd.body.textContent=r;
       }
+      if(!r||!String(r).trim()){sd.box.remove();addOnce('sys','Réponse vide du moteur. Réessayez.');lastFailure={stage:'response',item:item};setState('error','réponse vide');genCtl=null;return Promise.resolve();}
       try{item.dernierReponse=r;}catch(xD){}finaliserSortie(bot,h,r,orch,'succes',item.id||'parcours-standard');
       if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'terminée','Réponse complète');
       if(tracker)ViaCOSCircuit.libererVerrous(null,tracker);
