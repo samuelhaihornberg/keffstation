@@ -942,16 +942,9 @@ function runItem(item){
     try{window.__viaDernierParcours='local CPU/WASM · '+bot.name+' · intention '+((orch&&orch.intention)||'?')+' · '+((prep.msgs||[]).length)+' message(s) · BLLM '+etiquetteBLLM()+' · bibs:'+bibs.join(',')+' · samit:'+((samitisation&&samitisation.boucles)?samitisation.boucles.join(','):'aucune');if(typeof paintEngineStatus==='function')paintEngineStatus();}catch(xP){}
     var rmMoteur=(window.BLMCos&&window.BLMCos.resoudreMoteur)?window.BLMCos.resoudreMoteur({fournisseur:'local',ollamaUrl:'',gpuDemande:false}):{moteur:'local-cpu-wasm',repli:'',physique:true};
     if(rmMoteur.moteur!=='local-cpu-wasm'){sd.box.remove();addOnce('sys','Erreur ('+bot.name+') : '+rmMoteur.repli);lastFailure={stage:'response',item:item};setState('error',rmMoteur.repli);return Promise.resolve();}
-    // Dispatch réel vers le moteur sélectionné
-    var dispatchResult=null;
-    if(typeof BlmMoteursCos!=='undefined'&&BlmMoteursCos.dispatcher){
-      dispatchResult=BlmMoteursCos.dispatcher(rmMoteur.moteur==='local-cpu-wasm'?'local':rmMoteur.moteur.replace('-distant',''),{tache:'generation',bot:botId});
-      if(!dispatchResult.execute){
-        // Aucun moteur opérationnel → afficher l'indisponibilité
-        if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',dispatchResult.erreur);
-        sd.box.remove();addOnce('sys','Moteur indisponible : '+(dispatchResult.erreur||'aucun backend opérationnel'));lastFailure={stage:'response',item:item};setState('error',dispatchResult.erreur);return Promise.resolve();
-      }
-    }
+    // Dispatch réel vers le moteur sélectionné (via l'interface unifiée)
+    // BlmMoteursCos.dispatcher n'est qu'une vérification de disponibilité, pas une exécution
+    // L'exécution réelle est faite par ViaDispatchUnifie.dispatcher() ci-dessous
     if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'synthèse','Génération de la réponse');
     // KEF : créer un relevé pour cette réponse
     var kefReleve=null;
