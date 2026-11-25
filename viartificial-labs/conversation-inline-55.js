@@ -972,55 +972,18 @@ function runItem(item){
       dispatchPromise=ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){return {taskId:item.id,moteurReel:'local',statut:'termine',sortie:r,erreur:null,temps:{debut:debutGeneration,fin:Date.now(),duree:Date.now()-debutGeneration},provenance:'fallback'};});
     }
     return dispatchPromise.then(function(dispatchResult){
-      // Vérifier le résultat du dispatch
+      // Le timeout est géré plus bas (statut 'timeout' vérifié après)
+      if(dispatchResult.statut!=='termine'&&dispatchResult.statut!=='timeout'){
+        if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',dispatchResult.erreur);
+        sd.box.remove();addOnce('sys','Moteur indisponible : '+(dispatchResult.erreur||'aucun backend opérationnel'));lastFailure={stage:'response',item:item};setState('error',dispatchResult.erreur);genCtl=null;return Promise.resolve();
+      }
       if(dispatchResult.statut==='timeout'){
-        // Afficher l'état d'attente, pas une erreur définitive
+        // Afficher l'état d'attente, pas une erreur
         if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'traitement','Moteur en chargement — délai dépassé');
         sd.body.textContent='Moteur en chargement — délai dépassé';
-        // Bouton Booster les tokens (GPU)
-        var btnBooster=document.createElement('button');
-        btnBooster.className='via-btn via-btn-booster';
-        btnBooster.textContent='Booster les tokens (GPU)';
-        btnBooster.style.cssText='margin:8px 0;padding:8px 16px;border-radius:8px;border:1px solid rgba(255,215,0,.4);background:rgba(255,215,0,.15);color:#ffd700;cursor:pointer;font-weight:700;';
-        sd.box.appendChild(btnBooster);
-        btnBooster.addEventListener('click',function(){
-          btnBooster.disabled=true;
-          btnBooster.textContent='Vérification GPU…';
-          // Vérifier si WebGPU est disponible
-          var hasGPU=false;
-          try{hasGPU=!!(navigator.gpu);}catch(e){}
-          var hasBackend=false;
-          try{hasBackend=!!(global.ViaWebGPUBackend&&global.ViaWebGPUBackend.execute);}catch(e){}
-          if(hasGPU&&hasBackend){
-            btnBooster.textContent='GPU disponible — accélération activée';
-            sd.body.textContent='Génération avec accélération GPU…';
-            ViaLocalEngine.chat(bot,prep.msgs,{signal:genCtl.signal,onToken:function(t){sd.body.textContent+=t;thread.scrollTop=thread.scrollHeight;}}).then(function(r){
-              sd.body.textContent=r;genCtl=null;
-              if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'terminée','Réponse complète');
-              // Retirer le bouton booster
-              btnBooster.remove();
-            }).catch(function(e){
-              sd.body.textContent='Moteur indisponible : '+(e&&e.message?e.message:e);
-              genCtl=null;
-              btnBooster.remove();
-            });
-          } else {
-            btnBooster.textContent='GPU non disponible';
-            btnBooster.disabled=false;
-            addOnce('sys','Aucun backend WebGPU d inference n est disponible dans ce navigateur. Le moteur continue de travailler en CPU/WASM. Vous pouvez attendre ou annuler.');
-          }
-        });
-        // Ne pas marquer comme erreur définitive
         setState('checking');afficherMoteurUtilise('Moteur en chargement — délai dépassé');
+        genCtl=null;
         return Promise.resolve();
-      }
-      if(dispatchResult.statut!=='termine'){
-        if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',dispatchResult.erreur);
-        sd.box.remove();addOnce('sys','Moteur indisponible : '+(dispatchResult.erreur||'aucun backend opérationnel'));lastFailure={stage:'response',item:item};setState('error',dispatchResult.erreur);genCtl=null;return Promise.resolve();
-      }
-      if(dispatchResult.statut!=='termine'){
-        if(tracker)ViaCOSCircuit.mettreAJourStatut(tracker,'erreur',dispatchResult.erreur);
-        sd.box.remove();addOnce('sys','Moteur indisponible : '+(dispatchResult.erreur||'aucun backend opérationnel'));lastFailure={stage:'response',item:item};setState('error',dispatchResult.erreur);genCtl=null;return Promise.resolve();
       }
       var r=dispatchResult.sortie;
       var finGeneration=Date.now();
