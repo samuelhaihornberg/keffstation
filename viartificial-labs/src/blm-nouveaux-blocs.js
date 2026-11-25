@@ -6,23 +6,23 @@
 (function (global) {
   var NOUVEAUX_BLOCS = {};
 
-  function creerBloc(id, nom, vague, fonction) {
+  function creerBloc(id, nom, vague, fonction, dependances) {
     var fn = fonction || function (input) {
       var texte = (input && input.texte) || '';
-      return { id: id, nom: nom, vague: vague, statut: 'ok', execute: true, specialise: false, traite: true, longueur: texte.length, contribution: nom + ' : analyse effectuée sur ' + texte.length + ' caractères' };
+      return { id: id, nom: nom, vague: vague, statut: 'ok', execute: true, specialise: false, traite: true, longueur: texte.length, contribution: nom + ' : analyse effectuée sur ' + texte.length + ' caractères', dependances: dependances || [] };
     };
-    NOUVEAUX_BLOCS[id] = { id: id, nom: nom, vague: vague, fn: fn, execute: true, specialise: !!fonction };
+    NOUVEAUX_BLOCS[id] = { id: id, nom: nom, vague: vague, fn: fn, execute: true, specialise: !!fonction, dependances: dependances || [] };
     return NOUVEAUX_BLOCS[id];
   }
 
   function executerBloc(id, input) {
     var bloc = NOUVEAUX_BLOCS[id];
-    if (!bloc) return { id: id, statut: 'non-trouve', execute: false, specialise: false };
+    if (!bloc) return { id: id, statut: 'non-trouve', execute: false, specialise: false, dependances: [] };
     try {
       var resultat = bloc.fn(input);
-      return Object.assign({ id: id, nom: bloc.nom, vague: bloc.vague, statut: 'ok', execute: true, specialise: bloc.specialise }, resultat);
+      return Object.assign({ id: id, nom: bloc.nom, vague: bloc.vague, statut: 'ok', execute: true, specialise: bloc.specialise, dependances: bloc.dependances }, resultat);
     } catch (e) {
-      return { id: id, nom: bloc.nom, vague: bloc.vague, statut: 'erreur', erreur: e.message, execute: false, specialise: bloc.specialise };
+      return { id: id, nom: bloc.nom, vague: bloc.vague, statut: 'erreur', erreur: e.message, execute: false, specialise: bloc.specialise, dependances: bloc.dependances };
     }
   }
 
