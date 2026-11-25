@@ -793,7 +793,7 @@ function runItem(item){
     var multiBotActif = typeof ViaModeMultiBot !== 'undefined' && ViaModeMultiBot.estActif();
     var choix, botId, motifChoix, bot;
     if (multiBotActif) {
-      // VIA est le bot principal
+      // VIA est le bot principal et orchestrateur
       choix = { id: 'via', motif: 'mode-multi-bot-via-orchestrateur' };
       botId = 'via';
       motifChoix = choix.motif;
