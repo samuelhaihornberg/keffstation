@@ -335,11 +335,103 @@
     container.appendChild(table);
   }
 
+  // ---------- Fondu cinématographique HD ----------
+  function fonduCinematographique(container, texte, options) {
+    if (!container || !texte) return;
+    var opts = options || {};
+    var duree = opts.duree || 800;
+    var reduced = REDUCED_MOTION;
+
+    // Créer le conteneur de fondu
+    var fondu = document.createElement('div');
+    fondu.className = 'via-fondu-cinematographique';
+    fondu.style.cssText = 'position:relative;opacity:0;filter:blur(8px) brightness(0.5);transform:scale(1.02);transition:opacity ' + duree + 'ms cubic-bezier(0.25,0.1,0.25,1),filter ' + duree + 'ms cubic-bezier(0.25,0.1,0.25,1),transform ' + duree + 'ms cubic-bezier(0.25,0.1,0.25,1);';
+
+    // Texte principal (accessible, sélectionnable)
+    var texteEl = document.createElement('div');
+    texteEl.className = 'via-fondu-texte';
+    texteEl.style.cssText = 'white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:inherit;line-height:inherit;';
+    texteEl.textContent = texte;
+    fondu.appendChild(texteEl);
+
+    // Overlay de particules HD (pixels)
+    if (!reduced) {
+      var particles = document.createElement('div');
+      particles.className = 'via-fondu-particles';
+      particles.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden;';
+      for (var i = 0; i < 30; i++) {
+        var p = document.createElement('div');
+        p.style.cssText = 'position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,0.6);left:' + (Math.random() * 100) + '%;top:' + (Math.random() * 100) + '%;opacity:0;';
+        particles.appendChild(p);
+      }
+      fondu.appendChild(particles);
+    }
+
+    container.appendChild(fondu);
+
+    // Déclencher le fondu
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        fondu.style.opacity = '1';
+        fondu.style.filter = 'blur(0px) brightness(1)';
+        fondu.style.transform = 'scale(1)';
+        // Animer les particules
+        if (!reduced) {
+          var ps = fondu.querySelectorAll('.via-fondu-particles div');
+          ps.forEach(function (p, idx) {
+            p.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            p.style.opacity = '0.8';
+            p.style.transform = 'translate(' + (Math.random() * 20 - 10) + 'px,' + (Math.random() * 20 - 10) + 'px)';
+            setTimeout(function () { p.style.opacity = '0'; }, 400 + Math.random() * 300);
+          });
+        }
+      });
+    });
+
+    // Nettoyage après le fondu
+    setTimeout(function () {
+      // Remplacer le fondu par le texte direct (pour sélection/accessibilité)
+      var directText = document.createElement('div');
+      directText.style.cssText = 'white-space:pre-wrap;word-wrap:break-word;';
+      directText.textContent = texte;
+      container.replaceChild(directText, fondu);
+    }, duree + 100);
+
+    return fondu;
+  }
+
+  // ---------- CSS pour le fondu cinématographique ----------
+  function injecterCSSFondu() {
+    if (document.getElementById('via-fondu-css')) return;
+    var style = document.createElement('style');
+    style.id = 'via-fondu-css';
+    style.textContent = `
+      .via-fondu-cinematographique {
+        will-change: opacity, filter, transform;
+      }
+      .via-fondu-texte {
+        position: relative;
+        z-index: 1;
+      }
+      .via-fondu-particles {
+        mix-blend-mode: screen;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .via-fondu-cinematographique {
+          transition: opacity 0.3s ease !important;
+          filter: none !important;
+          transform: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   // ---------- API publique ----------
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { injecterCSS: injecterCSS, afficherProgressif: afficherProgressif, afficherTableau: afficherTableau, detecterMotsCles: detecterMotsCles, CATEGORIES_COULEURS: CATEGORIES_COULEURS, REDUCED_MOTION: REDUCED_MOTION };
+    module.exports = { injecterCSS: injecterCSS, afficherProgressif: afficherProgressif, afficherTableau: afficherTableau, detecterMotsCles: detecterMotsCles, CATEGORIES_COULEURS: CATEGORIES_COULEURS, REDUCED_MOTION: REDUCED_MOTION, fonduCinematographique: fonduCinematographique, injecterCSSFondu: injecterCSSFondu };
   }
   if (typeof window !== 'undefined') {
-    window.ViaAffichageTubes = { injecterCSS: injecterCSS, afficherProgressif: afficherProgressif, afficherTableau: afficherTableau, detecterMotsCles: detecterMotsCles, CATEGORIES_COULEURS: CATEGORIES_COULEURS, REDUCED_MOTION: REDUCED_MOTION };
+    window.ViaAffichageTubes = { injecterCSS: injecterCSS, afficherProgressif: afficherProgressif, afficherTableau: afficherTableau, detecterMotsCles: detecterMotsCles, CATEGORIES_COULEURS: CATEGORIES_COULEURS, REDUCED_MOTION: REDUCED_MOTION, fonduCinematographique: fonduCinematographique, injecterCSSFondu: injecterCSSFondu };
   }
 })(typeof window !== 'undefined' ? window : global);
