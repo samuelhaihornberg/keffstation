@@ -5,6 +5,8 @@
 // Parcelle = unité de données partagée avec métadonnées complètes.
 'use strict';
 (function (global) {
+  // ---------- États de la parcelle ----------
+  var ETATS_PARCELLE = ['creee', 'validee', 'envoyee', 'reception-en-attente', 'recue', 'traitee', 'refusee', 'expiree', 'annulee'];
   // ---------- Parcelle de données ----------
   function creerParcelle(params) {
     var p = params || {};
@@ -12,13 +14,16 @@
       id: p.id || ('parcelle-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8)),
       tour: p.tour || null,
       source: p.source || null,
-      destinataire: p.destinataire || null,
+      destinataire: p.destinataire || null, // string ou array
+      destinatairesAutorises: p.destinatairesAutorises || [],
       matrice: p.matrice || null,
       canal: p.canal || null,
       typeDonnee: p.typeDonnee || 'json',
       permissions: p.permissions || 'lecture',
       version: p.version || 1,
-      etat: p.etat || 'creee',
+      etat: 'creee',
+      // Accusé de réception
+      accuseReception: null, // {destinataire, ts, resultat}
       // Mesures
       tailleEntree: p.tailleEntree || 0,
       tailleSortie: p.tailleSortie || 0,
@@ -29,8 +34,31 @@
       latence: p.latence || 0,
       kef: p.kef || null,
       provenance: p.provenance || null,
-      horodatage: Date.now()
+      horodatage: Date.now(),
+      // Historique des états
+      historique: [{ etat: 'creee', ts: Date.now() }]
     };
+  }
+
+  // ---------- Validation ----------
+  function validerParcelle(parcelle) {
+    if (!parcelle) return { valide: false, raison: 'parcelle null' };
+    if (!parcelle.id) return { valide: false, raison: 'id manquant' };
+    if (!parcelle.source) return { valide: false, raison: 'source manquante' };
+    if (!parcelle.destinataire && (!parcelle.destinatairesAutorises || parcelle.destinatairesAutorises.length === 0)) return { valide: false, raison: 'destinataire manquant' };
+    if (!parcelle.matrice) return { valide: false, raison: 'matrice manquante' };
+    if (!parcelle.canal) return { valide: false, raison: 'canal manquant' };
+    return { valide: true, raison: 'ok' };
+  }
+
+  // ---------- Transition d'état ----------
+  function transitionner(parcelle, nouvelEtat, detail) {
+    if (!parcelle) return false;
+    if (ETATS_PARCELLE.indexOf(nouvelEtat) < 0) return false;
+    parcelle.etat = nouvelEtat;
+    parcelle.historique.push({ etat: nouvelEtat, detail: detail || '', ts: Date.now() });
+    sauvegarderParcelles();
+    return true;
   }
 
   // ---------- Registre des parcelles actives ----------
@@ -79,12 +107,62 @@
   // Pas de maillage intégral : routage selon les dépendances et autorisations.
   function routerParcelle(parcelle, blocsAutorises) {
     var resultats = [];
+    if (!parcelle) return resultats;
+    // Valider la parcelle avant routage
+    var validation = validerParcelle(parcelle);
+    if (!validation.valide) {
+      transitionner(parcelle, 'refusee', validation.raison);
+      return resultats;
+    }
+    // Marquer comme envoyée
+    transitionner(parcelle, 'envoyee', 'routage vers ' + (blocsAutorises || []).length + ' destinataires');
     (blocsAutorises || []).forEach(function (blocId) {
-      var copie = Object.assign({}, parcelle, { destinataire: blocId, id: parcelle.id + '->' + blocId });
+      var copie = Object.assign({}, parcelle, { destinataire: blocId, id: parcelle.id + '->' + blocId, etat: 'envoyee' });
+      copie.historique = [{ etat: 'envoyee', ts: Date.now() }];
       enregistrerParcelle(copie);
       resultats.push(copie);
     });
     return resultats;
+  }
+
+  // ---------- Accusé de réception ----------
+  // Appelé par le destinataire quand il a traité la parcelle
+  function accuserReception(parcelleId, destinataire, resultat) {
+    var p = getParcelle(parcelleId);
+    if (!p) return { ok: false, raison: 'parcelle non trouvée' };
+    if (p.destinataire !== destinataire && (p.destinatairesAutorises || []).indexOf(destinataire) < 0) {
+      return { ok: false, raison: 'destinataire non autorisé' };
+    }
+    p.accuseReception = { destinataire: destinataire, ts: Date.now(), resultat: resultat || 'ok' };
+    transitionner(p, 'recue', 'accusé de réception de ' + destinataire);
+    // Mettre à jour la parcelle originale si c'est une copie routée
+    var origId = parcelleId.split('->')[0];
+    if (origId !== parcelleId) {
+      var orig = getParcelle(origId);
+      if (orig) {
+        orig.accuseReception = p.accuseReception;
+        // Vérifier si tous les destinataires ont accusé réception
+        var toutesRecues = true;
+        for (var id in parcellesActives) {
+          if (id.indexOf(origId + '->') === 0 && parcellesActives[id].etat !== 'recue') {
+            toutesRecues = false;
+            break;
+          }
+        }
+        if (toutesRecues) transitionner(orig, 'circulante', 'tous les destinataires ont accusé réception');
+      }
+    }
+    return { ok: true, etat: p.etat };
+  }
+
+  // ---------- Traitement par le destinataire ----------
+  function traiterParcelle(parcelleId, destinataire, resultat) {
+    var p = getParcelle(parcelleId);
+    if (!p) return { ok: false, raison: 'parcelle non trouvée' };
+    p.tailleSortie = resultat ? (resultat.taille || 0) : 0;
+    p.tokensSortie = resultat ? (resultat.tokens || 0) : 0;
+    transitionner(p, 'traitee', 'traitée par ' + destinataire);
+    return { ok: true, etat: p.etat };
   }
 
   // ---------- Mesures par bloc/connexion/parcelle ----------
@@ -109,9 +187,9 @@
 
   // ---------- Export ----------
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles };
+    module.exports = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles, validerParcelle: validerParcelle, transitionner: transitionner, accuserReception: accuserReception, traiterParcelle: traiterParcelle, ETATS_PARCELLE: ETATS_PARCELLE };
   }
   if (typeof window !== 'undefined') {
-    window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles };
+    window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles, validerParcelle: validerParcelle, transitionner: transitionner, accuserReception: accuserReception, traiterParcelle: traiterParcelle, ETATS_PARCELLE: ETATS_PARCELLE };
   }
 })(typeof window !== "undefined" ? window : global);
