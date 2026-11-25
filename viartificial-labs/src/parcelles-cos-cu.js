@@ -61,25 +61,90 @@
     return true;
   }
 
-  // ---------- Registre des parcelles actives ----------
+  // ---------- Stockage persistant (IndexedDB avec fallback localStorage) ----------
+  var DB_NAME = 'via-parcelles';
+  var DB_VERSION = 1;
+  var STORE_NAME = 'parcelles';
   var parcellesActives = {};
-  var STORAGE_KEY = 'via-parcelles-v1';
-  function sauvegarderParcelles() {
-    try {
-      var data = JSON.stringify(parcellesActives);
-      localStorage.setItem(STORAGE_KEY, data);
-    } catch (e) {
-      console.warn('[parcelles] Erreur sauvegarde:', e && e.message);
-    }
+  var dbInstance = null;
+
+  function ouvrirDB() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { resolve(null); return; }
+      if (dbInstance) { resolve(dbInstance); return; }
+      var req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = function (e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          var store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          store.createIndex('tour', 'tour', { unique: false });
+          store.createIndex('etat', 'etat', { unique: false });
+        }
+      };
+      req.onsuccess = function (e) { dbInstance = e.target.result; resolve(dbInstance); };
+      req.onerror = function (e) { console.warn('[parcelles] IndexedDB erreur:', e.target.error); resolve(null); };
+    });
   }
+
+  function sauvegarderParcelles() {
+    ouvrirDB().then(function (db) {
+      if (db) {
+        var tx = db.transaction(STORE_NAME, 'readwrite');
+        var store = tx.objectStore(STORE_NAME);
+        // Effacer et réécrire
+        store.clear();
+        for (var id in parcellesActives) {
+          store.put(parcellesActives[id]);
+        }
+        tx.oncomplete = function () {};
+        tx.onerror = function (e) { console.warn('[parcelles] Erreur transaction:', e.target.error); };
+      } else {
+        // Fallback localStorage
+        try { localStorage.setItem('via-parcelles-v1', JSON.stringify(parcellesActives)); } catch (e) { console.warn('[parcelles] localStorage erreur:', e && e.message); }
+      }
+    }).catch(function (e) { console.warn('[parcelles] Erreur sauvegarde:', e && e.message); });
+  }
+
   function chargerParcelles() {
-    try {
-      var data = localStorage.getItem(STORAGE_KEY);
-      if (data) parcellesActives = JSON.parse(data) || {};
-    } catch (e) {
-      console.warn('[parcelles] Erreur chargement:', e && e.message);
-      parcellesActives = {};
-    }
+    return ouvrirDB().then(function (db) {
+      if (db) {
+        return new Promise(function (resolve) {
+          var tx = db.transaction(STORE_NAME, 'readonly');
+          var store = tx.objectStore(STORE_NAME);
+          var req = store.getAll();
+          req.onsuccess = function (e) {
+            var result = e.target.result || [];
+            parcellesActives = {};
+            result.forEach(function (p) { parcellesActives[p.id] = p; });
+            resolve(parcellesActives);
+          };
+          req.onerror = function () { resolve({}); };
+        });
+      } else {
+        // Fallback localStorage
+        try {
+          var data = localStorage.getItem('via-parcelles-v1');
+          if (data) parcellesActives = JSON.parse(data) || {};
+        } catch (e) { parcellesActives = {}; }
+        return Promise.resolve(parcellesActives);
+      }
+    }).catch(function (e) { console.warn('[parcelles] Erreur chargement:', e && e.message); parcellesActives = {}; return parcellesActives; });
+  }
+
+  function exporterParcelles() {
+    return JSON.stringify(parcellesActives, null, 2);
+  }
+
+  function effacerParcelles() {
+    parcellesActives = {};
+    ouvrirDB().then(function (db) {
+      if (db) {
+        var tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).clear();
+      } else {
+        try { localStorage.removeItem('via-parcelles-v1'); } catch (e) {}
+      }
+    });
   }
   function enregistrerParcelle(parcelle) {
     if (parcelle && parcelle.id) {
@@ -187,9 +252,9 @@
 
   // ---------- Export ----------
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles, validerParcelle: validerParcelle, transitionner: transitionner, accuserReception: accuserReception, traiterParcelle: traiterParcelle, ETATS_PARCELLE: ETATS_PARCELLE };
+    module.exports = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles, validerParcelle: validerParcelle, transitionner: transitionner, accuserReception: accuserReception, traiterParcelle: traiterParcelle, ETATS_PARCELLE: ETATS_PARCELLE, exporterParcelles: exporterParcelles, effacerParcelles: effacerParcelles };
   }
   if (typeof window !== 'undefined') {
-    window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles, validerParcelle: validerParcelle, transitionner: transitionner, accuserReception: accuserReception, traiterParcelle: traiterParcelle, ETATS_PARCELLE: ETATS_PARCELLE };
+    window.ViaParcelles = { creerParcelle: creerParcelle, enregistrerParcelle: enregistrerParcelle, getParcelle: getParcelle, listerParcelles: listerParcelles, nettoyerParcelles: nettoyerParcelles, routerParcelle: routerParcelle, mesurerBloc: mesurerBloc, sauvegarderParcelles: sauvegarderParcelles, chargerParcelles: chargerParcelles, validerParcelle: validerParcelle, transitionner: transitionner, accuserReception: accuserReception, traiterParcelle: traiterParcelle, ETATS_PARCELLE: ETATS_PARCELLE, exporterParcelles: exporterParcelles, effacerParcelles: effacerParcelles };
   }
 })(typeof window !== "undefined" ? window : global);
