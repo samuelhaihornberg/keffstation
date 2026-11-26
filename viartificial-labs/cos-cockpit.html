@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
+<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b84dff">
 <title>COS Cockpit — ViArtificial Labs</title>
-<link rel="stylesheet" href="./responsive.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #0a0a1a; color: #e0e0e0; font-family: system-ui, sans-serif; }
@@ -21,36 +20,12 @@
   .cockpit-maximized { position: fixed; inset: 0; z-index: 1000; border-radius: 0; }
   @media (max-width: 720px) { .cockpit-grid { grid-template-columns: 1fr; } .cockpit-window { min-height: 250px; } }
   @media (min-width: 721px) and (max-width: 1100px) { .cockpit-grid { grid-template-columns: repeat(2, 1fr); } }
-  textarea.cos-editor { width: 100%; height: 100%; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2); color: #e0e0e0; border-radius: 4px; padding: 4px; font-family: monospace; font-size: 0.7rem; resize: none; white-space: pre; }
+  textarea.cos-editor { width: 100%; height: 100%; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2); color: #e0e0e0; border-radius: 4px; padding: 4px; font-family: monospace; font-size: 0.7rem; resize: none; white-space: pre; tab-size: 4; }
   .cockpit-btn { background: rgba(184,77,255,.2); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
   .cockpit-btn:hover { background: rgba(184,77,255,.4); }
   /* Smart banner */
-  .smart-banner {
-    position: relative; width: 100%; max-width: 500px; margin: 0 auto;
-    padding: 30px 20px; border-radius: 16px;
-    background: linear-gradient(135deg, #1a1a2e, #2a1a4e);
-    border: 1px solid rgba(184,77,255,.4);
-    overflow: hidden; cursor: pointer; user-select: none;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100px;
-  }
-  .smart-banner-title {
-    font-size: 2rem; font-weight: 800; letter-spacing: 3px;
-    color: #9ca3af; text-shadow: 0 0 4px rgba(156,163,175,0.5);
-    position: relative; z-index: 2;
-  }
-  .smart-banner-title::after {
-    content: attr(data-text);
-    position: absolute; left: 0; top: 0;
-    color: transparent;
-    text-shadow: 0 2px 8px rgba(184,77,255,0.3);
-    transform: scaleY(-1) translateY(100%);
-    opacity: 0.3; pointer-events: none;
-  }
-  .smart-banner-emoji {
-    font-size: 2rem; margin-bottom: 8px; z-index: 2; position: relative;
-    animation: emoji-cycle 1.5s steps(7) infinite;
-  }
+  .smart-banner { position: relative; width: 100%; max-width: 500px; margin: 8px auto; padding: 12px 16px; border-radius: 12px; background: linear-gradient(135deg, #1a1a2e, #2a1a4e); border: 1px solid rgba(184,77,255,.4); overflow: hidden; cursor: pointer; user-select: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100px; }
+  .smart-banner-emoji { font-size: 2rem; margin-bottom: 8px; z-index: 2; position: relative; animation: emoji-cycle 1.5s steps(7) infinite; }
   @keyframes emoji-cycle {
     0% { transform: scale(1) rotate(0deg); }
     14% { transform: scale(1.1) rotate(5deg); }
@@ -61,53 +36,21 @@
     85% { transform: scale(1.06) rotate(-1deg); }
     100% { transform: scale(1) rotate(0deg); }
   }
-  .smart-circles {
-    position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  }
-  .smart-circle {
-    position: absolute; border-radius: 50%; border: 1px solid rgba(255,215,0,0.3);
-    transition: all 0.3s ease;
-  }
-  .smart-particles { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
-  .smart-widget {
-    position: absolute; bottom: 8px; right: 8px; display: flex; gap: 4px; z-index: 10;
-  }
-  .smart-widget button {
-    background: rgba(0,0,0,.5); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0;
-    padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.65rem;
-  }
+  .smart-banner-title { color: #b84dff; font-weight: 600; font-size: 0.9rem; text-align: center; margin-top: 4px; }
+  .smart-banner-info { font-size: 0.7rem; color: #8f96bd; text-align: center; margin-top: 4px; }
+  .smart-widget { display: flex; gap: 4px; margin-top: 6px; }
+  .smart-widget button { background: rgba(255,255,255,.1); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
   .smart-widget button:hover { background: rgba(184,77,255,.3); }
-  .smart-info { font-size: 0.65rem; color: #8f96bd; text-align: center; margin-top: 4px; }
-  @media (prefers-reduced-motion: reduce) {
-    .smart-banner-emoji { animation: none !important; }
-  }
+  @media (prefers-reduced-motion: reduce) { .smart-banner-emoji { animation: none !important; } }
 </style>
 </head>
 <body style="margin:0;background:#0a0a1a;color:#e0e0e0;font-family:system-ui,sans-serif;">
   <div class="cockpit-header-bar">
     <h1>COS Cockpit — ViArtificial Labs</h1>
     <div style="display:flex;gap:4px;flex-wrap:wrap;">
-      <button onclick="injecterExemple()" class="cockpit-btn">Injecter hellow world</button>
+      <button id="btnInjecter" class="cockpit-btn">Injecter hellow world</button>
       <button onclick="resetGrid()" class="cockpit-btn">Réinitialiser</button>
       <a href="./conversation.html" class="cockpit-btn" style="text-decoration:none;">Conversation</a>
-    </div>
-  </div>
-  <div id="smartBanner" class="smart-banner" style="max-width:100%;margin:8px;border-radius:12px;">
-    <div class="smart-banner-emoji">🥳</div>
-    <h1 class="smart-banner-title" data-text="hellow world">hellow world</h1>
-    <div class="smart-info">Cliquez pour des effets visuels et sonores</div>
-    <div class="smart-widget">
-      <button onclick="event.stopPropagation();toggleAudioBanner()">🔊</button>
-      <button onclick="event.stopPropagation();toggleAnimBanner()">Anim ON</button>
-    </div>
-  </div>
-  <div id="smartBanner" class="smart-banner" style="max-width:100%;margin:8px;border-radius:12px;">
-    <div class="smart-banner-emoji">🥳</div>
-    <h1 class="smart-banner-title" data-text="hellow world">hellow world</h1>
-    <div class="smart-info">Cliquez pour des effets visuels et sonores</div>
-    <div class="smart-widget">
-      <button onclick="event.stopPropagation();toggleAudioBanner()">🔊</button>
-      <button onclick="event.stopPropagation();toggleAnimBanner()">Anim ON</button>
     </div>
   </div>
   <div class="cockpit-grid" id="cockpitGrid">
@@ -116,26 +59,33 @@
       <div class="cockpit-header"><span class="cockpit-title">📄 Article & Tuto COS</span><div class="cockpit-controls"><button onclick="toggleMax('w1')">□</button></div></div>
       <div class="cockpit-body" id="w1-body" style="overflow:auto;font-size:0.7rem;">
         <strong style="color:#ffd700;">Syntaxe COS</strong><br>
-        <code>&lt;attribut&gt;</code> : attributs, paramètres, typage, santé octets, énergie, état audio, état animations, base emoji.<br>
-        <code>&lt;fonction&gt;</code> : fonctions, tâches, patterns, connexions &lt;co&gt;.<br>
-        <code>&lt;co&gt;</code> : une connexion (A1 ↔️ A3 ↔️ B5). <code>&lt;cos&gt;</code> : plusieurs connexions.<br>
-        <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne.<br>
-        <strong style="color:#ffd700;">Bibliothèque COS</strong> : moteur emoji embarqué, tags, valeurs, attributs, fonctions, tasks.<br>
-        <strong style="color:#ffd700;">Tuto Chrome mobile</strong> : 3 points → Site pour ordinateur → recharge.
+        <code>&lt;attribut&gt; ... &lt;/attribut&gt;</code> : définitions, attributs, typage alphanumérique, santé octets, énergie, état audio, état animations, base emoji.<br>
+        <code>&lt;fonction&gt; ... &lt;/fonction&gt;</code> : fonctions, tâches, patterns, connexions.<br>
+        <code>&lt;co&gt; ... &lt;/co&gt;</code> : une connexion (A1 ↔️ A3 ↔️ B5). Espaces autour des identifiants.<br>
+        <strong>Format :</code> <code>&lt;co&gt; id1 type="nom" &lt;/co&gt;</code><br>
+        <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.
+        <div style="margin-top:8px;padding:8px;background:rgba(0,0,0,.3);border-radius:6px;font-size:0.7rem;">
+          <strong style="color:#ffd700;">Tuto Chrome mobile</strong><br>
+          1. Ouvrez Chrome sur votre téléphone<br>
+          2. Appuyez sur les 3 points (⋮) en haut à droite<br>
+          3. Cochez « Site pour ordinateur »<br>
+          4. La page se recharge en mode desktop<br>
+          5. Pour Google Search : ajoutez &amp;udm=14 à l'URL
+        </div>
       </div>
     </div>
     <!-- Fenêtre 2 : Éditeur HTML classique -->
     <div class="cockpit-window" id="w2">
       <div class="cockpit-header"><span class="cockpit-title">✏️ Éditeur HTML (classique)</span><div class="cockpit-controls"><button onclick="toggleMax('w2')">□</button></div></div>
       <div class="cockpit-body" id="w2-body">
-        <textarea class="cos-editor" id="htmlEditorClassic" placeholder="Code HTML/JS classique..." tabindex="0"></textarea>
+        <textarea class="cos-editor" id="htmlEditorClassic" placeholder="Code HTML/JS classique..."></textarea>
       </div>
     </div>
     <!-- Fenêtre 3 : Éditeur HTML + COS -->
     <div class="cockpit-window" id="w3">
       <div class="cockpit-header"><span class="cockpit-title">🌐 Éditeur HTML + COS</span><div class="cockpit-controls"><button onclick="toggleMax('w3')">□</button></div></div>
       <div class="cockpit-body" id="w3-body">
-        <textarea class="cos-editor" id="htmlEditorCos" placeholder="Code HTML/JS avec COS embarqué..." tabindex="0"></textarea>
+        <textarea class="cos-editor" id="htmlEditorCos" placeholder="Code HTML/JS avec COS embarqué..."></textarea>
       </div>
     </div>
     <!-- Fenêtre 4 : Preview avec COS -->
@@ -179,73 +129,34 @@
     </div>
   </div>
   <script>
-    // Smart banner click-to-react
-    var smartAudioEnabled = true;
-    var smartAnimEnabled = true;
-    var smartAudioCtx = null;
-    function getSmartAudioCtx() { if (!smartAudioCtx) { try { smartAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } } return smartAudioCtx; }
-    function jouerSonSmart(x, y, w, h) {
-      if (!smartAudioEnabled) return;
-      var ctx = getSmartAudioCtx(); if (!ctx) return;
-      var freq = 440 * Math.pow(2, (0.5 - y / h) * 2);
-      // X: gauche = majeur, droite = mineur
-      var xNorm = x / w;
-      var osc = ctx.createOscillator();
-      osc.type = xNorm < 0.5 ? 'triangle' : 'sawtooth';
-      osc.frequency.value = freq;
-      var gain = ctx.createGain(); gain.gain.value = 0.2; gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      var filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 1000 + xNorm * 4000;
-      osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 0.3);
-    }
-    function jouerNoteSmart(x, y, w, h) {
-      if (!smartAudioEnabled) return;
-      var ctx = getSmartAudioCtx(); if (!ctx) return;
-      var freq = 440 * Math.pow(2, (0.5 - y / h) * 2);
-      var osc = ctx.createOscillator(); osc.type = 'square'; osc.frequency.value = freq;
-      var gain = ctx.createGain(); gain.gain.value = 0.2; gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 0.3);
-    }
-    function creerEtincellesSmart(x, y) {
-      if (!smartAnimEnabled) return;
-      var colors = ['#ffd700', '#ff4d6d', '#00d4ff', '#27d17f', '#b84dff', '#fff'];
-      for (var i = 0; i < 12; i++) {
-        var p = document.createElement('div');
-        var angle = (Math.PI * 2 * i) / 12; var dist = 40 + Math.random() * 30;
-        p.style.cssText = 'position:absolute;width:4px;height:4px;border-radius:50%;background:' + colors[Math.floor(Math.random() * colors.length)] + ';left:' + x + 'px;top:' + y + 'px;pointer-events:none;z-index:10;';
-        document.getElementById('smartBanner').appendChild(p);
-        (function (el, dx, dy) { el.animate([{ transform: 'translate(0,0)', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px)', opacity: 0 }], { duration: 500 + Math.random() * 300 }); setTimeout(function () { el.remove(); }, 800); })(p, Math.cos(angle) * dist, Math.sin(angle) * dist);
-      }
-    }
-    function toggleAudioBanner() {
-      smartAudioEnabled = !smartAudioEnabled;
-      var btn = document.querySelector('#smartBanner .smart-widget button:first-child');
-      if (btn) btn.textContent = smartAudioEnabled ? '🔊' : '🔇';
-    }
-    function toggleAnimBanner() {
-      smartAnimEnabled = !smartAnimEnabled;
-      var btn = document.querySelector('#smartBanner .smart-widget button:last-child');
-      if (btn) btn.textContent = smartAnimEnabled ? 'Anim ON' : 'Anim OFF';
-    }
+    // Smart banner
     var smartBanner = document.getElementById('smartBanner');
     if (smartBanner) {
       smartBanner.addEventListener('click', function (e) {
-        if (!smartAnimEnabled) return;
         var rect = smartBanner.getBoundingClientRect();
-        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
         jouerSonSmart(x, y, rect.width, rect.height);
         creerEtincellesSmart(x, y);
       });
     }
-    // Smart banner click-to-react
+    function toggleMax(id) {
+      var el = document.getElementById(id);
+      if (el.classList.contains('cockpit-maximized')) el.classList.remove('cockpit-maximized');
+      else el.classList.add('cockpit-maximized');
+    }
+    function resetGrid() {
+      document.querySelectorAll('.cockpit-maximized').forEach(function (el) { el.classList.remove('cockpit-maximized'); });
+    }
+    // Smart banner JS
     var smartAudioEnabled = true;
     var smartAnimEnabled = true;
     var smartAudioCtx = null;
     function getSmartAudioCtx() { if (!smartAudioCtx) { try { smartAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } } return smartAudioCtx; }
     function jouerSonSmart(x, y, w, h) {
       if (!smartAudioEnabled) return;
-      var ctx = getSmartAudioCtx(); if (!ctx) return;
+      var ctx = getSmartAudioCtx();
+      if (!ctx) return;
       var freq = 440 * Math.pow(2, (0.5 - y / h) * 2);
       var xNorm = x / w;
       var osc = ctx.createOscillator(); osc.type = xNorm < 0.5 ? 'triangle' : 'sawtooth'; osc.frequency.value = freq;
@@ -259,7 +170,8 @@
       var colors = ['#ffd700', '#ff4d6d', '#00d4ff', '#27d17f', '#b84dff', '#fff'];
       for (var i = 0; i < 12; i++) {
         var p = document.createElement('div');
-        var angle = (Math.PI * 2 * i) / 12; var dist = 40 + Math.random() * 30;
+        var angle = (Math.PI * 2 * i) / 12;
+        var dist = 40 + Math.random() * 30;
         p.style.cssText = 'position:absolute;width:4px;height:4px;border-radius:50%;background:' + colors[Math.floor(Math.random() * colors.length)] + ';left:' + x + 'px;top:' + y + 'px;pointer-events:none;z-index:10;';
         document.getElementById('smartBanner').appendChild(p);
         (function (el, dx, dy) { el.animate([{ transform: 'translate(0,0)', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px)', opacity: 0 }], { duration: 500 + Math.random() * 300 }); setTimeout(function () { el.remove(); }, 800); })(p, Math.cos(angle) * dist, Math.sin(angle) * dist);
@@ -275,24 +187,7 @@
       var btn = document.querySelector('#smartBanner .smart-widget button:last-child');
       if (btn) btn.textContent = smartAnimEnabled ? 'Anim ON' : 'Anim OFF';
     }
-    var smartBanner = document.getElementById('smartBanner');
-    if (smartBanner) {
-      smartBanner.addEventListener('click', function (e) {
-        if (!smartAnimEnabled) return;
-        var rect = smartBanner.getBoundingClientRect();
-        var x = e.clientX - rect.left, y = e.clientY - rect.top;
-        jouerSonSmart(x, y, rect.width, rect.height);
-        creerEtincellesSmart(x, y);
-      });
-    }
-    function toggleMax(id) {
-      var el = document.getElementById(id);
-      if (el.classList.contains('cockpit-maximized')) el.classList.remove('cockpit-maximized');
-      else el.classList.add('cockpit-maximized');
-    }
-    function resetGrid() {
-      document.querySelectorAll('.cockpit-maximized').forEach(function (el) { el.classList.remove('cockpit-maximized'); });
-    }
+    // Context
     window.CosCockpitContext = {
       cosCode: '',
       htmlCode: '',
@@ -307,25 +202,22 @@
         var reduction = document.getElementById('reduction');
         var boost = document.getElementById('boost');
         if (tailleCos) tailleCos.textContent = new Blob([this.cosCode]).size;
-        if (tailleHtml) tailleHtml.textContent = new Blob([this.htmlCosCode]).size;
+        if (tailleHtml) tailleHtml.textContent = new Blob([this.htmlCode]).size;
         if (tailleCos && tailleHtml) {
           var cosSize = new Blob([this.cosCode]).size;
-          var htmlSize = new Blob([this.htmlCosCode]).size;
+          var htmlSize = new Blob([this.htmlCode]).size;
           if (htmlSize > 0) {
             var red = Math.round((1 - cosSize / htmlSize) * 100);
             if (reduction) reduction.textContent = red + '%';
             if (boost) boost.textContent = (red > 0 ? '+' + red : red) + '%';
           }
         }
-      },
-      updateTerminal: function (msg) {}
+      }
     };
-    function logTerminal(msg) {
-      var term = document.getElementById('w6-body');
-      if (term) term.innerHTML += '<br>$ ' + msg;
-    }
+    // Editors
     var editorClassic = document.getElementById('htmlEditorClassic');
     var editorCos = document.getElementById('htmlEditorCos');
+    var cosEd = document.getElementById('cosEditor');
     function handleTab(e) {
       if (e.key === 'Tab' || e.keyCode === 9) {
         e.preventDefault();
@@ -333,7 +225,7 @@
         var ta = e.target;
         var start = ta.selectionStart;
         var end = ta.selectionEnd;
-        var tab = '    ';
+        var tab = String.fromCharCode(9);
         ta.value = ta.value.substring(0, start) + tab + ta.value.substring(end);
         ta.selectionStart = ta.selectionEnd = start + 4;
         var evt = new Event('input', { bubbles: true });
@@ -357,16 +249,25 @@
         logTerminal('HTML+COS updated (' + editorCos.value.length + ' chars)');
       });
     }
-    window.injecterExemple = function injecterExemple() {
-      var cosCode = '<attribut>\n  id="A1"\n  type="text-target"\n  valeur="hellow world"\n  co-mode="cos-multi-connexion"\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n  mirror-reflection="active"\n  sfx-letters="pulse-glow"\n  emoji-seed="🥳"\n  click-fx="sparks,fireworks,soap-bubbles-pop"\n  audio-enabled="true"\n  click-anim-enabled="true"\n  bytes-economy="18%"\n  sante-octets="high"\n  energie-economisee="true"\n</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n  <co id="co-render" type="text-render">\n    A1 ↔️ B1 ↔️ C1\n  </co>\n  <co id="co-sync" type="synchronization">\n    A3 ↔️ B3 ↔️ C3\n  </co>\n</fonction>';
+    function logTerminal(msg) {
+      var term = document.getElementById('w6-body');
+      if (term) term.innerHTML += '<br>$ ' + msg;
+    }
+    // Injecter exemple hellow world
+    function injecterExemple() {
+      var cosCode = '<attribut>\n  id="A1"\n  type="text-target"\n  valeur="hellow world"\n  co-mode="cos-multi-connexion"\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n  mirror-reflection="active"\n  sfx-letters="pulse-glow"\n  emoji-seed="🥳"\n  click-fx="sparks,fireworks,soap-bubbles-pop"\n  audio-enabled="true"\n  click-anim-enabled="true"\n  bytes-economy="18%"\n  sante-octets="high"\n  energie-economisee="true"\n</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n</fonction>';
       var htmlCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
-      var htmlCosCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <!-- COS embarqué -->\n  <script type="text/cos">\n  <attribut>\n    id="A1"\n    type="text-target"\n    valeur="hellow world"\n    co-mode="cos-multi-connexion"\n    pixel-palette="#9ca3af,#cbd5e1,#64748b"\n    mirror-reflection="active"\n    sfx-letters="pulse-glow"\n    emoji-seed="🥳"\n    click-fx="sparks,fireworks,soap-bubbles-pop"\n    audio-enabled="true"\n    click-anim-enabled="true"\n    bytes-economy="18%"\n  </attribut>\n  <fonction>\n    <co id="co-init" type="boot-render">\n      A1 ↔️ A3 ↔️ B5\n    </co>\n    <co id="co-click-react" type="sparks-fireworks-bubbles">\n      A2 ↔️ B2 ↔️ C5\n    </co>\n    <co id="co-audio-sfx" type="retro-postmodern-synth">\n      B1 ↔️ C3 ↔️ D5\n    </co>\n  </fonction>\n  </script>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
+      var htmlCosCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script type="text/cos">\n  <attribut>\n    id="A1"\n    type="text-target"\n    valeur="hellow world"\n    co-mode="cos-multi-connexion"\n    pixel-palette="#9ca3af,#cbd5e1,#64748b"\n    mirror-reflection="active"\n    sfx-letters="pulse-glow"\n    emoji-seed="🥳"\n    click-fx="sparks,fireworks,soap-bubbles-pop"\n    audio-enabled="true"\n    click-anim-enabled="true"\n    bytes-economy="18%"\n    sante-octets="high"\n    energie-economisee="true"\n  </attribut>\n  <fonction>\n    <co id="co-init" type="boot-render">\n      A1 ↔️ A3 ↔️ B5\n    </co>\n    <co id="co-click-react" type="sparks-fireworks-bubbles">\n      A2 ↔️ B2 ↔️ C5\n    </co>\n    <co id="co-audio-sfx" type="retro-postmodern-synth">\n      B1 ↔️ C3 ↔️ D5\n    </co>\n  </fonction>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       if (editorClassic) { editorClassic.value = htmlCode; window.CosCockpitContext.htmlCode = htmlCode; }
       if (editorCos) { editorCos.value = htmlCosCode; window.CosCockpitContext.htmlCosCode = htmlCosCode; }
-      window.CosCockpitContext.cosCode = cosCode;
+      if (cosEd) { cosEd.value = cosCode; window.CosCockpitContext.cosCode = cosCode; }
       window.CosCockpitContext.updatePreview();
-      logTerminal('Exemple hellow world injecte: ' + cosCode.length + ' chars COS, ' + htmlCode.length + ' chars HTML');
+      logTerminal('Exemple helloworld injecte: ' + cosCode.length + ' cos, ' + htmlCode.length + ' html');
     }
+    // Wire inject button
+    var btnInjecter = document.getElementById('btnInjecter');
+    if (btnInjecter) btnInjecter.addEventListener('click', injecterExemple);
+    // Chatbot
     function envoyerChat() {
       var input = document.getElementById('chatInput');
       var msgs = document.getElementById('chatMessages');
