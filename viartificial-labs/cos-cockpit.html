@@ -23,7 +23,6 @@
   textarea.cos-editor { width: 100%; height: 100%; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2); color: #e0e0e0; border-radius: 4px; padding: 4px; font-family: monospace; font-size: 0.7rem; resize: none; white-space: pre; tab-size: 4; }
   .cockpit-btn { background: rgba(184,77,255,.2); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
   .cockpit-btn:hover { background: rgba(184,77,255,.4); }
-  /* Smart banner */
   .smart-banner { position: relative; width: 100%; max-width: 500px; margin: 8px auto; padding: 12px 16px; border-radius: 12px; background: linear-gradient(135deg, #1a1a2e, #2a1a4e); border: 1px solid rgba(184,77,255,.4); overflow: hidden; cursor: pointer; user-select: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100px; }
   .smart-banner-emoji { font-size: 2rem; margin-bottom: 8px; z-index: 2; position: relative; animation: emoji-cycle 1.5s steps(7) infinite; }
   @keyframes emoji-cycle {
@@ -59,7 +58,7 @@
       <div class="cockpit-header"><span class="cockpit-title">📄 Article & Tuto COS</span><div class="cockpit-controls"><button onclick="toggleMax('w1')">□</button></div></div>
       <div class="cockpit-body" id="w1-body" style="overflow:auto;font-size:0.7rem;">
         <strong style="color:#ffd700;">Syntaxe COS</strong><br>
-        <code>&lt;attribut&gt; ... &lt;/attribut&gt;</code> : définitions, attributs, typage alphanumérique, santé octets, énergie, état audio, état animations, base emoji.<br>
+        <code>&lt;attribut&gt; ... &lt;/attribut&gt;</code> : attributs, paramètres, typage alphanumérique, santé octets, énergie, état audio, état animations, base emoji.<br>
         <code>&lt;fonction&gt; ... &lt;/fonction&gt;</code> : fonctions, tâches, patterns, connexions &lt;co&gt;.<br>
         <code>&lt;co&gt; ... &lt;/co&gt;</code> : une connexion (A1 ↔️ A3 ↔️ B5). Espaces autour des identifiants.<br>
         <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.<br>
@@ -98,13 +97,15 @@
     <!-- Fenêtre 6 : Explorateur Dossier & Poids -->
     <div class="cockpit-window" id="w6">
       <div class="cockpit-header"><span class="cockpit-title">📁 Explorateur Dossier & Poids</span><div class="cockpit-controls"><button onclick="toggleMax('w6')">□</button></div></div>
-      <div class="cockpit-body" id="w6-body" style="font-size:0.75rem;">
-        <div style="margin-bottom:4px;"><strong>COS :</strong> <span id="tailleCos">0</span> octets</div>
-        <div style="margin-bottom:4px;"><strong>HTML :</strong> <span id="tailleHtml">0</span> octets</div>
-        <div style="margin-bottom:4px;"><strong>Réduction :</strong> <span id="reduction">0%</span></div>
-        <div style="margin-bottom:8px;"><strong>Boost :</strong> <span id="boost">0%</span></div>
-        <button onclick="telechargerCos()" class="cockpit-btn" style="margin:2px;">Télécharger COS</button>
-        <button onclick="telechargerHtml()" class="cockpit-btn" style="margin:2px;">Télécharger HTML</button>
+      <div class="cockpit-body" id="w6-body">
+        <div style="font-size:0.75rem;">
+          <div style="margin-bottom:4px;"><strong>COS :</strong> <span id="tailleCos">0</span> octets</div>
+          <div style="margin-bottom:4px;"><strong>HTML :</strong> <span id="tailleHtml">0</span> octets</div>
+          <div style="margin-bottom:4px;"><strong>Réduction :</strong> <span id="reduction">0%</span></div>
+          <div style="margin-bottom:8px;"><strong>Boost :</strong> <span id="boost">0%</span></div>
+          <button onclick="telechargerCos()" class="cockpit-btn" style="margin:2px;">Télécharger COS</button>
+          <button onclick="telechargerHtml()" class="cockpit-btn" style="margin:2px;">Télécharger HTML</button>
+        </div>
       </div>
     </div>
     <!-- Fenêtre 7 : Chatbot -->
@@ -120,7 +121,7 @@
     </div>
   </div>
   <script>
-    // Smart banner
+    // Smart banner click-to-react
     var smartBanner = document.getElementById('smartBanner');
     if (smartBanner) {
       smartBanner.addEventListener('click', function (e) {
@@ -253,22 +254,7 @@
     }
     // Injecter exemple hellow world
     window.injecterExemple = function injecterExemple() {
-      var cosCode = '<attribut>\n' +
-      '  id="A1"\n' +
-      '  type="text-target"\n' +
-        '  valeur="hellow world"\n' +
-        '  co-mode="cos-multi-connexion"\n' +
-        '  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n' +
-        '  mirror-reflection="active"\n' +
-        '  sfx-letters="pulse-glow"\n' +
-        '  emoji-seed="🥳"\n' +
-        '  click-fx="sparks,fireworks,soap-bubbles-pop"\n' +
-        '  audio-enabled="true"\n' +
-        '  click-anim-enabled="true"\n' +
-        '  bytes-economy="18%"\n' +
-        '  sante-octets="high"\n' +
-        '  energie-economisee="true"\n' +
-      '</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n</fonction>';
+      var cosCode = '<attribut>\n  id="A1"\n  type="text-target"\n  valeur="hellow world"\n  co-mode="cos-multi-connexion"\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n  mirror-reflection="active"\n  sfx-letters="pulse-glow"\n  emoji-seed="🥳"\n  click-fx="sparks,fireworks,soap-bubbles-pop"\n  audio-enabled="true"\n  click-anim-enabled="true"\n  bytes-economy="18%"\n  sante-octets="high"\n  energie-economisee="true"\n</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n</fonction>';
       var htmlCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       var htmlCosCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script type="text/cos">\n  <attribut>\n    id="A1"\n    type="text-target"\n    valeur="hellow world"\n    co-mode="cos-multi-connexion"\n    pixel-palette="#9ca3af,#cbd5e1,#64748b"\n    mirror-reflection="active"\n    sfx-letters="pulse-glow"\n    emoji-seed="🥳"\n    click-fx="sparks,fireworks,soap-bubbles-pop"\n    audio-enabled="true"\n    click-anim-enabled="true"\n    bytes-economy="18%"\n    sante-octets="high"\n    energie-economisee="true"\n  </attribut>\n  <fonction>\n    <co id="co-init" type="boot-render">\n      A1 ↔️ A3 ↔️ B5\n    </co>\n    <co id="co-click-react" type="sparks-fireworks-bubbles">\n      A2 ↔️ B2 ↔️ C5\n    </co>\n    <co id="co-audio-sfx" type="retro-postmodern-synth">\n      B1 ↔️ C3 ↔️ D5\n    </co>\n  </fonction>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       if (editorClassic) { editorClassic.value = htmlCode; window.CosCockpitContext.htmlCode = htmlCode; }
