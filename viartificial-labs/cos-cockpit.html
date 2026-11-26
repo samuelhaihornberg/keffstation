@@ -160,7 +160,7 @@
         var ta = e.target;
         var start = ta.selectionStart;
         var end = ta.selectionEnd;
-        ta.value = ta.value.substring(0, start) + '\\t' + ta.value.substring(end);
+        ta.value = ta.value.substring(0, start) + String.fromCharCode(9) + ta.value.substring(end);
         ta.selectionStart = ta.selectionEnd = start + 1;
         // Déclencher l'événement input
         var evt = new Event('input', { bubbles: true });
