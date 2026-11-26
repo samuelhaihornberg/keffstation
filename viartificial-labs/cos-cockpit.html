@@ -24,13 +24,67 @@
   textarea.cos-editor { width: 100%; height: 100%; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2); color: #e0e0e0; border-radius: 4px; padding: 4px; font-family: monospace; font-size: 0.7rem; resize: none; white-space: pre; }
   .cockpit-btn { background: rgba(184,77,255,.2); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
   .cockpit-btn:hover { background: rgba(184,77,255,.4); }
+  /* Smart banner */
+  .smart-banner {
+    position: relative; width: 100%; max-width: 500px; margin: 0 auto;
+    padding: 30px 20px; border-radius: 16px;
+    background: linear-gradient(135deg, #1a1a2e, #2a1a4e);
+    border: 1px solid rgba(184,77,255,.4);
+    overflow: hidden; cursor: pointer; user-select: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100px;
+  }
+  .smart-banner-title {
+    font-size: 2rem; font-weight: 800; letter-spacing: 3px;
+    color: #9ca3af; text-shadow: 0 0 4px rgba(156,163,175,0.5);
+    position: relative; z-index: 2;
+  }
+  .smart-banner-title::after {
+    content: attr(data-text);
+    position: absolute; left: 0; top: 0;
+    color: transparent;
+    text-shadow: 0 2px 8px rgba(184,77,255,0.3);
+    transform: scaleY(-1) translateY(100%);
+    opacity: 0.3; pointer-events: none;
+  }
+  .smart-banner-emoji {
+    font-size: 2rem; margin-bottom: 8px; z-index: 2; position: relative;
+    animation: emoji-cycle 3s ease-in-out infinite;
+  }
+  @keyframes emoji-cycle {
+    0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+    25% { transform: scale(1.1) rotate(5deg); filter: hue-rotate(30deg); }
+    50% { transform: scale(1.05) rotate(-3deg); filter: hue-rotate(60deg); }
+    75% { transform: scale(1.15) rotate(3deg); filter: hue-rotate(90deg); }
+    100% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+  }
+  .smart-circles {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  }
+  .smart-circle {
+    position: absolute; border-radius: 50%; border: 1px solid rgba(255,215,0,0.3);
+    transition: all 0.3s ease;
+  }
+  .smart-particles { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+  .smart-widget {
+    position: absolute; bottom: 8px; right: 8px; display: flex; gap: 4px; z-index: 10;
+  }
+  .smart-widget button {
+    background: rgba(0,0,0,.5); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0;
+    padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.65rem;
+  }
+  .smart-widget button:hover { background: rgba(184,77,255,.3); }
+  .smart-info { font-size: 0.65rem; color: #8f96bd; text-align: center; margin-top: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    .smart-banner-emoji { animation: none !important; }
+  }
 </style>
 </head>
 <body style="margin:0;background:#0a0a1a;color:#e0e0e0;font-family:system-ui,sans-serif;">
   <div class="cockpit-header-bar">
     <h1>COS Cockpit — ViArtificial Labs</h1>
     <div style="display:flex;gap:4px;flex-wrap:wrap;">
-      <button id="btnInjecter" class="cockpit-btn">Injecter hellow world</button>
+      <button onclick="injecterExemple()" class="cockpit-btn">Injecter hellow world</button>
       <button onclick="resetGrid()" class="cockpit-btn">Réinitialiser</button>
       <a href="./conversation.html" class="cockpit-btn" style="text-decoration:none;">Conversation</a>
     </div>
@@ -43,7 +97,7 @@
         <strong style="color:#ffd700;">Syntaxe COS</strong><br>
         <code>&lt;attribut&gt;</code> : attributs, paramètres, typage, santé octets, énergie, état audio, état animations, base emoji.<br>
         <code>&lt;fonction&gt;</code> : fonctions, tâches, patterns, connexions &lt;co&gt;.<br>
-        <code>&lt;co&gt;</code> : une connexion (A1↔️A3↔️B5). <code>&lt;cos&gt;</code> : plusieurs connexions.<br>
+        <code>&lt;co&gt;</code> : une connexion (A1 ↔️ A3 ↔️ B5). <code>&lt;cos&gt;</code> : plusieurs connexions.<br>
         <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne.<br>
         <strong style="color:#ffd700;">Bibliothèque COS</strong> : moteur emoji embarqué, tags, valeurs, attributs, fonctions, tasks.<br>
         <strong style="color:#ffd700;">Tuto Chrome mobile</strong> : 3 points → Site pour ordinateur → recharge.
@@ -137,65 +191,31 @@
           }
         }
       },
-      updateTerminal: function (msg) {
-        var term = document.getElementById('w6-body');
-        // Terminal removed, log to w6 if exists
-      }
+      updateTerminal: function (msg) {}
     };
     function logTerminal(msg) {
       var term = document.getElementById('w6-body');
       if (term) term.innerHTML += '<br>$ ' + msg;
     }
-    var cosEditor = document.getElementById('cosEditor') || document.getElementById('cosEditorClassic');
-    var htmlEditorClassic = document.getElementById('htmlEditorClassic');
-    var htmlEditorCos = document.getElementById('htmlEditorCos');
-    // Use w2 for classic, w3 for COS
     var editorClassic = document.getElementById('htmlEditorClassic');
     var editorCos = document.getElementById('htmlEditorCos');
-    // Wire up inject button
-    var btnInjecter = document.getElementById('btnInjecter');
-    if (btnInjecter) {
-      btnInjecter.addEventListener('click', function () {
-        if (typeof window.injecterExemple === 'function') window.injecterExemple();
-      });
-    }
-    // Respecter les tabulations dans les éditeurs
     function handleTab(e) {
-      var ta = e.target;
       if (e.key === 'Tab' || e.keyCode === 9) {
         e.preventDefault();
         e.stopPropagation();
+        var ta = e.target;
         var start = ta.selectionStart;
         var end = ta.selectionEnd;
-        var tab = '    '; // 4 espaces = tabulation
+        var tab = '    ';
         ta.value = ta.value.substring(0, start) + tab + ta.value.substring(end);
         ta.selectionStart = ta.selectionEnd = start + 4;
         var evt = new Event('input', { bubbles: true });
         ta.dispatchEvent(evt);
         return false;
       }
-      // Auto-indent on Enter
-      if (e.key === 'Enter' || e.keyCode === 13) {
-        var start = ta.selectionStart;
-        var lineStart = ta.value.lastIndexOf('\\n', start - 1) + 1;
-        var currentLine = ta.value.substring(lineStart, start);
-        var indent = currentLine.match(/^\\s*/)[0];
-        // Add extra indent after opening braces
-        if (/[{(\\[]\\s*$/.test(currentLine.trim())) {
-          indent += '    ';
-        }
-        if (indent.length > 0) {
-          e.preventDefault();
-          ta.value = ta.value.substring(0, start) + '\\n' + indent + ta.value.substring(ta.selectionEnd);
-          ta.selectionStart = ta.selectionEnd = start + 1 + indent.length;
-          var evt2 = new Event('input', { bubbles: true });
-          ta.dispatchEvent(evt2);
-          return false;
-        }
-      }
     }
     if (editorClassic) {
-      editorClassic.addEventListener('keydown', handleTab, true);
+      editorClassic.addEventListener('keydown', handleTab);
       editorClassic.addEventListener('input', function () {
         window.CosCockpitContext.htmlCode = editorClassic.value;
         window.CosCockpitContext.updatePreview();
@@ -203,7 +223,7 @@
       });
     }
     if (editorCos) {
-      editorCos.addEventListener('keydown', handleTab, true);
+      editorCos.addEventListener('keydown', handleTab);
       editorCos.addEventListener('input', function () {
         window.CosCockpitContext.htmlCosCode = editorCos.value;
         window.CosCockpitContext.updatePreview();
@@ -211,7 +231,7 @@
       });
     }
     window.injecterExemple = function injecterExemple() {
-      var cosCode = '<attribut>\n  co-mode="cos-multi-connexion"\n  text-target="hellow world"\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n  mirror-reflection="active"\n  sfx-letters="pulse-glow"\n  emoji-seed="🥳"\n  click-fx="sparks,fireworks,soap-bubbles-pop"\n  audio-enabled="true"\n  click-anim-enabled="true"\n  bytes-economy="18%"\n</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1↔️A3↔️B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2↔️B2↔️C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1↔️C3↔️D5\n  </co>\n</fonction>';
+      var cosCode = '<attribut>\n  co-mode="cos-multi-connexion"\n  text-target="hellow world"\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n  mirror-reflection="active"\n  sfx-letters="pulse-glow"\n  emoji-seed="🥳"\n  click-fx="sparks,fireworks,soap-bubbles-pop"\n  audio-enabled="true"\n  click-anim-enabled="true"\n  bytes-economy="18%"\n</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n</fonction>';
       var htmlCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       var htmlCosCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       if (editorClassic) { editorClassic.value = htmlCode; window.CosCockpitContext.htmlCode = htmlCode; }
