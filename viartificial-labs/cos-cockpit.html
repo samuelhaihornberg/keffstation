@@ -152,7 +152,6 @@
     // Use w2 for classic, w3 for COS
     var editorClassic = document.getElementById('htmlEditorClassic');
     var editorCos = document.getElementById('htmlEditorCos');
-    var cosEd = document.getElementById('cosEditor');
     // Respecter les tabulations dans les éditeurs
     function handleTab(e) {
       if (e.key === 'Tab') {
@@ -162,16 +161,10 @@
         var end = ta.selectionEnd;
         ta.value = ta.value.substring(0, start) + String.fromCharCode(9) + ta.value.substring(end);
         ta.selectionStart = ta.selectionEnd = start + 1;
-        // Déclencher l'événement input
         var evt = new Event('input', { bubbles: true });
         ta.dispatchEvent(evt);
       }
     }
-    if (cosEd) { cosEd.addEventListener('keydown', handleTab); cosEd.addEventListener('input', function () {
-      window.CosCockpitContext.cosCode = cosEd.value;
-      window.CosCockpitContext.updatePreview();
-      logTerminal('COS code updated (' + cosEd.value.length + ' chars)');
-    }); }
     if (editorClassic) { editorClassic.addEventListener('keydown', handleTab); editorClassic.addEventListener('input', function () {
       window.CosCockpitContext.htmlCode = editorClassic.value;
       window.CosCockpitContext.updatePreview();
