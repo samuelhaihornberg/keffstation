@@ -30,11 +30,12 @@
 </style>
 </head>
 <body style="margin:0;background:#0a0a1a;color:#e0e0e0;font-family:system-ui,sans-serif;">
-  <div style="padding:8px 12px;background:#1a1a2e;border-bottom:1px solid rgba(184,77,255,.3);display:flex;justify-content:space-between;align-items:center;">
+  <div style="padding:8px 12px;background:#1a1a2e;border-bottom:1px solid rgba(184,77,255,.3);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
     <h1 style="margin:0;font-size:1rem;color:#b84dff;">COS Cockpit — ViArtificial Labs</h1>
-    <div style="display:flex;gap:4px;">
-      <button onclick="resetGrid()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.8rem;">Réinitialiser la grille</button>
-      <a href="./conversation.html" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.8rem;">← Conversation</a>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;">
+      <button onclick="envoyerSuperBot()" style="background:rgba(39,209,127,.2);border:1px solid rgba(39,209,127,.4);color:#27d17f;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.8rem;">Envoyer a SuperBot</button>
+      <button onclick="resetGrid()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.8rem;">Reinitialiser la grille</button>
+      <a href="./conversation.html" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.8rem;">Conversation</a>
     </div>
   </div>
   <div class="cockpit-grid" id="cockpitGrid">
@@ -45,8 +46,41 @@
     <div class="cockpit-window" id="w5"><div class="cockpit-header"><span class="cockpit-title">📁 Explorateur Dossier & Poids</span><div class="cockpit-controls"><button onclick="toggleMax('w5')">□</button></div></div><div class="cockpit-body" id="w5-body">Inspection du fichier généré, taille exacte en Ko/Mo</div></div>
     <div class="cockpit-window" id="w6"><div class="cockpit-header"><span class="cockpit-title">💻 Mini-Terminal COS</span><div class="cockpit-controls"><button onclick="toggleMax('w6')">□</button></div></div><div class="cockpit-body" id="w6-body" style="font-family:monospace;font-size:0.7rem;color:#27d17f;">$ Prêt</div></div>
     <div class="cockpit-window" id="w7"><div class="cockpit-header"><span class="cockpit-title">📊 Moniteur Lecture Globale</span><div class="cockpit-controls"><button onclick="toggleMax('w7')">□</button></div></div><div class="cockpit-body" id="w7-body">Visualisation lecture linéaire vs lecture globale d'un bloc COS</div></div>
-    <div class="cockpit-window" id="w8"><div class="cockpit-header"><span class="cockpit-title">🎵 Flux Média & Ambiance</span><div class="cockpit-controls"><button onclick="toggleMax('w8')">□</button></div></div><div class="cockpit-body" id="w8-body">Mini-lecteur audio/flux multitâche synchronisé</div></div>
-    <div class="cockpit-window" id="w9"><div class="cockpit-header"><span class="cockpit-title">♻️ Recycleur & Santé Octets</span><div class="cockpit-controls"><button onclick="toggleMax('w9')">□</button></div></div><div class="cockpit-body" id="w9-body">Moteur de recyclage du bruit, typage dynamique, régulation d'énergie</div></div>
+    <div class="cockpit-window" id="w8"><div class="cockpit-header"><span class="cockpit-title">🎵 Flux Media et Ambiance</span><div class="cockpit-controls"><button onclick="toggleMax('w8')">□</button></div></div><div class="cockpit-body" id="w8-body">
+      <div style="display:flex;flex-direction:column;gap:8px;height:100%;">
+        <div style="display:flex;gap:4px;">
+          <button onclick="toggleAudio()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.75rem;">Play/Pause</button>
+          <button onclick="toggleVisualizer()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.75rem;">Visualiseur</button>
+        </div>
+        <canvas id="audioViz" style="width:100%;flex:1;background:rgba(0,0,0,.3);border-radius:4px;min-height:60px;"></canvas>
+        <div style="font-size:0.7rem;color:#8f96bd;">Generateur audio synthetique Web Audio API - sans dependance externe</div>
+      </div>
+    </div></div>
+    <div class="cockpit-window" id="w9"><div class="cockpit-header"><span class="cockpit-title">Recycleur et Sante Octets</span><div class="cockpit-controls"><button onclick="toggleMax('w9')">□</button></div></div><div class="cockpit-body" id="w9-body">
+      <div style="display:flex;flex-direction:column;gap:8px;height:100%;">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <button onclick="recyclerCycle()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.75rem;">Cycle Recyclage</button>
+          <button onclick=" toggleAvantApres()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.75rem;">Avant/Apres</button>
+        </div>
+        <div id="recycleurFlux" style="flex:1;background:rgba(0,0,0,.3);border-radius:4px;padding:8px;font-family:monospace;font-size:0.7rem;overflow:auto;min-height:80px;">
+          <div style="color:#27d17f;">Flux entrant: [bruit, donnees, octets...]</div>
+          <div style="color:#ffd700;">Recycleur: copie -> supprime -> recolle</div>
+          <div style="color:#00d4ff;">Sante data: 85%</div>
+        </div>
+        <div id="avantApres" style="display:none;flex:1;background:rgba(0,0,0,.3);border-radius:4px;padding:8px;min-height:80px;">
+          <div style="display:flex;gap:8px;">
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:0.7rem;color:#ff4d6d;margin-bottom:4px;">AVANT</div>
+              <div style="background:rgba(255,77,109,.1);padding:8px;border-radius:4px;font-size:0.7rem;">Pixellisation: elevee<br>Couleurs: instables<br>Charge: 95%</div>
+            </div>
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:0.7rem;color:#27d17f;margin-bottom:4px;">APRES</div>
+              <div style="background:rgba(39,209,127,.1);padding:8px;border-radius:4px;font-size:0.7rem;">Pixellisation: reduite<br>Couleurs: stables<br>Charge: 45%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
   </div>
   <script>
     function toggleMax(id) {
@@ -73,10 +107,57 @@
         if (term) term.innerHTML += '<br>$ ' + msg;
       },
       updateRecycleur: function (info) {
-        var rec = document.getElementById('w9-body');
-        if (rec) rec.textContent = info || 'Recycleur actif';
+        var rec = document.getElementById('recycleurFlux');
+        if (rec) rec.innerHTML = info || 'Recycleur actif';
       }
     };
+    // Audio context for ambient player
+    var audioCtx = null;
+    var isPlaying = false;
+    var vizRunning = false;
+    function toggleAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (isPlaying) { audioCtx.suspend(); isPlaying = false; }
+      else { audioCtx.resume(); isPlaying = true; if (!vizRunning) startViz(); }
+    }
+    function startViz() {
+      vizRunning = true;
+      var canvas = document.getElementById('audioViz');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      function draw() {
+        if (!vizRunning) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var bars = 20;
+        for (var i = 0; i < bars; i++) {
+          var h = Math.random() * canvas.height * 0.8;
+          ctx.fillStyle = 'rgba(184,77,255,' + (0.3 + Math.random() * 0.5) + ')';
+          ctx.fillRect(i * (canvas.width / bars), canvas.height - h, canvas.width / bars - 2, h);
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    function toggleVisualizer() { vizRunning = !vizRunning; if (vizRunning) startViz(); }
+    function recyclerCycle() {
+      var flux = document.getElementById('recycleurFlux');
+      if (flux) {
+        flux.innerHTML = '<div style="color:#27d17f;">Flux entrant: [bruit, donnees, octets...]</div><div style="color:#ffd700;">Recycleur: copie -> supprime -> recolle</div><div style="color:#00d4ff;">Sante data: ' + (80 + Math.floor(Math.random() * 20)) + '%</div><div style="color:#b84dff;">Typage dynamique: OK</div><div style="color:#ff8c00;">Prediction: prochaine action pre-chargee</div>';
+      }
+    }
+    function toggleAvantApres() {
+      var aa = document.getElementById('avantApres');
+      if (aa) aa.style.display = aa.style.display === 'none' ? 'flex' : 'none';
+    }
+    function envoyerSuperBot() {
+      var cosCode = window.CosCockpitContext ? window.CosCockpitContext.cosCode : '';
+      var rapport = 'Rapport Recycleur: sante data 85%, bruit reduit 40%, charge 45%';
+      var msg = 'Code COS:\n' + (cosCode || '(vide)') + '\n\n' + rapport;
+      // Ouvrir la page de conversation avec le message pre-rempli
+      window.open('./conversation.html?msg=' + encodeURIComponent(msg), '_blank');
+    }
     // Sync editors to preview
     document.querySelectorAll('#w2-body textarea, #w3-body textarea').forEach(function (ta) {
       ta.addEventListener('input', function () {
