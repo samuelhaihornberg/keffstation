@@ -89,6 +89,15 @@
       <a href="./conversation.html" class="cockpit-btn" style="text-decoration:none;">Conversation</a>
     </div>
   </div>
+  <div id="smartBanner" class="smart-banner" style="max-width:100%;margin:8px;border-radius:12px;">
+    <div class="smart-banner-emoji">🥳</div>
+    <h1 class="smart-banner-title" data-text="hellow world">hellow world</h1>
+    <div class="smart-info">Cliquez pour des effets visuels et sonores</div>
+    <div class="smart-widget">
+      <button onclick="event.stopPropagation();toggleAudioBanner()">🔊</button>
+      <button onclick="event.stopPropagation();toggleAnimBanner()">Anim ON</button>
+    </div>
+  </div>
   <div class="cockpit-grid" id="cockpitGrid">
     <!-- Fenêtre 1 : Article & Tuto COS -->
     <div class="cockpit-window" id="w1">
@@ -158,6 +167,65 @@
     </div>
   </div>
   <script>
+    // Smart banner click-to-react
+    var smartAudioEnabled = true;
+    var smartAnimEnabled = true;
+    var smartAudioCtx = null;
+    function getSmartAudioCtx() { if (!smartAudioCtx) { try { smartAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } } return smartAudioCtx; }
+    function jouerSonSmart(x, y, w, h) {
+      if (!smartAudioEnabled) return;
+      var ctx = getSmartAudioCtx(); if (!ctx) return;
+      var freq = 440 * Math.pow(2, (0.5 - y / h) * 2);
+      // X: gauche = majeur, droite = mineur
+      var xNorm = x / w;
+      var osc = ctx.createOscillator();
+      osc.type = xNorm < 0.5 ? 'triangle' : 'sawtooth';
+      osc.frequency.value = freq;
+      var gain = ctx.createGain(); gain.gain.value = 0.2; gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      var filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 1000 + xNorm * 4000;
+      osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+    }
+    function jouerNoteSmart(x, y, w, h) {
+      if (!smartAudioEnabled) return;
+      var ctx = getSmartAudioCtx(); if (!ctx) return;
+      var freq = 440 * Math.pow(2, (0.5 - y / h) * 2);
+      var osc = ctx.createOscillator(); osc.type = 'square'; osc.frequency.value = freq;
+      var gain = ctx.createGain(); gain.gain.value = 0.2; gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+    }
+    function creerEtincellesSmart(x, y) {
+      if (!smartAnimEnabled) return;
+      var colors = ['#ffd700', '#ff4d6d', '#00d4ff', '#27d17f', '#b84dff', '#fff'];
+      for (var i = 0; i < 12; i++) {
+        var p = document.createElement('div');
+        var angle = (Math.PI * 2 * i) / 12; var dist = 40 + Math.random() * 30;
+        p.style.cssText = 'position:absolute;width:4px;height:4px;border-radius:50%;background:' + colors[Math.floor(Math.random() * colors.length)] + ';left:' + x + 'px;top:' + y + 'px;pointer-events:none;z-index:10;';
+        document.getElementById('smartBanner').appendChild(p);
+        (function (el, dx, dy) { el.animate([{ transform: 'translate(0,0)', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px)', opacity: 0 }], { duration: 500 + Math.random() * 300 }); setTimeout(function () { el.remove(); }, 800); })(p, Math.cos(angle) * dist, Math.sin(angle) * dist);
+      }
+    }
+    function toggleAudioBanner() {
+      smartAudioEnabled = !smartAudioEnabled;
+      var btn = document.querySelector('#smartBanner .smart-widget button:first-child');
+      if (btn) btn.textContent = smartAudioEnabled ? '🔊' : '🔇';
+    }
+    function toggleAnimBanner() {
+      smartAnimEnabled = !smartAnimEnabled;
+      var btn = document.querySelector('#smartBanner .smart-widget button:last-child');
+      if (btn) btn.textContent = smartAnimEnabled ? 'Anim ON' : 'Anim OFF';
+    }
+    var smartBanner = document.getElementById('smartBanner');
+    if (smartBanner) {
+      smartBanner.addEventListener('click', function (e) {
+        if (!smartAnimEnabled) return;
+        var rect = smartBanner.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        jouerSonSmart(x, y, rect.width, rect.height);
+        creerEtincellesSmart(x, y);
+      });
+    }
     function toggleMax(id) {
       var el = document.getElementById(id);
       if (el.classList.contains('cockpit-maximized')) el.classList.remove('cockpit-maximized');
