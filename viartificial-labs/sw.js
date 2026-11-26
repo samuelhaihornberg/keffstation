@@ -1,4 +1,4 @@
-const CACHE = 'viartificial-labs-v37'; // v37 : fix bouton injecter hellow world, cache bust.
+const CACHE = 'viartificial-labs-v38'; // v38 : fix newlines dans editeurs COS, cache bust.
 const ASSETS = ['./', './index.html', './xsstream.html', './conversation.html', './bots.json', './providers.js', './memory.js', './actions.js', './local-engine.js', './local-wasm.js', './local-wasm-worker.js', './responsive.css', './capabilities.js', './manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :
