@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#b84dff">
+<title>COS Cockpit — ViArtificial Labs</title>
+<link rel="stylesheet" href="./responsive.css">
+<link rel="stylesheet" href="conversation-inline-01.css">
+<script src="./providers.js"></script>
+<script src="./local-engine.js"></script>
+<script src="./src/bibliotheques.js"></script>
+<script src="./src/bllm-core.js"></script>
+<script src="./src/cos-circuit-taches.js"></script>
+<script src="./src/cos-cu-typage.js"></script>
+<script src="./src/parcelles-cos-cu.js"></script>
+<script src="./src/golemotor-recyclage.js"></script>
+<script src="./src/cpu-gpu-moteurs.js"></script>
+<style>
+  .cockpit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 8px; height: 100vh; box-sizing: border-box; }
+  .cockpit-window { background: #1a1a2e; border: 1px solid rgba(184,77,255,.3); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; min-height: 200px; }
+  .cockpit-header { background: linear-gradient(135deg, #2a1a4e, #1a1a2e); padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; cursor: move; user-select: none; border-bottom: 1px solid rgba(184,77,255,.3); font-size: 0.75rem; }
+  .cockpit-title { color: #b84dff; font-weight: 600; }
+  .cockpit-body { flex: 1; padding: 8px; overflow: auto; font-size: 0.8rem; color: #e0e0e0; }
+  .cockpit-controls button { background: rgba(255,255,255,.1); border: none; color: #fff; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+  .cockpit-controls button:hover { background: rgba(184,77,255,.3); }
+  @media (max-width: 720px) { .cockpit-grid { grid-template-columns: 1fr; } .cockpit-window { min-height: 300px; } }
+  @media (min-width: 721px) and (max-width: 1100px) { .cockpit-grid { grid-template-columns: repeat(2, 1fr); } }
+  .cockpit-maximized { position: fixed; inset: 0; z-index: 1000; }
+</style>
+</head>
+<body style="margin:0;background:#0a0a1a;color:#e0e0e0;font-family:system-ui,sans-serif;">
+  <div style="padding:8px 12px;background:#1a1a2e;border-bottom:1px solid rgba(184,77,255,.3);display:flex;justify-content:space-between;align-items:center;">
+    <h1 style="margin:0;font-size:1rem;color:#b84dff;">COS Cockpit — ViArtificial Labs</h1>
+    <div style="display:flex;gap:4px;">
+      <button onclick="resetGrid()" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.8rem;">Réinitialiser la grille</button>
+      <a href="./conversation.html" style="background:rgba(184,77,255,.2);border:1px solid rgba(184,77,255,.3);color:#e0e0e0;padding:4px 8px;border-radius:6px;text-decoration:none;font-size:0.8rem;">← Conversation</a>
+    </div>
+  </div>
+  <div class="cockpit-grid" id="cockpitGrid">
+    <div class="cockpit-window" id="w1"><div class="cockpit-header"><span class="cockpit-title">📄 Article & Tuto COS</span><div class="cockpit-controls"><button onclick="toggleMax('w1')">□</button></div></div><div class="cockpit-body" id="w1-body">Documentation interactive des règles COS/CU</div></div>
+    <div class="cockpit-window" id="w2"><div class="cockpit-header"><span class="cockpit-title">✏️ Éditeur COS</span><div class="cockpit-controls"><button onclick="toggleMax('w2')">□</button></div></div><div class="cockpit-body" id="w2-body"><textarea style="width:100%;height:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);color:#e0e0e0;border-radius:4px;padding:4px;font-family:monospace;font-size:0.75rem;" placeholder="Code COS..."></textarea></div></div>
+    <div class="cockpit-window" id="w3"><div class="cockpit-header"><span class="cockpit-title">🌐 Éditeur HTML Hôte</span><div class="cockpit-controls"><button onclick="toggleMax('w3')">□</button></div></div><div class="cockpit-body" id="w3-body"><textarea style="width:100%;height:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);color:#e0e0e0;border-radius:4px;padding:4px;font-family:monospace;font-size:0.75rem;" placeholder="Code HTML/JS..."></textarea></div></div>
+    <div class="cockpit-window" id="w4"><div class="cockpit-header"><span class="cockpit-title">👁️ Preview HTML Live</span><div class="cockpit-controls"><button onclick="toggleMax('w4')">□</button></div></div><div class="cockpit-body" id="w4-body"><iframe style="width:100%;height:100%;border:none;background:#fff;border-radius:4px;" srcdoc="<h1>Preview</h1>"></iframe></div></div>
+    <div class="cockpit-window" id="w5"><div class="cockpit-header"><span class="cockpit-title">📁 Explorateur Dossier & Poids</span><div class="cockpit-controls"><button onclick="toggleMax('w5')">□</button></div></div><div class="cockpit-body" id="w5-body">Inspection du fichier généré, taille exacte en Ko/Mo</div></div>
+    <div class="cockpit-window" id="w6"><div class="cockpit-header"><span class="cockpit-title">💻 Mini-Terminal COS</span><div class="cockpit-controls"><button onclick="toggleMax('w6')">□</button></div></div><div class="cockpit-body" id="w6-body" style="font-family:monospace;font-size:0.7rem;color:#27d17f;">$ Prêt</div></div>
+    <div class="cockpit-window" id="w7"><div class="cockpit-header"><span class="cockpit-title">📊 Moniteur Lecture Globale</span><div class="cockpit-controls"><button onclick="toggleMax('w7')">□</button></div></div><div class="cockpit-body" id="w7-body">Visualisation lecture linéaire vs lecture globale d'un bloc COS</div></div>
+    <div class="cockpit-window" id="w8"><div class="cockpit-header"><span class="cockpit-title">🎵 Flux Média & Ambiance</span><div class="cockpit-controls"><button onclick="toggleMax('w8')">□</button></div></div><div class="cockpit-body" id="w8-body">Mini-lecteur audio/flux multitâche synchronisé</div></div>
+    <div class="cockpit-window" id="w9"><div class="cockpit-header"><span class="cockpit-title">♻️ Recycleur & Santé Octets</span><div class="cockpit-controls"><button onclick="toggleMax('w9')">□</button></div></div><div class="cockpit-body" id="w9-body">Moteur de recyclage du bruit, typage dynamique, régulation d'énergie</div></div>
+  </div>
+  <script>
+    function toggleMax(id) {
+      var el = document.getElementById(id);
+      if (el.classList.contains('cockpit-maximized')) {
+        el.classList.remove('cockpit-maximized');
+      } else {
+        el.classList.add('cockpit-maximized');
+      }
+    }
+    function resetGrid() {
+      document.querySelectorAll('.cockpit-maximized').forEach(function (el) { el.classList.remove('cockpit-maximized'); });
+    }
+    // Shared state (CosCockpitContext)
+    window.CosCockpitContext = {
+      cosCode: '',
+      htmlCode: '',
+      updatePreview: function () {
+        var iframe = document.querySelector('#w4-body iframe');
+        if (iframe) iframe.srcdoc = this.htmlCode || '<h1>Preview</h1>';
+      },
+      updateTerminal: function (msg) {
+        var term = document.getElementById('w6-body');
+        if (term) term.innerHTML += '<br>$ ' + msg;
+      },
+      updateRecycleur: function (info) {
+        var rec = document.getElementById('w9-body');
+        if (rec) rec.textContent = info || 'Recycleur actif';
+      }
+    };
+    // Sync editors to preview
+    document.querySelectorAll('#w2-body textarea, #w3-body textarea').forEach(function (ta) {
+      ta.addEventListener('input', function () {
+        if (ta.parentElement.id === 'w2-body') window.CosCockpitContext.cosCode = ta.value;
+        else window.CosCockpitContext.htmlCode = ta.value;
+        window.CosCockpitContext.updatePreview();
+        window.CosCockpitContext.updateTerminal('Code mis à jour');
+      });
+    });
+  </script>
+</body>
+</html>
