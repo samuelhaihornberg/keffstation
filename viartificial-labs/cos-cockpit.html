@@ -21,7 +21,7 @@
   .cockpit-maximized { position: fixed; inset: 0; z-index: 1000; border-radius: 0; }
   @media (max-width: 720px) { .cockpit-grid { grid-template-columns: 1fr; } .cockpit-window { min-height: 250px; } }
   @media (min-width: 721px) and (max-width: 1100px) { .cockpit-grid { grid-template-columns: repeat(2, 1fr); } }
-  textarea.cos-editor { width: 100%; height: 100%; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2); color: #e0e0e0; border-radius: 4px; padding: 4px; font-family: monospace; font-size: 0.7rem; resize: none; }
+  textarea.cos-editor { width: 100%; height: 100%; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.2); color: #e0e0e0; border-radius: 4px; padding: 4px; font-family: monospace; font-size: 0.7rem; resize: none; white-space: pre; tab-size: 4; }
   .cockpit-btn { background: rgba(184,77,255,.2); border: 1px solid rgba(184,77,255,.3); color: #e0e0e0; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
   .cockpit-btn:hover { background: rgba(184,77,255,.4); }
 </style>
@@ -53,14 +53,14 @@
     <div class="cockpit-window" id="w2">
       <div class="cockpit-header"><span class="cockpit-title">✏️ Éditeur HTML (classique)</span><div class="cockpit-controls"><button onclick="toggleMax('w2')">□</button></div></div>
       <div class="cockpit-body" id="w2-body">
-        <textarea class="cos-editor" id="htmlEditorClassic" placeholder="Code HTML/JS classique..."></textarea>
+        <textarea class="cos-editor" id="htmlEditorClassic" placeholder="Code HTML/JS classique..." tabindex="0"></textarea>
       </div>
     </div>
     <!-- Fenêtre 3 : Éditeur HTML + COS -->
     <div class="cockpit-window" id="w3">
       <div class="cockpit-header"><span class="cockpit-title">🌐 Éditeur HTML + COS</span><div class="cockpit-controls"><button onclick="toggleMax('w3')">□</button></div></div>
       <div class="cockpit-body" id="w3-body">
-        <textarea class="cos-editor" id="htmlEditorCos" placeholder="Code HTML/JS avec COS embarqué..."></textarea>
+        <textarea class="cos-editor" id="htmlEditorCos" placeholder="Code HTML/JS avec COS embarqué..." tabindex="0"></textarea>
       </div>
     </div>
     <!-- Fenêtre 4 : Preview avec COS -->
@@ -154,13 +154,14 @@
     var editorCos = document.getElementById('htmlEditorCos');
     // Respecter les tabulations dans les éditeurs
     function handleTab(e) {
-      if (e.keyCode === 9) {
+      if (e.key === 'Tab' || e.keyCode === 9) {
         e.preventDefault();
         e.stopPropagation();
         var ta = e.target;
         var start = ta.selectionStart;
         var end = ta.selectionEnd;
-        ta.value = ta.value.substring(0, start) + String.fromCharCode(9) + ta.value.substring(end);
+        var tab = '\\t';
+        ta.value = ta.value.substring(0, start) + tab + ta.value.substring(end);
         ta.selectionStart = ta.selectionEnd = start + 1;
         var evt = new Event('input', { bubbles: true });
         ta.dispatchEvent(evt);
