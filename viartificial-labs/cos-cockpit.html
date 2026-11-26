@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
@@ -59,19 +59,12 @@
       <div class="cockpit-header"><span class="cockpit-title">📄 Article & Tuto COS</span><div class="cockpit-controls"><button onclick="toggleMax('w1')">□</button></div></div>
       <div class="cockpit-body" id="w1-body" style="overflow:auto;font-size:0.7rem;">
         <strong style="color:#ffd700;">Syntaxe COS</strong><br>
-        <code>&lt;attribut&gt; ... &lt;/attribut&gt;</code> : définitions, attributs, typage alphanumérique, santé octets, énergie, état audio, état animations, base emoji.<br>
-        <code>&lt;fonction&gt; ... &lt;/fonction&gt;</code> : fonctions, tâches, patterns, connexions.<br>
+        <code>&lt;attribut&gt; ... &lt;/attribut&gt;</code> : attributs, paramètres, typage alphanumérique, santé octets, énergie, état audio, état animations, base emoji.<br>
+        <code>&lt;fonction&gt; ... &lt;/fonction&gt;</code> : fonctions, tâches, patterns, connexions &lt;co&gt;.<br>
         <code>&lt;co&gt; ... &lt;/co&gt;</code> : une connexion (A1 ↔️ A3 ↔️ B5). Espaces autour des identifiants.<br>
-        <strong>Format :</code> <code>&lt;co&gt; id1 type="nom" &lt;/co&gt;</code><br>
-        <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.
-        <div style="margin-top:8px;padding:8px;background:rgba(0,0,0,.3);border-radius:6px;font-size:0.7rem;">
-          <strong style="color:#ffd700;">Tuto Chrome mobile</strong><br>
-          1. Ouvrez Chrome sur votre téléphone<br>
-          2. Appuyez sur les 3 points (⋮) en haut à droite<br>
-          3. Cochez « Site pour ordinateur »<br>
-          4. La page se recharge en mode desktop<br>
-          5. Pour Google Search : ajoutez &amp;udm=14 à l'URL
-        </div>
+        <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.<br>
+        <strong style="color:#ffd700;">Bibliothèque COS</strong> : moteur emoji embarqué, tags, valeurs, attributs, fonctions, tasks.<br>
+        <strong style="color:#ffd700;">Moteur emoji</strong> : base emoji 🥳, cycle de variantes (ton, forme, palette préservant l'origine).
       </div>
     </div>
     <!-- Fenêtre 2 : Éditeur HTML classique -->
@@ -148,15 +141,40 @@
     function resetGrid() {
       document.querySelectorAll('.cockpit-maximized').forEach(function (el) { el.classList.remove('cockpit-maximized'); });
     }
-    // Smart banner JS
+    window.CosCockpitContext = {
+      cosCode: '',
+      htmlCode: '',
+      htmlCosCode: '',
+      updatePreview: function () {
+        var iframeCos = document.querySelector('#w4-body iframe');
+        var iframeClassic = document.querySelector('#w5-body iframe');
+        if (iframeCos) iframeCos.srcdoc = this.htmlCosCode || '<h1>Preview COS</h1>';
+        if (iframeClassic) iframeClassic.srcdoc = this.htmlCode || '<h1>Preview classique</h1>';
+        var tailleCos = document.getElementById('tailleCos');
+        var tailleHtml = document.getElementById('tailleHtml');
+        var reduction = document.getElementById('reduction');
+        var boost = document.getElementById('boost');
+        if (tailleCos) tailleCos.textContent = new Blob([this.cosCode]).size;
+        if (tailleHtml) tailleHtml.textContent = new Blob([this.htmlCode]).size;
+        if (tailleCos && tailleHtml) {
+          var cosSize = new Blob([this.cosCode]).size;
+          var htmlSize = new Blob([this.htmlCode]).size;
+          if (htmlSize > 0) {
+            var red = Math.round((1 - cosSize / htmlSize) * 100);
+            if (reduction) reduction.textContent = red + '%';
+            if (boost) boost.textContent = (red > 0 ? '+' + red : red) + '%';
+          }
+        }
+      }
+    };
+    // Smart banner click-to-react
     var smartAudioEnabled = true;
     var smartAnimEnabled = true;
     var smartAudioCtx = null;
-    function getSmartAudioCtx() { if (!smartAudioCtx) { try { smartAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } } return smartAudioCtx; }
+    function getSmartAudioCtx() { if (!smartAudioCtx) { try { smartAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } return smartAudioCtx; }
     function jouerSonSmart(x, y, w, h) {
       if (!smartAudioEnabled) return;
-      var ctx = getSmartAudioCtx();
-      if (!ctx) return;
+      var ctx = getSmartAudioCtx(); if (!ctx) return;
       var freq = 440 * Math.pow(2, (0.5 - y / h) * 2);
       var xNorm = x / w;
       var osc = ctx.createOscillator(); osc.type = xNorm < 0.5 ? 'triangle' : 'sawtooth'; osc.frequency.value = freq;
@@ -187,37 +205,18 @@
       var btn = document.querySelector('#smartBanner .smart-widget button:last-child');
       if (btn) btn.textContent = smartAnimEnabled ? 'Anim ON' : 'Anim OFF';
     }
-    // Context
-    window.CosCockpitContext = {
-      cosCode: '',
-      htmlCode: '',
-      htmlCosCode: '',
-      updatePreview: function () {
-        var iframeCos = document.querySelector('#w4-body iframe');
-        var iframeClassic = document.querySelector('#w5-body iframe');
-        if (iframeCos) iframeCos.srcdoc = this.htmlCosCode || '<h1>Preview COS</h1>';
-        if (iframeClassic) iframeClassic.srcdoc = this.htmlCode || '<h1>Preview classique</h1>';
-        var tailleCos = document.getElementById('tailleCos');
-        var tailleHtml = document.getElementById('tailleHtml');
-        var reduction = document.getElementById('reduction');
-        var boost = document.getElementById('boost');
-        if (tailleCos) tailleCos.textContent = new Blob([this.cosCode]).size;
-        if (tailleHtml) tailleHtml.textContent = new Blob([this.htmlCode]).size;
-        if (tailleCos && tailleHtml) {
-          var cosSize = new Blob([this.cosCode]).size;
-          var htmlSize = new Blob([this.htmlCode]).size;
-          if (htmlSize > 0) {
-            var red = Math.round((1 - cosSize / htmlSize) * 100);
-            if (reduction) reduction.textContent = red + '%';
-            if (boost) boost.textContent = (red > 0 ? '+' + red : red) + '%';
-          }
-        }
-      }
-    };
-    // Editors
-    var editorClassic = document.getElementById('htmlEditorClassic');
-    var editorCos = document.getElementById('htmlEditorCos');
-    var cosEd = document.getElementById('cosEditor');
+    var smartBanner = document.getElementById('smartBanner');
+    if (smartBanner) {
+      smartBanner.addEventListener('click', function (e) {
+        if (!smartAnimEnabled) return;
+        var rect = smartBanner.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        jouerSonSmart(x, y, rect.width, rect.height);
+        creerEtincellesSmart(x, y);
+      });
+    }
+    // Respecter les tabulations dans les éditeurs
     function handleTab(e) {
       if (e.key === 'Tab' || e.keyCode === 9) {
         e.preventDefault();
@@ -227,7 +226,7 @@
         var end = ta.selectionEnd;
         var tab = String.fromCharCode(9);
         ta.value = ta.value.substring(0, start) + tab + ta.value.substring(end);
-        ta.selectionStart = ta.selectionEnd = start + 4;
+        ta.selectionStart = ta.selectionEnd = start + 1;
         var evt = new Event('input', { bubbles: true });
         ta.dispatchEvent(evt);
         return false;
@@ -254,19 +253,38 @@
       if (term) term.innerHTML += '<br>$ ' + msg;
     }
     // Injecter exemple hellow world
-    function injecterExemple() {
-      var cosCode = '<attribut>\n  id="A1"\n  type="text-target"\n  valeur="hellow world"\n  co-mode="cos-multi-connexion"\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n  mirror-reflection="active"\n  sfx-letters="pulse-glow"\n  emoji-seed="🥳"\n  click-fx="sparks,fireworks,soap-bubbles-pop"\n  audio-enabled="true"\n  click-anim-enabled="true"\n  bytes-economy="18%"\n  sante-octets="high"\n  energie-economisee="true"\n</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n</fonction>';
+    window.injecterExemple = function injecterExemple() {
+      var cosCode = '<attribut>\n' +
+        '  id="A1"\n' +
+        '  type="text-target"\n' +
+        '  valeur="hellow world"\n' +
+        '  co-mode="cos-multi-connexion"\n' +
+        '  pixel-palette="#9ca3af,#cbd5e1,#64748b"\n' +
+        '  mirror-reflection="active"\n' +
+        '  sfx-letters="pulse-glow"\n' +
+        '  emoji-seed="🥳"\n' +
+        '  click-fx="sparks,fireworks,soap-bubbles-pop"\n' +
+        '  audio-enabled="true"\n' +
+        '  click-anim-enabled="true"\n' +
+        '  bytes-economy="18%"\n' +
+        '  sante-octets="high"\n' +
+        '  energie-economisee="true"\n' +
+        '</attribut>\n\n<fonction>\n  <co id="co-init" type="boot-render">\n    A1 ↔️ A3 ↔️ B5\n  </co>\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\n    A2 ↔️ B2 ↔️ C5\n  </co>\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\n    B1 ↔️ C3 ↔️ D5\n  </co>\n</fonction>';
       var htmlCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       var htmlCosCode = '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <title>COS - hellow world</title>\n  <style>\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\n  </style>\n</head>\n<body>\n  <span class="emoji">🥳</span>\n  <h1>hellow world</h1>\n  <script type="text/cos">\n  <attribut>\n    id="A1"\n    type="text-target"\n    valeur="hellow world"\n    co-mode="cos-multi-connexion"\n    pixel-palette="#9ca3af,#cbd5e1,#64748b"\n    mirror-reflection="active"\n    sfx-letters="pulse-glow"\n    emoji-seed="🥳"\n    click-fx="sparks,fireworks,soap-bubbles-pop"\n    audio-enabled="true"\n    click-anim-enabled="true"\n    bytes-economy="18%"\n    sante-octets="high"\n    energie-economisee="true"\n  </attribut>\n  <fonction>\n    <co id="co-init" type="boot-render">\n      A1 ↔️ A3 ↔️ B5\n    </co>\n    <co id="co-click-react" type="sparks-fireworks-bubbles">\n      A2 ↔️ B2 ↔️ C5\n    </co>\n    <co id="co-audio-sfx" type="retro-postmodern-synth">\n      B1 ↔️ C3 ↔️ D5\n    </co>\n  </fonction>\n  <script>\n    document.addEventListener("click", function() { console.log("click"); });\n  <\\/script>\n</body>\n</html>';
       if (editorClassic) { editorClassic.value = htmlCode; window.CosCockpitContext.htmlCode = htmlCode; }
       if (editorCos) { editorCos.value = htmlCosCode; window.CosCockpitContext.htmlCosCode = htmlCosCode; }
-      if (cosEd) { cosEd.value = cosCode; window.CosCockpitContext.cosCode = cosCode; }
+      window.CosCockpitContext.cosCode = cosCode;
       window.CosCockpitContext.updatePreview();
-      logTerminal('Exemple helloworld injecte: ' + cosCode.length + ' cos, ' + htmlCode.length + ' html');
+      logTerminal('Exemple helloworld injecté: ' + cosCode.length + ' chars COS, ' + htmlCode.length + ' chars HTML');
     }
-    // Wire inject button
+    // Bouton injecter
     var btnInjecter = document.getElementById('btnInjecter');
-    if (btnInjecter) btnInjecter.addEventListener('click', injecterExemple);
+    if (btnInjecter) {
+      btnInjecter.addEventListener('click', function () {
+        if (typeof window.injecterExemple === 'function') window.injecterExemple();
+      });
+    }
     // Chatbot
     function envoyerChat() {
       var input = document.getElementById('chatInput');
@@ -276,7 +294,7 @@
       input.value = '';
       msgs.innerHTML += '<div style="text-align:right;margin:4px 0;"><span style="background:rgba(39,209,127,.2);padding:4px 8px;border-radius:8px;font-size:0.75rem;">' + text + '</span></div>';
       setTimeout(function() {
-        msgs.innerHTML += '<div style="margin:4px 0;"><span style="background:rgba(184,77,255,.2);padding:4px 8px;border-radius:8px;font-size:0.75rem;">Reponse simulee (moteur non charge dans le cockpit)</span></div>';
+        msgs.innerHTML += '<div style="margin:4px 0;"><span style="background:rgba(184,77,255,.2);padding:4px 8px;border-radius:8px;font-size:0.75rem;">Réponse simulée (moteur non chargé dans le cockpit)</span></div>';
         msgs.scrollTop = msgs.scrollHeight;
       }, 500);
       msgs.scrollTop = msgs.scrollHeight;
@@ -291,12 +309,6 @@
       var blob = new Blob([window.CosCockpitContext.htmlCode], {type: 'text/html'});
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a'); a.href = url; a.download = 'host.html'; a.click();
-      URL.revokeObjectURL(url);
-    }
-    function telechargerHtmlCos() {
-      var blob = new Blob([window.CosCockpitContext.htmlCosCode], {type: 'text/html'});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a'); a.href = url; a.download = 'host-cos.html'; a.click();
       URL.revokeObjectURL(url);
     }
     function envoyerSuperBot() {
