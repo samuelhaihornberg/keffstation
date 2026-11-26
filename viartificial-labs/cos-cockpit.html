@@ -154,10 +154,10 @@
     var editorCos = document.getElementById('htmlEditorCos');
     // Respecter les tabulations dans les éditeurs
     function handleTab(e) {
+      var ta = e.target;
       if (e.key === 'Tab' || e.keyCode === 9) {
         e.preventDefault();
         e.stopPropagation();
-        var ta = e.target;
         var start = ta.selectionStart;
         var end = ta.selectionEnd;
         var tab = '    '; // 4 espaces = tabulation
@@ -166,6 +166,25 @@
         var evt = new Event('input', { bubbles: true });
         ta.dispatchEvent(evt);
         return false;
+      }
+      // Auto-indent on Enter
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        var start = ta.selectionStart;
+        var lineStart = ta.value.lastIndexOf('\\n', start - 1) + 1;
+        var currentLine = ta.value.substring(lineStart, start);
+        var indent = currentLine.match(/^\\s*/)[0];
+        // Add extra indent after opening braces
+        if (/[{(\\[]\\s*$/.test(currentLine.trim())) {
+          indent += '    ';
+        }
+        if (indent.length > 0) {
+          e.preventDefault();
+          ta.value = ta.value.substring(0, start) + '\\n' + indent + ta.value.substring(ta.selectionEnd);
+          ta.selectionStart = ta.selectionEnd = start + 1 + indent.length;
+          var evt2 = new Event('input', { bubbles: true });
+          ta.dispatchEvent(evt2);
+          return false;
+        }
       }
     }
     if (editorClassic) {
