@@ -1,4 +1,4 @@
-const CACHE = 'viartificial-labs-v40'; // v40 : vidage cache forcé.
+const CACHE = 'viartificial-labs-v41'; // v41 : vidage cache forcé.
 const ASSETS = ['./', './index.html', './xsstream.html', './conversation.html', './bots.json', './providers.js', './memory.js', './actions.js', './local-engine.js', './local-wasm.js', './local-wasm-worker.js', './responsive.css', './capabilities.js', './manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 // Ne JAMAIS purger les caches de modèles IA (transformers/onnx/webllm/mlc) :
