@@ -30,7 +30,7 @@
   <div class="cockpit-header-bar">
     <h1>COS Cockpit — ViArtificial Labs</h1>
     <div style="display:flex;gap:4px;flex-wrap:wrap;">
-      <button onclick="injecterExemple()" class="cockpit-btn">Injecter hellow world</button>
+      <button id="btnInjecter" class="cockpit-btn">Injecter hellow world</button>
       <button onclick="resetGrid()" class="cockpit-btn">Réinitialiser</button>
       <a href="./conversation.html" class="cockpit-btn" style="text-decoration:none;">Conversation</a>
     </div>
@@ -152,6 +152,13 @@
     // Use w2 for classic, w3 for COS
     var editorClassic = document.getElementById('htmlEditorClassic');
     var editorCos = document.getElementById('htmlEditorCos');
+    // Wire up inject button
+    var btnInjecter = document.getElementById('btnInjecter');
+    if (btnInjecter) {
+      btnInjecter.addEventListener('click', function () {
+        if (typeof window.injecterExemple === 'function') window.injecterExemple();
+      });
+    }
     // Respecter les tabulations dans les éditeurs
     function handleTab(e) {
       var ta = e.target;
