@@ -30,8 +30,8 @@
   <div class="cockpit-header-bar">
     <h1>COS Cockpit — ViArtificial Labs</h1>
     <div style="display:flex;gap:4px;flex-wrap:wrap;">
-      <button onclick="envoyerSuperBot()" class="cockpit-btn">Envoyer à SuperBot</button>
-      <button onclick="resetGrid()" class="cockpit-btn">Réinitialiser la grille</button>
+      <button onclick="injecterExemple()" class="cockpit-btn">Injecter hellow world</button>
+      <button onclick="resetGrid()" class="cockpit-btn">Réinitialiser</button>
       <a href="./conversation.html" class="cockpit-btn" style="text-decoration:none;">Conversation</a>
     </div>
   </div>
@@ -39,68 +39,62 @@
     <!-- Fenêtre 1 : Article & Tuto COS -->
     <div class="cockpit-window" id="w1">
       <div class="cockpit-header"><span class="cockpit-title">📄 Article & Tuto COS</span><div class="cockpit-controls"><button onclick="toggleMax('w1')">□</button></div></div>
-      <div class="cockpit-body" id="w1-body" style="overflow:auto;">
-        <h3 style="color:#b84dff;font-size:0.85rem;margin-bottom:8px;">Syntaxe COS — Documentation complète</h3>
-        <div style="font-size:0.7rem;margin-bottom:8px;">
-          <strong style="color:#ffd700;">&lt;attribut&gt; ... &lt;/attribut&gt;</strong><br>
-          Définit les attributs, paramètres, typage alphanumérique, santé octets, énergie économisée, état audio (audio:on|off), état animations (click-anim:on|off), base emoji (🥳).<br><br>
-          <strong style="color:#ffd700;">&lt;fonction&gt; ... &lt;/fonction&gt;</strong><br>
-          Définit les fonctions, tâches, patterns, connexions &lt;co&gt; (A1↔️A3↔️B5), déclencheurs click-réaction, génération d'étincelles/feux d'artifice/bulles de savon, effets SFX sur les lettres et synthèse sonore rétro/post-moderne futuriste.<br><br>
-          <strong style="color:#ffd700;">&lt;co&gt;</strong> : une connexion (A1↔️A3↔️B5). <strong style="color:#ffd700;">&lt;cos&gt;</strong> : plusieurs connexions.<br><br>
-          <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.<br><br>
-          <strong style="color:#ffd700;">Bibliothèque COS</strong> : moteur emoji embarqué, tags, valeurs, attributs, fonctions, tasks.<br><br>
-          <strong style="color:#ffd700;">Moteur emoji</strong> : base emoji 🥳, cycle de variantes (ton, forme, palette préservant l'origine).
-        </div>
-        <button onclick="injecterExemple()" class="cockpit-btn" style="margin-top:8px;">Injecter l'exemple hellow world</button>
-        <div style="margin-top:12px;padding:8px;background:rgba(0,0,0,.3);border-radius:6px;font-size:0.7rem;">
-          <strong style="color:#ffd700;">Tuto : passer en mode ordinateur sur Chrome mobile</strong><br>
-          1. Ouvrez Chrome sur votre téléphone<br>
-          2. Appuyez sur les 3 points (⋮) en haut à droite<br>
-          3. Cochez « Site pour ordinateur »<br>
-          4. La page se recharge en mode desktop<br>
-          5. Pour Google Search : ajoutez &amp;udm=14 à l'URL
-        </div>
+      <div class="cockpit-body" id="w1-body" style="overflow:auto;font-size:0.7rem;">
+        <strong style="color:#ffd700;">Syntaxe COS</strong><br>
+        <code>&lt;attribut&gt;</code> : attributs, paramètres, typage, santé octets, énergie, état audio, état animations, base emoji.<br>
+        <code>&lt;fonction&gt;</code> : fonctions, tâches, patterns, connexions &lt;co&gt;.<br>
+        <code>&lt;co&gt;</code> : une connexion (A1↔️A3↔️B5). <code>&lt;cos&gt;</code> : plusieurs connexions.<br>
+        <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne.<br>
+        <strong style="color:#ffd700;">Bibliothèque COS</strong> : moteur emoji embarqué, tags, valeurs, attributs, fonctions, tasks.<br>
+        <strong style="color:#ffd700;">Tuto Chrome mobile</strong> : 3 points → Site pour ordinateur → recharge.
       </div>
     </div>
-    <!-- Fenêtre 2 : Éditeur COS -->
+    <!-- Fenêtre 2 : Éditeur HTML classique -->
     <div class="cockpit-window" id="w2">
-      <div class="cockpit-header"><span class="cockpit-title">✏️ Éditeur COS</span><div class="cockpit-controls"><button onclick="toggleMax('w2')">□</button></div></div>
+      <div class="cockpit-header"><span class="cockpit-title">✏️ Éditeur HTML (classique)</span><div class="cockpit-controls"><button onclick="toggleMax('w2')">□</button></div></div>
       <div class="cockpit-body" id="w2-body">
-        <textarea class="cos-editor" id="cosEditor" placeholder="Code COS..."></textarea>
+        <textarea class="cos-editor" id="htmlEditorClassic" placeholder="Code HTML/JS classique..."></textarea>
       </div>
     </div>
-    <!-- Fenêtre 3 : Éditeur HTML Hôte -->
+    <!-- Fenêtre 3 : Éditeur HTML + COS -->
     <div class="cockpit-window" id="w3">
-      <div class="cockpit-header"><span class="cockpit-title">🌐 Éditeur HTML Hôte</span><div class="cockpit-controls"><button onclick="toggleMax('w3')">□</button></div></div>
+      <div class="cockpit-header"><span class="cockpit-title">🌐 Éditeur HTML + COS</span><div class="cockpit-controls"><button onclick="toggleMax('w3')">□</button></div></div>
       <div class="cockpit-body" id="w3-body">
-        <textarea class="cos-editor" id="htmlEditor" placeholder="Code HTML/JS..."></textarea>
+        <textarea class="cos-editor" id="htmlEditorCos" placeholder="Code HTML/JS avec COS embarqué..."></textarea>
       </div>
     </div>
-    <!-- Fenêtre 4 : Preview HTML Live -->
+    <!-- Fenêtre 4 : Preview avec COS -->
     <div class="cockpit-window" id="w4">
-      <div class="cockpit-header"><span class="cockpit-title">👁️ Preview HTML Live</span><div class="cockpit-controls"><button onclick="toggleMax('w4')">□</button></div></div>
+      <div class="cockpit-header"><span class="cockpit-title">👁️ Preview (avec COS)</span><div class="cockpit-controls"><button onclick="toggleMax('w4')">□</button></div></div>
       <div class="cockpit-body" id="w4-body">
-        <iframe style="width:100%;height:100%;border:none;background:#fff;border-radius:4px;" srcdoc="<h1>Preview</h1>"></iframe>
+        <iframe style="width:100%;height:100%;border:none;background:#fff;border-radius:4px;" srcdoc="<h1>Preview COS</h1>"></iframe>
       </div>
     </div>
-    <!-- Fenêtre 5 : Explorateur Dossier & Poids -->
+    <!-- Fenêtre 5 : Preview sans COS -->
     <div class="cockpit-window" id="w5">
-      <div class="cockpit-header"><span class="cockpit-title">📁 Explorateur Dossier & Poids</span><div class="cockpit-controls"><button onclick="toggleMax('w5')">□</button></div></div>
+      <div class="cockpit-header"><span class="cockpit-title">👁️ Preview (sans COS)</span><div class="cockpit-controls"><button onclick="toggleMax('w5')">□</button></div></div>
       <div class="cockpit-body" id="w5-body">
+        <iframe style="width:100%;height:100%;border:none;background:#fff;border-radius:4px;" srcdoc="<h1>Preview classique</h1>"></iframe>
+      </div>
+    </div>
+    <!-- Fenêtre 6 : Explorateur Dossier & Poids -->
+    <div class="cockpit-window" id="w6">
+      <div class="cockpit-header"><span class="cockpit-title">📁 Explorateur Dossier & Poids</span><div class="cockpit-controls"><button onclick="toggleMax('w6')">□</button></div></div>
+      <div class="cockpit-body" id="w6-body">
         <div style="font-size:0.75rem;">
-          <div style="margin-bottom:8px;"><strong>Taille COS :</strong> <span id="tailleCos">0</span> octets</div>
-          <div style="margin-bottom:8px;"><strong>Taille HTML :</strong> <span id="tailleHtml">0</span> octets</div>
-          <div style="margin-bottom:8px;"><strong>Réduction :</strong> <span id="reduction">0%</span></div>
-          <div style="margin-bottom:8px;"><strong>Boost rapidité :</strong> <span id="boost">0%</span></div>
-          <button onclick="telechargerCos()" class="cockpit-btn" style="margin-top:8px;">Télécharger COS</button>
-          <button onclick="telechargerHtml()" class="cockpit-btn" style="margin-top:8px;">Télécharger HTML</button>
+          <div style="margin-bottom:4px;"><strong>COS :</strong> <span id="tailleCos">0</span> octets</div>
+          <div style="margin-bottom:4px;"><strong>HTML :</strong> <span id="tailleHtml">0</span> octets</div>
+          <div style="margin-bottom:4px;"><strong>Réduction :</strong> <span id="reduction">0%</span></div>
+          <div style="margin-bottom:8px;"><strong>Boost :</strong> <span id="boost">0%</span></div>
+          <button onclick="telechargerCos()" class="cockpit-btn" style="margin:2px;">Télécharger COS</button>
+          <button onclick="telechargerHtml()" class="cockpit-btn" style="margin:2px;">Télécharger HTML</button>
         </div>
       </div>
     </div>
-    <!-- Fenêtre 6 : Chatbot -->
-    <div class="cockpit-window" id="w6">
-      <div class="cockpit-header"><span class="cockpit-title">💬 Chatbot</span><div class="cockpit-controls"><button onclick="toggleMax('w6')">□</button></div></div>
-      <div class="cockpit-body" id="w6-body" style="display:flex;flex-direction:column;height:100%;">
+    <!-- Fenêtre 7 : Chatbot -->
+    <div class="cockpit-window" id="w7">
+      <div class="cockpit-header"><span class="cockpit-title">💬 Chatbot</span><div class="cockpit-controls"><button onclick="toggleMax('w7')">□</button></div></div>
+      <div class="cockpit-body" id="w7-body" style="display:flex;flex-direction:column;height:100%;">
         <div id="chatMessages" style="flex:1;overflow:auto;font-size:0.75rem;padding:4px;"></div>
         <div style="display:flex;gap:4px;padding:4px;">
           <input id="chatInput" type="text" placeholder="Message..." style="flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);color:#e0e0e0;border-radius:4px;padding:4px;font-size:0.75rem;">
@@ -121,19 +115,21 @@
     window.CosCockpitContext = {
       cosCode: '',
       htmlCode: '',
+      htmlCosCode: '',
       updatePreview: function () {
-        var iframe = document.querySelector('#w4-body iframe');
-        if (iframe) iframe.srcdoc = this.htmlCode || '<h1>Preview</h1>';
-        // Update explorer
+        var iframeCos = document.querySelector('#w4-body iframe');
+        var iframeClassic = document.querySelector('#w5-body iframe');
+        if (iframeCos) iframeCos.srcdoc = this.htmlCosCode || '<h1>Preview COS</h1>';
+        if (iframeClassic) iframeClassic.srcdoc = this.htmlCode || '<h1>Preview classique</h1>';
         var tailleCos = document.getElementById('tailleCos');
         var tailleHtml = document.getElementById('tailleHtml');
         var reduction = document.getElementById('reduction');
         var boost = document.getElementById('boost');
         if (tailleCos) tailleCos.textContent = new Blob([this.cosCode]).size;
-        if (tailleHtml) tailleHtml.textContent = new Blob([this.htmlCode]).size;
+        if (tailleHtml) tailleHtml.textContent = new Blob([this.htmlCosCode]).size;
         if (tailleCos && tailleHtml) {
           var cosSize = new Blob([this.cosCode]).size;
-          var htmlSize = new Blob([this.htmlCode]).size;
+          var htmlSize = new Blob([this.htmlCosCode]).size;
           if (htmlSize > 0) {
             var red = Math.round((1 - cosSize / htmlSize) * 100);
             if (reduction) reduction.textContent = red + '%';
@@ -142,38 +138,60 @@
         }
       },
       updateTerminal: function (msg) {
-        var term = document.getElementById('w6-body') || document.getElementById('w6-body');
-        // Terminal is w6 in 6-window layout
+        var term = document.getElementById('w6-body');
+        // Terminal removed, log to w6 if exists
       }
     };
-    // Update terminal in w6
     function logTerminal(msg) {
       var term = document.getElementById('w6-body');
       if (term) term.innerHTML += '<br>$ ' + msg;
     }
-    // Sync editors to preview
-    var cosEditor = document.getElementById('cosEditor');
-    var htmlEditor = document.getElementById('htmlEditor');
-    if (cosEditor) cosEditor.addEventListener('input', function () {
-      window.CosCockpitContext.cosCode = cosEditor.value;
+    var cosEditor = document.getElementById('cosEditor') || document.getElementById('cosEditorClassic');
+    var htmlEditorClassic = document.getElementById('htmlEditorClassic');
+    var htmlEditorCos = document.getElementById('htmlEditorCos');
+    // Use w2 for classic, w3 for COS
+    var editorClassic = document.getElementById('htmlEditorClassic');
+    var editorCos = document.getElementById('htmlEditorCos');
+    var cosEd = document.getElementById('cosEditor');
+    // Respecter les tabulations dans les éditeurs
+    function handleTab(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        var ta = e.target;
+        var start = ta.selectionStart;
+        var end = ta.selectionEnd;
+        ta.value = ta.value.substring(0, start) + '\\t' + ta.value.substring(end);
+        ta.selectionStart = ta.selectionEnd = start + 1;
+        // Déclencher l'événement input
+        var evt = new Event('input', { bubbles: true });
+        ta.dispatchEvent(evt);
+      }
+    }
+    if (cosEd) { cosEd.addEventListener('keydown', handleTab); cosEd.addEventListener('input', function () {
+      window.CosCockpitContext.cosCode = cosEd.value;
       window.CosCockpitContext.updatePreview();
-      logTerminal('COS code updated (' + cosEditor.value.length + ' chars)');
-    });
-    if (htmlEditor) htmlEditor.addEventListener('input', function () {
-      window.CosCockpitContext.htmlCode = htmlEditor.value;
+      logTerminal('COS code updated (' + cosEd.value.length + ' chars)');
+    }); }
+    if (editorClassic) { editorClassic.addEventListener('keydown', handleTab); editorClassic.addEventListener('input', function () {
+      window.CosCockpitContext.htmlCode = editorClassic.value;
       window.CosCockpitContext.updatePreview();
-      logTerminal('HTML code updated (' + htmlEditor.value.length + ' chars)');
-    });
-    // Inject example
+      logTerminal('HTML classique updated (' + editorClassic.value.length + ' chars)');
+    }); }
+    if (editorCos) { editorCos.addEventListener('keydown', handleTab); editorCos.addEventListener('input', function () {
+      window.CosCockpitContext.htmlCosCode = editorCos.value;
+      window.CosCockpitContext.updatePreview();
+      logTerminal('HTML+COS updated (' + editorCos.value.length + ' chars)');
+    }); }
     window.injecterExemple = function injecterExemple() {
       var cosCode = '<attribut>\\n  co-mode="cos-multi-connexion"\\n  text-target="hellow world"\\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\\n  mirror-reflection="active"\\n  sfx-letters="pulse-glow"\\n  emoji-seed="🥳"\\n  click-fx="sparks,fireworks,soap-bubbles-pop"\\n  audio-enabled="true"\\n  click-anim-enabled="true"\\n  bytes-economy="18%"\\n</attribut>\\n\\n<fonction>\\n  <co id="co-init" type="boot-render">\\n    A1↔️A3↔️B5\\n  </co>\\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\\n    A2↔️B2↔️C5\\n  </co>\\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\\n    B1↔️C3↔️D5\\n  </co>\\n</fonction>';
       var htmlCode = '<!DOCTYPE html>\\n<html lang="fr">\\n<head>\\n  <meta charset="UTF-8">\\n  <title>COS - hellow world</title>\\n  <style>\\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\\n  </style>\\n</head>\\n<body>\\n  <span class="emoji">🥳</span>\\n  <h1>hellow world</h1>\\n  <script>\\n    document.addEventListener("click", function() { console.log("click"); });\\n  <\\/script>\\n</body>\\n</html>';
-      if (cosEditor) { cosEditor.value = cosCode; window.CosCockpitContext.cosCode = cosCode; }
-      if (htmlEditor) { htmlEditor.value = htmlCode; window.CosCockpitContext.htmlCode = htmlCode; }
+      var htmlCosCode = '<!DOCTYPE html>\\n<html lang="fr">\\n<head>\\n  <meta charset="UTF-8">\\n  <title>COS - hellow world</title>\\n  <style>\\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\\n  </style>\\n</head>\\n<body>\\n  <span class="emoji">🥳</span>\\n  <h1>hellow world</h1>\\n  <script>\\n    /* COS embedded */\\n    var cosCode = "' + cosCode.replace(/'/g, "\\\\'") + '";\\n    document.addEventListener("click", function() { console.log("click"); });\\n  <\\/script>\\n</body>\\n</html>';
+      if (cosEd) { cosEd.value = cosCode; window.CosCockpitContext.cosCode = cosCode; }
+      if (editorClassic) { editorClassic.value = htmlCode; window.CosCockpitContext.htmlCode = htmlCode; }
+      if (editorCos) { editorCos.value = htmlCosCode; window.CosCockpitContext.htmlCosCode = htmlCosCode; }
       window.CosCockpitContext.updatePreview();
       logTerminal('Exemple hellow world injecte');
     }
-    // Chatbot
     function envoyerChat() {
       var input = document.getElementById('chatInput');
       var msgs = document.getElementById('chatMessages');
@@ -181,7 +199,6 @@
       var text = input.value.trim();
       input.value = '';
       msgs.innerHTML += '<div style="text-align:right;margin:4px 0;"><span style="background:rgba(39,209,127,.2);padding:4px 8px;border-radius:8px;font-size:0.75rem;">' + text + '</span></div>';
-      // Simulated response
       setTimeout(function() {
         msgs.innerHTML += '<div style="margin:4px 0;"><span style="background:rgba(184,77,255,.2);padding:4px 8px;border-radius:8px;font-size:0.75rem;">Reponse simulee (moteur non charge dans le cockpit)</span></div>';
         msgs.scrollTop = msgs.scrollHeight;
@@ -198,6 +215,12 @@
       var blob = new Blob([window.CosCockpitContext.htmlCode], {type: 'text/html'});
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a'); a.href = url; a.download = 'host.html'; a.click();
+      URL.revokeObjectURL(url);
+    }
+    function telechargerHtmlCos() {
+      var blob = new Blob([window.CosCockpitContext.htmlCosCode], {type: 'text/html'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a'); a.href = url; a.download = 'host-cos.html'; a.click();
       URL.revokeObjectURL(url);
     }
     function envoyerSuperBot() {
