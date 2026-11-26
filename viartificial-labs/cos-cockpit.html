@@ -39,12 +39,18 @@
     <!-- Fenêtre 1 : Article & Tuto COS -->
     <div class="cockpit-window" id="w1">
       <div class="cockpit-header"><span class="cockpit-title">📄 Article & Tuto COS</span><div class="cockpit-controls"><button onclick="toggleMax('w1')">□</button></div></div>
-      <div class="cockpit-body" id="w1-body">
-        <h3 style="color:#b84dff;font-size:0.85rem;margin-bottom:8px;">Syntaxe COS avec &lt;attribut&gt; et &lt;fonction&gt;</h3>
-        <p style="font-size:0.75rem;margin-bottom:6px;"><code style="background:rgba(184,77,255,.1);padding:2px 4px;border-radius:3px;">&lt;attribut&gt;</code> : définit les attributs, paramètres, typage, santé octets, énergie, état audio, état animations, base emoji.</p>
-        <p style="font-size:0.75rem;margin-bottom:6px;"><code style="background:rgba(184,77,255,.1);padding:2px 4px;border-radius:3px;">&lt;fonction&gt;</code> : définit les fonctions, tâches, patterns, connexions &lt;co&gt;.</p>
-        <p style="font-size:0.75rem;margin-bottom:6px;"><code style="background:rgba(184,77,255,.1);padding:2px 4px;border-radius:3px;">&lt;co&gt;</code> : une connexion (A1↔️A3↔️B5). <code style="background:rgba(184,77,255,.1);padding:2px 4px;border-radius:3px;">&lt;cos&gt;</code> : plusieurs connexions.</p>
-        <p style="font-size:0.75rem;margin-bottom:6px;">Lecture globale : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.</p>
+      <div class="cockpit-body" id="w1-body" style="overflow:auto;">
+        <h3 style="color:#b84dff;font-size:0.85rem;margin-bottom:8px;">Syntaxe COS — Documentation complète</h3>
+        <div style="font-size:0.7rem;margin-bottom:8px;">
+          <strong style="color:#ffd700;">&lt;attribut&gt; ... &lt;/attribut&gt;</strong><br>
+          Définit les attributs, paramètres, typage alphanumérique, santé octets, énergie économisée, état audio (audio:on|off), état animations (click-anim:on|off), base emoji (🥳).<br><br>
+          <strong style="color:#ffd700;">&lt;fonction&gt; ... &lt;/fonction&gt;</strong><br>
+          Définit les fonctions, tâches, patterns, connexions &lt;co&gt; (A1↔️A3↔️B5), déclencheurs click-réaction, génération d'étincelles/feux d'artifice/bulles de savon, effets SFX sur les lettres et synthèse sonore rétro/post-moderne futuriste.<br><br>
+          <strong style="color:#ffd700;">&lt;co&gt;</strong> : une connexion (A1↔️A3↔️B5). <strong style="color:#ffd700;">&lt;cos&gt;</strong> : plusieurs connexions.<br><br>
+          <strong style="color:#ffd700;">Lecture globale</strong> : le bloc COS est lu en entier, pas ligne par ligne. Économie de stockage et rapidité.<br><br>
+          <strong style="color:#ffd700;">Bibliothèque COS</strong> : moteur emoji embarqué, tags, valeurs, attributs, fonctions, tasks.<br><br>
+          <strong style="color:#ffd700;">Moteur emoji</strong> : base emoji 🥳, cycle de variantes (ton, forme, palette préservant l'origine).
+        </div>
         <button onclick="injecterExemple()" class="cockpit-btn" style="margin-top:8px;">Injecter l'exemple hellow world</button>
         <div style="margin-top:12px;padding:8px;background:rgba(0,0,0,.3);border-radius:6px;font-size:0.7rem;">
           <strong style="color:#ffd700;">Tuto : passer en mode ordinateur sur Chrome mobile</strong><br>
@@ -159,7 +165,7 @@
       logTerminal('HTML code updated (' + htmlEditor.value.length + ' chars)');
     });
     // Inject example
-    function injecterExemple() {
+    window.injecterExemple = function injecterExemple() {
       var cosCode = '<attribut>\\n  co-mode="cos-multi-connexion"\\n  text-target="hellow world"\\n  pixel-palette="#9ca3af,#cbd5e1,#64748b"\\n  mirror-reflection="active"\\n  sfx-letters="pulse-glow"\\n  emoji-seed="🥳"\\n  click-fx="sparks,fireworks,soap-bubbles-pop"\\n  audio-enabled="true"\\n  click-anim-enabled="true"\\n  bytes-economy="18%"\\n</attribut>\\n\\n<fonction>\\n  <co id="co-init" type="boot-render">\\n    A1↔️A3↔️B5\\n  </co>\\n  <co id="co-click-react" type="sparks-fireworks-bubbles">\\n    A2↔️B2↔️C5\\n  </co>\\n  <co id="co-audio-sfx" type="retro-postmodern-synth">\\n    B1↔️C3↔️D5\\n  </co>\\n</fonction>';
       var htmlCode = '<!DOCTYPE html>\\n<html lang="fr">\\n<head>\\n  <meta charset="UTF-8">\\n  <title>COS - hellow world</title>\\n  <style>\\n    body { background: #0a0a1a; color: #9ca3af; font-family: monospace; text-align: center; padding: 40px; }\\n    h1 { font-size: 3rem; letter-spacing: 4px; text-shadow: 0 0 4px rgba(255,255,255,0.3); }\\n    .emoji { font-size: 2rem; animation: pulse 2s infinite; }\\n    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }\\n  </style>\\n</head>\\n<body>\\n  <span class="emoji">🥳</span>\\n  <h1>hellow world</h1>\\n  <script>\\n    document.addEventListener("click", function() { console.log("click"); });\\n  </script>\\n</body>\\n</html>';
       if (cosEditor) { cosEditor.value = cosCode; window.CosCockpitContext.cosCode = cosCode; }
