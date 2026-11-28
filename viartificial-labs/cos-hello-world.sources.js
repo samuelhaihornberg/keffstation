@@ -1,0 +1,262 @@
+window.COS_SOURCES = Object.freeze({
+	classic: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>hellow world — html classique</title>
+	<style>
+		:root {
+			--bg: radial-gradient(circle at 20% 20%, #1e1b4b, #090d16 60%, #17092b);
+			--bd: #38bdf8;
+			--sc: 1;
+			--sub: #7dd3fc;
+		}
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+		body {
+			min-height: 100vh;
+			display: grid;
+			place-items: center;
+			background: var(--bg);
+			color: #fff;
+			font-family: monospace;
+			overflow: hidden;
+		}
+		.box {
+			position: relative;
+			z-index: 2;
+			width: min(92vw, 720px);
+			padding: 32px 24px;
+			border-radius: 16px;
+			background: rgba(17, 24, 39, 0.9);
+			border: 2px solid var(--bd);
+			text-align: center;
+		}
+		h1 {
+			font-size: clamp(28px, 6vw, 52px);
+			letter-spacing: 3px;
+			background: linear-gradient(90deg, #38bdf8, #f472b6, #facc15, #4ade80, #c084fc);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			transform: scale(var(--sc));
+			transition: transform 0.2s ease;
+		}
+		p { margin-top: 10px; color: var(--sub); font-size: 13px; }
+		button {
+			margin-top: 20px;
+			padding: 10px 20px;
+			border: 0;
+			border-radius: 8px;
+			background: linear-gradient(90deg, #ec4899, #facc15, #06b6d4);
+			color: #090d16;
+			font-family: inherit;
+			font-weight: 800;
+			cursor: pointer;
+		}
+		canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+	</style>
+</head>
+<body>
+	<canvas id="fx"></canvas>
+	<div class="box">
+		<h1>hellow world</h1>
+		<p id="p">HTML ↔️ CSS ↔️ JS</p>
+		<button id="btn">Déclencher</button>
+	</div>
+
+	<script>
+		const r = document.documentElement, p = document.getElementById("p"), fx = document.getElementById("fx"), ctx = fx.getContext("2d"), pts = [];
+		let on = false, ac;
+		const resize = () => { fx.width = innerWidth; fx.height = innerHeight; };
+		addEventListener("resize", resize); resize();
+		const appliquerEtat = () => {
+			r.style.setProperty("--bg", on ? "radial-gradient(circle at 80% 25%, #3b0764, #0c192e 60%, #06283d)" : "radial-gradient(circle at 20% 20%, #1e1b4b, #090d16 60%, #17092b)");
+			r.style.setProperty("--bd", on ? "#facc15" : "#38bdf8");
+			r.style.setProperty("--sc", on ? "1.06" : "1");
+			r.style.setProperty("--sub", on ? "#fde047" : "#7dd3fc");
+			p.textContent = on ? "hellow world actif" : "HTML ↔️ CSS ↔️ JS";
+		};
+		const particules = (x, y) => {
+			const cols = ["#ff2a85", "#00f5d4", "#fee440", "#9b5de5", "#4ade80"];
+			for (let i = 0; i < 40; i++) {
+				const a = (Math.PI * 2 * i) / 40, v = 2 + Math.random() * 4.5;
+				pts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: cols[i % 5] });
+			}
+		};
+		const son = () => {
+			ac = ac || new (AudioContext || webkitAudioContext)();
+			const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+			o.type = "square";
+			o.frequency.setValueAtTime(340, t);
+			o.frequency.exponentialRampToValueAtTime(920, t + 0.15);
+			g.gain.setValueAtTime(0.06, t);
+			g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+			o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.16);
+		};
+		(function loop() {
+			ctx.clearRect(0, 0, fx.width, fx.height);
+			for (let i = pts.length - 1; i >= 0; i--) {
+				const pt = pts[i]; pt.x += pt.vx; pt.y += pt.vy; pt.vy += 0.06; pt.life -= 0.025;
+				if (pt.life <= 0) { pts.splice(i, 1); continue; }
+				ctx.globalAlpha = pt.life; ctx.fillStyle = pt.c; ctx.fillRect(pt.x, pt.y, 3.5, 3.5);
+			}
+			ctx.globalAlpha = 1; requestAnimationFrame(loop);
+		})();
+		document.getElementById("btn").addEventListener("click", e => {
+			on = !on;
+			appliquerEtat();
+			particules(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+			son();
+		});
+	</script>
+</body>
+</html>
+`,
+	cos: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>hellow world — co & cos</title>
+	<style>
+		:root {
+			--bg: radial-gradient(circle at 20% 20%, #1e1b4b, #090d16 60%, #17092b);
+			--bd: #38bdf8;
+			--sc: 1;
+			--sub: #7dd3fc;
+		}
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+		body {
+			min-height: 100vh;
+			display: grid;
+			place-items: center;
+			background: var(--bg);
+			color: #fff;
+			font-family: monospace;
+			overflow: hidden;
+		}
+		.box {
+			position: relative;
+			z-index: 2;
+			width: min(92vw, 720px);
+			padding: 32px 24px;
+			border-radius: 16px;
+			background: rgba(17, 24, 39, 0.9);
+			border: 2px solid var(--bd);
+			text-align: center;
+		}
+		h1 {
+			font-size: clamp(28px, 6vw, 52px);
+			letter-spacing: 3px;
+			background: linear-gradient(90deg, #38bdf8, #f472b6, #facc15, #4ade80, #c084fc);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			transform: scale(var(--sc));
+			transition: transform 0.2s ease;
+		}
+		p { margin-top: 10px; color: var(--sub); font-size: 13px; }
+		button {
+			margin-top: 20px;
+			padding: 10px 20px;
+			border: 0;
+			border-radius: 8px;
+			background: linear-gradient(90deg, #ec4899, #facc15, #06b6d4);
+			color: #090d16;
+			font-family: inherit;
+			font-weight: 800;
+			cursor: pointer;
+		}
+		canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+	</style>
+</head>
+<body data-cos=" BODY1 ">
+	<!-- Bibliothèque : règle de la règle uniquement (co = connexion, cos = connexions) -->
+	<canvas id="fx" data-cos=" FX1 "></canvas>
+	<div class="box" data-cos=" BOX1 ">
+		<h1 data-cos=" H1 ">hellow world</h1>
+		<p data-cos=" P1 ">HTML ↔️ CSS ↔️ JS</p>
+		<button id="btn" data-cos=" BTN1 ">Déclencher</button>
+	</div>
+
+	<cos>
+		<co> BTN1 ↔️ JS1 </co>
+		<co> BTN1 ↔️ FX1 </co>
+		<co> BTN1 ↔️ AU1 </co>
+		<co> JS1 ↔️ C1 </co>
+		<co> C1 ↔️ BODY1 </co>
+		<co> C1 ↔️ BOX1 </co>
+		<co> C1 ↔️ H1 </co>
+		<co> C1 ↔️ P1 </co>
+	</cos>
+
+	<script>
+		const r = document.documentElement, m = {}, fx = document.getElementById("fx"), ctx = fx.getContext("2d"), pts = [];
+		let on = false, ac;
+		document.querySelectorAll("[data-cos]").forEach(el => m[el.dataset.cos.trim()] = el);
+		const liens = {};
+		document.querySelectorAll("cos co").forEach(co => {
+			const [a, b] = co.textContent.split("↔️").map(s => s.trim());
+			(liens[a] ||= []).push(b);
+		});
+		const resize = () => { fx.width = innerWidth; fx.height = innerHeight; };
+		addEventListener("resize", resize); resize();
+		const act = {
+			JS1: () => { on = !on; },
+			C1: () => {
+				r.style.setProperty("--bg", on ? "radial-gradient(circle at 80% 25%, #3b0764, #0c192e 60%, #06283d)" : "radial-gradient(circle at 20% 20%, #1e1b4b, #090d16 60%, #17092b)");
+				r.style.setProperty("--bd", on ? "#facc15" : "#38bdf8");
+				r.style.setProperty("--sc", on ? "1.06" : "1");
+				r.style.setProperty("--sub", on ? "#fde047" : "#7dd3fc");
+				if (m.P1) m.P1.textContent = on ? "hellow world actif" : "HTML ↔️ CSS ↔️ JS";
+			},
+			FX1: ({ x, y }) => {
+				const cols = ["#ff2a85", "#00f5d4", "#fee440", "#9b5de5", "#4ade80"];
+				for (let i = 0; i < 40; i++) {
+					const a = (Math.PI * 2 * i) / 40, v = 2 + Math.random() * 4.5;
+					pts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: cols[i % 5] });
+				}
+			},
+			AU1: () => {
+				ac = ac || new (AudioContext || webkitAudioContext)();
+				const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+				o.type = "square";
+				o.frequency.setValueAtTime(340, t);
+				o.frequency.exponentialRampToValueAtTime(920, t + 0.15);
+				g.gain.setValueAtTime(0.06, t);
+				g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+				o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.16);
+			}
+		};
+		const run = (k, p, seen = new Set()) => {
+			if (seen.has(k)) return; seen.add(k);
+			if (act[k]) act[k](p);
+			(liens[k] || []).forEach(nxt => run(nxt, p, seen));
+		};
+		(function loop() {
+			ctx.clearRect(0, 0, fx.width, fx.height);
+			for (let i = pts.length - 1; i >= 0; i--) {
+				const p = pts[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.life -= 0.025;
+				if (p.life <= 0) { pts.splice(i, 1); continue; }
+				ctx.globalAlpha = p.life; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3.5, 3.5);
+			}
+			ctx.globalAlpha = 1; requestAnimationFrame(loop);
+		})();
+		m.BTN1.addEventListener("click", e => run("BTN1", { x: e.clientX || innerWidth / 2, y: e.clientY || innerHeight / 2 }));
+	</script>
+</body>
+</html>
+`,
+	cosBlock: `<cos>
+		<co> BTN1 ↔️ JS1 </co>
+		<co> BTN1 ↔️ FX1 </co>
+		<co> BTN1 ↔️ AU1 </co>
+		<co> JS1 ↔️ C1 </co>
+		<co> C1 ↔️ BODY1 </co>
+		<co> C1 ↔️ BOX1 </co>
+		<co> C1 ↔️ H1 </co>
+		<co> C1 ↔️ P1 </co>
+	</cos>
+`
+});
